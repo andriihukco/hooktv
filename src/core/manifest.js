@@ -1,10 +1,10 @@
 let object = {
-    author: 'Yumata',
-    github: 'https://github.com/yumata/lampa-source',
+    author: 'HOOK',
+    github: '',
     css_version: '3.2.0',
     app_version: '3.2.0',
     cub_site: 'cub.rip',
-    apk_link_download: 'https://github.com/lampa-app/LAMPA/releases/download/v1.12.3/app-lite-release.apk'
+    apk_link_download: ''
 }
 
 let plugins = []
@@ -25,7 +25,7 @@ Object.defineProperty(object, 'plugins', {
  * Ссылка на GitHub с файлами приложения
  */
 Object.defineProperty(object, 'github_lampa', { 
-    get: ()=> window.lampa_settings.fix_widget ? 'http://lampa.mx/' : 'https://yumata.github.io/lampa/',
+    get: ()=> './',
     set: ()=> {}
 })
 

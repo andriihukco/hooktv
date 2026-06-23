@@ -478,7 +478,7 @@ function list(items, params){
             }
             
             menu.push({
-                title: Lang.translate('player_lauch') + ' - Lampa',
+                title: Lang.translate('player_lauch') + ' - HOOK',
                 player: 'lampa'
             })
 

@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="title">Home - Lampa Doc</title>
+    <title id="title">Home - HOOK Doc</title>
 
     <link rel="stylesheet" href="css/style.css" />
 
@@ -25,7 +25,7 @@
                     <path d="M73 63C73 72.9411 64.9411 81 55 81C45.0589 81 37 72.9411 37 63C37 53.0589 45.0589 45 55 45C64.9411 45 73 53.0589 73 63Z" fill="#000"/>
                 </svg>
             </a>
-            <div class="header__title">Lampa / <span>Doc</span></div>
+            <div class="header__title">HOOK / <span>Doc</span></div>
             <div class="header__version">v1.01</div>
         </div>
         <div class="body wrap__body">
@@ -51,12 +51,12 @@
 
     <div style="display: none;" id="home">
         <div class="function__category">#home</div>
-        <div class="function__name">Приветствую в документации Lampa</div>
+        <div class="function__name">Приветствую в документации HOOK</div>
         <div class="text" id="home-mark">
-Здесь вы найдете документацию по приложению Lampa. Документация будет постоянно обновляться и дополняться. Сейчас вы находитесь на главной странице документации.
+Здесь вы найдете документацию по приложению HOOK. Документация будет постоянно обновляться и дополняться. Сейчас вы находитесь на главной странице документации.
 
 ### Основные настройки
-`window.lampa_settings` - Объект с настройками приложения
+`window.hook_settings` - Объект с настройками приложения
 
 - `socket_use` - Использовать ли сокеты
 - `socket_url` - URL для подключения к сокетам
@@ -74,7 +74,7 @@
 Добавить настройки можно в файле `index.html`
 
 ```javascript
-window.lampa_settings = {
+window.hook_settings = {
     socket_use: true,
     socket_url: 'wss://...',
     socket_methods: true,
@@ -101,7 +101,7 @@ window.lampa_settings = {
 ```
 
 ### Доступ к классам
-Приложение иммет внешний доступ к классам через объект `window.Lampa` вы можете использовать его для взаимодействия с приложением. Например `Lampa.Storage.get('key')` - получить значение из хранилища. Или `Lampa.Player.play(...)` - запустить проигрыватель.
+Приложение иммет внешний доступ к классам через объект `window.HOOK` вы можете использовать его для взаимодействия с приложением. Например `HOOK.Storage.get('key')` - получить значение из хранилища. Или `HOOK.Player.play(...)` - запустить проигрыватель.
         </div>
     </div>
 
@@ -190,7 +190,7 @@ window.lampa_settings = {
 
             window.location.hash = item.category + '-' + item.name;
 
-            title.innerHTML = item.name + ' - Lampa Doc';
+            title.innerHTML = item.name + ' - HOOK Doc';
         }
 
         function buildHome(){
@@ -201,7 +201,7 @@ window.lampa_settings = {
             body.innerHTML = home.innerHTML;
             window.location.hash = '';
 
-            title.innerHTML = 'Lampa Doc';
+            title.innerHTML = 'HOOK Doc';
         }
 
         buildMenu()

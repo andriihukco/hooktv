@@ -33,7 +33,7 @@ function playHash(SERVER){
         let intentExtra = ""
         if(SERVER.movie){
             intentExtra = {
-                title: "[LAMPA] " + (SERVER.movie.title || 'No title').replace(/\s+/g, ' ').trim(),
+                title: "[HOOK] " + (SERVER.movie.title || 'No title').replace(/\s+/g, ' ').trim(),
                 poster: SERVER.movie.img,
                 media: SERVER.movie.name ? 'tv' : 'movie',
                 data: {
@@ -52,7 +52,7 @@ function playHash(SERVER){
 function openTorrent(SERVER){
     if(checkVersion(10)){
         let intentExtra = {
-            title: "[LAMPA] " + (SERVER.movie.title || 'No title').replace(/\s+/g, ' ').trim(),
+            title: "[HOOK] " + (SERVER.movie.title || 'No title').replace(/\s+/g, ' ').trim(),
             poster: SERVER.object.poster,
             media: SERVER.movie.name ? 'tv' : 'movie',
             data: {

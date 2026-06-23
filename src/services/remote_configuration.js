@@ -173,7 +173,7 @@ function install(row){
         try{
             if(item.type == 'extension'){
                 Arrays.extend(item, {
-                    author: '@lampa',
+                    author: '@hook_tv',
                     status: 1
                 })
 

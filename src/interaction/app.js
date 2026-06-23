@@ -23,7 +23,7 @@ function loadStyle(){
     let old_css = $('link[href="css/app.css"]')
 
     if(Platform.is('orsay') && window.location.host.indexOf('localhost') == -1){
-        let urlStyle = 'http://lampa.mx/css/app.css?v'
+        let urlStyle = './css/app.css?v'
         //Для нового типа виджета берем сохраненный адрес загрузки
         if (Orsay.isNewWidget()) {
             //Для фрейм загрузчика запишем полный url

@@ -243,6 +243,8 @@ function task(call){
         Account.Api.plugins((plugins)=>{
             let puts = window.lampa_settings.plugins_use ? plugins.filter(plugin=>plugin.status).map(plugin=>plugin.url).concat(Storage.get('plugins','[]').filter(plugin=>plugin.status).map(plugin=>plugin.url)) : []
 
+            puts.push('./plugins/rando_dice.js')
+            puts.push('./plugins/swipe_match.js')
             puts.push('./plugins/modification.js')
 
             puts = puts.filter((element, index) => {

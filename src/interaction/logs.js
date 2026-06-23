@@ -136,7 +136,7 @@ function push(){
         let data = JSON.stringify(Console.export())
 
         try{
-            file = new File([data], "lampa_logs.json", {
+            file = new File([data], "hook_logs.json", {
                 type: "text/plain",
             })
         }
@@ -154,7 +154,7 @@ function push(){
 
         if(file){
             let formData = new FormData($('<form></form>')[0])
-                formData.append("file", file, "lampa_logs.json")
+                formData.append("file", file, "hook_logs.json")
 
             
             $.ajax({

@@ -1,6 +1,6 @@
 console.log('Start load');
 
-var domain = 'yumata.github.io/lampa/';
+var domain = 'hook.tv/';
 
 function createScript(src,error){
     console.log('Load script:' + src);

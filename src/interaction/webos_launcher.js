@@ -49,8 +49,8 @@ function init(){
                         "pigImage": "/pigImage.jpg",
                         "type": "MVPD_IP",
                         "showPopup": true,
-                        "label": "Lampa",
-                        "description": "Lampa app for LG webOS",
+                        "label": "HOOK TV",
+                        "description": "HOOK TV app for LG webOS",
                     },
                     onSuccess: function (res) {
                         Noty.show(Lang.translate('settings_added'))

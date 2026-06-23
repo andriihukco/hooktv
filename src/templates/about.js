@@ -6,12 +6,12 @@ let html = `<div class="about">
         <div class="about__contacts">
             <div>
                 <small>#{about_channel}</small><br>
-                @lampa_channel
+                @hook_tv
             </div>
 
             <div>
                 <small>#{about_group}</small><br>
-                @lampa_group
+                @hook_tv_support
             </div>
 
             <div>

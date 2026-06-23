@@ -6,7 +6,7 @@ class NoticeLampa extends NoticeClass {
     constructor(params = {}){
         super(params)
 
-        this.name = params.name || 'Lampa'
+        this.name = params.name || 'HOOK'
         this.time = 0
         this.view = 0
 

@@ -136,6 +136,10 @@ if(typeof window.lampa_settings == 'undefined'){
     window.lampa_settings = {}
 }
 
+if(typeof window.hook_settings !== 'undefined'){
+    Arrays.extend(window.lampa_settings, window.hook_settings)
+}
+
 let torrents_use = true
 let agent        = navigator.userAgent.toLowerCase()
 let conditions   = [
@@ -250,6 +254,8 @@ Arrays.extend(window.lampa_settings,{
     fix_widget: window.localStorage.getItem('fix_widget') ? true : false,
 })
 
+window.hook_settings = window.lampa_settings
+
 
 // Если отключили 
 if(window.localStorage.getItem('remove_white_and_demo')){
@@ -270,7 +276,7 @@ if(window.lampa_settings.iptv){
  * Делаем классы доступными в глобальной области видимости
  */
 function initClass(){
-    window.Lampa = {
+    let api = {
         Listener: Subscribe(),
         Lang,
         Subscribe,
@@ -365,6 +371,9 @@ function initClass(){
         Router,
         Timer
     }
+
+    window.HOOK = api
+    window.Lampa = api
 }
 
 /**

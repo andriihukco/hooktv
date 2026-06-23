@@ -1,5 +1,5 @@
 {
-	"name": "Lampa",
+	"name": "HOOK",
 	"version": "latest",
 	"parameter": "content:{PREFIX}{domain}/msx/start.json",
 	"action": "link:{PREFIX}{domain}"

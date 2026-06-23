@@ -29,7 +29,7 @@ function component(object){
         onCreate: function(){
             Torserver.my(result=>{
                 result.forEach(item => {
-                    item.title = item.title.replace('[LAMPA] ','')
+                    item.title = item.title.replace('[LAMPA] ','').replace('[HOOK] ','')
                     item.data = Arrays.decodeJson(item.data,{})
 
                     if(item.data.movie && item.data.movie.poster) {

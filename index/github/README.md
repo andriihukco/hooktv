@@ -1,8 +1,8 @@
-# Lampa
+# HOOK
 
 Приложение полностью бесплатное и использует публичные ссылки для просмотра информации о фильмах, новинках, популярных фильмов и т.д. Вся доступная информация используется исключительно в познавательных целях, приложение не использует свои собственные серверы для распространения информации.
 
-Исходники лампы доступны тут: https://github.com/yumata/lampa-source
+Исходники HOOK доступны в этом проекте.
 
 #### Устройства
 * LG WebOS
@@ -22,5 +22,5 @@
 
 ## Запуск в Docker'е
 
-1. Соберите образ `docker build --build-arg domain={domain} -t lampa . `
-2. Запустите контейнер `docker run -p 8080:80 -d --restart unless-stopped -it --name lampa lampa`
+1. Соберите образ `docker build --build-arg domain={domain} -t HOOK . `
+2. Запустите контейнер `docker run -p 8080:80 -d --restart unless-stopped -it --name HOOK HOOK`
