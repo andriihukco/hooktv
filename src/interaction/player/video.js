@@ -18,6 +18,8 @@ import Controller from '../../core/controller'
 import Player from '../player'
 import Segments from './segments'
 import Bell from '../bell'
+import Dub from '../../utils/dub'
+import Noty from '../noty'
 
 let listener = Subscribe()
 let html
@@ -562,6 +564,8 @@ function setParams(saved_params){
 function loaded(){
     let tracks = []
     let subs   = video.customSubs || video.textTracks || []
+    let want   = (Player.playdata() || {}).hooktv
+    let original = false
 
     console.log('Player','video full loaded')
 
@@ -619,9 +623,22 @@ function loaded(){
 
             console.log('Player','enable track by default')
         }
+        else{
+            // HOOK TV: start on the language picked in the Watch sheet
+            let index = want ? Dub.pickTrack(tracks, want) : -1
+
+            if(index >= 0) tracks.forEach((e,i)=>{
+                e.enabled  = i == index
+                e.selected = i == index
+            })
+
+            original = want == 'original' && index >= 0
+        }
 
         listener.send('tracks', {tracks: tracks})
     }
+
+    if(want == 'original' && !original) Noty.show(Lang.translate('hooktv_no_original'))
 
     if(subs.length){
         subs = convertToArray(subs)
@@ -631,6 +648,16 @@ function loaded(){
 
             subs[params.sub].mode     = 'showing'
             subs[params.sub].selected = true
+
+            subsview(true)
+        }
+        else if(original && Dub.pickTrack(subs, 'uk') >= 0){
+            let index = Dub.pickTrack(subs, 'uk')
+
+            subs.forEach((e,i)=>{
+                e.mode     = i == index ? 'showing' : 'disabled'
+                e.selected = i == index
+            })
 
             subsview(true)
         }

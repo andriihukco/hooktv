@@ -81,7 +81,7 @@ function init(){
  * Sets data-theme on <html>, which the token layer in sass/theme listens to.
  */
 function theme(){
-    let mode = Storage.get('interface_theme', 'system')
+    let mode = Storage.get('interface_theme', 'dark')
     let dark = mode == 'system' ? systemDark.matches : mode == 'dark'
 
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
@@ -208,6 +208,9 @@ function frameUpdate(render){
             heig = window.innerHeight - head_height - navi_height,
             attr = elem.mheight,
             read = parseFloat(elem.style.height)
+
+        // the home hero runs under the head, so its scroll fills the screen
+        if(elem.classList.contains('scroll--hero')) heig += head_height
 
         if(attr){
             heig -= attr.getBoundingClientRect().height

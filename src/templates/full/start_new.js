@@ -28,7 +28,7 @@ let html = `<div class="full-start-new">
                 <div class="full-start__button selector button--play">
                     <svg><use xlink:href="#sprite-play"></use></svg>
 
-                    <span>#{title_watch}</span>
+                    <span>#{hooktv_watch_now}</span>
                 </div>
 
                 <div class="full-start__button selector button--book">
@@ -66,12 +66,6 @@ let html = `<div class="full-start-new">
             <svg><use xlink:href="#sprite-torrent"></use></svg>
 
             <span>#{full_torrents}</span>
-        </div>
-
-        <div class="full-start__button selector view--trailer">
-            <svg><use xlink:href="#sprite-trailer"></use></svg>
-
-            <span>#{full_trailers}</span>
         </div>
     </div>
 </div>`

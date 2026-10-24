@@ -24,6 +24,8 @@ import Manifest from '../core/manifest'
 import TMDB from '../core/tmdb/tmdb'
 import Loading from '../interaction/loading'
 import Input from '../interaction/settings/input'
+import Dub from '../utils/dub'
+import Watch from '../interaction/watch'
 
 /**
  * HOOK TV Inbuilt Online Balancers Service
@@ -466,7 +468,7 @@ function createV2(sourceKey) {
         }
 
         function sortSeasonNumbers(values) {
-            var map = {}
+            var map = {};
             (values || []).forEach(function(value) {
                 var number = toPositiveInt(value)
                 if (number) map[number] = true
@@ -1278,6 +1280,193 @@ function createV2(sourceKey) {
             success({ first: null, qualitys: {} })
         }
     }
+}
+
+/**
+ * HOOK TV one-tap Watch. Runs the same createV2 adapters as the source list,
+ * but headless: every enabled source searches in parallel, the voice that fits
+ * `want` is picked by Dub, and the first source (in the user's order) that
+ * starts playing wins. The user never sees balancers.
+ */
+function autoSources(movie, call) {
+    function pick(list) {
+        var keys = list.filter(function(item) {
+            return item && item.enabled !== false
+        }).map(function(item) {
+            return sourcesStore.normalizeName(item.key || item.name)
+        }).filter(Boolean)
+        var lang = (movie.original_language || '').toLowerCase()
+        var anime = ['ja', 'ko', 'zh'].indexOf(lang) >= 0
+        keys = keys.filter(function(key) {
+            if (['bambooua', 'animeon', 'moonanime', 'mikai'].indexOf(key) >= 0) return anime
+            if (key === 'starlight' || key === 'midnight') return lang === 'uk'
+            return true
+        })
+        call(sourcesStore.applyUserFilters(keys))
+    }
+
+    if (sourcesStore.available_sources.length) return pick(sourcesStore.available_sources)
+
+    new APIClient().getSources(function(json) {
+        if (json && json.ok && Array.isArray(json.sources)) sourcesStore.saveAvailable(json.sources)
+        pick(sourcesStore.available_sources)
+    }, function() {
+        call([])
+    })
+}
+
+function autoProbe(key, movie, want) {
+    return new Promise(function(resolve) {
+        var api = new APIClient()
+        var object = { movie: movie }
+        var serial = !!movie.name
+        var finished = false
+        var voice_chosen = false
+        var seasons = 0
+        var on_error = null
+        var adapter
+
+        var timer = setTimeout(function() {
+            api.clear()
+            finish(null, 'timeout')
+        }, 8000)
+
+        function finish(result, why) {
+            if (finished) return
+            finished = true
+            clearTimeout(timer)
+            console.log('Watch', key, result ? 'ready' : 'skip', why || '')
+            resolve(result)
+        }
+
+        var comp = {
+            api_client: api,
+            loading: function() {},
+            reset: function() {},
+            disableSource: function() {},
+            empty: function() { finish(null, 'empty') },
+            doesNotAnswer: function() { finish(null, 'no answer') },
+            pushError: function(text) {
+                if (on_error) on_error(text)
+            },
+            similars: function(list) {
+                var match = Dub.pickSimilar(list, movie)
+                if (match) adapter.search(object, [match])
+                else finish(null, 'no title match')
+            },
+            filter: function(items, choice) {
+                seasons = items.season ? items.season.length : 0
+                if (voice_chosen || !items.voice || !items.voice.length) return
+                voice_chosen = true
+                var best = Dub.pickVoices(items.voice.map(function(name) {
+                    return { name: name }
+                }), want, key)[0]
+                if (!best) return finish(null, 'no voice: ' + items.voice.join(', '))
+                if (best.index !== choice.voice) adapter.filter('filter', { stype: 'voice' }, { index: best.index })
+            },
+            draw: function(items, params) {
+                if (finished || !items.length) return
+
+                var item
+                if (serial) {
+                    items.forEach(function(element) {
+                        element.timeline = Timeline.view(getHashTimeline(movie, element.season, element.episode))
+                        element.mark = function() {}
+                        // player title reads "Show · S1 E3" instead of a bare "Серія 3"
+                        element.title = (movie.name || movie.title) + ' · S' + element.season + ' E' + element.episode
+                    })
+                    item = items.find(function(element) {
+                        return (element.timeline.percent || 0) < 90
+                    })
+                    // the whole season is watched: move on to the next one
+                    if (!item && seasons > 1 && items[0].season < seasons) {
+                        return adapter.filter('filter', { stype: 'season' }, { index: items[0].season })
+                    }
+                    item = item || items[0]
+                } else {
+                    var best = Dub.pickVoices(items.map(function(element) {
+                        return { name: element.voice_name || element.title, hint: JSON.stringify(element.stream || element.streams || '') }
+                    }), want, key)[0]
+                    if (!best) return finish(null, 'no stream voice')
+                    item = items[best.index]
+                    item.timeline = Timeline.view(getHashTimeline(movie))
+                }
+
+                finish({
+                    key: key,
+                    play: function(success, fail) {
+                        var started = function(e) {
+                            // tells the player which audio / subtitles to start on
+                            e.data.hooktv = want
+                            Player.listener.remove('create', started)
+                            on_error = null
+                            success()
+                        }
+                        Player.listener.follow('create', started)
+                        on_error = function(text) {
+                            console.log('Watch', key, 'play failed', text || '')
+                            Player.listener.remove('create', started)
+                            on_error = null
+                            fail(text)
+                        }
+                        params.onEnter(item)
+                    }
+                })
+            }
+        }
+
+        adapter = new (createV2(key))(comp, object)
+        adapter.search(object, [{}])
+    })
+}
+
+/**
+ * @param {object} movie TMDB card
+ * @param {'uk'|'original'} want
+ * @param {function(boolean)} done true once the player has started
+ * @returns {function} cancel
+ */
+function autoPlay(movie, want, done) {
+    var cancelled = false
+
+    autoSources(movie, function(keys) {
+        var probes = keys.map(function(key) {
+            return autoProbe(key, movie, want)
+        })
+        var index = 0
+
+        function next() {
+            if (cancelled) return
+            if (index >= probes.length) return done(false)
+            probes[index++].then(function(found) {
+                if (cancelled) return
+                if (!found) return next()
+                found.play(function() {
+                    done(true)
+                }, next)
+            })
+        }
+
+        next()
+    })
+
+    return function() {
+        cancelled = true
+    }
+}
+
+function openList(movie) {
+    registerTemplates()
+    Activity.push({
+        url: '',
+        title: movie.title || movie.name,
+        component: 'hook_online',
+        search: movie.title || movie.name,
+        search_one: movie.title || movie.name,
+        search_two: movie.original_title || movie.original_name,
+        movie: movie,
+        page: 1
+    })
 }
 
 function escapeHtml(text) {
@@ -3127,6 +3316,8 @@ function init() {
 
     window.hook_online = true
 
+    Watch.register({ autoPlay: autoPlay, openList: openList })
+
     // Register components
     Component.add('hook_online', component)
     Component.add('online', component)
@@ -3209,5 +3400,7 @@ function init() {
 
 export default {
     init: init,
-    component: component
+    component: component,
+    autoPlay: autoPlay,
+    openList: openList
 }

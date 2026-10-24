@@ -4,6 +4,7 @@ import Scroll from '../../interaction/scroll'
 import Params from '../settings/params'
 import Platform from '../../core/platform.js'
 import Api from './api'
+import Lang from '../../core/lang'
 
 function Component(name, component_params = {}){
     let scrl = new Scroll({mask: true, over:true, step: 200})
@@ -108,8 +109,8 @@ function Component(name, component_params = {}){
     /**
      * Добавляем пользовательские параметры
      */
-    function addParams(){
-        let params = Api.getParam(name)
+    function addParams(key = name){
+        let params = Api.getParam(key)
 
         if(params){
             params.forEach(data=>{
@@ -160,12 +161,49 @@ function Component(name, component_params = {}){
     }
     
     /**
+     * HOOK TV: settings are one flat page. Every section's rows follow the
+     * interface rows under a title, so nothing opens a second screen.
+     */
+    function addSections(){
+        let sections = [
+            ['player', 'settings_main_player'],
+            ['more', 'settings_main_rest'],
+            ['tmdb', 'TMDB']
+        ]
+
+        if(window.lampa_settings.torrents_use) sections.push(['parser', 'settings_main_parser'], ['server', 'settings_main_torrserver'])
+
+        sections.forEach(([key, title])=>{
+            let section = Template.get('settings_' + key)
+
+            section.find('.settings-folder').remove()
+
+            comp.append(`<div class="settings-param-title"><span>${Lang.translate(title)}</span></div>`)
+            comp.append(section.children())
+
+            addParams(key)
+        })
+
+        let components = Api.allComponents()
+
+        for(let key in components){
+            if(key == name) continue
+
+            comp.append(`<div class="settings-param-title"><span>${components[key].name}</span></div>`)
+
+            addParams(key)
+        }
+    }
+
+    /**
      * Стартуем
      */
     function start(){
         if(name == 'more') addAdvanced()
 
         addParams()
+
+        if(name == 'interface') addSections()
 
         buildEvents()
 

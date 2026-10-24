@@ -1,93 +1,40 @@
 import Controller from '../../../core/controller'
-import Select from '../../../interaction/select'
-import Utils from '../../../utils/utils'
-import Storage from '../../../core/storage/storage'
 import Lang from '../../../core/lang'
+import Watch from '../../../interaction/watch'
 
 export default {
-    onPriorityButton: function(btn){
-        let cont = this.html.find('.full-start-new__buttons')
-        let clon = btn.clone()
+    onCreate: function(){
+        // Torrents (when enabled) live in the ⋯ menu instead of the action row
+        this.torrent_option = (e)=>{
+            if(e.type !== 'options' || e.link !== this) return
 
-        cont.find('.button--priority').remove()
-        
-        clon.addClass('button--priority').removeClass('view--torrent').on('hover:enter',()=>{
-            btn.trigger('hover:enter')
-        }).on('hover:long',()=>{
-            clon.remove()
+            let torrent = this.html.find('.view--torrent').not('.hide')
 
-            Storage.set('full_btn_priority','')
+            if(torrent.length) e.options.unshift({
+                title: Lang.translate('full_torrents'),
+                onSelect: ()=>{
+                    Controller.toggle('content')
 
-            this.last = this.html.find('.button--play')[0]
+                    torrent.trigger('hover:enter')
+                }
+            })
+        }
 
-            Controller.toggle('content')
-        })
-
-        cont.prepend(clon)
+        Lampa.Listener.follow('full', this.torrent_option)
+    },
+    onDestroy: function(){
+        Lampa.Listener.remove('full', this.torrent_option)
     },
     onGroupButtons: function(){
         let play = this.html.find('.button--play')
-        let btns = this.html.find('.buttons--container > .full-start__button').not('.hide')
 
-        let priority = Storage.get('full_btn_priority','') + ''
-        
-        if(priority){
-            let priority_button
-            
-            btns.each(function(){
-                let hash = Utils.hash($(this).clone().removeClass('focus').prop('outerHTML'))
-
-                if(hash == priority) priority_button = $(this)
-            })
-
-            if(priority_button) this.emit('priorityButton', priority_button)
-        }
-
-        play.unbind().on('hover:enter',(e)=>{
-            priority = Storage.get('full_btn_priority','') + ''
-
-            btns = this.html.find('.buttons--container > .full-start__button').not('.hide').filter(function(){
-                return priority !== Utils.hash($(this).clone().removeClass('focus').prop('outerHTML'))
-            })
-
-            if(btns.length == 1){
-                btns.trigger('hover:enter')
-            }
-            else{
-                let items = []
-
-                btns.each(function(){
-                    let icon = $(this).find('svg').prop('outerHTML')
-
-                    items.push({
-                        title: $(this).text(),
-                        subtitle: $(this).data('subtitle'),
-                        template: typeof icon == 'undefined' || icon == 'undefined' ? 'selectbox_item' : 'selectbox_icon',
-                        icon: icon,
-                        btn: $(this)
-                    })
-                })
-
-                Select.show({
-                    title: Lang.translate('settings_rest_source'),
-                    items: items,
-                    onSelect: (a)=>{
-                        a.btn.trigger('hover:enter')
-                    },
-                    onLong: (a)=>{
-                        Storage.set('full_btn_priority',Utils.hash(a.btn.clone().removeClass('focus').prop('outerHTML')))
-                        
-                        this.emit('priorityButton', a.btn)
-                    },
-                    onBack: ()=>{
-                        Controller.toggle('content')
-                    }
-                })
-            }
+        // One tap: Українська / Оригінал, then the best source plays
+        play.unbind('hover:enter').on('hover:enter',()=>{
+            Watch.start(this.card)
         }).on('hover:focus', ()=>{
             this.last = play[0]
         })
-        
-        play.toggleClass('hide',!Boolean(btns.length))
+
+        play.removeClass('hide')
     }
 }

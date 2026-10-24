@@ -14,6 +14,8 @@ import Platform from '../core/platform'
 import Main from '../interaction/items/main/main'
 import MainModule from '../interaction/items/main/module/module'
 import Cards from './full/cards'
+import TrailersRow from './full/trailers'
+import Trailers from './full/start/trailers'
 import Background from '../interaction/background'
 import Template from '../interaction/template'
 import Permit from '../core/account/permit'
@@ -26,6 +28,7 @@ let components = {
     description: Description,
     persons: Persons,
     cards: Cards,
+    trailers: TrailersRow,
     discuss: Discuss,
     episodes: Episodes
 }
@@ -50,6 +53,7 @@ function component(object){
             this.rows = ['start', 'description']
 
             this.html.addClass('layer--wheight')
+            this.html.addClass('full-page')
 
             Api.full(object, (data)=>{
                 if(!data.movie) return this.emit('error', {empty: true})
@@ -97,6 +101,14 @@ function component(object){
                     object,
                     data
                 })
+
+                // Trailers sit right under the description
+                let trailers = Trailers.items(data)
+
+                if(trailers.length) this.rows.push(['trailers', {
+                    title: Lang.translate('title_trailers'),
+                    results: trailers
+                }])
 
                 // Создаем эпизоды
                 if(!adult_block && data.episodes && data.episodes.episodes) {

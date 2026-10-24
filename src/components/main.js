@@ -3,6 +3,7 @@ import Main from '../interaction/items/main'
 import Background from '../interaction/background'
 import Utils from '../utils/utils'
 import Router from '../core/router'
+import Hero from '../interaction/hero'
 
 /**
  * Компонент главной страницы
@@ -12,6 +13,8 @@ import Router from '../core/router'
 function component(object){
     let comp = Utils.createInstance(Main, object)
     let next = null
+
+    comp.use(Hero.module)
 
     comp.use({
         onCreate: function(){

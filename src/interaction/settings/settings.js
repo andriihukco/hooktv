@@ -42,15 +42,12 @@ function init(){
                 body: main.render()
             })
 
-            body.empty().append(main.render())
-
-            main.active()
-
             $('body').toggleClass('settings--open',true)
 
             html.addClass('animate')
 
-            Activity.mixState('settings=main')
+            // one flat page: open it straight away, Back closes settings
+            create('interface')
         },
         up: ()=>{
             Navigator.move('up')
@@ -106,6 +103,8 @@ function swipeAction(){
  * @returns {void}
  */
 function create(name, params = {}){
+    if(name == 'interface' && !params.onBack) params.onBack = close
+
     let comp = new Component(name, params)
 
     body.empty().append(comp.render())
@@ -121,6 +120,18 @@ function create(name, params = {}){
     Controller.toggle('settings_component')
 
     Activity.mixState('settings=' + name)
+}
+
+function close(){
+    $('body').toggleClass('settings--open',false)
+
+    html.removeClass('animate').removeClass('animate-down')
+
+    Controller.toggle('head')
+
+    Activity.mixState()
+
+    listener.send('close')
 }
 
 /**

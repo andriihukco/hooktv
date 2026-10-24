@@ -1,0 +1,828 @@
+/**
+ * HOOK TV skin — Apple TV-style dark, cinematic UI.
+ *
+ * Imported last, so it only restyles: black canvas, full-bleed artwork,
+ * frosted glass for chrome, electric-lime (#C8F542) for the one primary
+ * action and the focus ring. Layout and remote focus logic stay in the
+ * component files.
+ */
+
+$hk-lime: #C8F542;
+$hk-on-lime: #0B0F00;
+$hk-glass: rgba(30, 30, 32, 0.62);
+$hk-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+:root,
+[data-theme='dark'],
+[data-theme='light']{
+    --brand-primary: #{$hk-lime};
+    --brand-primary-dark: #A6D12A;
+    --brand-primary-light: #D6FF5C;
+    --brand-accent: #{$hk-lime};
+    --brand-accent-hover: #D6FF5C;
+    --accent: #{$hk-lime};
+    --accent-hover: #D6FF5C;
+    --accent-active: #A6D12A;
+    --accent-contrast: #{$hk-on-lime};
+    --accent-subtle: rgba(200, 245, 66, 0.16);
+    --accent-text: #{$hk-lime};
+    --accent-ring: rgba(200, 245, 66, 0.45);
+    --text-link: #{$hk-lime};
+    --focus-ring-color: #{$hk-lime};
+    --hk-glass: #{$hk-glass};
+}
+
+html,
+body{
+    background-color: #000;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.selector{
+    touch-action: manipulation;
+}
+
+/* ---------------------------------------------------------------------
+ * Top bar: transparent over artwork, the section pills sit in one glass
+ * capsule (tvOS tab bar)
+ * ------------------------------------------------------------------- */
+body.minimal--ui{
+    .head{
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+        padding-top: env(safe-area-inset-top);
+
+        &__logo-icon{
+            width: auto;
+            cursor: default;
+
+            img{
+                display: block;
+            }
+        }
+
+        &__logo-full{
+            height: 2.3em;
+            width: auto;
+        }
+
+        &__logo-mark{
+            display: none !important;
+            width: 2.4em;
+            height: 2.4em;
+            border-radius: 0.6em;
+        }
+
+        &__action{
+            background: $hk-glass;
+            backdrop-filter: blur(30px) saturate(1.4);
+            -webkit-backdrop-filter: blur(30px) saturate(1.4);
+
+            &.focus,
+            &.hover{
+                background: #fff;
+                color: #000;
+            }
+        }
+    }
+
+    .wrap__left{
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        max-width: calc(100% - 22em);
+    }
+
+    .menu__list{
+        background: $hk-glass;
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
+        border-radius: 3em;
+        padding: 0.3em !important;
+        margin-top: 0.75em !important;
+        height: auto !important;
+        gap: 0.2em !important;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .menu__item{
+        color: rgba(255, 255, 255, 0.82) !important;
+        padding: 0.45em 1.3em !important;
+        transition: background-color 0.2s $hk-ease, color 0.2s $hk-ease;
+
+        &.focus,
+        &.hover,
+        &.traverse,
+        &.active{
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            color: #000 !important;
+        }
+    }
+
+    &.hero--page .wrap__content{
+        padding-top: 0 !important;
+    }
+}
+
+@media (max-width: 580px){
+    body.minimal--ui .head__logo-full{
+        display: none !important;
+    }
+
+    body.minimal--ui .head__logo-mark{
+        display: block !important;
+    }
+
+    body.minimal--ui .wrap__left{
+        left: 0 !important;
+        transform: none !important;
+        max-width: none;
+        padding: 0 0.8em;
+        justify-content: center;
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * Home hero
+ * ------------------------------------------------------------------- */
+.scroll--hero{
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+
+    // rows scroll to just below the bar, the hero still starts at the very top
+    > .scroll__content{
+        padding-top: 4.6em !important;
+    }
+
+    // `top`, not a negative margin: a margin would collapse through the
+    // scroll body and drag every row's scroll target up with it
+    .hero-tv{
+        top: -4.6em;
+        margin-bottom: -10.6em;
+
+        @media (max-width: 580px){
+            margin-bottom: -7.6em;
+        }
+    }
+
+    .items-line{
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.hero-tv{
+    position: relative;
+    height: 83vh;
+    min-height: 26em;
+    margin-bottom: -6em;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+
+    &__backdrop{
+        position: absolute;
+        inset: 0;
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 20%;
+            opacity: 0;
+            transform: scale(1.04);
+            transition: opacity 0.8s $hk-ease, transform 6s linear;
+        }
+    }
+
+    &--loaded &__backdrop img{
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    &__shade{
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 38%, rgba(0, 0, 0, 0) 65%),
+            linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.6) 22%, rgba(0, 0, 0, 0) 50%);
+    }
+
+    &__body{
+        position: relative;
+        padding: 0 $offset 9em;
+        max-width: 42em;
+    }
+
+    &__title{
+        font-size: 3.6em;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        text-transform: uppercase;
+        text-shadow: 0 0.05em 0.4em rgba(0, 0, 0, 0.4);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__meta{
+        margin-top: 0.9em;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    &__descr{
+        margin-top: 0.8em;
+        font-size: 1.2em;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.85);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__buttons{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8em;
+        margin-top: 1.6em;
+    }
+
+    &__button{
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+        height: 3.2em;
+        padding: 0 1.5em;
+        border-radius: 3em;
+        font-size: 1.15em;
+        font-weight: 700;
+        cursor: pointer;
+        background: $hk-glass;
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
+        transition: transform 0.2s $hk-ease, background-color 0.2s;
+
+        svg{
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        &--watch{
+            background: $hk-lime;
+            color: $hk-on-lime;
+        }
+
+        &.active svg{
+            transform: rotate(45deg);
+        }
+
+        &.focus{
+            transform: scale(1.06);
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 0 0.15em #000, 0 0 0 0.3em $hk-lime;
+        }
+
+        &--watch.focus{
+            background: #D6FF5C;
+            color: $hk-on-lime;
+        }
+    }
+
+    &__dots{
+        position: absolute;
+        right: $offset;
+        bottom: 9.4em;
+        display: flex;
+        gap: 0.5em;
+    }
+
+    &__dot{
+        width: 0.5em;
+        height: 0.5em;
+        border-radius: 1em;
+        background: rgba(255, 255, 255, 0.35);
+        transition: width 0.3s $hk-ease, background-color 0.3s;
+        cursor: pointer;
+
+        &.active{
+            width: 1.6em;
+            background: #fff;
+        }
+    }
+
+    @media (max-width: 580px){
+        height: 75vh;
+        margin-bottom: -3em;
+
+        &__body{
+            padding-bottom: 5em;
+        }
+
+        &__title{
+            font-size: 2.4em;
+        }
+
+        &__descr{
+            font-size: 1em;
+        }
+
+        &__button{
+            height: 2.8em;
+            padding: 0 1.1em;
+            font-size: 1em;
+        }
+
+        &__dots{
+            display: none;
+        }
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * Rows and cards
+ * ------------------------------------------------------------------- */
+.items-line__title{
+    font-size: 1.5em !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+}
+
+.items-line__more{
+    background: $hk-glass !important;
+    border-radius: 2em !important;
+
+    &.focus{
+        background: #fff !important;
+        color: #000 !important;
+    }
+}
+
+.card{
+    .card__view{
+        border-radius: 0.9em;
+        transition: transform 0.25s $hk-ease, box-shadow 0.25s $hk-ease;
+    }
+
+    .card__img{
+        border-radius: 0.9em;
+    }
+
+    .card__title{
+        font-weight: 600;
+    }
+
+    .card__age{
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    &.focus .card__view{
+        transform: scale(1.06);
+        box-shadow: 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
+
+        &::after{
+            border-color: $hk-lime !important;
+            border-radius: 1.2em !important;
+        }
+    }
+}
+
+@media (hover: hover) and (pointer: fine){
+    .card:hover .card__view{
+        transform: scale(1.04);
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * Details screen: full-bleed backdrop, lime Watch, glass round actions
+ * ------------------------------------------------------------------- */
+.full-start__background{
+    z-index: -2 !important;
+    left: 0 !important;
+    top: -4.6em !important;
+    height: 100vh !important;
+    width: 100% !important;
+    object-fit: cover;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+
+    &.loaded{
+        opacity: 0.85 !important;
+    }
+
+    &.dim{
+        opacity: 0.25 !important;
+    }
+}
+
+.full-page{
+    position: relative;
+    isolation: isolate;
+}
+
+.full-page::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -4.6em;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.1) 75%),
+        linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0) 45%);
+}
+
+.full-start-new{
+    min-height: calc(82vh - 4.6em);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    &__poster{
+        border-radius: 1.2em !important;
+        box-shadow: 0 1.5em 3em rgba(0, 0, 0, 0.55);
+    }
+
+    &__img{
+        border-radius: 1.2em !important;
+    }
+
+    &__title{
+        font-weight: 800 !important;
+        letter-spacing: -0.03em;
+        text-shadow: 0 0.05em 0.4em rgba(0, 0, 0, 0.4);
+    }
+
+    &__buttons{
+        gap: 0.7em;
+    }
+
+    .full-start__button{
+        background: $hk-glass;
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
+        border-radius: 3em;
+        margin-right: 0;
+        transition: transform 0.2s $hk-ease, background-color 0.2s;
+
+        &.focus{
+            background: #fff;
+            color: #000;
+            transform: scale(1.06);
+            box-shadow: 0 0 0 0.12em #000, 0 0 0 0.25em $hk-lime;
+        }
+    }
+
+    .button--play{
+        background: $hk-lime;
+        color: $hk-on-lime;
+        padding: 0 1.6em;
+        font-weight: 700;
+
+        span{
+            display: inline !important;
+        }
+
+        &.focus{
+            background: #D6FF5C;
+            color: $hk-on-lime;
+        }
+    }
+}
+
+.full-descr__text{
+    font-size: 1.25em;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Trailers row under the description */
+.full-trailer{
+    width: 22em;
+    margin-right: 1.2em;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    &__img{
+        position: relative;
+        padding-bottom: 56.25%;
+        border-radius: 0.9em;
+        overflow: hidden;
+        background: var(--surface-raised);
+        transition: transform 0.25s $hk-ease, box-shadow 0.25s;
+
+        img{
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    }
+
+    &--loaded &__img img{
+        opacity: 1;
+    }
+
+    &__play{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 3.4em;
+        height: 3.4em;
+        margin: -1.7em 0 0 -1.7em;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $hk-glass;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+
+        svg{
+            width: 1.3em;
+            height: 1.3em;
+            margin-left: 0.2em;
+        }
+    }
+
+    &__name{
+        margin-top: 0.7em;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__descr{
+        margin-top: 0.2em;
+        font-size: 0.85em;
+        color: rgba(255, 255, 255, 0.55);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &.focus &__img{
+        transform: scale(1.05);
+        box-shadow: 0 0 0 0.15em #000, 0 0 0 0.3em $hk-lime, 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
+    }
+
+    &.focus &__play{
+        background: $hk-lime;
+        color: $hk-on-lime;
+    }
+
+    @media (max-width: 580px){
+        width: 16em;
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * Sheets (select boxes, the Watch chooser): floating frosted panel
+ * ------------------------------------------------------------------- */
+.selectbox__content{
+    background: rgba(28, 28, 30, 0.78) !important;
+    backdrop-filter: blur(40px) saturate(1.6);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    border-top-left-radius: 2em;
+    border-bottom-left-radius: 2em;
+    box-shadow: -1em 0 4em rgba(0, 0, 0, 0.5);
+
+    @media screen and (max-width: 480px){
+        border-radius: 2em 2em 0 0;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+.selectbox__title{
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+.selectbox-item{
+    margin: 0.2em 1em;
+    border-radius: 1.1em;
+    transition: background-color 0.15s, transform 0.15s $hk-ease;
+
+    &.focus{
+        background: #fff !important;
+        color: #000 !important;
+        transform: scale(1.02);
+
+        .selectbox-item__subtitle{
+            color: rgba(0, 0, 0, 0.6) !important;
+        }
+    }
+}
+
+.selectbox__layer{
+    display: block !important;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+
+body.selectbox--open .selectbox__layer{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------------
+ * Settings: one flat frosted page, Apple inset grouped rows with the
+ * value on the right
+ * ------------------------------------------------------------------- */
+.settings__content{
+    background: rgba(28, 28, 30, 0.8) !important;
+    backdrop-filter: blur(40px) saturate(1.6);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    border-top-left-radius: 2em;
+    border-bottom-left-radius: 2em;
+    box-shadow: -1em 0 4em rgba(0, 0, 0, 0.5);
+    min-width: 30em;
+
+    @media screen and (max-width: 480px){
+        min-width: 0;
+        border-radius: 2em 2em 0 0;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+.settings__title{
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+.settings-param-title{
+    padding: 1.6em 2.2em 0.5em !important;
+
+    > span{
+        font-size: 0.95em !important;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+}
+
+.settings-param,
+.settings-folder{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1em;
+    margin: 0 1.2em;
+    padding: 1em 1.1em !important;
+    background: rgba(255, 255, 255, 0.06);
+    transition: background-color 0.15s, transform 0.15s $hk-ease;
+
+    + .settings-param,
+    + .settings-folder{
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-param__name{
+        flex: 1 1 auto;
+        margin-bottom: 0 !important;
+        font-size: 1.15em !important;
+    }
+
+    .settings-param__value{
+        color: rgba(255, 255, 255, 0.55);
+        text-align: right;
+    }
+
+    .settings-param__descr{
+        flex-basis: 100%;
+        margin-top: 0.4em !important;
+        font-size: 0.85em;
+    }
+
+    &.focus{
+        background: #fff !important;
+        color: #000 !important;
+        border-radius: 0.9em;
+        transform: scale(1.02);
+        border-top-color: transparent;
+
+        .settings-param__value,
+        .settings-param__descr{
+            color: rgba(0, 0, 0, 0.6) !important;
+        }
+    }
+}
+
+/* round the first and last row of each group */
+.settings-param-title + .settings-param,
+.settings__body .scroll__body > div > .settings-param:first-child{
+    border-top-left-radius: 0.9em;
+    border-top-right-radius: 0.9em;
+}
+
+.settings-param:last-child{
+    border-bottom-left-radius: 0.9em;
+    border-bottom-right-radius: 0.9em;
+}
+
+// separate rule: browsers without :has() (older TVs) would drop the whole list
+.settings-param:has(+ .settings-param-title){
+    border-bottom-left-radius: 0.9em;
+    border-bottom-right-radius: 0.9em;
+}
+
+/* toggles read as switches: the value text becomes a lime pill */
+.settings-param[data-type='toggle'] .settings-param__value{
+    min-width: 3.2em;
+    padding: 0.2em 0.7em;
+    border-radius: 2em;
+    background: rgba(255, 255, 255, 0.12);
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Loading layer used while Watch finds a source */
+.loading-layer__box{
+    background: $hk-glass !important;
+    backdrop-filter: blur(40px) saturate(1.6);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    border-radius: 1.6em !important;
+}
+
+/* ---------------------------------------------------------------------
+ * Player: edge-to-edge video, glass controls, lime progress
+ * ------------------------------------------------------------------- */
+.player-panel{
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.player-panel__position{
+    background: $hk-lime !important;
+
+    > div{
+        background: #fff !important;
+        box-shadow: 0 0 0 0.2em rgba(200, 245, 66, 0.35);
+    }
+}
+
+.player-panel__timeline{
+    border-radius: 1em;
+    overflow: visible;
+}
+
+.player-panel .button,
+.player-panel__playpause,
+.player-panel__prev,
+.player-panel__next,
+.player-panel__tstart,
+.player-panel__tend,
+.player-panel__rprev,
+.player-panel__rnext,
+.player-panel__settings,
+.player-panel__subs,
+.player-panel__tracks,
+.player-panel__quality,
+.player-panel__volume,
+.player-panel__fullscreen,
+.player-panel__playlist,
+.player-panel__pip{
+    border-radius: 50% !important;
+    transition: background-color 0.15s, transform 0.15s $hk-ease;
+
+    &.focus{
+        background: #fff !important;
+        color: #000 !important;
+        transform: scale(1.08);
+    }
+}
+
+.player-panel__quality.focus,
+.player-panel__quality{
+    border-radius: 2em !important;
+}
+
+.player-info{
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+// stream diagnostics (channel, bitrate, buffer) are noise for viewers
+.player-info__values .value--stat{
+    display: none !important;
+}
+
+.player-info__name{
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce){
+    .hero-tv__backdrop img{
+        transform: none !important;
+    }
+}

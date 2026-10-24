@@ -1,0 +1,180 @@
+import Controller from '../core/controller'
+import Emit from '../utils/emit'
+import Api from '../core/api/api'
+import Lang from '../core/lang'
+import Utils from '../utils/utils'
+import Favorite from '../core/favorite'
+import Router from '../core/router'
+import Watch from './watch'
+
+/**
+ * Apple TV-style hero for the top of Home: full-bleed backdrop, title,
+ * overview and Watch / Details / Add to List. Rotates through the first few
+ * titles of the first row. Speaks the same item API as a line (toggle, use,
+ * render, destroy) so items/main can stack it above the rows.
+ */
+class Hero extends Emit{
+    constructor(cards){
+        super()
+
+        this.cards = cards.filter(c=>c.backdrop_path).slice(0, 5)
+        this.index = 0
+    }
+
+    create(){
+        this.html = $(`<div class="hero-tv">
+            <div class="hero-tv__backdrop"><img /></div>
+            <div class="hero-tv__shade"></div>
+            <div class="hero-tv__body">
+                <div class="hero-tv__title"></div>
+                <div class="hero-tv__meta"></div>
+                <div class="hero-tv__descr"></div>
+                <div class="hero-tv__buttons">
+                    <div class="hero-tv__button hero-tv__button--watch selector"><svg><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></div>
+                    <div class="hero-tv__button hero-tv__button--list selector"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></div>
+                    <div class="hero-tv__button hero-tv__button--info selector"><span>${Lang.translate('hooktv_details')}</span></div>
+                </div>
+            </div>
+            <div class="hero-tv__dots"></div>
+        </div>`)
+
+        this.cards.forEach((c, i)=>{
+            $('<div class="hero-tv__dot"></div>').on('click', ()=>this.show(i)).appendTo(this.html.find('.hero-tv__dots'))
+        })
+
+        this.html.find('.hero-tv__button--watch').on('hover:enter', ()=>Watch.start(this.card(), 'items_line'))
+        this.html.find('.hero-tv__button--info').on('hover:enter', ()=>Router.call('full', this.card()))
+        this.html.find('.hero-tv__button--list').on('hover:enter', ()=>{
+            Favorite.toggle('book', this.card())
+
+            this.listState()
+        })
+
+        this.html.find('.selector').on('hover:focus', (e)=>{
+            this.last = e.target
+
+            this.emit('active')
+        })
+
+        this.show(0)
+
+        this.timer = setInterval(()=>{
+            if(!Controller.own(this)) this.show((this.index + 1) % this.cards.length)
+        }, 9000)
+    }
+
+    card(){
+        return this.cards[this.index]
+    }
+
+    show(index){
+        let card = this.cards[index]
+
+        if(!card) return
+
+        this.index = index
+
+        let year  = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
+        let meta  = [year, card.name ? Lang.translate('menu_tv') : Lang.translate('menu_movies')]
+        let vote  = parseFloat(card.vote_average || 0)
+
+        if(vote) meta.push('★ ' + vote.toFixed(1))
+
+        this.html.find('.hero-tv__title').text(card.title || card.name)
+        this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+        this.html.find('.hero-tv__descr').text(card.overview || '')
+        this.html.find('.hero-tv__dot').removeClass('active').eq(index).addClass('active')
+
+        let img = this.html.find('.hero-tv__backdrop img')
+
+        this.html.removeClass('hero-tv--loaded')
+
+        Utils.imgLoad(img, Api.img(card.backdrop_path, 'w1280'), ()=>this.html.addClass('hero-tv--loaded'))
+
+        this.listState()
+    }
+
+    listState(){
+        let added = Favorite.check(this.card()).book
+
+        this.html.find('.hero-tv__button--list').toggleClass('active', Boolean(added)).find('span').text(Lang.translate(added ? 'hooktv_in_list' : 'hooktv_add_list'))
+    }
+
+    toggle(){
+        Controller.add('items_line', {
+            link: this,
+            toggle: ()=>{
+                Controller.collectionSet(this.html)
+                Controller.collectionFocus(this.last || this.html.find('.hero-tv__button--watch')[0], this.html)
+
+                this.emit('toggle')
+            },
+            left: ()=>{
+                if(Navigator.canmove('left')) Navigator.move('left')
+                else Controller.toggle('menu')
+            },
+            right: ()=>{
+                if(Navigator.canmove('right')) Navigator.move('right')
+                else this.show((this.index + 1) % this.cards.length)
+            },
+            down: this.emit.bind(this, 'down'),
+            up: this.emit.bind(this, 'up'),
+            back: this.emit.bind(this, 'back')
+        })
+
+        Controller.toggle('items_line')
+    }
+
+    render(js){
+        return js ? this.html[0] : this.html
+    }
+
+    destroy(){
+        clearInterval(this.timer)
+
+        this.html.remove()
+    }
+}
+
+/**
+ * Module for an items/main page: puts a Hero built from the first row with
+ * artwork above the rows. While the page is active the content runs under
+ * the glass bar (body.hero--page).
+ */
+Hero.module = {
+    onBuild: function(data){
+        let first = data.find(row=>row.results && row.results.filter(c=>c.backdrop_path).length)
+
+        if(!first || this.hero) return
+
+        let hero = this.hero = new Hero(first.results)
+
+        hero.use({
+            onDown: this.emit.bind(this, 'down'),
+            onUp: this.emit.bind(this, 'up'),
+            onBack: this.emit.bind(this, 'back'),
+            onActive: ()=>this.active = 0,
+            onToggle: ()=>this.scroll.update(hero.render(true))
+        })
+
+        hero.create()
+
+        this.scroll.body(true).prepend(hero.render(true))
+        this.scroll.render(true).classList.add('scroll--hero')
+
+        this.items.unshift(hero)
+
+        document.body.classList.add('hero--page')
+    },
+    onStart: function(){
+        document.body.classList.toggle('hero--page', Boolean(this.hero))
+    },
+    onPause: function(){
+        document.body.classList.remove('hero--page')
+    },
+    onDestroy: function(){
+        document.body.classList.remove('hero--page')
+    }
+}
+
+export default Hero

@@ -1296,5 +1296,20 @@ export default {
     remote_configuration_waite_text: 'Тепер ви можете передати цей код іншому додатку, щоб надати доступ до налаштувань.',
     remote_configuration_open_button: 'Відкрити доступ',
     remote_configuration_code_life: 'Код дійсний',
-    remote_configuration_notice_nocode: 'Не вдалося відкрити доступ'
+    remote_configuration_notice_nocode: 'Не вдалося відкрити доступ',
+    hooktv_watch_in: 'Дивитися',
+    hooktv_dub_uk_descr: 'Український дубляж або озвучення',
+    hooktv_dub_original: 'Оригінал',
+    hooktv_dub_original_descr: 'Оригінальна доріжка з українськими субтитрами',
+    hooktv_all_sources: 'Усі джерела…',
+    hooktv_searching: 'Шукаємо найкраще джерело…',
+    hooktv_not_found: 'Не вдалося запустити автоматично — оберіть джерело',
+    hooktv_watch_now: 'Дивитися',
+    hooktv_details: 'Детальніше',
+    hooktv_add_list: 'До списку',
+    hooktv_in_list: 'У списку',
+    hooktv_no_original: 'Оригінальної доріжки немає — граємо українською',
+    hooktv_section_dub: 'Звук і озвучення',
+    hooktv_dub_default: 'Мова за замовчуванням',
+    hooktv_dub_default_descr: 'Що обрано першим у вікні «Дивитися»'
 }

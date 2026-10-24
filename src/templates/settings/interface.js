@@ -20,6 +20,14 @@ let html = `<div>
         <div class="settings-param__value"></div>
     </div>
 
+    <div class="settings-param-title"><span>#{hooktv_section_dub}</span></div>
+
+    <div class="settings-param selector" data-type="select" data-name="hooktv_dub">
+        <div class="settings-param__name">#{hooktv_dub_default}</div>
+        <div class="settings-param__value"></div>
+        <div class="settings-param__descr">#{hooktv_dub_default_descr}</div>
+    </div>
+
     <div class="settings-param-title"><span>#{settings_interface_background}</span></div>
 
     <div class="settings-param selector" data-type="toggle" data-name="background">

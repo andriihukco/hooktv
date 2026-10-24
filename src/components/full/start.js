@@ -13,7 +13,6 @@ import Permit from '../../core/account/permit'
 import Options from './start/options'
 import Torrents from './start/torrents'
 import Subscribed  from './start/subscribed'
-import Trailers from './start/trailers'
 import Poster from './start/poster'
 import Reactions from './start/reactios'
 import Translations from './start/translations'
@@ -39,7 +38,6 @@ class Start extends Emit {
 
         this.use(Options)
         this.use(Subscribed)
-        this.use(Trailers)
         this.use(Poster)
         this.use(Translations)
         this.use(Bookmarks)
