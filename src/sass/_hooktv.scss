@@ -583,6 +583,11 @@ body.minimal--ui:not(.bg--ambient) .background{
             background: rgba(255, 255, 255, 0.15);
         }
 
+        &:focus-visible{
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
+
         &--watch:hover:not(.focus){
             background: rgba(214, 255, 92, 0.9);
         }
@@ -592,27 +597,21 @@ body.minimal--ui:not(.bg--ambient) .background{
         position: absolute;
         z-index: 2;
         right: $offset;
-        bottom: 9.4em;
+        bottom: 2em;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.15em;
+        gap: 0.35em;
         width: max-content;
-        padding: 0.2em;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 2em;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
     }
 
     &__dot{
         display: flex;
         align-items: center;
         justify-content: center;
-        flex: 0 0 2em;
-        width: 2em;
-        height: 2em;
+        flex: 0 0 2.2em;
+        width: 2.2em;
+        height: 2.2em;
         padding: 0;
         border: 0;
         border-radius: 50%;
@@ -624,15 +623,15 @@ body.minimal--ui:not(.bg--ambient) .background{
 
         &::before{
             content: '';
-            width: 0.42em;
-            height: 0.42em;
+            width: 0.65em;
+            height: 0.65em;
             border-radius: 1em;
             background: rgba(255, 255, 255, 0.68);
             transition: width 0.25s $hk-ease, background-color 0.25s, transform 0.25s $hk-ease;
         }
 
         &.active::before{
-            width: 1.1em;
+            width: 1.4em;
             background: $hk-lime;
         }
 
@@ -703,24 +702,23 @@ body.minimal--ui:not(.bg--ambient) .background{
         &__dots{
             left: 50%;
             right: auto;
-            bottom: 9.4em;
+            bottom: 1.2em;
             transform: translateX(-50%);
-            gap: 0.1em;
-            padding: 0.25em;
+            gap: 0.2em;
         }
 
         &__dot{
-            flex-basis: 3em;
-            width: 3em;
-            height: 3em;
+            flex-basis: 2.8em;
+            width: 2.8em;
+            height: 2.8em;
 
             &::before{
-                width: 0.5em;
-                height: 0.5em;
+                width: 0.7em;
+                height: 0.7em;
             }
 
             &.active::before{
-                width: 1.35em;
+                width: 1.5em;
             }
         }
     }
@@ -729,7 +727,7 @@ body.minimal--ui:not(.bg--ambient) .background{
         height: 75vh;
 
         &__dots{
-            bottom: 9.4em;
+            bottom: 1.2em;
         }
     }
 }
