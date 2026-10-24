@@ -196,8 +196,3 @@ body.minimal--ui{
         }
     }
 }
-
-/* The logo mark is drawn in white, so it is inverted on the light canvas */
-:root[data-theme='light'] body.minimal--ui .head__logo-icon img{
-    filter: invert(1);
-}

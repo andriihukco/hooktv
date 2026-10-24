@@ -5,35 +5,45 @@
  */
 
 :root {
-    // Brand Colors
-    --brand-primary: #0A84FF;
-    --brand-primary-dark: #0060DF;
-    --brand-primary-light: #409CFF;
+    // Brand Colors (electric lime)
+    --brand-primary: #C8F542;
+    --brand-primary-hover: #D6FF5C;
+    --brand-primary-dark: #A6D12A;
+    --brand-primary-light: #D6FF5C;
+    --brand-on-primary: #0B0F00;
     
     // Background Colors
-    --brand-background: #000000;
-    --brand-background-secondary: #1C1C1E;
-    --brand-background-card: #2C2C2E;
+    --brand-background: #000;
+    --brand-background-secondary: #121214;
+    --brand-background-card: #1C1C1F;
+    --surface-1: #121214;
+    --surface-2: #1C1C1F;
+    
+    // Glass (blur is static, never animate it)
+    --glass: rgba(30,30,32,.62);
+    --glass-blur: blur(30px) saturate(1.4);
     
     // Text Colors
+    --text-primary: #fff;
+    --text-secondary: rgba(255,255,255,.62);
     --brand-text-primary: #FFFFFF;
-    --brand-text-secondary: #EBEBF5;
+    --brand-text-secondary: rgba(255,255,255,.62);
     --brand-text-muted: #98989D;
     
     // Accent Colors
-    --brand-accent: #0A84FF;
-    --brand-accent-hover: #409CFF;
+    --brand-accent: var(--brand-primary);
+    --brand-accent-hover: var(--brand-primary-hover);
     
     // UI Elements
-    --brand-border: #404040;
-    --brand-divider: #333333;
+    --brand-border: rgba(255,255,255,.12);
+    --brand-divider: #1C1C1F;
     --brand-overlay: rgba(0, 0, 0, 0.7);
     
     // Gradients
-    --brand-gradient-primary: linear-gradient(135deg, #0A84FF 0%, #0060DF 100%);
+    --brand-gradient-primary: linear-gradient(135deg, #D6FF5C 0%, #A6D12A 100%);
     --brand-gradient-card: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
     
-    // Spacing Scale (Netflix-like spacing system)
+    // Spacing Scale
     --space-xs: 0.25rem;   // 4px
     --space-sm: 0.5rem;    // 8px
     --space-md: 1rem;      // 16px
@@ -97,27 +107,20 @@
     --card-width-large: 200px;
     --card-ratio: 1.5; // height = width * ratio
     
-    // Netflix-specific UI tokens
-    --netflix-red: #E50914;
-    --netflix-black: #141414;
-    --netflix-dark-gray: #181818;
-    --netflix-light-gray: #2F2F2F;
-    --netflix-white: #FFFFFF;
-    --netflix-gray: #808080;
-    
     // Focus states (for TV/remote navigation)
-    --focus-ring-color: var(--brand-primary);
+    --focus-ring: #C8F542;
+    --focus-ring-color: var(--focus-ring);
     --focus-ring-width: 3px;
     --focus-ring-offset: 2px;
 }
 
-// Dark mode (Apple systemBackground)
+// Dark mode
 [data-theme="dark"] {
-    --brand-background: #000000;
-    --brand-background-secondary: #1C1C1E;
-    --brand-background-card: #2C2C2E;
+    --brand-background: #000;
+    --brand-background-secondary: #121214;
+    --brand-background-card: #1C1C1F;
     --brand-text-primary: #FFFFFF;
-    --brand-text-secondary: #EBEBF5;
+    --brand-text-secondary: rgba(255,255,255,.62);
 }
 
 // Light mode (Apple systemGroupedBackground)
@@ -145,4 +148,29 @@
     --space-md: 1.25rem;
     --space-lg: 2rem;
     --space-xl: 2.5rem;
+}
+
+/**
+ * HOOK TV mixins. Every UI task uses these.
+ */
+
+// Focus ring: 3px lime with a 2px black gap (box-shadow pair, so it follows border-radius)
+@mixin hk-focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring);
+}
+
+// Frosted glass panel. The blur is static and is never animated.
+@mixin hk-glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+}
+
+// Hover media-query wrapper: only devices with a real pointer, so taps never leave a sticky hover.
+// Usage: .x { @include hk-hover { &:hover { ... } } }
+@mixin hk-hover {
+    @media (hover: hover) and (pointer: fine) {
+        @content;
+    }
 }

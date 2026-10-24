@@ -1,6 +1,7 @@
-<svg width="264" height="68" viewBox="0 0 264 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="1" y="1" width="66" height="66" rx="18" stroke="white" stroke-width="3"/>
-<path d="M28 21V47M45 21V47M28 34H45" stroke="white" stroke-width="6" stroke-linecap="round"/>
-<text x="84" y="48" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="800" letter-spacing="2">HOOK</text>
-<text x="220" y="48" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">TV</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" width="220" height="56" role="img" aria-label="HOOK TV">
+<rect x="0.5" y="0.5" width="167" height="55" rx="27.5" fill="#0B0B0C" stroke="rgba(255,255,255,.12)"/>
+<path fill="#FFFFFF" d="M27.7 15 L34.7 15 L34.7 24.4 L43.2 24.4 L43.2 15 L50.2 15 L50.2 41 L43.2 41 L43.2 30.4 L34.7 30.4 L34.7 41 L27.7 41ZM53.8 28A13.9 13.9 0 1 1 81.6 28A13.9 13.9 0 1 1 53.8 28ZM61.4 28A6.3 6.3 0 1 0 74 28A6.3 6.3 0 1 0 61.4 28ZM116.3 15 L123.3 15 L123.3 41 L116.3 41ZM123.3 23.39 L131.5 15 L140.5 15 L123.3 32.6ZM123.3 27 L130.59 24.5 L140.7 41 L131.88 41Z"/>
+<path fill="#C8F542" d="M85.1 28A13.9 13.9 0 1 1 112.9 28A13.9 13.9 0 1 1 85.1 28Z"/>
+<path fill="#0B0F00" stroke="#0B0F00" stroke-width="1.6" stroke-linejoin="round" d="M96.2 21.6 L107.3 28 L96.2 34.4Z"/>
+<path fill="#C8F542" d="M176 15 L195.2 15 L195.2 21 L189.1 21 L189.1 41 L182.1 41 L182.1 21 L176 21ZM196.6 15 L203.5 15 L208.3 28.87 L213.1 15 L220 15 L211 41 L205.6 41Z"/>
 </svg>

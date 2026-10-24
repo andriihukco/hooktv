@@ -1,4 +1,4 @@
-# StreamFlow Branding Guide
+# HOOK TV Branding Guide
 
 ## Complete Rebranding Instructions
 
@@ -27,7 +27,7 @@ const BRAND_CONFIG = {
     
     visual: {
         primary: '#YOUR_COLOR',       // Primary brand color
-        background: '#141414',       // Background color
+        background: '#000000',       // Background color
         // ... other colors
     }
 }
@@ -56,9 +56,10 @@ All colors are available as CSS custom properties in `src/sass/brand.scss`:
 
 ```css
 :root {
-    --brand-primary: #E50914;
-    --brand-background: #141414;
-    --brand-text-primary: #FFFFFF;
+    --brand-primary: #C8F542;
+    --brand-on-primary: #0B0F00;
+    --brand-background: #000;
+    --text-primary: #fff;
     /* ... more variables */
 }
 ```
@@ -80,21 +81,21 @@ Use these in your component styles:
 {
     // Brand Names
     name: {
-        short: 'StreamFlow',           // UI display name
-        full: 'StreamFlow TV',         // Full name
-        company: 'StreamFlow Inc',     // Legal company
-        product: 'StreamFlow Media'    // Product name
+        short: 'HOOK',                 // UI display name
+        full: 'HOOK TV',               // Full name
+        company: 'HOOK TV',            // Legal company
+        product: 'HOOK TV'             // Product name
     },
     
     // URLs
     urls: {
-        website: 'https://streamflow.tv',
-        github: 'https://github.com/streamflow/app',
-        support: 'https://support.streamflow.tv',
-        privacy: 'https://streamflow.tv/privacy',
-        terms: 'https://streamflow.tv/terms',
+        website: '',
+        github: '',
+        support: '',
+        privacy: '',
+        terms: '',
         apk_download: '',
-        api_base: 'https://api.streamflow.tv',
+        api_base: '',
         mirrors: []                    // Failover mirrors
     },
     
@@ -108,21 +109,23 @@ Use these in your component styles:
     
     // Visual Design
     visual: {
-        primary: '#E50914',
-        primary_dark: '#B20710',
-        primary_light: '#F40612',
-        background: '#141414',
-        background_secondary: '#1F1F1F',
-        background_card: '#2F2F2F',
+        primary: '#C8F542',
+        primary_hover: '#D6FF5C',
+        primary_dark: '#A6D12A',
+        on_primary: '#0B0F00',
+        background: '#000000',
+        surface_1: '#121214',
+        surface_2: '#1C1C1F',
+        glass: 'rgba(30, 30, 32, 0.62)',
         text_primary: '#FFFFFF',
-        text_secondary: '#B3B3B3',
-        text_muted: '#808080',
-        accent: '#E50914',
-        accent_hover: '#F40612',
-        border: '#404040',
-        divider: '#333333',
+        text_secondary: 'rgba(255, 255, 255, 0.62)',
+        accent: '#C8F542',
+        accent_hover: '#D6FF5C',
+        focus_ring: '#C8F542',
+        border: 'rgba(255, 255, 255, 0.12)',
+        divider: '#1C1C1F',
         overlay: 'rgba(0, 0, 0, 0.7)',
-        gradient_primary: 'linear-gradient(135deg, #E50914 0%, #B20710 100%)',
+        gradient_primary: 'linear-gradient(135deg, #D6FF5C 0%, #A6D12A 100%)',
         gradient_card: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)'
     },
     
@@ -130,13 +133,13 @@ Use these in your component styles:
     logo: {
         path: './img/logo',
         extension: 'svg',
-        favicon: './img/favicon.ico',
+        favicon: './favicon.ico',
         icon: './img/icon.png'
     },
     
     // UI Text
     text: {
-        welcome: 'Welcome to StreamFlow',
+        welcome: 'Welcome to HOOK TV',
         loading: 'Loading...',
         error: 'Something went wrong',
         // ... more strings
@@ -190,16 +193,16 @@ Use these in your component styles:
 
 ```javascript
 // Get brand name
-Brand.getName('short')        // Returns: 'StreamFlow'
-Brand.getName('full')         // Returns: 'StreamFlow TV'
+Brand.getName('short')        // Returns: 'HOOK'
+Brand.getName('full')         // Returns: 'HOOK TV'
 
 // Get URL
-Brand.getUrl('website')       // Returns: 'https://streamflow.tv'
-Brand.getUrl('github')        // Returns: 'https://github.com/streamflow/app'
+Brand.getUrl('website')       // Returns: '' (not set yet)
+Brand.getUrl('github')        // Returns: '' (not set yet)
 
 // Get color
-Brand.getColor('primary')     // Returns: '#E50914'
-Brand.getColor('background')  // Returns: '#141414'
+Brand.getColor('primary')     // Returns: '#C8F542'
+Brand.getColor('background')  // Returns: '#000000'
 
 // Get feature flag
 Brand.getFeature('torrents')  // Returns: true
@@ -211,7 +214,7 @@ Brand.getService('tmdb')      // Returns: TMDB config object
 Brand.getUI('card_size')      // Returns: 'medium'
 
 // Get text string
-Brand.getText('welcome')      // Returns: 'Welcome to StreamFlow'
+Brand.getText('welcome')      // Returns: 'Welcome to HOOK TV'
 
 // Get full config
 Brand.getConfig()             // Returns: complete config object
@@ -389,11 +392,11 @@ To complete CUB removal:
 
 ## Color Scheme Examples
 
-### Netflix-Inspired (Default)
+### HOOK TV Electric Lime (Default)
 ```javascript
 visual: {
-    primary: '#E50914',
-    background: '#141414',
+    primary: '#C8F542',
+    background: '#000000',
     text_primary: '#FFFFFF'
 }
 ```
@@ -434,4 +437,4 @@ For questions or issues with branding:
 
 ## License
 
-This branding system is part of the StreamFlow application. Ensure your branding complies with the application license.
+This branding system is part of the HOOK TV application. Ensure your branding complies with the application license.

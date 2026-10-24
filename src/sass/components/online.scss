@@ -187,7 +187,7 @@
     &__quality{
         padding-left: 1em;
         white-space: nowrap;
-        color: var(--brand-primary, #0A84FF);
+        color: var(--brand-primary);
         font-weight: 600;
     }
 
@@ -244,7 +244,7 @@
     &__icon > svg{
         width: 1.5em;
         height: 1.5em;
-        color: var(--brand-primary, #0A84FF);
+        color: var(--brand-primary);
     }
 
     &__body{

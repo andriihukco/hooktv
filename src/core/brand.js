@@ -14,13 +14,13 @@ const BRAND_CONFIG = {
     
     // URLs and Links
     urls: {
-        website: 'https://streamflow.tv',
-        github: 'https://github.com/streamflow/app',
-        support: 'https://support.streamflow.tv',
-        privacy: 'https://streamflow.tv/privacy',
-        terms: 'https://streamflow.tv/terms',
+        website: '',
+        github: '',
+        support: '',
+        privacy: '',
+        terms: '',
         apk_download: '',
-        api_base: 'https://api.streamflow.tv',
+        api_base: '',
         mirrors: [] // Additional mirror URLs for failover
     },
     
@@ -34,32 +34,34 @@ const BRAND_CONFIG = {
     
     // Visual Branding
     visual: {
-        // Primary colors
-        primary: '#0A84FF',           // Apple systemBlue
-        primary_dark: '#0060DF',
-        primary_light: '#409CFF',
-        
+        // Primary colors (electric lime)
+        primary: '#C8F542',
+        primary_hover: '#D6FF5C',
+        primary_dark: '#A6D12A',
+        on_primary: '#0B0F00',
+
         // Background colors
-        background: '#000000',        // Apple dark background
-        background_secondary: '#1C1C1E',
-        background_card: '#2C2C2E',
-        
+        background: '#000000',
+        surface_1: '#121214',
+        surface_2: '#1C1C1F',
+        glass: 'rgba(30, 30, 32, 0.62)',
+
         // Text colors
         text_primary: '#FFFFFF',
-        text_secondary: '#EBEBF5',
-        text_muted: '#98989D',
-        
+        text_secondary: 'rgba(255, 255, 255, 0.62)',
+
         // Accent colors
-        accent: '#0A84FF',
-        accent_hover: '#409CFF',
-        
+        accent: '#C8F542',
+        accent_hover: '#D6FF5C',
+        focus_ring: '#C8F542',
+
         // UI elements
-        border: '#38383A',
-        divider: '#2C2C2E',
+        border: 'rgba(255, 255, 255, 0.12)',
+        divider: '#1C1C1F',
         overlay: 'rgba(0, 0, 0, 0.7)',
-        
+
         // Gradients
-        gradient_primary: 'linear-gradient(135deg, #0A84FF 0%, #0060DF 100%)',
+        gradient_primary: 'linear-gradient(135deg, #D6FF5C 0%, #A6D12A 100%)',
         gradient_card: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)'
     },
     
@@ -67,7 +69,7 @@ const BRAND_CONFIG = {
     logo: {
         path: './img/logo',
         extension: 'svg',
-        favicon: './img/favicon.ico',
+        favicon: './favicon.ico',
         icon: './img/icon.png'
     },
     

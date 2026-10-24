@@ -5,21 +5,29 @@
  * All colors, spacing, and UI tokens should use these variables
  */
 :root {
-  --brand-primary: #0A84FF;
-  --brand-primary-dark: #0060DF;
-  --brand-primary-light: #409CFF;
-  --brand-background: #000000;
-  --brand-background-secondary: #1C1C1E;
-  --brand-background-card: #2C2C2E;
+  --brand-primary: #C8F542;
+  --brand-primary-hover: #D6FF5C;
+  --brand-primary-dark: #A6D12A;
+  --brand-primary-light: #D6FF5C;
+  --brand-on-primary: #0B0F00;
+  --brand-background: #000;
+  --brand-background-secondary: #121214;
+  --brand-background-card: #1C1C1F;
+  --surface-1: #121214;
+  --surface-2: #1C1C1F;
+  --glass: rgba(30,30,32,.62);
+  --glass-blur: blur(30px) saturate(1.4);
+  --text-primary: #fff;
+  --text-secondary: rgba(255,255,255,.62);
   --brand-text-primary: #FFFFFF;
-  --brand-text-secondary: #EBEBF5;
+  --brand-text-secondary: rgba(255,255,255,.62);
   --brand-text-muted: #98989D;
-  --brand-accent: #0A84FF;
-  --brand-accent-hover: #409CFF;
-  --brand-border: #404040;
-  --brand-divider: #333333;
+  --brand-accent: var(--brand-primary);
+  --brand-accent-hover: var(--brand-primary-hover);
+  --brand-border: rgba(255,255,255,.12);
+  --brand-divider: #1C1C1F;
   --brand-overlay: rgba(0, 0, 0, 0.7);
-  --brand-gradient-primary: linear-gradient(135deg, #0A84FF 0%, #0060DF 100%);
+  --brand-gradient-primary: linear-gradient(135deg, #D6FF5C 0%, #A6D12A 100%);
   --brand-gradient-card: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -67,23 +75,18 @@
   --card-width-medium: 160px;
   --card-width-large: 200px;
   --card-ratio: 1.5;
-  --netflix-red: #E50914;
-  --netflix-black: #141414;
-  --netflix-dark-gray: #181818;
-  --netflix-light-gray: #2F2F2F;
-  --netflix-white: #FFFFFF;
-  --netflix-gray: #808080;
-  --focus-ring-color: var(--brand-primary);
+  --focus-ring: #C8F542;
+  --focus-ring-color: var(--focus-ring);
   --focus-ring-width: 3px;
   --focus-ring-offset: 2px;
 }
 
 [data-theme=dark] {
-  --brand-background: #000000;
-  --brand-background-secondary: #1C1C1E;
-  --brand-background-card: #2C2C2E;
+  --brand-background: #000;
+  --brand-background-secondary: #121214;
+  --brand-background-card: #1C1C1F;
   --brand-text-primary: #FFFFFF;
-  --brand-text-secondary: #EBEBF5;
+  --brand-text-secondary: rgba(255,255,255,.62);
 }
 
 [data-theme=light] {
@@ -110,6 +113,9 @@
   --space-xl: 2.5rem;
 }
 
+/**
+ * HOOK TV mixins. Every UI task uses these.
+ */
 /**
  * Theme tokens — Apple-style dark and light
  *
@@ -144,14 +150,12 @@
   --surface-media-strong: rgba(0, 0, 0, 0.85); /* gradients over artwork */
   --surface-media-line: rgba(0, 0, 0, 0.45); /* hairline over artwork */
   /* ------------------------------------------------------------------
-   * Text (Apple labels: primary, secondary, tertiary, quaternary)
+   * Text (Apple labels). --text-primary/--text-secondary come from brand.scss
    * ---------------------------------------------------------------- */
-  --text-primary: #ffffff;
-  --text-secondary: #ebebf5;
   --text-muted: #98989d;
   --text-disabled: #636366;
   --text-inverse: #000000;
-  --text-link: #0a84ff;
+  --text-link: var(--brand-primary);
   --text-media: #ffffff; /* over posters/backdrops */
   --text-media-muted: rgba(255, 255, 255, 0.75);
   /* ------------------------------------------------------------------
@@ -162,15 +166,15 @@
   --border-strong: rgba(235, 235, 245, 0.3);
   --border-media: rgba(255, 255, 255, 0.25);
   /* ------------------------------------------------------------------
-   * Accent (systemBlue) and semantic colours
+   * Accent (HOOK TV lime, from brand.scss) and semantic colours
    * ---------------------------------------------------------------- */
-  --accent: #0a84ff;
-  --accent-hover: #409cff;
-  --accent-active: #0060df;
-  --accent-contrast: #ffffff;
-  --accent-subtle: rgba(10, 132, 255, 0.18);
-  --accent-text: #409cff;
-  --accent-ring: rgba(10, 132, 255, 0.45);
+  --accent: var(--brand-primary);
+  --accent-hover: var(--brand-primary-hover);
+  --accent-active: var(--brand-primary-dark);
+  --accent-contrast: var(--brand-on-primary);
+  --accent-subtle: rgba(200, 245, 66, 0.18);
+  --accent-text: var(--brand-primary);
+  --accent-ring: rgba(200, 245, 66, 0.45);
   --success: #30d158;
   --success-text: #30d158;
   --on-success: #000000;
@@ -186,10 +190,10 @@
   /* ------------------------------------------------------------------
    * Focus indicator (remote / keyboard)
    * ---------------------------------------------------------------- */
-  --focus-ring-color: #ffffff;
-  --focus-ring-width: 0.15em;
-  --focus-ring-offset: 0.1em;
-  --focus-ring-shadow: 0 0 0 0.1em rgba(0, 0, 0, 0.65);
+  --focus-ring-color: var(--focus-ring);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring-shadow: 0 0 0 2px #000;
   /* Filled highlight used by menu items, head actions and list rows */
   --focus-fill: #ffffff;
   --focus-fill-text: #000000;
@@ -200,7 +204,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.6);
-  --shadow-focus: 0 0 0 0.15em var(--focus-ring-color);
+  --shadow-focus: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring-color);
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
@@ -761,9 +765,9 @@ body.no--animation *::after {
   left: 0;
   right: 0;
   bottom: 0;
-  background: -webkit-radial-gradient(50% 25%, circle, rgba(229, 9, 20, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
-  background: -o-radial-gradient(50% 25%, circle, rgba(229, 9, 20, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
-  background: radial-gradient(circle at 50% 25%, rgba(229, 9, 20, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
+  background: -webkit-radial-gradient(50% 25%, circle, rgba(200, 245, 66, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
+  background: -o-radial-gradient(50% 25%, circle, rgba(200, 245, 66, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
+  background: radial-gradient(circle at 50% 25%, rgba(200, 245, 66, 0.14) 0%, rgba(20, 20, 20, 0.95) 60%, #141414 100%);
   pointer-events: none;
 }
 .lang__body {
@@ -812,16 +816,16 @@ body.no--animation *::after {
 .lang__logo svg {
   width: 100%;
   height: 100%;
-  color: var(--brand-primary, #E50914);
-  -webkit-filter: drop-shadow(0 4px 12px rgba(229, 9, 20, 0.4));
-          filter: drop-shadow(0 4px 12px rgba(229, 9, 20, 0.4));
+  color: var(--brand-primary);
+  -webkit-filter: drop-shadow(0 4px 12px rgba(200, 245, 66, 0.4));
+          filter: drop-shadow(0 4px 12px rgba(200, 245, 66, 0.4));
 }
 .lang__brand {
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-bold, 700);
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--brand-primary, #E50914);
+  color: var(--brand-primary);
   opacity: 0.9;
 }
 .lang__title {
@@ -876,10 +880,10 @@ body.no--animation *::after {
           user-select: none;
 }
 .lang__card--suggested {
-  background: -webkit-linear-gradient(315deg, rgba(229, 9, 20, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
-  background: -o-linear-gradient(315deg, rgba(229, 9, 20, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
-  border: 2px solid rgba(229, 9, 20, 0.3);
+  background: -webkit-linear-gradient(315deg, rgba(200, 245, 66, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
+  background: -o-linear-gradient(315deg, rgba(200, 245, 66, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(200, 245, 66, 0.08) 0%, rgba(36, 36, 36, 0.9) 100%);
+  border: 2px solid rgba(200, 245, 66, 0.3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -920,21 +924,21 @@ body.no--animation *::after {
 }
 .lang__card:hover, .lang__card.focus {
   outline: none;
-  border-color: var(--brand-primary, #E50914);
-  background: -webkit-linear-gradient(315deg, rgba(229, 9, 20, 0.22) 0%, rgb(45, 45, 45) 100%);
-  background: -o-linear-gradient(315deg, rgba(229, 9, 20, 0.22) 0%, rgb(45, 45, 45) 100%);
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.22) 0%, rgb(45, 45, 45) 100%);
+  border-color: var(--brand-primary);
+  background: -webkit-linear-gradient(315deg, rgba(200, 245, 66, 0.22) 0%, rgb(45, 45, 45) 100%);
+  background: -o-linear-gradient(315deg, rgba(200, 245, 66, 0.22) 0%, rgb(45, 45, 45) 100%);
+  background: linear-gradient(135deg, rgba(200, 245, 66, 0.22) 0%, rgb(45, 45, 45) 100%);
   -webkit-transform: scale(1.02);
       -ms-transform: scale(1.02);
           transform: scale(1.02);
-  -webkit-box-shadow: 0 8px 30px rgba(229, 9, 20, 0.35);
-          box-shadow: 0 8px 30px rgba(229, 9, 20, 0.35);
+  -webkit-box-shadow: 0 8px 30px rgba(200, 245, 66, 0.35);
+          box-shadow: 0 8px 30px rgba(200, 245, 66, 0.35);
 }
 .lang__card:hover .lang__card-arrow svg, .lang__card.focus .lang__card-arrow svg {
   -webkit-transform: translateX(4px);
       -ms-transform: translateX(4px);
           transform: translateX(4px);
-  color: var(--brand-primary, #E50914);
+  color: var(--brand-primary);
 }
 .lang__card-top {
   margin-bottom: 0.4em;
@@ -949,14 +953,14 @@ body.no--animation *::after {
       -ms-flex-align: center;
           align-items: center;
   gap: 0.4em;
-  background: rgba(229, 9, 20, 0.18);
-  border: 1px solid rgba(229, 9, 20, 0.4);
+  background: rgba(200, 245, 66, 0.18);
+  border: 1px solid rgba(200, 245, 66, 0.4);
   -webkit-border-radius: var(--radius-full, 9999px);
           border-radius: var(--radius-full, 9999px);
   padding: 0.2em 0.7em;
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-semibold, 600);
-  color: #FF5A5F;
+  color: var(--brand-primary);
   letter-spacing: 0.3px;
 }
 .lang__card-flag {
@@ -1069,14 +1073,14 @@ body.no--animation *::after {
   transition: all 0.2s ease;
 }
 .lang__back:hover, .lang__back.focus {
-  background: var(--brand-primary, #E50914);
-  border-color: var(--brand-primary, #E50914);
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
   color: #FFFFFF;
   -webkit-transform: scale(1.03);
       -ms-transform: scale(1.03);
           transform: scale(1.03);
-  -webkit-box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-          box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+  -webkit-box-shadow: 0 4px 15px rgba(200, 245, 66, 0.4);
+          box-shadow: 0 4px 15px rgba(200, 245, 66, 0.4);
 }
 .lang__selector {
   width: 100%;
@@ -1109,8 +1113,8 @@ body.no--animation *::after {
   transition: all 0.15s ease;
 }
 .lang__selector-item.is-selected {
-  border-color: rgba(229, 9, 20, 0.4);
-  background: rgba(229, 9, 20, 0.08);
+  border-color: rgba(200, 245, 66, 0.4);
+  background: rgba(200, 245, 66, 0.08);
 }
 .lang__selector-item.last-focus {
   background: rgba(255, 255, 255, 0.1);
@@ -14341,7 +14345,7 @@ body.size--bigger .ad-bot__body {
 .online-prestige__quality {
   padding-left: 1em;
   white-space: nowrap;
-  color: var(--brand-primary, #0A84FF);
+  color: var(--brand-primary);
   font-weight: 600;
 }
 .online-prestige__scan-file {
@@ -14399,7 +14403,7 @@ body.size--bigger .ad-bot__body {
 .online-prestige-watched__icon > svg {
   width: 1.5em;
   height: 1.5em;
-  color: var(--brand-primary, #0A84FF);
+  color: var(--brand-primary);
 }
 .online-prestige-watched__body {
   padding-left: 1em;
@@ -16170,9 +16174,4 @@ body.minimal--ui.mouse--controll:not(.true--mobile) .wrap__left {
   body.minimal--ui.mouse--controll:not(.true--mobile) .wrap__left .menu {
     height: 3em !important;
   }
-}
-/* The logo mark is drawn in white, so it is inverted on the light canvas */
-:root[data-theme=light] body.minimal--ui .head__logo-icon img {
-  -webkit-filter: invert(1);
-          filter: invert(1);
 }

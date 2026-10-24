@@ -388,7 +388,7 @@ function immediately(url = ''){
 
 function theme(color){
     if(color == 'black')      color = '#000000'
-    else if(color == 'reset') color = '#1d1f20'
+    else if(color == 'reset') color = '#000000'
 
     if(color == theme_color) return
 

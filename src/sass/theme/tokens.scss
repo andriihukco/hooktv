@@ -35,14 +35,12 @@
     --surface-media-line: rgba(0, 0, 0, 0.45);    /* hairline over artwork */
 
     /* ------------------------------------------------------------------
-     * Text (Apple labels: primary, secondary, tertiary, quaternary)
+     * Text (Apple labels). --text-primary/--text-secondary come from brand.scss
      * ---------------------------------------------------------------- */
-    --text-primary: #ffffff;
-    --text-secondary: #ebebf5;
     --text-muted: #98989d;
     --text-disabled: #636366;
     --text-inverse: #000000;
-    --text-link: #0a84ff;
+    --text-link: var(--brand-primary);
     --text-media: #ffffff;                       /* over posters/backdrops */
     --text-media-muted: rgba(255, 255, 255, 0.75);
 
@@ -55,15 +53,15 @@
     --border-media: rgba(255, 255, 255, 0.25);
 
     /* ------------------------------------------------------------------
-     * Accent (systemBlue) and semantic colours
+     * Accent (HOOK TV lime, from brand.scss) and semantic colours
      * ---------------------------------------------------------------- */
-    --accent: #0a84ff;
-    --accent-hover: #409cff;
-    --accent-active: #0060df;
-    --accent-contrast: #ffffff;
-    --accent-subtle: rgba(10, 132, 255, 0.18);
-    --accent-text: #409cff;
-    --accent-ring: rgba(10, 132, 255, 0.45);
+    --accent: var(--brand-primary);
+    --accent-hover: var(--brand-primary-hover);
+    --accent-active: var(--brand-primary-dark);
+    --accent-contrast: var(--brand-on-primary);
+    --accent-subtle: rgba(200, 245, 66, 0.18);
+    --accent-text: var(--brand-primary);
+    --accent-ring: rgba(200, 245, 66, 0.45);
 
     --success: #30d158;
     --success-text: #30d158;
@@ -81,10 +79,10 @@
     /* ------------------------------------------------------------------
      * Focus indicator (remote / keyboard)
      * ---------------------------------------------------------------- */
-    --focus-ring-color: #ffffff;
-    --focus-ring-width: 0.15em;
-    --focus-ring-offset: 0.1em;
-    --focus-ring-shadow: 0 0 0 0.1em rgba(0, 0, 0, 0.65);
+    --focus-ring-color: var(--focus-ring);
+    --focus-ring-width: 3px;
+    --focus-ring-offset: 2px;
+    --focus-ring-shadow: 0 0 0 2px #000;
 
     /* Filled highlight used by menu items, head actions and list rows */
     --focus-fill: #ffffff;
@@ -97,7 +95,7 @@
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
     --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.55);
     --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.6);
-    --shadow-focus: 0 0 0 0.15em var(--focus-ring-color);
+    --shadow-focus: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring-color);
 
     --radius-sm: 0.25rem;
     --radius-md: 0.5rem;

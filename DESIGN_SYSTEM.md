@@ -1,7 +1,7 @@
-# StreamFlow Design System
+# HOOK TV Design System
 
 ## Overview
-Modern Netflix-inspired UI/UX design system for seamless streaming experience across all platforms.
+Apple TV-inspired UI/UX design system for HOOK TV: a calm black interface with an electric-lime accent, frosted glass and large rounded posters, across TV, phone and desktop.
 
 ## Design Principles
 
@@ -19,38 +19,50 @@ Modern Netflix-inspired UI/UX design system for seamless streaming experience ac
 - **Easing**: cubic-bezier(0.4, 0, 0.2, 1) for natural feel
 
 ### 3. Visual Hierarchy
-- **Primary Actions**: Bright accent color (#E50914 Netflix red)
+- **Primary Actions**: Electric-lime accent (`#C8F542`) with near-black text (`#0B0F00`)
 - **Secondary Actions**: Subtle gray with white text
 - **Tertiary Actions**: Minimal outlines or ghost buttons
 - **Typography**: Clear size and weight differentiation
 
 ### 4. Accessibility
 - **Contrast**: Minimum 4.5:1 for text, 3:1 for large text
-- **Focus States**: Clear 3px border for TV/keyboard navigation
+- **Focus States**: 3px lime ring with a 2px black gap for TV/keyboard navigation (`@include hk-focus`)
 - **Touch Targets**: Minimum 44x44px for mobile
 
 ## Color System
 
 ### Primary Colors
 ```css
---brand-primary: #E50914;        /* Netflix Red */
---brand-primary-dark: #B20710;  /* Darker Red */
---brand-primary-light: #F40612; /* Lighter Red */
+--brand-primary: #C8F542;        /* Electric lime */
+--brand-primary-hover: #D6FF5C;  /* Hover */
+--brand-primary-dark: #A6D12A;   /* Pressed / dark */
+--brand-on-primary: #0B0F00;     /* Text on lime (>= 14:1) */
 ```
 
-### Background Colors
+### Background and Surfaces
 ```css
---brand-background: #141414;        /* Main Background */
---brand-background-secondary: #1F1F1F; /* Secondary Background */
---brand-background-card: #2F2F2F;    /* Card Background */
+--brand-background: #000;        /* Main background */
+--surface-1: #121214;            /* Raised */
+--surface-2: #1C1C1F;            /* Raised, nested */
+--glass: rgba(30,30,32,.62);     /* Frosted panels */
+--glass-blur: blur(30px) saturate(1.4); /* Static, never animated */
 ```
 
 ### Text Colors
 ```css
---brand-text-primary: #FFFFFF;   /* Primary Text */
---brand-text-secondary: #B3B3B3; /* Secondary Text */
---brand-text-muted: #808080;     /* Muted Text */
+--text-primary: #fff;
+--text-secondary: rgba(255,255,255,.62);
+--focus-ring: #C8F542;
 ```
+
+### Mixins (`src/sass/brand.scss`)
+- `@include hk-focus` - 3px lime ring with a 2px black gap.
+- `@include hk-glass` - glass background plus static backdrop blur.
+- `@include hk-hover { &:hover { ... } }` - hover only under `(hover: hover) and (pointer: fine)`.
+
+### Logo
+- `public/img/logo.svg` - dark pill with white "HOOK" (second O is a lime play button) and lime "TV" to the right.
+- `public/img/logo-icon.svg` - the lime play-O in a dark rounded square (app icon, favicon source).
 
 ## Typography Scale
 
