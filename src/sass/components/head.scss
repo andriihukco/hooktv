@@ -45,6 +45,12 @@
         flex-shrink: 0;
         margin-right: 1em;
         position: relative;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+
+        &:hover{
+            opacity: 0.8;
+        }
     }
 
     &__logo-local{

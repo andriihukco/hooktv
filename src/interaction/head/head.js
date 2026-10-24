@@ -65,18 +65,16 @@ function init(){
     Utils.time(html)
 
     // HOOK TV: the logo is the home button; the menu icon is the only thing that opens the menu
-    if(window.lampa_settings.minimal_ui){
-        html.find('.head__logo-icon').addClass('selector').on('hover:enter click',()=>{
-            Activity.push({
-                url: '',
-                title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
-                component: 'main',
-                source: Storage.field('source')
-            })
+    html.find('.head__logo-icon').addClass('selector').on('hover:enter click',()=>{
+        Activity.push({
+            url: '',
+            title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
+            component: 'main',
+            source: Storage.field('source')
         })
-    }
+    })
 
-    html.find(window.lampa_settings.minimal_ui ? '.head__menu-icon' : '.head__logo-icon, .head__menu-icon').on('mousedown',(e)=>{
+    html.find('.head__menu-icon').on('mousedown',(e)=>{
         if(DeviceInput.canClick(e.originalEvent)) Menu.toggle()
     })
 
