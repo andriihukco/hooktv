@@ -397,8 +397,6 @@ body.minimal--ui:not(.bg--ambient) .background{
     display: flex;
     align-items: flex-end;
     overflow: hidden;
-    transform: translateZ(0); // Hardware acceleration
-    will-change: transform;
 
     &__backdrop{
         position: absolute;
@@ -450,8 +448,11 @@ body.minimal--ui:not(.bg--ambient) .background{
 
     &__body{
         position: relative;
+        z-index: 1;
         padding: 0 $offset 9em;
+        width: 100%;
         max-width: 42em;
+        box-sizing: border-box;
     }
 
     &__title{
@@ -541,6 +542,9 @@ body.minimal--ui:not(.bg--ambient) .background{
         border-radius: 3em;
         font-size: 1em;
         font-weight: 700;
+        font-family: inherit;
+        color: #fff;
+        border: 0;
         cursor: pointer;
         background: $hk-glass;
         backdrop-filter: blur(30px) saturate(1.4);
@@ -586,78 +590,145 @@ body.minimal--ui:not(.bg--ambient) .background{
 
     &__dots{
         position: absolute;
+        z-index: 2;
         right: $offset;
         bottom: 9.4em;
         display: flex;
+        align-items: center;
+        justify-content: center;
         gap: 0.15em;
+        width: max-content;
+        padding: 0.2em;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 2em;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
     }
 
     &__dot{
         display: flex;
         align-items: center;
         justify-content: center;
-        flex: 0 0 44px;
-        width: 44px;
-        height: 44px;
+        flex: 0 0 2em;
+        width: 2em;
+        height: 2em;
         padding: 0;
         border: 0;
         border-radius: 50%;
         background: transparent;
+        appearance: none;
         cursor: pointer;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
 
         &::before{
             content: '';
-            width: 0.5em;
-            height: 0.5em;
+            width: 0.42em;
+            height: 0.42em;
             border-radius: 1em;
-            background: rgba(255, 255, 255, 0.35);
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.68);
+            transition: width 0.25s $hk-ease, background-color 0.25s, transform 0.25s $hk-ease;
         }
 
         &.active::before{
-            width: 1.6em;
-            background: #fff;
-            transform: scale(1.1);
+            width: 1.1em;
+            background: $hk-lime;
         }
 
         &:hover::before{
-            background: rgba(255, 255, 255, 0.6);
+            background: #fff;
         }
 
         &:focus-visible{
-            outline: 2px solid #fff;
+            outline: 2px solid $hk-lime;
             outline-offset: -3px;
         }
     }
 
-    @media (max-width: 580px){
+    @media (max-width: 800px){
         display: flex;
-        height: 75vh;
-        margin-bottom: -3em;
+        height: 78vh;
+        min-height: 32em;
 
         &__body{
-            padding-bottom: 5em;
+            padding: 0 1.1em 5em;
         }
 
         &__title{
-            font-size: 2.4em;
+            font-size: clamp(1.8em, 7vw, 2.8em);
+        }
+
+        &__meta{
+            margin-top: 0.7em;
+            font-size: 1em;
         }
 
         &__descr{
             font-size: 1em;
+            -webkit-line-clamp: 2;
+        }
+
+        &__buttons{
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65em;
+            margin-top: 1em;
+            padding: 0 0.2em;
         }
 
         &__button{
-            height: 2.8em;
-            padding: 0 1.1em;
-            font-size: 1em;
+            justify-content: center;
+            min-width: 0;
+            min-height: 3.25em;
+            height: auto;
+            padding: 0 0.7em;
+            border-radius: 1em;
+            font-size: 1.05em;
+
+            &--watch{
+                grid-column: 1 / -1;
+            }
+
+            &.focus,
+            &:hover:not(.focus){
+                transform: none;
+            }
+
+            &.focus{
+                box-shadow: 0 0 0 0.12em #000, 0 0 0 0.25em $hk-lime;
+            }
         }
 
         &__dots{
-            display: flex;
-            right: 0.8em;
+            left: 50%;
+            right: auto;
+            bottom: 9.4em;
+            transform: translateX(-50%);
+            gap: 0.1em;
+            padding: 0.25em;
+        }
+
+        &__dot{
+            flex-basis: 3em;
+            width: 3em;
+            height: 3em;
+
+            &::before{
+                width: 0.5em;
+                height: 0.5em;
+            }
+
+            &.active::before{
+                width: 1.35em;
+            }
+        }
+    }
+
+    @media (max-width: 580px){
+        height: 75vh;
+
+        &__dots{
             bottom: 9.4em;
         }
     }

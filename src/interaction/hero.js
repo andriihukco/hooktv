@@ -36,16 +36,16 @@ class Hero extends Emit{
                 <div class="hero-tv__meta"></div>
                 <div class="hero-tv__descr"></div>
                 <div class="hero-tv__buttons">
-                    <div class="hero-tv__button hero-tv__button--watch selector"><svg><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></div>
-                    <div class="hero-tv__button hero-tv__button--list selector"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></div>
-                    <div class="hero-tv__button hero-tv__button--info selector"><span>${Lang.translate('hooktv_details')}</span></div>
+                    <button class="hero-tv__button hero-tv__button--watch selector" type="button"><svg aria-hidden="true"><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></button>
+                    <button class="hero-tv__button hero-tv__button--list selector" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></button>
+                    <button class="hero-tv__button hero-tv__button--info selector" type="button"><span>${Lang.translate('hooktv_details')}</span></button>
                 </div>
             </div>
             <div class="hero-tv__dots"></div>
         </div>`)
 
         this.cards.forEach((c, i)=>{
-            $(`<button class="hero-tv__dot" type="button" aria-label="Show slide ${i + 1}" aria-pressed="false"></button>`)
+            $(`<button class="hero-tv__dot" type="button" aria-label="Go to slide ${i + 1}" aria-current="false"></button>`)
                 .on('click', ()=>this.show(i))
                 .appendTo(this.html.find('.hero-tv__dots'))
         })
@@ -118,10 +118,10 @@ class Hero extends Emit{
 
         this.html.find('.hero-tv__dot')
             .removeClass('active')
-            .attr('aria-pressed', 'false')
+            .attr('aria-current', 'false')
             .eq(index)
             .addClass('active')
-            .attr('aria-pressed', 'true')
+            .attr('aria-current', 'true')
 
         if(!this.firstLoaded){
             this.firstLoaded = true
