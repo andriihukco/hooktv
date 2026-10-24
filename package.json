@@ -7,7 +7,8 @@
     "start": "gulp",
     "debug": "gulp debug",
     "release": "gulp release",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "doc": "gulp doc"
   },
   "author": "HOOK TV",
