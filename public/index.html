@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOOK</title>
 
+    <script>
+        /* Pick light/dark before the first paint so the splash never flashes the wrong theme */
+        try{
+            var t = localStorage.getItem('interface_theme') || 'system'
+            var dark = t == 'dark' || (t == 'system' && (!window.matchMedia || matchMedia('(prefers-color-scheme: dark)').matches))
+
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+        }
+        catch(e){}
+    </script>
+
     <link rel="stylesheet" href="./vender/scrollbar/jquery.scrollbar.css">
     <link rel="stylesheet" href="./vender/keypad/style.css">
 
@@ -25,6 +36,15 @@
     <script src="./vender/keypad/keypad.js"></script>
     <script src="http://www.youtube.com/iframe_api" async></script>
 
-    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (var i = 0; i < registrations.length; i++) {
+                    registrations[i].unregister();
+                }
+            });
+        }
+    </script>
+    <script src="app.js?v=2.84"></script>
 </body>
 </html>

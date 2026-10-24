@@ -1,8 +1,3 @@
-let html = `
-<svg width="25" height="41" viewBox="0 0 25 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0.101807" y="20.6182" width="28.7098" height="5.9619" rx="2.98095" transform="rotate(-45 0.101807 20.6182)" fill="currentColor"/>
-    <rect width="28.7098" height="5.9619" rx="2.98095" transform="matrix(0.707107 0.707107 0.707107 -0.707107 0.101807 20.7075)" fill="currentColor"/>
-</svg>
-`
+let html = `<svg class="material-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>`
 
 export default html

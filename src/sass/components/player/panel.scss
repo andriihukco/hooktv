@@ -4,7 +4,7 @@
     bottom: $offset;
     right: $offset;
     width: 100%;
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-media);
     transform: translateY(150%);
     transition: transform 0.3s, opacity 0.3s;
     width: auto;
@@ -33,7 +33,7 @@
     &__timeline{
         position: relative;
         height: 0.4em;
-        background-color: rgba(255,255,255,0.1);
+        background-color: var(--surface-hover);
         border-radius: 2em;
         margin-bottom: 0.6em;
 
@@ -70,7 +70,7 @@
     }
 
     &__peding{
-        background-color: rgba(255,255,255,0.3);
+        background-color: var(--surface-media);
     }
 
     &__position{
@@ -102,7 +102,7 @@
     &__time{
         position: absolute;
         bottom: 100%;
-        background: rgba(0,0,0,0.3);
+        background: var(--surface-media);
         border-radius: 0.3em;
         transform: translateX(-50%);
         margin-bottom: 0.5em;
@@ -423,7 +423,7 @@
 
     &__icons-item{
         display: inline-block;
-        background-color: rgba(255,255,255,0.2);
+        background-color: var(--surface-active);
         border-radius: 100%;
         padding: 0.2em;
         margin-left: 0.5em;
@@ -487,7 +487,7 @@
     &__prog-timeline{
         flex-shrink: 0;
         border-radius: 1em;
-        background-color: rgba(255,255,255,0.2);
+        background-color: var(--surface-active);
         margin-left: 1em;
         width: 9em;
         margin-top: 0.4em;
@@ -515,7 +515,7 @@ body.glass--style.platform--apple,
 body.glass--style.platform--apple_tv,
 body.glass--style.platform--android{
     .player-panel{
-        background-color: rgba(0,0,0,0.3);
+        background-color: var(--surface-media);
         backdrop-filter: blur(1em);
     }
 }

@@ -11,7 +11,7 @@
     }
 
     &__content{
-        background-color: rgba(255,255,255,0.2);
+        background-color: var(--surface-active);
         position: relative;
         border-radius: 1em;
     }
@@ -116,7 +116,7 @@
             left: -0.5em;
             right: -0.5em;
             bottom: -0.5em;
-            border: 0.3em solid #fff;
+            border: 0.3em solid var(--focus-ring-color);
             border-radius: 1.4em;
             z-index: -1;
             pointer-events: none;
@@ -136,7 +136,7 @@ body.size--bigger .ad-bot__body{
 
 .ad-countdown{
     display: flex;
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-media);
     border-radius: 0.3em;
 
     &__text{
@@ -250,7 +250,7 @@ body.size--bigger .ad-bot__body{
     }
 
     &__progress{
-        background-color: rgba(0,0,0,0.3);
+        background-color: var(--surface-media);
     }
 
     &__progress-fill{
@@ -264,7 +264,7 @@ body.size--bigger .ad-bot__body{
         position: fixed;
         right: 1em;
         bottom: 1em;
-        background-color: rgba(0,0,0,0.5);
+        background-color: var(--surface-media);
         border-radius: 0.3em;
 
         span{
@@ -332,7 +332,7 @@ body.size--bigger .ad-bot__body{
     display: flex;
     align-items: flex-start;
     position: relative;
-    background-color: rgba(255,255,255,0.1);
+    background-color: var(--surface-hover);
     border-radius: 0.3em;
     margin: 1.5em 2em;
 

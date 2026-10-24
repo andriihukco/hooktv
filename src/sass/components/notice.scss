@@ -48,7 +48,7 @@
     &__img{
         padding-bottom: 147%;
         position: relative;
-        background: rgba(0,0,0,0.3);
+        background: var(--surface-media);
         border-radius: 0.3em;
         transition: background,border-radius $speed;
 
@@ -92,7 +92,7 @@
             border-radius: 1.1em;
             overflow: hidden;
             flex-shrink: 0;
-            background: rgba(0,0,0,0.3);
+            background: var(--surface-media);
             transition: background $speed;
 
             img{
@@ -169,7 +169,7 @@
     }
 
     &.focus{
-        background-color: rgba(255,255,255,0.1);
+        background-color: var(--surface-hover);
     }
 }
 

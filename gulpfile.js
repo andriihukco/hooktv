@@ -48,14 +48,15 @@ var plgFolder = './plugins/';
 var docFolder = './build/doc/';
 
 var isDebugEnabled = false;
+var isReleaseEnabled = false;
 
-function merge(done) {
+function merge() {
     let plugins = [babel({
         babelHelpers: 'bundled',
         presets: ['@babel/preset-env']
     }), commonjs, nodeResolve, worker()]
 
-    rollup({
+    return rollup({
         // Point to the entry file
         input: srcFolder+"app.js",
 
@@ -90,8 +91,6 @@ function merge(done) {
       .pipe(replace(/return kIsNodeJS/g, "return false"))
       // Where to send the output file
       .pipe(dest(dstFolder));
-      
-    done();
 }
 
 function bubbleFile(name){
@@ -156,33 +155,27 @@ function plugin_sass(plugin_src){
 var copy_timer;
 
 /** Обновляем файл для WEB **/
-function build_web(done){
-    clearTimeout(copy_timer)
+function build_web(){
+    let date      = new Date();
+    let full_date = date.getFullYear() + '-' +
+                    ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                    ('0' + date.getDate()).slice(-2) + ' ' +
+                    ('0' + date.getHours()).slice(-2) + ':' +
+                    ('0' + date.getMinutes()).slice(-2);
 
-    //таймер сила!
-    copy_timer = setTimeout(()=>{
-        //src([dstFolder+'app.js']).pipe(dest(bulFolder+'web/'));
+    let bundle = src(dstFolder+'app.js')
+        .pipe(replace('{__APP_HASH__}', getFileHash(dstFolder + '/app.js')))
+        .pipe(replace('{__APP_BUILD__}', full_date))
 
-        let date      = new Date();
-        let full_date = date.getFullYear() + '-' +
-                        ('0' + (date.getMonth()+1)).slice(-2) + '-' +
-                        ('0' + date.getDate()).slice(-2) + ' ' +
-                        ('0' + date.getHours()).slice(-2) + ':' +
-                        ('0' + date.getMinutes()).slice(-2);
+    if(isReleaseEnabled) bundle = bundle.pipe(uglify())
 
-        src(dstFolder+'app.js')
-            .pipe(replace('{__APP_HASH__}', getFileHash(dstFolder + '/app.js')))
-            .pipe(replace('{__APP_BUILD__}', full_date))
-            .pipe(dest(bulFolder+'web/'));
+    fs.readdirSync(dstFolder).filter(function (file) {
+        return fs.statSync(dstFolder+'/'+file).isDirectory();
+    }).forEach(folder => {
+        src([dstFolder+folder+'/'+folder+'.js']).pipe(dest(bulFolder+'web/plugins'));
+    });
 
-        fs.readdirSync(dstFolder).filter(function (file) {
-            return fs.statSync(dstFolder+'/'+file).isDirectory();
-        }).forEach(folder => {
-            src([dstFolder+folder+'/'+folder+'.js']).pipe(dest(bulFolder+'web/plugins'));
-        });
-    },500)
-
-    done();
+    return bundle.pipe(dest(bulFolder+'web/'));
 }
 
 function write_manifest(done){
@@ -339,6 +332,12 @@ function test(done){
     done();
 }
 
+function enable_release_mode(done){
+    console.log("build minified release")
+    isReleaseEnabled = true;
+    done()
+}
+
 function enable_debug_mode(done){
     console.log("build with sourcemaps!")
     isDebugEnabled = true;
@@ -418,7 +417,10 @@ exports.pack_github  = series(sync_github, uglify_task, public_github, write_man
 exports.pack_web     = series(merge, sass_task, lang_task, sync_web, build_web);
 exports.pack_plugins = series(plugins);
 exports.test         = series(test);
-exports.default = parallel(watch, browser_sync);
+// Updated default task to build the app before starting watch and browser sync
+exports.release = series(enable_release_mode, exports.pack_web);
+
+exports.default = series(exports.pack_web, parallel(watch, browser_sync));
 exports.debug = series(enable_debug_mode, this.default)
 exports.doc = series(sync_doc, buildDoc)
 exports.write_manifest = series(write_manifest)

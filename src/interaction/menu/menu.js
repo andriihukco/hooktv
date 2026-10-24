@@ -50,14 +50,19 @@ function init(){
     html   = Template.get('menu')
     scroll = new Scroll({mask: true, over: true})
 
+    // Minimal UI: the section list only, no settings / about / console / editor entries
+    if(window.lampa_settings.minimal_ui) html.find('.menu__case.nosort, .menu__split').remove()
+
     // Фильтрация пунктов меню в зависимости от настроек
     menu_items = menu_items.filter(item=>{
+        if(window.lampa_settings.minimal_ui) return ['main','tv','movie','favorite'].indexOf(item.action) >= 0
+
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false
         if(window.lampa_settings.disable_features.persons && item.action == 'myperson') return false
         if(window.lampa_settings.disable_features.subscribe && item.action == 'subscribes') return false
         if(!window.lampa_settings.feed && item.action == 'feed') return false
 
-        if(!Lang.selected(['ru','uk','be']) && (item.action == 'relise' || item.action == 'anime' || item.action == 'feed')) return false
+        if(!Lang.selected(['en','uk','be']) && (item.action == 'relise' || item.action == 'anime' || item.action == 'feed')) return false
 
         return true
     })
@@ -89,13 +94,24 @@ function init(){
             $('body').toggleClass('menu--open',true)
         },
         right: ()=>{
-            Controller.toggle('content')
+            if(window.lampa_settings.minimal_ui){
+                if(Navigator.canmove('right')) Navigator.move('right')
+                else Controller.toggle('head')
+            }
+            else Controller.toggle('content')
+        },
+        left: ()=>{
+            if(window.lampa_settings.minimal_ui && Navigator.canmove('left')) Navigator.move('left')
         },
         up: ()=>{
+            if(window.lampa_settings.minimal_ui) return Controller.toggle('head')
+
             if(Navigator.canmove('up')) Navigator.move('up')
             else Controller.toggle('head')
         },
         down: ()=>{
+            if(window.lampa_settings.minimal_ui) return Controller.toggle('content')
+
             if(Navigator.canmove('down')) Navigator.move('down')
         },
         gone: ()=>{

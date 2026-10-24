@@ -12,11 +12,11 @@ function render(){
     </svg>`
 
     let text = {
-        ru: `Три года назад мы запустили приложение HOOK, чтобы подарить вам мир любимых фильмов, сериалов и мультфильмов в удобном формате. Благодаря вам, нашему сообществу, мы стали больше, лучше и интереснее! В честь нашего дня рождения мы подготовили особый подарок: скидки на подписку CUB Premium! Теперь у вас есть возможность насладиться всеми преимуществами премиум-функций по ещё более выгодной цене.
+        en: `Three years ago we launched the HOOK app to bring you a world of your favorite movies, series, and cartoons in a convenient format. Thanks to you, our community, we have become bigger, better, and more interesting! In honor of our birthday, we have prepared a special gift: discounts on CUB Premium subscription! Now you have the opportunity to enjoy all the benefits of premium features at an even better price.
         <br><br>
-        Акция действует 10 дней — с 20 сентября по 30 сентября! Не упустите шанс стать частью клуба CUB Premium и получить максимум от вашего приложения! Все подробности на нашем сайте <a href="https://cub.red/premium" target="_blank">cub.red/premium</a>
+        The promotion is valid for 10 days — from September 20 to September 30! Don't miss the chance to become a part of the CUB Premium club and get the most out of your app! All details are available on our website <a href="https://cub.red/premium" target="_blank">cub.red/premium</a>.
         <br><br>
-        Спасибо, что выбираете HOOK и празднуете вместе с нами!`,
+        Thank you for choosing HOOK and celebrating with us!`,
         uk: `Три роки тому ми запустили додаток HOOK, щоб подарувати вам світ улюблених фільмів, серіалів та мультфільмів у зручному форматі. Завдяки вам, нашій спільноті, ми стали більшими, кращими та цікавішими! На честь нашого дня народження ми підготували особливий подарунок: знижки на підписку CUB Premium! Тепер у вас є можливість насолодитися всіма перевагами преміум-функцій за ще більш вигідною ціною.
         <br><br>
         Акція діє 10 днів — з 20 вересня до 30 вересня! Не втратьте шанс стати частиною клубу CUB Premium та отримати максимум від вашого додатка! Усі деталі на нашому сайті <a href="https://cub.red/premium" target="_blank">cub.red/premium</a>.
@@ -29,12 +29,12 @@ function render(){
             <div class="birthday__poster">
                 <img class="birthday__img" />
             </div>
-
-            <div class="birthday__text">${text[Storage.get('language', 'ru')]}</div>
+ 
+            <div class="birthday__text">${text[Storage.get('language', 'en')] || text.en}</div>
         </div>`)
-
+ 
     let btn = $('<div class="head__action selector icon--blink"></div>')
-
+ 
     btn.on('hover:enter',()=>{
         Modal.open({
             title: '',
@@ -43,20 +43,20 @@ function render(){
             mask: false,
             onBack: ()=>{
                 Modal.close()
-
+ 
                 Controller.toggle('head')
             }
         })
-
+ 
         Utils.imgLoad(html.find('img')[0],'https://cdn.cub.red/img/other/birthday_3_years.jpg',()=>{
             html.addClass('loaded')
         },()=>{
             html.addClass('noload')
         })
     })
-
+ 
     btn.append(icon)
-
+ 
     $('.head .head__actions .open--settings').after(btn)
 }
 
@@ -68,7 +68,7 @@ function start(){
     let time_end   = new Date(date_end).getTime()
     let time_now   = new Date().getTime()
 
-    if(time_now > time_start && time_now < time_end && Lang.selected(['ru','uk'])) render()
+    if(time_now > time_start && time_now < time_end && Lang.selected(['en','uk'])) render()
 }
 
 export default {

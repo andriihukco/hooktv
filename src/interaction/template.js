@@ -19,6 +19,7 @@ import settings_plugins from '../templates/settings/plugins'
 import settings_account from '../templates/settings/account'
 import items_line from '../templates/items/line'
 import card from '../templates/card'
+import card_modern from '../templates/card_modern'
 import card_parser from '../templates/card_parser'
 import card_watched from '../templates/card_watched'
 import card_episode from '../templates/card_episode'
@@ -154,6 +155,7 @@ let templates = {
     scroll,
     items_line,
     card,
+    card_modern,
     card_parser,
     card_watched,
     card_episode,

@@ -7,14 +7,14 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: #3E3E3E;
+        background-color: var(--surface-placeholder);
         border-radius: 1em;
     }
 
     &__body{
         flex-grow: 1;
         border-radius: 1em;
-        background-color: rgba(255,255,255,0.1);
+        background-color: var(--surface-hover);
         border-radius: 1em;
         position: relative;
 

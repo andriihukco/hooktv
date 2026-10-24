@@ -27,7 +27,7 @@ function init(){
                 },()=>{
                     Controller.toggle('settings_component')
                 })
-            }).find('.settings-param__value').text(Lang.translate(Lang.codes()[Storage.get('language','ru')]))
+            }).find('.settings-param__value').text(Lang.translate(Lang.codes()[Storage.get('language','en')]))
         }
 
         if(e.name == 'main' && Platform.is('apple_tv')){

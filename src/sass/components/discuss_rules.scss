@@ -3,7 +3,7 @@
     top: 0;
     right: 0;
     z-index: 22;
-    background: #262829;
+    background: var(--surface-overlay);
     width: 35%;
     height: 100%;
 
@@ -43,9 +43,9 @@
 
 .discuss-rules-helper{
     font-size: 1.2em;
-    color: #fff;
+    color: var(--text-primary);
     line-height: 1.2;
-    background: rgba(255,255,255,0.1);
+    background: var(--surface-hover);
     padding: 0.7em;
     border-radius: 0.6em;
     margin-top: 1.2em;
@@ -54,7 +54,7 @@
 
     &::before{
         content: '🚫';
-        color: rgba(255, 87, 87, 1.0);
+        color: var(--danger-text);
         margin-right: .50em;
         vertical-align: text-bottom;
         display: inline-block;

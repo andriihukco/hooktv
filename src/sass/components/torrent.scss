@@ -12,7 +12,7 @@
 }
 
 .torrent-item{
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-media);
     border-radius: 0.3em;
     padding: 1em;
     line-height: 1.2;
@@ -171,14 +171,14 @@
             left: -0.5em;
             right: -0.5em;
             bottom: -0.5em;
-            border: 0.3em solid #fff;
+            border: 0.3em solid var(--focus-ring-color);
             border-radius: 0.7em;
             z-index: -1;
         }
     }
 
     &--popular{
-        background-color: rgba(255,255,255,0.2);
+        background-color: var(--surface-active);
     }
 }
 
@@ -211,7 +211,7 @@
     &__size{
         flex-shrink: 0;
         border-radius: 0.3em;
-        background: #262829;
+        background: var(--surface-overlay);
         font-size: 1.3em;
         padding: 0.3em 0.5em;
     }
@@ -225,7 +225,7 @@
     }
 
     &.focus{
-        background-color: rgba(255,255,255,0.2);
+        background-color: var(--surface-active);
     }
 }
 
@@ -429,7 +429,7 @@
 
     &__size{
         border-radius: 0.3em;
-        background: #262829;
+        background: var(--surface-overlay);
         font-size: 1.3em;
         padding: 0.3em 0.5em;
     }
@@ -466,7 +466,7 @@
     }
 
     &.focus{
-        background-color: #353535;
+        background-color: var(--surface-focus-row);
     }
 
 

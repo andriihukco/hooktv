@@ -1,19 +1,43 @@
 import Lang from '../core/lang'
+import Brand from '../core/brand'
 
 let html
 let destroyed = false
+let currentStep = 0
+let totalSteps = 5
 
 /**
- * Отображает прогресс загрузки приложения
+ * Отображает прогресс загрузки приложения с Netflix-style анимацией
  * @returns {void}
  */
 function init(){
-    html = $(`<div style="position: fixed; left: 0; top: 50%; right: 0; z-index: 101; text-align: center; padding-top: 6em; padding-top: 13vh;">
-        <div style="font-size: 1.5em; line-height: 1.6" class="lp-step"></div>
-        <div style="font-size: 0.9em; opacity: 0.5" class="lp-status"></div>
-    </div>`)
+    const brandName = Brand.getName('short')
+    
+    let content = `
+        <div class="welcome__logo">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="4"/>
+                <path d="M50 20 L50 50 L70 65" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="50" cy="50" r="5" fill="currentColor"/>
+            </svg>
+        </div>
+        <div class="welcome__brand-name">${brandName}</div>
+        <div class="welcome__loading">
+            <div class="welcome__progress-bar">
+                <div class="welcome__progress-fill"></div>
+            </div>
+            <div class="welcome__status">Initializing...</div>
+        </div>
+    `
 
-    $('body').append(html)
+    let existing = $('.welcome')
+    if(existing.length){
+        html = existing.eq(0)
+        html.html(content)
+    } else {
+        html = $(`<div class="welcome">${content}</div>`)
+        $('body').append(html)
+    }
 
     step(0)
 }
@@ -25,9 +49,17 @@ function init(){
 function step(position){
     if(destroyed) return
     
-    html.find('.lp-step').text(Lang.translate('loading_progress_step_' + position))
+    currentStep = position
+    
+    // Update progress bar
+    const progress = ((position + 1) / totalSteps) * 100
+    html.find('.welcome__progress-fill').css('width', progress + '%')
+    
+    // Update status text
+    const statusText = Lang.translate('loading_progress_step_' + position) || `Loading ${position + 1}/${totalSteps}`
+    html.find('.welcome__status').text(statusText)
 
-    console.log('LoadingProgress', 'step:', position, Lang.translate('loading_progress_step_' + position))
+    console.log('LoadingProgress', 'step:', position, progress + '%')
 }
 
 /**
@@ -37,24 +69,43 @@ function step(position){
 function status(text){
     if(destroyed) return
 
-    html.find('.lp-status').text(text)
+    html.find('.welcome__status').text(text)
 
     console.log('LoadingProgress', 'status:', text)
 }
 
 /**
- * Удаляет прогресс загрузки
+ * Удаляет прогресс загрузки с анимацией
  * @returns {void}
  */
 function destroy(){
+    if(destroyed) return
+    
     destroyed = true
+    
+    // Fade out animation
+    if(html) html.addClass('welcome--fade-out')
+    $('.welcome').addClass('welcome--fade-out')
+    
+    // Remove after animation completes
+    setTimeout(() => {
+        if(html) html.remove()
+        $('.welcome').remove()
+    }, 500)
+}
 
-    html.remove()
+/**
+ * Устанавливает общее количество шагов
+ * @param {number} total - общее количество шагов
+ */
+function setTotalSteps(total){
+    totalSteps = total
 }
 
 export default {
     init,
     step,
     status,
-    destroy
+    destroy,
+    setTotalSteps
 }

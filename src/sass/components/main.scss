@@ -65,19 +65,8 @@ html{
 	outline: none !important;
 }
 
-input::placeholder {
-	color: #6a6a6a;
-	opacity: 1;
-}
-
 ::-webkit-scrollbar {
 	display: none;
-}
-
-input.hover::placeholder,
-input.enter::placeholder {
-	color: #fff;
-	opacity: 1;
 }
 
 *:not(input){
@@ -87,10 +76,10 @@ input.enter::placeholder {
 body{
 	line-height: 1;
     font-size: 16px;
-    color: #ffffff;
+    color: var(--text-primary);
     position: relative;
     font-family: "SegoeUI", sans-serif;
-    background: #1d1f20;
+    background: var(--surface-canvas);
     padding: 0;
     margin: 0;
     overflow: hidden;
@@ -182,7 +171,7 @@ body.no--animation .background canvas{
 	right: 1.5em;
 	padding: 0.4em;
 	height: auto;
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: var(--surface-media);
 	border-radius: 0.3em;
 	z-index: 60;
 	opacity: 0;

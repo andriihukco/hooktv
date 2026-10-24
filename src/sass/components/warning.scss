@@ -1,13 +1,13 @@
 .warning-box{
     display: flex;
     align-items: center;
-    background: rgba(0,0,0,0.5);
+    background: var(--surface-media);
     border-radius: 1em;
     padding: 1.5em;
 
     &__icon{
         flex-shrink: 0;
-        color: #FF6A56;
+        color: var(--danger-text);
 
         > *{
             width: 6em;
@@ -42,8 +42,8 @@
     &.selector{
         &.focus{
             .simple-button{
-                background-color: rgba(255,255,255);
-                color: #000;
+                background-color: var(--focus-fill);
+                color: var(--focus-fill-text);
             }
         }
     }

@@ -27,7 +27,7 @@
     &__checkbox{
         width: 1.4em;
         height: 1.4em;
-        border: 0.2em solid rgba(255,255,255,0.2);
+        border: 0.2em solid var(--border-default);
         position: absolute;
         top: 1.7em;
         right: 2em;
@@ -69,15 +69,15 @@
 
     &--checked{
         .selectbox-item__checkbox{
-            border-color: #fff;
+            border-color: var(--text-primary);
 
             &::after{
                 content: "";
                 display: block;
                 width: 0.3em;
                 height: 0.6em;
-                border-right: 0.2em solid #fff;
-                border-bottom: 0.2em solid #fff;
+                border-right: 0.2em solid var(--text-primary);
+                border-bottom: 0.2em solid var(--text-primary);
                 position: absolute;
                 top: 0em;
                 right: 0.25em;
@@ -100,8 +100,8 @@
             display: block;
             width: 0.6em;
             height: 1.2em;
-            border-right: 0.2em solid #fff;
-            border-bottom: 0.2em solid #fff;
+            border-right: 0.2em solid var(--text-primary);
+            border-bottom: 0.2em solid var(--text-primary);
             position: absolute;
             top: 50%;
             right: 2em;
@@ -110,6 +110,6 @@
         }
     }
     &.focus{
-        background-color: #353535;
+        background-color: var(--surface-focus-row);
     }
 }

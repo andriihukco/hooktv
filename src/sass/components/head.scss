@@ -51,8 +51,8 @@
         position: absolute;
         bottom: 0;
         right: 0;
-        background-color: #EA4E4E;
-        color: #fff;
+        background-color: var(--accent);
+        color: var(--accent-contrast);
         font-size: 0.7em;
         padding: 0.1em 0.3em;
         border-radius: 0.2em;
@@ -121,8 +121,8 @@
 
         &.focus,
         &.hover{
-            background-color: #fff;
-            color: #000;
+            background-color: var(--focus-fill);
+            color: var(--focus-fill-text);
         }
 
         &.active{
@@ -136,8 +136,8 @@
                 position: absolute;
                 top: 0;
                 right: 0;
-                background-color: #EA4E4E;
-                border: 0.15em solid #fff;
+                background-color: var(--accent);
+                border: 0.15em solid var(--surface-canvas);
                 border-radius: 100%;
             }
         }
@@ -193,7 +193,7 @@
             width: 0.32em;
             height: 0.32em;
             border-radius: 100%;
-            background: rgba(255, 255, 255, 0.4);
+            background: var(--surface-selected);
             position: relative;
 
             + #{ $item }{
@@ -201,11 +201,11 @@
             }
 
             &.status--live{
-                background: rgb(118, 230, 122);
+                background: var(--success);
             }
 
             &.status--error{
-                background: #ff6868;
+                background: var(--danger);
             }
 
             &.status--pass{
@@ -225,7 +225,7 @@
             top: 0;
             width: 11em;
             height: 2.8em;
-            border: 1px solid #fff;
+            border: 1px solid var(--text-primary);
         }
         &-counter{
             position: absolute;
@@ -233,7 +233,7 @@
             bottom: 0.1em;
             font-size: 0.9em;
             font-weight: 300;
-            color: #fff;
+            color: var(--text-primary);
         }
     }
 

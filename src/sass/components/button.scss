@@ -1,7 +1,8 @@
 .simple-button{
     margin-right: 1em;
     font-size: 1.3em;
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-active);
+    color: var(--text-primary);
     padding: 0.3em 1.2em;
     display: flex;
     border-radius: 1em;
@@ -22,8 +23,8 @@
     }
 
     &.focus{
-        background-color: #fff;
-        color: #000;
+        background-color: var(--focus-fill);
+        color: var(--focus-fill-text);
     }
 
     &--filter{
@@ -36,7 +37,7 @@
         > div{
             font-size: 0.7em;
             padding: 0.3em 0.5em;
-            background-color: rgba(255,255,255,0.3);
+            background-color: var(--surface-selected);
             border-radius: 0.3em;
             margin-left: 1em;
             
@@ -62,7 +63,7 @@
     }
 
     &--invisible:not(.focus){
-        background-color: rgba(0,0,0,0.07);
+        background-color: var(--surface-hover);
     }
 
     @media screen and (max-width: $media_sm) {

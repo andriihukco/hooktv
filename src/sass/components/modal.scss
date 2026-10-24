@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-media);
     padding: $offset;
     z-index: 50;
 
@@ -13,7 +13,7 @@
     }
 
     &__content{
-        background-color: #262829;
+        background-color: var(--surface-overlay);
         padding: $offset;
         border-radius: 1em;
         margin: 0 auto;
@@ -87,7 +87,7 @@
     &__button{
         padding: 0.9em 1.3em;
         border-radius: 0.7em;
-        background: rgba(255,255,255,0.1);
+        background: var(--surface-hover);
         font-size: 1.2em;
 
         &.focus{

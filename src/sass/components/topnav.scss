@@ -1,0 +1,203 @@
+/**
+ * Minimal navigation (body.minimal--ui)
+ *
+ * Netflix-style: one top bar with the logo, four sections in the middle and
+ * the actions (search, settings) on the right. The side menu panel becomes the
+ * top bar, so there is no hamburger, no slide-out and no second bar.
+ */
+
+body.minimal--ui{
+    .head{
+        padding-right: 0;
+        pointer-events: none;
+
+        &__backward,
+        &__logo-icon,
+        &__actions{
+            pointer-events: auto;
+        }
+
+        &__menu-icon,
+        &__title,
+        &__time,
+        &__markers,
+        .full--screen,
+        .head__action.open--swipe-match,
+        .head__action.open--rando-dice,
+        .head__action.open--broadcast{
+            display: none !important;
+        }
+
+        &__body{
+            padding: 0.6em $offset;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        &__backward{
+            flex-shrink: 0;
+            margin-right: 1.2em;
+        }
+
+        &__logo-icon{
+            display: block !important;
+            margin-right: 1.6em;
+            flex-shrink: 0;
+        }
+
+        &__actions{
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        &__action{
+            display: flex !important;
+            margin-left: 0.5em;
+        }
+    }
+
+    .wrap{
+        display: block;
+
+        &__left{
+            position: fixed;
+            top: 0;
+            left: 6.2em;
+            right: 11em;
+            width: auto;
+            height: 3.8em !important;
+            margin: 0;
+            padding: 0;
+            transform: none !important;
+            visibility: visible !important;
+            display: flex;
+            align-items: center;
+            z-index: 16;
+            pointer-events: auto;
+
+            .scroll{
+                height: 3.8em !important;
+                width: 100%;
+            }
+
+            .scroll__body,
+            .scroll__content,
+            .menu{
+                height: 100%;
+            }
+
+            .scroll__content{
+                margin-top: 0 !important;
+                padding: 0 !important;
+            }
+
+            .scroll--mask .scroll__content{
+                padding: 0;
+            }
+        }
+
+        &__content{
+            padding-top: 4.6em;
+            transform: none !important;
+        }
+    }
+
+    &.menu--open .background{
+        opacity: 1;
+    }
+
+    .menu{
+        height: 100%;
+        width: 100%;
+
+        &__split,
+        &__ico{
+            display: none;
+        }
+
+        &__list{
+            display: flex !important;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.4em;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+
+            &::-webkit-scrollbar{
+                display: none;
+            }
+        }
+
+        &__item{
+            padding: 0.5em 1em;
+            border-radius: 2em;
+            font-size: 1.05em;
+            font-weight: var(--font-weight-semibold, 600);
+            white-space: nowrap;
+            color: var(--text-secondary);
+
+            + li{
+                margin-top: 0;
+            }
+
+            &.focus,
+            &.hover,
+            &.traverse{
+                background-color: var(--surface-selected);
+                color: var(--text-primary);
+            }
+        }
+
+        &__title{
+            white-space: nowrap;
+        }
+    }
+
+    &.mouse--controll:not(.true--mobile){
+        .wrap__left{
+            left: 9.8em;
+        }
+    }
+}
+
+/* Phones: the navigation moves to its own row under the head bar */
+@media (max-width: 580px){
+    body.minimal--ui,
+    body.minimal--ui.mouse--controll:not(.true--mobile){
+        .head__logo-icon{
+            width: 2.2em;
+            margin-right: 0.8em;
+        }
+
+        .wrap__left{
+            left: 0 !important;
+            right: 0 !important;
+            top: 3.4em;
+            height: 3em !important;
+        }
+
+        .wrap__content{
+            padding-top: 7.4em;
+        }
+
+        .wrap__left .scroll,
+        .wrap__left .menu{
+            height: 3em !important;
+        }
+    }
+}
+
+/* The logo mark is drawn in white, so it is inverted on the light canvas */
+:root[data-theme='light'] body.minimal--ui .head__logo-icon img{
+    filter: invert(1);
+}

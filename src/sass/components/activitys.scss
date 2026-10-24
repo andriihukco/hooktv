@@ -74,7 +74,7 @@
 
             > div{
                 border-radius: 0.3em;
-                background-color: rgba(255,255,255,0.5);
+                background-color: var(--text-media-muted);
 
                 &:nth-child(1){
                     padding-bottom: 150%;

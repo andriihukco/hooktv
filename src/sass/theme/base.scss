@@ -1,0 +1,77 @@
+/**
+ * Theme aware base layer
+ *
+ * Global rules that every page depends on. Everything here is driven by the
+ * tokens in `theme/tokens.scss` so the dark and light themes stay in sync.
+ */
+
+html {
+    background-color: var(--surface-canvas);
+}
+
+body {
+    color: var(--text-primary);
+    background-color: var(--surface-canvas);
+    transition: background-color var(--transition-base) ease, color var(--transition-base) ease;
+}
+
+::selection {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+}
+
+input::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+input.hover::placeholder,
+input.enter::placeholder {
+    color: var(--text-primary);
+    opacity: 1;
+}
+
+/**
+ * Keyboard focus.
+ *
+ * The application drives focus through the `.focus` class (remote / d-pad),
+ * while `:focus-visible` covers keyboard and assistive technology users.
+ * Both draw the same ring so the indicator is never ambiguous.
+ */
+:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--radius-sm);
+}
+
+body.no--animation *,
+body.no--animation *::before,
+body.no--animation *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+}
+
+/**
+ * Respect the operating system "reduce motion" preference.
+ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/**
+ * Forced colours / high contrast mode.
+ */
+@media (forced-colors: active) {
+    :focus-visible {
+        outline: 0.15em solid CanvasText;
+        outline-offset: 0.1em;
+    }
+}

@@ -1,10 +1,184 @@
-.welcome{
+/**
+ * Netflix-Style Splash Screen
+ * Modern animated loading screen with brand logo
+ */
+
+.welcome {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 100;
+    background: var(--brand-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.welcome--fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.welcome__logo {
+    width: 200px;
+    height: 200px;
+    margin-bottom: var(--space-2xl);
+    position: relative;
+    animation: logo-appear 1s ease-out;
+}
+
+.welcome__logo svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--brand-primary);
+    animation: logo-pulse 2s ease-in-out infinite;
+}
+
+.welcome__brand-name {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--brand-primary);
+    margin-bottom: var(--space-lg);
+    animation: text-appear 1s ease-out 0.3s both;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.welcome__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    animation: loading-appear 0.5s ease-out 0.6s both;
+}
+
+.welcome__progress-bar {
+    width: 200px;
+    height: 4px;
+    background: var(--brand-background-secondary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.welcome__progress-fill {
+    height: 100%;
+    background: var(--brand-primary);
+    border-radius: var(--radius-full);
+    animation: progress-animation 2s ease-in-out infinite;
+    width: 0%;
+}
+
+.welcome__status {
+    font-size: var(--font-size-sm);
+    color: var(--brand-text-secondary);
+    opacity: 0.7;
+    text-align: center;
+    max-width: 300px;
+}
+
+/* Animations */
+@keyframes logo-appear {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes logo-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+@keyframes text-appear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes loading-appear {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes progress-animation {
+    0% {
+        width: 0%;
+        transform: translateX(-100%);
+    }
+    50% {
+        width: 50%;
+        transform: translateX(0);
+    }
+    100% {
+        width: 100%;
+        transform: translateX(0);
+    }
+}
+
+/* Fallback for old background image */
+.welcome--fallback {
     background: #000 url(../img/welcome.jpg) no-repeat 50% 50%;
     background-size: cover;
+}
+
+.welcome--fallback .welcome__brand-name,
+.welcome--loading {
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: $media_md) {
+    .welcome__logo {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .welcome__brand-name {
+        font-size: var(--font-size-4xl);
+    }
+    
+    .welcome__progress-bar {
+        width: 150px;
+    }
+}
+
+@media (max-width: $media_sm) {
+    .welcome__logo {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .welcome__brand-name {
+        font-size: var(--font-size-3xl);
+        letter-spacing: 2px;
+    }
+    
+    .welcome__progress-bar {
+        width: 120px;
+    }
 }

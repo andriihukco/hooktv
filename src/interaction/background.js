@@ -49,7 +49,7 @@ let timer_change
  */
 function init(){
     Storage.listener.follow('change', (event)=>{
-        if(event.name == 'background' || event.name == 'background_type') resize()
+        if(event.name == 'background' || event.name == 'background_type' || event.name == 'interface_theme') resize()
     })
 
     let u = Platform.any() ? Manifest.github_lampa : './'
@@ -145,16 +145,26 @@ function draw(data, item, noimage){
         }
 
 
-        item.ctx.globalAlpha = type == 'poster' ? 0.7 : 0.6
-        item.ctx.globalCompositeOperation = 'multiply'
+        // Light theme washes the artwork towards the canvas colour, dark theme darkens it
+        let light = document.documentElement.getAttribute('data-theme') == 'light'
+
+        item.ctx.globalAlpha = light ? 1 : type == 'poster' ? 0.7 : 0.6
+        item.ctx.globalCompositeOperation = light ? 'source-over' : 'multiply'
 
         let angle = 90 * Math.PI / 180,
             x2 = window.screen_width * Math.cos(angle),
             y2 = window.screen_height * Math.sin(angle)
 
         let gradient = item.ctx.createLinearGradient(0, 0, x2, y2)
+
+        if(light){
+            gradient.addColorStop(0, 'rgba(242,242,247,0.93)')
+            gradient.addColorStop(1, 'rgba(242,242,247,0.8)')
+        }
+        else{
             gradient.addColorStop(0, 'rgba(0,0,0,1)')
             gradient.addColorStop(1, 'rgba(0,0,0,'+(type == 'poster' ? 0.4 : 0)+')')
+        }
 
         item.ctx.fillStyle = gradient
 

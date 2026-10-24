@@ -5,7 +5,7 @@
     right: 1em;
     bottom: 3em;
     z-index: 1;
-    background-color: rgba(0,0,0,0.9);
+    background-color: var(--surface-media-strong);
     display: none;
     pointer-events: none;
     border-radius: 1em;
@@ -29,23 +29,23 @@
         }
 
         &:nth-child(1){
-            color: #fff;
+            color: var(--text-media);
         }
 
         &:nth-child(2){
-            color: #9f9f9f;
+            color: var(--text-media-muted);
         }
 
         &:nth-child(3){
-            color: #6c6c6c;
+            color: rgba(255,255,255,0.55);
         }
 
         &:nth-child(4){
-            color: #5e5e5e;
+            color: rgba(255,255,255,0.45);
         }
 
         &:nth-child(5){
-            color: #4c4c4c;
+            color: rgba(255,255,255,0.35);
         }
 
         .time-line{

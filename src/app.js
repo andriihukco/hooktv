@@ -1,5 +1,6 @@
 import Define from './utils/define/define'
 import PromisePolyfill from './utils/define/promise'
+import Brand from './core/brand'
 import Manifest from './core/manifest'
 import Lang from './core/lang'
 import Platform from './core/platform'
@@ -124,6 +125,7 @@ import ServiceFPS from './services/fps'
 import ServiceEvents from './services/events'
 import ServiceChildren from './services/children'
 import ServiceRemoteConfiguration from './services/remote_configuration'
+import ServiceOnline from './services/online'
 
 window.screen_width  = window.innerWidth
 window.screen_height = window.innerHeight
@@ -161,19 +163,22 @@ Arrays.extend(window.lampa_settings,{
     socket_methods: true,
 
     // Использовать аккаунты CUB
-    account_use: true,
+    account_use: false,
 
     // Синхронизировать закладки, таймкоды и прочее
-    account_sync: true,
+    account_sync: false,
 
     // Разрешить установку плагинов и расширений
-    plugins_use: true,
+    plugins_use: false,
 
     // Разрешить использование магазина расширений
-    plugins_store: true,
+    plugins_store: false,
 
     // Показывать кнопку торрентов
     torrents_use: torrents_use,
+
+    // Минимальный интерфейс: верхняя навигация Home / Series / Movies / Favorites + поиск
+    minimal_ui: true,
 
     // Отключить фитчи куба и лампы
     disable_features: {
@@ -182,17 +187,17 @@ Arrays.extend(window.lampa_settings,{
         // Блокировка ЛГБТ-контента
         lgbt: false,
         // Реакции
-        reactions: false,
+        reactions: true,
         // Обсуждения
-        discuss: false,
+        discuss: true,
         // ИИ
-        ai: false,
+        ai: true,
         // Подписка на уведомления
-        subscribe: false,
+        subscribe: true,
         // Черный список плагинов
         blacklist: false,
         // Подписка на актеров
-        persons: false,
+        persons: true,
         // Вспомогатиленые сервисы на подписку према
         ads: false,
         // Трейлеры
@@ -225,13 +230,13 @@ Arrays.extend(window.lampa_settings,{
     iptv: false,
 
     // Показать ленту
-    feed: true,
+    feed: false,
 
     // Различные сервисы в приложении
     services: true,
 
     // Подключить YouTube API
-    youtube: true,
+    youtube: false,
 
     // Определять гео по IP, иначе будет RU
     geo: true,
@@ -277,6 +282,7 @@ if(window.lampa_settings.iptv){
  */
 function initClass(){
     let api = {
+        Brand,
         Listener: Subscribe(),
         Lang,
         Subscribe,
@@ -633,7 +639,7 @@ function startApp(){
     Logs.init()
     LoadingProgress.status('Logs init')
 
-    Broadcast.init()
+    if(!window.lampa_settings.minimal_ui) Broadcast.init()
     LoadingProgress.status('Broadcast init')
 
     Search.init()
@@ -721,6 +727,9 @@ function startApp(){
     ServiceRemoteConfiguration.init()
     LoadingProgress.status('ServiceRemoteConfiguration init')
 
+    ServiceOnline.init()
+    LoadingProgress.status('ServiceOnline init')
+
     // Обновляем слои
 
     Layer.update()
@@ -758,10 +767,10 @@ function showApp(){
 
         Screensaver.enable()
 
-        $('.welcome').fadeOut(500,()=>{
+        $('.welcome').fadeOut(500,function(){
             $(this).remove()
         })
-    },1000)
+    },500)
 
     // Старт приложения
     startApp()
@@ -808,19 +817,19 @@ function loadTask(){
     })
 
     Task.queue((next)=>{
-        LoadingProgress.status('Proxy initialization')
+        LoadingProgress.status('Account initialization')
 
         LoadingProgress.step(4)
 
-        VPN.task(next)
+        Account.task(next)
     })
 
     Task.queue((next)=>{
-        LoadingProgress.status('Account initialization')
+        LoadingProgress.status('Cache initialization')
 
         LoadingProgress.step(5)
 
-        Account.task(next)
+        next()
     })
 
     Task.secondary(()=>{
@@ -829,6 +838,7 @@ function loadTask(){
 
     Task.secondary(()=>{
         LoadingProgress.status('Loading plugins')
+        LoadingProgress.step(6)
 
         Plugins.load(showApp)
     })
@@ -840,8 +850,9 @@ function loadTask(){
  * Загрузка языка
  */
 function loadLang(){
-    let code = window.localStorage.getItem('language') || 'ru'
+    let code = window.localStorage.getItem('language') || 'en'
 
+    LoadingProgress.setTotalSteps(6)
     LoadingProgress.step(1)
     
     if(['ru','en'].indexOf(code) >= 0) loadTask()

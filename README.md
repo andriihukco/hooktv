@@ -1,24 +1,107 @@
-# HOOK
+# HOOK TV
 
-Все исходники приложения **HOOK**, всем желающим прошу до хаты :)
+Modern streaming application with Netflix-inspired UI/UX, built-in torrent support, and customizable branding.
 
-Приветствуется ваши идеи и правки в коде, сделаем вместе приложение еще лучше!
+HOOK TV is a streaming app for web, Android TV, and TV platforms. It is built for a couch-first experience: large focus states, a light and a dark theme that match Apple's system look, and a settings screen that shows only the essentials.
 
-MSX версия готовится как часть HOOK TV.
+## Features
 
-## Как запустить
+- **Apple-style themes**: Light, dark, or follow the system. Switch in Settings → Interface → Theme.
+- **Brightness control**: Dim the screen in software from 100% down to 40%, without touching the device.
+- **Essential settings first**: The main menu holds Interface, Player, TorrServer, Parental Control, and Other. Everything else lives under Other.
+- **One-tap TorrServer setup**: Settings → TorrServer → "Find server automatically" looks for TorrServer on this device and connects to it.
+- **Rounded, filled icons**: Material Icons (Rounded, Filled) are inlined as SVG, so there is no icon font to download.
+- **Lightweight release builds**: `npm run release` produces a minified web bundle.
+- **Minimal, Netflix-style navigation**: one top bar with Home, Movies, Series and Favorites, plus search and settings. The product profile lives in `window.lampa_settings` in `src/app.js` (`minimal_ui`, `account_use`, `plugins_use`, `torrents_use`).
+- **No playback source is bundled**: playback needs a licensed source to be added to the app. Torrent and plugin sources are off in this profile.
 
-Открываем CMD и запускаем команду `npm install`
+## Branding
 
-Затем запускаем команду `npm run start`
+Complete rebranding is possible through the centralized brand configuration system. See [BRANDING_GUIDE.md](BRANDING_GUIDE.md) for detailed instructions.
 
-Открываем браузер и вводим адрес `http://localhost:3000`
+### Quick Brand Change
 
-## Документация
+Edit `src/core/brand.js`:
 
-В приложении появилась документация, которая будет постоянно обновляться и дополняться. Выполните команду `npm run doc` затем перейдите в папку `build/doc` и откройте файл `index.html`
+```javascript
+const BRAND_CONFIG = {
+    name: {
+        short: 'HOOK',
+        full: 'HOOK TV'
+    },
+    visual: {
+        primary: '#0A84FF',
+        background: '#000000'
+    }
+}
+```
 
-Техническая документация собирается из локального проекта.
+## Design System
 
-## Переход на версию 3.0
-В версии 3.0 произошли значительные изменения в структуре проекта и кодовой базе. Пожалуйста, ознакомьтесь с [руководством по миграции](UPGRADE.md), чтобы узнать, как обновить ваше приложение до новой версии.
+The application follows a comprehensive design system documented in [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
+
+### Key Design Principles
+
+- Content-first design
+- Smooth motion and animations
+- Clear visual hierarchy
+- Accessibility-first approach
+- Responsive across all devices
+
+## Architecture
+
+- **Modular Components**: Reusable UI components with clear separation of concerns
+- **Service Layer**: Business logic separated from UI
+- **State Management**: Centralized state with local storage persistence
+- **Plugin System**: Extensible architecture for adding features
+- **Theme System**: Design tokens in `src/sass/theme/tokens.scss`; the active theme is set as `data-theme` on `<html>`
+- **Icons**: `src/templates/icons/sprite.js` (navigation and head), `src/utils/material.js` (inline glyphs)
+
+## Configuration
+
+### Brand Configuration
+
+See `src/core/brand.js` for all brand-related settings.
+
+### Feature Flags
+
+Enable/disable features through the brand configuration:
+
+```javascript
+features: {
+    torrents: true,
+    online_sources: true,
+    iptv: true,
+    account_sync: true
+}
+```
+
+### Service Configuration
+
+Configure external services (TMDB, TorrServer, etc.) in brand config. The API and CDN endpoints in brand config still point at the StreamFlow services until you set your own.
+
+## Migration
+
+For migration from previous versions, see [UPGRADE.md](UPGRADE.md).
+
+## Contributing
+
+We welcome contributions! Please:
+
+1. Follow the existing code style
+2. Add tests for new features
+3. Update documentation
+4. Ensure accessibility standards
+
+## License
+
+Proprietary - All rights reserved.
+
+## Support
+
+For support and documentation, see the in-app documentation or contact the development team.
+
+## Acknowledgments
+
+Built with modern web technologies and inspired by the best streaming platforms.
+

@@ -51,7 +51,7 @@
             width: 3em;
             height: 3.8em;
             border-radius: 0.4em;
-            background-color: #3E3E3E;
+            background-color: var(--surface-placeholder);
 
             &::before{
                 display: block;

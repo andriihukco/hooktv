@@ -167,14 +167,14 @@
 }
 
 .empty-template{
-    background-color: rgba(255,255,255,0.3);
+    background-color: var(--surface-media);
     padding: 1em;
     display: flex;
     align-items: center;
     border-radius: 0.3em;
 
     > * {
-        background: rgba(0,0,0,0.3);
+        background: var(--surface-media);
         border-radius: 0.3em;
     }
 

@@ -3,7 +3,7 @@
     flex-shrink: 0;
 
     &__imgbox{
-        background-color: #3E3E3E;
+        background-color: var(--surface-placeholder);
         padding-bottom: 83%;
         position: relative;
         border-radius: 0.3em;

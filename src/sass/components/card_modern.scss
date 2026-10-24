@@ -1,0 +1,290 @@
+/**
+ * Modern Card Component
+ * Netflix-inspired card design with smooth animations and hover effects
+ */
+
+.card-modern {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
+    
+    // Card sizes
+    &--small {
+        width: var(--card-width-small);
+        height: calc(var(--card-width-small) * var(--card-ratio));
+    }
+    
+    &--medium {
+        width: var(--card-width-medium);
+        height: calc(var(--card-width-medium) * var(--card-ratio));
+    }
+    
+    &--large {
+        width: var(--card-width-large);
+        height: calc(var(--card-width-large) * var(--card-ratio));
+    }
+    
+    // Hover/Focus state
+    &:hover,
+    &.focus {
+        transform: scale(1.05);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+    }
+    
+    // Focus state for TV navigation
+    &.focus {
+        outline: none;
+        box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color),
+                    0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.card-modern__poster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: var(--brand-background-card);
+    transition: transform var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-modern__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: var(--brand-gradient-card);
+    pointer-events: none;
+    transition: height var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-modern__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-md);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1),
+                transform var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-modern:hover .card-modern__content,
+.card-modern.focus .card-modern__content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-modern__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-text-primary);
+    margin: 0 0 var(--space-xs) 0;
+    line-height: var(--line-height-tight);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.card-modern__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-xs);
+    color: var(--brand-text-secondary);
+}
+
+.card-modern__year {
+    font-weight: var(--font-weight-medium);
+}
+
+.card-modern__rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    
+    &::before {
+        content: '★';
+        color: var(--brand-primary);
+    }
+}
+
+.card-modern__badge {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    background-color: var(--brand-primary);
+    color: var(--brand-text-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-modern__badge--new {
+    background-color: var(--brand-primary);
+}
+
+.card-modern__badge--top {
+    background-color: var(--brand-accent);
+}
+
+.card-modern__badge--quality {
+    background-color: var(--brand-background-secondary);
+    border: 1px solid var(--brand-border);
+}
+
+// Loading state
+.card-modern--loading {
+    .card-modern__poster {
+        background: linear-gradient(
+            90deg,
+            var(--brand-background-card) 25%,
+            var(--brand-background-secondary) 50%,
+            var(--brand-background-card) 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+    }
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+// Error state
+.card-modern--error {
+    .card-modern__poster {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--brand-background-card);
+    }
+    
+    .card-modern__error-icon {
+        font-size: var(--font-size-3xl);
+        color: var(--brand-text-muted);
+    }
+}
+
+// Watched indicator
+.card-modern__watched {
+    position: absolute;
+    top: var(--space-sm);
+    left: var(--space-sm);
+    width: 24px;
+    height: 24px;
+    background-color: var(--brand-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &::after {
+        content: '✓';
+        color: var(--brand-text-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+    }
+}
+
+// Progress bar for watched content
+.card-modern__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--brand-background-secondary);
+    
+    &-bar {
+        height: 100%;
+        background-color: var(--brand-primary);
+        transition: width var(--transition-base) ease;
+    }
+}
+
+// Favorite indicator
+.card-modern__favorite {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base) ease;
+    
+    &::after {
+        content: '♥';
+        color: var(--brand-text-primary);
+        font-size: var(--font-size-lg);
+    }
+    
+    &--active {
+        opacity: 1;
+        background-color: var(--brand-primary);
+    }
+}
+
+.card-modern:hover .card-modern__favorite {
+    opacity: 1;
+}
+
+// Responsive adjustments
+@media (max-width: $media_md) {
+    .card-modern--small {
+        width: 100px;
+        height: calc(100px * var(--card-ratio));
+    }
+    
+    .card-modern--medium {
+        width: 140px;
+        height: calc(140px * var(--card-ratio));
+    }
+    
+    .card-modern--large {
+        width: 180px;
+        height: calc(180px * var(--card-ratio));
+    }
+}
+
+@media (max-width: $media_sm) {
+    .card-modern--small {
+        width: 90px;
+        height: calc(90px * var(--card-ratio));
+    }
+    
+    .card-modern--medium {
+        width: 120px;
+        height: calc(120px * var(--card-ratio));
+    }
+    
+    .card-modern--large {
+        width: 150px;
+        height: calc(150px * var(--card-ratio));
+    }
+}

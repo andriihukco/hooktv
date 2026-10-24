@@ -1,0 +1,148 @@
+/**
+ * Brand Variables - CSS Custom Properties
+ * These are automatically generated from brand.js configuration
+ * All colors, spacing, and UI tokens should use these variables
+ */
+
+:root {
+    // Brand Colors
+    --brand-primary: #0A84FF;
+    --brand-primary-dark: #0060DF;
+    --brand-primary-light: #409CFF;
+    
+    // Background Colors
+    --brand-background: #000000;
+    --brand-background-secondary: #1C1C1E;
+    --brand-background-card: #2C2C2E;
+    
+    // Text Colors
+    --brand-text-primary: #FFFFFF;
+    --brand-text-secondary: #EBEBF5;
+    --brand-text-muted: #98989D;
+    
+    // Accent Colors
+    --brand-accent: #0A84FF;
+    --brand-accent-hover: #409CFF;
+    
+    // UI Elements
+    --brand-border: #404040;
+    --brand-divider: #333333;
+    --brand-overlay: rgba(0, 0, 0, 0.7);
+    
+    // Gradients
+    --brand-gradient-primary: linear-gradient(135deg, #0A84FF 0%, #0060DF 100%);
+    --brand-gradient-card: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+    
+    // Spacing Scale (Netflix-like spacing system)
+    --space-xs: 0.25rem;   // 4px
+    --space-sm: 0.5rem;    // 8px
+    --space-md: 1rem;      // 16px
+    --space-lg: 1.5rem;    // 24px
+    --space-xl: 2rem;      // 32px
+    --space-2xl: 3rem;     // 48px
+    --space-3xl: 4rem;     // 64px
+    
+    // Border Radius
+    --radius-sm: 0.25rem;   // 4px
+    --radius-md: 0.5rem;    // 8px
+    --radius-lg: 0.75rem;   // 12px
+    --radius-xl: 1rem;     // 16px
+    --radius-full: 9999px;
+    
+    // Typography Scale
+    --font-size-xs: 0.75rem;    // 12px
+    --font-size-sm: 0.875rem;   // 14px
+    --font-size-base: 1rem;     // 16px
+    --font-size-lg: 1.125rem;   // 18px
+    --font-size-xl: 1.25rem;    // 20px
+    --font-size-2xl: 1.5rem;    // 24px
+    --font-size-3xl: 2rem;      // 32px
+    --font-size-4xl: 2.5rem;    // 40px
+    --font-size-5xl: 3rem;      // 48px
+    
+    // Font Weights
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    // Line Heights
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+    
+    // Transitions
+    --transition-fast: 150ms;
+    --transition-base: 200ms;
+    --transition-slow: 300ms;
+    
+    // Shadows
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    // Z-index Scale
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    // Card Sizes
+    --card-width-small: 120px;
+    --card-width-medium: 160px;
+    --card-width-large: 200px;
+    --card-ratio: 1.5; // height = width * ratio
+    
+    // Netflix-specific UI tokens
+    --netflix-red: #E50914;
+    --netflix-black: #141414;
+    --netflix-dark-gray: #181818;
+    --netflix-light-gray: #2F2F2F;
+    --netflix-white: #FFFFFF;
+    --netflix-gray: #808080;
+    
+    // Focus states (for TV/remote navigation)
+    --focus-ring-color: var(--brand-primary);
+    --focus-ring-width: 3px;
+    --focus-ring-offset: 2px;
+}
+
+// Dark mode (Apple systemBackground)
+[data-theme="dark"] {
+    --brand-background: #000000;
+    --brand-background-secondary: #1C1C1E;
+    --brand-background-card: #2C2C2E;
+    --brand-text-primary: #FFFFFF;
+    --brand-text-secondary: #EBEBF5;
+}
+
+// Light mode (Apple systemGroupedBackground)
+[data-theme="light"] {
+    --brand-background: #F2F2F7;
+    --brand-background-secondary: #FFFFFF;
+    --brand-background-card: #FFFFFF;
+    --brand-text-primary: #000000;
+    --brand-text-secondary: #3C3C43;
+}
+
+// Compact mode (for smaller screens)
+[data-density="compact"] {
+    --space-xs: 0.125rem;
+    --space-sm: 0.25rem;
+    --space-md: 0.5rem;
+    --space-lg: 0.75rem;
+    --space-xl: 1rem;
+}
+
+// Comfortable mode (for larger screens)
+[data-density="comfortable"] {
+    --space-xs: 0.375rem;
+    --space-sm: 0.75rem;
+    --space-md: 1.25rem;
+    --space-lg: 2rem;
+    --space-xl: 2.5rem;
+}

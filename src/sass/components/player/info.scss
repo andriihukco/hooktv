@@ -3,7 +3,7 @@
     top: $offset;
     left: $offset;
     right: $offset;
-    background-color: rgba(0,0,0,0.3);
+    background-color: var(--surface-media);
     transform: translateY(-150%);
     transition: transform 0.3s, opacity 0.3s;
     border-radius: 0.5em;
@@ -115,7 +115,7 @@ body.glass--style.platform--apple,
 body.glass--style.platform--apple_tv,
 body.glass--style.platform--android{
     .player-info{
-        background-color: rgba(0,0,0,0.3);
+        background-color: var(--surface-media);
         backdrop-filter: blur(1em);
     }
 }

@@ -5,7 +5,7 @@
         padding-bottom: 57%;
         position: relative;
         border-radius: 1em;
-        background-color: rgba(0,0,0,0.3);
+        background-color: var(--surface-media);
         transition: background-color $speed;
 
         img{
@@ -29,7 +29,7 @@
         right: 0;
         display: none;
         flex-direction: column;
-        background-color: rgba(0,0,0,0.5);
+        background-color: var(--surface-media);
         border-radius: 1em;
         justify-content: flex-end;
     }
@@ -75,7 +75,7 @@
             top: -0.5em;
             right: -0.5em;
             bottom: -0.5em;
-            border: 0.3em solid #fff;
+            border: 0.3em solid var(--focus-ring-color);
             border-radius: 1.4em;
             pointer-events: none;
         }
@@ -124,7 +124,7 @@
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    border: 0.2em dashed rgba(255,255,255,0.2);
+                    border: 0.2em dashed var(--border-media);
                     border-radius: 1em;
                 }
             }

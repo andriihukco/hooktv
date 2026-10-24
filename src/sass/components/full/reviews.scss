@@ -1,6 +1,6 @@
 .full-review{
     padding: $offset;
-    background-color: rgba(0,0,0,0.4);
+    background-color: var(--surface-media);
     border-radius: 1em;
     flex-shrink: 0;
     display: flex;
@@ -140,7 +140,7 @@
             top: -0.5em;
             right: -0.5em;
             bottom: -0.5em;
-            border: 0.3em solid #fff;
+            border: 0.3em solid var(--focus-ring-color);
             border-radius: 1.4em;
             pointer-events: none;
         }

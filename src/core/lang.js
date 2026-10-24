@@ -4,15 +4,13 @@ import Manifest from './manifest'
 import Utils from '../utils/utils'
 
 import meta from '../lang/meta'
-import ru from '../lang/ru'
 import en from '../lang/en'
 
 let langs = {}
 let keys  = {}
 
-let lang_default = 'ru'
+let lang_default = 'en'
 
-Object.defineProperty(langs, 'ru', { get: ()=> ru })
 Object.defineProperty(langs, 'en', { get: ()=> en })
 
 for(let code in meta.languages){
@@ -33,7 +31,7 @@ for(let code in meta.languages){
 function translate(name, custom_code){
     name = name + ''
 
-    let code = custom_code || Storage.get('language','ru')
+    let code = custom_code || Storage.get('language','en')
     let result = ''
 
     if(!langs[code]) code = lang_default
@@ -100,7 +98,7 @@ function codes(){
 }
 
 function selected(check_codes){
-    return check_codes.indexOf(Storage.get('language','ru')) >= 0 ? true : false
+    return check_codes.indexOf(Storage.get('language','en')) >= 0 ? true : false
 }
 
 export default {

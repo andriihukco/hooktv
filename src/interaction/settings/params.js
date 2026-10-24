@@ -223,7 +223,7 @@ function init(){
 
 
     //язык и комбинации для поиска
-    let langcode = Storage.get('language', 'ru')
+    let langcode = Storage.get('language', 'en')
     let langname = Lang.codes()[langcode]
     let selector = {
         'df': '#{settings_param_torrent_lang_orig}',
@@ -241,7 +241,7 @@ function init(){
 
     select('parse_lang',selector,'df')
 
-    select('tmdb_lang',Lang.codes(),'ru')
+    select('tmdb_lang',Lang.codes(),'en')
 
     // баг со старыми телеками, неправильно работает Utils.protocol()
     // let agent = navigator.userAgent.toLowerCase()
@@ -437,8 +437,10 @@ function displayAddList(elem){
 function update(elem,elems,elems_html){
     let name = elem.data('name')
 
+    if(!name || !values[name]) return
+
     let key = elem.data('string') ? window.localStorage.getItem(name) || defaults[name] : Storage.get(name, defaults[name] + '')
-    let val = typeof values[name] == 'string' ? key : values[name][key] || values[name][defaults[name]]
+    let val = typeof values[name] == 'string' ? key : (values[name] ? (values[name][key] || values[name][defaults[name]]) : key)
     let plr = elem.attr('placeholder')
 
     if(!val && plr) val = plr
@@ -505,6 +507,22 @@ select('navigation_type', {
     'mouse': '#{settings_param_navigation_mouse}',
     'touch': '#{settings_param_navigation_touch}',
 }, 'controll')
+
+select('interface_theme',{
+    'system': '#{settings_param_theme_system}',
+    'dark': '#{settings_param_theme_dark}',
+    'light': '#{settings_param_theme_light}'
+},'system')
+
+select('interface_brightness',{
+    'b100': '100%',
+    'b90': '90%',
+    'b80': '80%',
+    'b70': '70%',
+    'b60': '60%',
+    'b50': '50%',
+    'b40': '40%'
+},'b100')
 
 select('poster_size',{
     'w200': '#{settings_param_poster_quality_low}',

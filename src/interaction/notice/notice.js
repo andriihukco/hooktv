@@ -33,7 +33,7 @@ class Notice{
     }
 
     init(){
-        this.icon = Head.addIcon(Template.string('icon_bell'), this.open.bind(this))
+        this.icon = window.lampa_settings.minimal_ui ? $('<div>') : Head.addIcon(Template.string('icon_bell'), this.open.bind(this))
         this.icon.addClass('notice--icon')
 
         this.classes.all   = new NoticeAll()

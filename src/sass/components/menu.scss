@@ -4,7 +4,7 @@
     &__split{
         margin: 1em 1em;
         width: 2.3em;
-        border-top: 2px solid rgba(255, 255, 255, 0.1);
+        border-top: 2px solid var(--border-subtle);
         margin-left: 1.7em;
     }
 
@@ -16,7 +16,7 @@
     &__item{
         display: flex;
         align-items: center;
-        color: #fff;
+        color: var(--text-primary);
         position: relative;
         padding: 0.9em $offset;
         border-radius: 1em;
@@ -28,21 +28,21 @@
         &.focus,
         &.traverse,
         &.hover{
-            background-color: #fff;
-            color: #000;
+            background-color: var(--focus-fill);
+            color: var(--focus-fill-text);
 
             .menu__ico{
                 > img{
-                    filter: invert(1);
+                    filter: var(--focus-invert);
                 }
 
                 [stroke]{
-                    stroke: #000;
+                    stroke: var(--focus-fill-text);
                 }
                 path[fill],
                 rect[fill],
                 circle[fill]{
-                    fill: #000;
+                    fill: var(--focus-fill-text);
                 }
             }
         }
@@ -53,7 +53,7 @@
                 position: absolute;
                 left: 27%;
                 margin-left: -0.5em;
-                color: #fff;
+                color: var(--focus-fill-text);
             }
 
             &::before{
@@ -124,7 +124,7 @@
         align-items: center;
 
         &:nth-child(even){
-            background: rgba(255,255,255,0.1);
+            background: var(--surface-hover);
         }
     }
 
@@ -165,9 +165,9 @@
         }
 
         &.focus{
-            background: rgba(255,255,255,1);
+            background: var(--focus-fill);
             border-radius: 0.3em;
-            color: #000
+            color: var(--focus-fill-text)
         }
     }
     &__toggle{

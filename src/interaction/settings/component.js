@@ -58,6 +58,20 @@ function Component(name, component_params = {}){
 
         Params.bind(comp.find('.selector'), comp)
 
+        comp.find('.settings-folder').unbind('hover:enter click').on('hover:enter click', (event)=>{
+            let targetComponent = $(event.currentTarget).data('component')
+            if(targetComponent && window.Lampa && window.Lampa.Settings){
+                scrl.destroy()
+                comp.remove()
+                Params.listener.remove('update_scroll', updateScroll)
+                window.Lampa.Settings.create(targetComponent, {
+                    onBack: ()=>{
+                        window.Lampa.Settings.create(name)
+                    }
+                })
+            }
+        })
+
         Params.listener.follow('update_scroll',updateScroll)
 
         Params.listener.follow('update_scroll_position',()=>{
@@ -65,6 +79,30 @@ function Component(name, component_params = {}){
         })
 
         updateScroll()
+    }
+
+    /**
+     * Все разделы, которые не входят в основное меню, выводим в конце раздела «Other»
+     */
+    function addAdvanced(){
+        let components = Api.allComponents()
+        let anchor = comp.find('.settings-folder').last()
+
+        for(let key in components){
+            let data = components[key]
+
+            if(data.essential) continue
+
+            let item = $(`<div class="settings-folder selector" data-component="${key}">
+                <div class="settings-folder__icon">${data.icon}</div>
+                <div class="settings-folder__name">${data.name}</div>
+            </div>`)
+
+            if(anchor.length) anchor.after(item)
+            else comp.prepend(item)
+
+            anchor = item
+        }
     }
 
     /**
@@ -125,6 +163,8 @@ function Component(name, component_params = {}){
      * Стартуем
      */
     function start(){
+        if(name == 'more') addAdvanced()
+
         addParams()
 
         buildEvents()

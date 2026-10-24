@@ -1,5 +1,5 @@
 .helper{
-    background: #4b8dcb;
+    background: var(--info);
     position: absolute;
     bottom: 0;
     left: 0;
@@ -10,7 +10,7 @@
     opacity: 0;
     pointer-events: none;
     text-align: center;
-    color: #fff;
+    color: var(--on-info);
 
     &__ico{
         margin-right: 1em;
@@ -49,7 +49,7 @@
     right: 0;
     left: 0;
     bottom: 0;
-    background-color: #fff;
+    background-color: var(--on-info);
     border-radius: 0.3em;
 
     animation-duration: 0.2s;

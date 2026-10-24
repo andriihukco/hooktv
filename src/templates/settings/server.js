@@ -1,4 +1,9 @@
 let html = `<div>
+    <div class="settings-param selector" data-type="button" data-name="torrserver_autodetect" data-static="true">
+        <div class="settings-param__name">#{settings_server_autodetect}</div>
+        <div class="settings-param__descr">#{settings_server_autodetect_descr}</div>
+    </div>
+
     <div class="settings-param selector is--android" data-type="toggle" data-name="internal_torrclient" data-children="internal_torrclient">
         <div class="settings-param__name">#{settings_server_client}</div>
         <div class="settings-param__value"></div>

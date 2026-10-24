@@ -13,8 +13,8 @@
 
     &__count{
         flex-shrink: 0;
-        background-color: #fff;
-        color: #000;
+        background-color: var(--focus-fill);
+        color: var(--focus-fill-text);
         font-size: 1.3em;
         padding: 0.4em 0.6em;
         font-weight: 600;
@@ -22,7 +22,7 @@
     }
 
     &.focus{
-        background-color: #fff;
-        color: #000;
+        background-color: var(--focus-fill);
+        color: var(--focus-fill-text);
     }
 }

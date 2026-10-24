@@ -1,16 +1,17 @@
 {
   "name": "hook-tv",
-  "version": "0.0.1",
-  "description": "HOOK TV",
+  "version": "1.0.0",
+  "description": "HOOK TV - Apple-style streaming app for web and TV",
   "main": "index.js",
   "scripts": {
     "start": "gulp",
     "debug": "gulp debug",
+    "release": "gulp release",
     "test": "vitest",
     "doc": "gulp doc"
   },
-  "author": "unk",
-  "license": "ISC",
+  "author": "HOOK TV",
+  "license": "Proprietary",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.5",
     "autoprefixer": "^10.4.0",

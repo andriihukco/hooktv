@@ -1,0 +1,305 @@
+body.zen--mode {
+    /* ── Global atmosphere ── */
+    .background {
+        opacity: 0.12;
+    }
+
+    .background::after {
+        opacity: 0.4;
+    }
+
+    /* ── Header: less chrome ── */
+    .head {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .head__action:not(.focus) {
+        opacity: 0.45;
+    }
+
+    .head__split {
+        opacity: 0.25;
+    }
+
+    /* ── Section lines ── */
+    .items-line {
+        padding-bottom: 2.5em;
+    }
+
+    .items-line__title {
+        font-size: 1.85em;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+    }
+
+    .items-line__more {
+        display: none !important;
+    }
+
+    /* ── Cards: poster-first grid ── */
+    .card {
+        width: 13.5em;
+    }
+
+    .card__view {
+        margin-bottom: 0.85em;
+    }
+
+    .card__title {
+        font-size: 1.45em;
+        font-weight: 400;
+        line-height: 1.15;
+        letter-spacing: 0.01em;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        max-height: 2.4em;
+    }
+
+    .card__age,
+    .card__vote,
+    .card__quality,
+    .card__type,
+    .card__marker,
+    .card__icons,
+    .card__subscribe,
+    .card-watched,
+    .card__promo,
+    .card__textbox,
+    .card__details {
+        display: none !important;
+    }
+
+    .card.focus .card__view::after {
+        border-radius: 0.35em;
+        box-shadow: 0 0 0 0.12em rgba(255, 255, 255, 0.95);
+    }
+
+    .card__img {
+        border-radius: 0.35em;
+    }
+
+    .card--small .card__title {
+        font-size: 1.2em;
+    }
+
+    .card--category {
+        width: 18%;
+    }
+
+    .card-more__details,
+    .card-more__title-icon {
+        display: none !important;
+    }
+
+    /* ── Detail page: typography hero ── */
+    .full-start-new__title {
+        font-size: 4.5em;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+    }
+
+    .full-start-new__tagline {
+        font-size: 1.35em;
+        font-weight: 300;
+        opacity: 0.65;
+        letter-spacing: 0.01em;
+    }
+
+    .full-start-new__head {
+        font-size: 1.05em;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.5;
+    }
+
+    .full-start-new__details {
+        font-size: 1.15em;
+        line-height: 1.5;
+        opacity: 0.75;
+        margin-bottom: 1.5em;
+    }
+
+    .full-start-new__rate-line,
+    .full-start-new__reactions,
+    .full-start__ratings,
+    .full-start__tags,
+    .full-descr__tags,
+    .tag-count,
+    .info__rate,
+    .reaction,
+    .full-review,
+    .full-review-add {
+        display: none !important;
+    }
+
+    .full-start-new__buttons {
+        .full-start__button.button--book,
+        .full-start__button.button--reaction,
+        .full-start__button.button--subscribe {
+            display: none !important;
+        }
+    }
+
+    .full-start__button {
+        border-radius: 0.2em;
+        font-size: 1.05em;
+        letter-spacing: 0.02em;
+    }
+
+    .full-start__button.button--play {
+        font-size: 1.15em;
+        padding-left: 1.4em;
+        padding-right: 1.6em;
+    }
+
+    .full-descr__text {
+        font-size: 1.12em;
+        line-height: 1.65;
+        opacity: 0.82;
+        max-width: 42em;
+    }
+
+    .full-descr__head {
+        font-size: 1.6em;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+    }
+
+    /* ── Feed & promos ── */
+    .feed-item__info,
+    .feed-item__buttons,
+    .ad-bot,
+    .ad-countdown:not(.ad-countdown--player) {
+        display: none !important;
+    }
+
+    .feed-item__title {
+        font-size: 1.35em;
+        font-weight: 400;
+    }
+
+    /* ── Search & filters ── */
+    .filter .simple-button:not(.focus),
+    .explorer__files .torrent-filter .simple-button:not(.focus) {
+        opacity: 0.45;
+    }
+
+    /* ── Player: minimal pause ── */
+    .player-video__paused {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        width: auto;
+        height: auto;
+        padding: 0;
+        margin-left: -1.2em;
+        margin-top: -1.5em;
+        border-radius: 0;
+        opacity: 0.35;
+        transition: opacity 0.4s ease;
+    }
+
+    .player-video__paused svg {
+        width: 2.4em;
+        height: auto;
+    }
+
+    .player-video__paused svg rect {
+        fill: rgba(255, 255, 255, 0.85);
+    }
+
+    .player:not(.player--panel-visible) {
+        .player-panel,
+        .player-info,
+        .player-footer {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    .player.player--panel-visible {
+        .player-panel {
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(0.6em);
+            -webkit-backdrop-filter: blur(0.6em);
+        }
+
+        .player-info {
+            opacity: 0.6;
+        }
+
+        .player-footer {
+            opacity: 0.85;
+        }
+    }
+
+    .player-panel.panel--paused {
+        .player-panel__line-two .player-panel__element:not(.player-panel__playpause):not(.player-panel__time) {
+            opacity: 0.35;
+        }
+    }
+
+    .player-panel__body {
+        padding: 1.2em 1.4em;
+    }
+
+    .player-panel__timeline {
+        height: 0.28em;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .player-panel__time {
+        font-size: 0.95em;
+        opacity: 0.7;
+        letter-spacing: 0.03em;
+    }
+
+    .player-video__subtitles {
+        font-weight: 400;
+        letter-spacing: 0.01em;
+    }
+
+    .player-video__loader {
+        background: rgba(0, 0, 0, 0.25) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    /* ── Episodes & seasons ── */
+    .season-episode__num,
+    .full-episode__num {
+        font-size: 1.1em;
+        opacity: 0.55;
+    }
+
+    .full-episode__title {
+        font-size: 1.25em;
+        font-weight: 400;
+    }
+
+    /* ── Light theme compatibility ── */
+    &.light--version {
+        .background {
+            display: none;
+        }
+
+        .head {
+            background: transparent;
+        }
+
+        .card__img,
+        .card.focus .card__view::after {
+            border-radius: 0;
+        }
+    }
+
+    /* ── Glass style compatibility ── */
+    &.glass--style {
+        .player-video__paused,
+        .player-video__loader {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+    }
+}

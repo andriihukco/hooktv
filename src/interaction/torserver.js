@@ -7,6 +7,7 @@ import Modal from './modal'
 import Lang from '../core/lang'
 import EpisodeParser from '../utils/episodes_parser'
 import Arrays from '../utils/arrays'
+import Brand from '../core/brand'
 
 let network = new Request()
 
@@ -53,7 +54,7 @@ function add(object, success, fail){
     let json = {
         action: 'add',
         link: object.link,
-        title: '[HOOK] ' + ((object.title)+'').replace('??', '?'),
+        title: '[' + Brand.getName('short') + '] ' + ((object.title)+'').replace('??', '?'),
         poster: object.poster,
         data: send_data ? JSON.stringify(send_data) : '',
         save_to_db: true,
@@ -74,7 +75,7 @@ function hash(object, success, fail){
     let json = {
         action: 'add',
         link: object.link,
-        title: '[HOOK] ' + ((object.title)+'').replace('??', '?'),
+        title: '[' + Brand.getName('short') + '] ' + ((object.title)+'').replace('??', '?'),
         poster: object.poster,
         data: send_data ? JSON.stringify(send_data) : '',
         save_to_db: Storage.get('torrserver_savedb','false'),

@@ -20,7 +20,7 @@
     &__pg,
     &__status{
         font-size: 1.2em;
-        border: 1px solid #fff;
+        border: 1px solid var(--border-media);
         border-radius: 0.2em;
         padding: 0.3em;
     }
@@ -149,7 +149,7 @@
         font-size: 1.15em;
         white-space: nowrap;
         margin-bottom: 0.4em;
-        background: rgba(0,0,0,0.3);
+        background: var(--surface-media);
         padding: 0.3em 0.5em 0.3em 0.3em;
 
         > img{
@@ -241,7 +241,7 @@
     &__button{
         margin-right: 0.75em;
         font-size: 1.3em;
-        background-color: rgba(0,0,0,0.3);
+        background-color: var(--surface-media);
         padding: 0.3em 1em;
         display: flex;
         border-radius: 1em;
@@ -312,7 +312,7 @@
     }
 
     &__rate{
-        background: rgba(0,0,0,0.15);
+        background: var(--surface-media);
         border-radius: 0.3em;
         display: flex;
         align-items: center;
@@ -323,7 +323,7 @@
             width: 1.8em;
             height: 1.5em;
             flex-shrink: 0;
-            background: rgba(0,0,0,0.15);
+            background: var(--surface-media);
             border-radius: 0.3em;
             display: flex;
             align-items: center;

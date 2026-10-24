@@ -12,6 +12,9 @@ import DeviceInput from './device_input'
 
 function open(callSelected){
     let html   = Template.get('lang_choice',{})
+    html.find('.lang__suggested').remove()
+    html.find('.lang__all').removeClass('hide')
+    html.find('.lang__back').remove()
     let scroll = new Scroll({mask:true,over:true})
 
     function btn(name, select){

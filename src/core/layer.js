@@ -6,6 +6,7 @@ import Background from '../interaction/background'
 let timer
 let need_update = false
 let need_visible = false
+let systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : {matches: true}
 
 function init(){
     window.screen_width  = window.innerWidth
@@ -47,6 +48,10 @@ function init(){
 
 
     Storage.listener.follow('change', (event)=>{
+        if(event.name == 'interface_theme') theme()
+
+        if(event.name == 'interface_brightness') brightness()
+
         if(event.name == 'interface_size'){
             size()
             update()
@@ -59,11 +64,52 @@ function init(){
     toggleMobile()
     toggleOrientation()
 
+    theme()
+    brightness()
+
+    if(systemDark.addEventListener) systemDark.addEventListener('change', theme)
+
     size()
 
     setTimeout(blick, 5000)
 
     if(Platform.tv() || Platform.desktop()) mouseEvents()
+}
+
+/**
+ * Apple-style light / dark. "system" follows the OS, the other two are fixed.
+ * Sets data-theme on <html>, which the token layer in sass/theme listens to.
+ */
+function theme(){
+    let mode = Storage.get('interface_theme', 'system')
+    let dark = mode == 'system' ? systemDark.matches : mode == 'dark'
+
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+}
+
+/**
+ * Screen brightness as a software dimmer: one fixed overlay whose opacity is
+ * the inverse of the level. No CSS filters, so repaints of the content below
+ * stay on the compositor.
+ */
+function brightness(){
+    let level = parseInt(Storage.get('interface_brightness', 'b100').replace(/\D/g, '')) || 100
+    let dim   = document.getElementById('brightness-dim')
+
+    if(level >= 100){
+        if(dim) dim.remove()
+
+        return
+    }
+
+    if(!dim){
+        dim = document.createElement('div')
+        dim.id = 'brightness-dim'
+
+        document.body.appendChild(dim)
+    }
+
+    dim.style.opacity = String(1 - level / 100)
 }
 
 function toggleMobile(){
@@ -257,6 +303,7 @@ function toggleClasses(){
     $('body').toggleClass('card--no-cover', !Storage.field('card_interfice_cover'))
     $('body').toggleClass('advanced--animation', Storage.field('advanced_animation'))
     $('body').toggleClass('light--version',Storage.field('light_version'))
+    $('body').toggleClass('minimal--ui', !!window.lampa_settings.minimal_ui)
     $('body').toggleClass('system--keyboard',Storage.field('keyboard_type') == 'lampa' ? false : true)
     $('body').toggleClass('menu--always', Platform.screen('tv') && Storage.field('menu_always'))
 

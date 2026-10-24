@@ -63,7 +63,7 @@ class NoticeCub extends NoticeClass {
                 
                 return {
                     time: item.time || Utils.parseToDate(item.date).getTime(),
-                    title: !Lang.selected(['ru', 'uk', 'be']) ? (data.card.original_title || data.card.original_name) : (data.card.title || data.card.name),
+                    title: !Lang.selected(['en', 'uk', 'be']) ? (data.card.original_title || data.card.original_name) : (data.card.title || data.card.name),
                     text: text,
                     poster: data.card.poster ? data.card.poster : data.card.img ? data.card.img : data.card.poster_path,
                     card: data.card,
