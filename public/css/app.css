@@ -16112,7 +16112,7 @@ body.minimal--ui .navigation-bar--tabs {
   display: none !important;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 767px) {
   body.minimal--ui .wrap__left {
     display: none !important;
   }
@@ -16554,6 +16554,10 @@ body.minimal--ui:not(.bg--ambient) .background {
           transform: scale(1.03);
   background: rgba(255, 255, 255, 0.15);
 }
+.hero-tv__button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
 .hero-tv__button--watch:hover:not(.focus) {
   background: rgba(214, 255, 92, 0.9);
 }
@@ -16642,7 +16646,7 @@ body.minimal--ui:not(.bg--ambient) .background {
   outline: 2px solid #C8F542;
   outline-offset: -3px;
 }
-@media (max-width: 767px) {
+@media (max-width: 800px) {
   .hero-tv {
     display: -webkit-box;
     display: -webkit-flex;
