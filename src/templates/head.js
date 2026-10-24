@@ -1,7 +1,8 @@
 let html = `<div class="head">
     <div class="head__body">
         <div class="head__logo-icon">
-            <img src="./img/logo-icon.svg" />
+            <img class="head__logo-full" src="./img/logo.svg" alt="HOOK TV" />
+            <img class="head__logo-mark" src="./img/logo-icon.svg" alt="" />
         </div>
 
         <div class="head__menu-icon">

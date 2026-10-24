@@ -2,10 +2,7 @@ let html = `<div class="player-video">
     <div class="player-video__display"></div>
     <div class="player-video__loader"></div>
     <div class="player-video__paused hide">
-        <svg width="19" height="25" viewBox="0 0 19 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="6" height="25" rx="2" fill="white"/>
-            <rect x="13" width="6" height="25" rx="2" fill="white"/>
-        </svg>
+        <svg width="19" height="25" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M320-258v-450q0-14 9-22t21-8q4 0 8 1t8 3l354 226q7 5 10.5 11t3.5 14q0 8-3.5 14T720-458L366-232q-4 2-8 3t-8 1q-12 0-21-8t-9-22Z"/></svg>
     </div>
     <div class="player-video__backwork-icon">
         <i class="left-triangle triangle">◀◀◀</i><span></span>

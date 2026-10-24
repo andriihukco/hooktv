@@ -1,13 +1,11 @@
 /**
- * Theme tokens — Apple-style dark and light
+ * Theme tokens — Apple-style dark (HOOK TV is dark only)
  *
  * Single source of truth for every colour used by the interface. Values follow
  * Apple's system palette (systemBackground, secondarySystemBackground, label,
  * systemBlue) so both themes read as native on iOS, tvOS and macOS.
  *
- * Dark is the default. The theme is chosen at runtime by setting
- * data-theme="dark" | "light" on <html> (see core/theme.js), so a switch is a
- * pure token swap and never a per-component override.
+ * HOOK TV ships one dark theme; there is no light variant or switch.
  */
 
 :root {
@@ -104,108 +102,6 @@
 
     --transition-fast: 150ms;
     --transition-base: 200ms;
-}
-
-/* ----------------------------------------------------------------------
- * Light theme — Apple systemGroupedBackground with white grouped cells.
- * -------------------------------------------------------------------- */
-[data-theme='light'] {
-    color-scheme: light;
-
-    --surface-canvas: #f2f2f7;
-    --surface-base: #f2f2f7;
-    --surface-raised: #ffffff;
-    --surface-raised-2: #f2f2f7;
-    --surface-overlay: #ffffff;
-    --surface-sunken: #e5e5ea;
-    --surface-placeholder: #d1d1d6;
-    --surface-hover: rgba(0, 0, 0, 0.04);
-    --surface-active: rgba(0, 0, 0, 0.08);
-    --surface-selected: rgba(0, 0, 0, 0.12);
-    --surface-focus-row: rgba(0, 0, 0, 0.05);
-    --surface-scrim: rgba(0, 0, 0, 0.3);
-    --surface-glass: rgba(255, 255, 255, 0.72);
-    --surface-inverse: #1c1c1e;
-    --surface-media: rgba(0, 0, 0, 0.55);
-    --surface-media-strong: rgba(0, 0, 0, 0.85);
-    --surface-media-line: rgba(0, 0, 0, 0.45);
-
-    --text-primary: #000000;
-    --text-secondary: #3c3c43;
-    --text-muted: #6e6e73;
-    --text-disabled: #aeaeb2;
-    --text-inverse: #ffffff;
-    --text-link: #0071e3;
-    --text-media: #ffffff;
-    --text-media-muted: rgba(255, 255, 255, 0.78);
-
-    --border-subtle: rgba(60, 60, 67, 0.12);
-    --border-default: rgba(60, 60, 67, 0.2);
-    --border-strong: rgba(60, 60, 67, 0.36);
-    --border-media: rgba(255, 255, 255, 0.25);
-
-    --accent: #0071e3;
-    --accent-hover: #0077ed;
-    --accent-active: #005bb5;
-    --accent-contrast: #ffffff;
-    --accent-subtle: rgba(0, 113, 227, 0.1);
-    --accent-text: #0071e3;
-    --accent-ring: rgba(0, 113, 227, 0.35);
-
-    --success: #248a3d;
-    --success-text: #248a3d;
-    --on-success: #ffffff;
-    --warning: #b25000;
-    --warning-text: #b25000;
-    --on-warning: #ffffff;
-    --danger: #d70015;
-    --danger-text: #d70015;
-    --on-danger: #ffffff;
-    --info: #0071e3;
-    --info-text: #0071e3;
-    --on-info: #ffffff;
-
-    --focus-ring-color: var(--accent);
-    --focus-ring-width: 0.15em;
-    --focus-ring-offset: 0.1em;
-    --focus-ring-shadow: 0 0 0 0.1em rgba(255, 255, 255, 0.9);
-
-    --focus-fill: #1c1c1e;
-    --focus-fill-text: #ffffff;
-    --focus-invert: invert(0);
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.09);
-    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.14);
-    --shadow-focus: 0 0 0 0.15em var(--focus-ring-color);
-}
-
-/**
- * Higher contrast variant of the light theme.
- * Enabled with [data-theme='light'].high-contrast.
- */
-[data-theme='light'].high-contrast {
-    --surface-canvas: #ffffff;
-    --surface-base: #ffffff;
-    --surface-raised: #ffffff;
-    --surface-raised-2: #f2f2f7;
-    --surface-overlay: #ffffff;
-    --surface-sunken: #e5e5ea;
-    --surface-hover: rgba(0, 0, 0, 0.07);
-    --surface-active: rgba(0, 0, 0, 0.12);
-    --surface-selected: rgba(0, 0, 0, 0.16);
-    --text-primary: #000000;
-    --text-secondary: #1c1c1e;
-    --text-muted: #3c3c43;
-    --text-disabled: #6e6e73;
-    --text-link: #0040dd;
-    --border-subtle: rgba(0, 0, 0, 0.14);
-    --border-default: rgba(0, 0, 0, 0.22);
-    --border-strong: rgba(0, 0, 0, 0.4);
-    --accent: #0040dd;
-    --accent-hover: #0034b5;
-    --accent-text: #0040dd;
-    --focus-ring-color: #000000;
 }
 
 /**

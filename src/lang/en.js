@@ -845,7 +845,7 @@ export default {
     notice_none_system: 'You currently have no notifications. We will be sure to notify you when new notifications become available.',
 
     copy_link: 'Copy video link',
-    copy_secuses: 'Link copied to clipboard',
+    copy_secuses: 'Link copied',
     copy_error: 'Error copying link',
 
     account_sync_to_profile: 'All bookmarks will be moved to the profile',

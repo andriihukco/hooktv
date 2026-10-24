@@ -32,7 +32,8 @@ let events = [
 ]
 
 function init(){
-    if(!window.lampa_settings.services) return
+    // HOOK TV: seasonal CUB plugins re-skin the logo (pumpkin, snow, ...)
+    if(!window.lampa_settings.services || window.lampa_settings.minimal_ui) return
 
     events.forEach((event) => {
         const nowDate = new Date()

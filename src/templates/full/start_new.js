@@ -54,8 +54,10 @@ let html = `<div class="full-start-new">
                     <span>#{title_subscribe}</span>
                 </div>
 
-                <div class="full-start__button selector button--options">
-                    <svg><use xlink:href="#sprite-dots"></use></svg>
+                <div class="full-start__button selector button--share">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13.5a4.5 4.5 0 0 0 6.36 0l3-3a4.5 4.5 0 0 0-6.36-6.36l-1.5 1.5M14 10.5a4.5 4.5 0 0 0-6.36 0l-3 3a4.5 4.5 0 0 0 6.36 6.36l1.5-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+
+                    <span>#{copy_link_buffer}</span>
                 </div>
             </div>
         </div>

@@ -755,7 +755,9 @@ function startApp(){
 function showApp(){
     LoadingProgress.status('Show app')
     
-    // Скрытие логотипа
+    // Скрытие логотипа: not before the HOOK TV logo finished assembling
+    let shown = Date.now() - (window.hooktv_splash_start || 0)
+
     setTimeout(()=>{
         if(window.show_app) return
 
@@ -770,7 +772,7 @@ function showApp(){
         $('.welcome').fadeOut(500,function(){
             $(this).remove()
         })
-    },500)
+    },Math.max(500, 1500 - shown))
 
     // Старт приложения
     startApp()

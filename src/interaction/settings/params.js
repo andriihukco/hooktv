@@ -508,12 +508,6 @@ select('navigation_type', {
     'touch': '#{settings_param_navigation_touch}',
 }, 'controll')
 
-select('interface_theme',{
-    'system': '#{settings_param_theme_system}',
-    'dark': '#{settings_param_theme_dark}',
-    'light': '#{settings_param_theme_light}'
-},'dark')
-
 select('hooktv_dub',{
     'uk': 'Українська',
     'original': '#{hooktv_dub_original}'

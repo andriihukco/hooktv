@@ -4,6 +4,7 @@ import Controller from '../../core/controller'
 import Storage from '../../core/storage/storage'
 import Arrays from '../../utils/arrays'
 import Lang from '../../core/lang'
+import Favorite from '../../core/favorite'
 
 function History(){
     let scroll,
@@ -33,11 +34,36 @@ function History(){
             this.append(key)
         })
 
-        if(!keys.length) scroll.append($('<div class="selector search-history-empty">'+Lang.translate('search_empty')+'</div>'))
+        if(!keys.length) this.suggest()
+    }
+
+    // no recent searches: offer titles from what the user watched, liked or saved
+    this.suggest = function(){
+        let seen = []
+
+        ;['history','viewed','like','book','wath'].forEach(type => {
+            let cards = Favorite.get({type})
+
+            if(!Array.isArray(cards)) return
+
+            cards.forEach(card => {
+                let title = card.title || card.name
+
+                if(title && seen.indexOf(title) == -1 && seen.length < 10){
+                    seen.push(title)
+
+                    this.append(title)
+                }
+            })
+        })
+
+        if(!seen.length) scroll.append($('<div class="selector search-history-empty">'+Lang.translate('search_empty')+'</div>'))
     }
 
     this.append = function(value){
-        let key = $('<div class="search-history-key selector"><div><span>'+value+'</span></div></div>')
+        let key = $('<div class="search-history-key selector"><div><span></span></div></div>')
+
+        key.find('span').text(value)
 
         key.on('hover:enter',()=>{
             this.listener.send('enter', {value: value})

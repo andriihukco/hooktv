@@ -88,14 +88,6 @@
   --brand-text-secondary: rgba(255,255,255,.62);
 }
 
-[data-theme=light] {
-  --brand-background: #F2F2F7;
-  --brand-background-secondary: #FFFFFF;
-  --brand-background-card: #FFFFFF;
-  --brand-text-primary: #000000;
-  --brand-text-secondary: #3C3C43;
-}
-
 [data-density=compact] {
   --space-xs: 0.125rem;
   --space-sm: 0.25rem;

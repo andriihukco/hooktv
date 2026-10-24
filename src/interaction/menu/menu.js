@@ -14,6 +14,7 @@ import ParentalControl from '../parental_control'
 import Editor from './editor'
 import Utils from '../../utils/utils'
 import Router from '../../core/router'
+import Head from '../head/head'
 
 let html
 let last
@@ -55,7 +56,7 @@ function init(){
 
     // Фильтрация пунктов меню в зависимости от настроек
     menu_items = menu_items.filter(item=>{
-        if(window.lampa_settings.minimal_ui) return ['main','tv','movie','favorite'].indexOf(item.action) >= 0
+        if(window.lampa_settings.minimal_ui) return ['main','movie','tv'].indexOf(item.action) >= 0
 
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false
         if(window.lampa_settings.disable_features.persons && item.action == 'myperson') return false
@@ -66,6 +67,9 @@ function init(){
 
         return true
     })
+
+    // Minimal UI: Favorites is a bookmark icon in the head, next to search
+    if(window.lampa_settings.minimal_ui) Head.addIcon(Template.string('icon_bookmark'), openBookmarks).addClass('open--favorite')
 
     // Добавление кнопок меню
     menu_items.forEach((item)=>{
@@ -148,6 +152,52 @@ function init(){
     Lampa.Listener.follow('app',e=>{
         if(e.type == 'ready') ready()
     })
+
+    if(window.lampa_settings.minimal_ui){
+        Lampa.Listener.follow('activity',e=>{
+            if(e.type == 'start') markSection(section(e.object))
+        })
+
+        // the first 'start' can fire before the top tabs get their data-action, so mark again once they exist
+        Lampa.Listener.follow('app',e=>{
+            if(e.type == 'ready') markSection(section(Lampa.Activity.active()))
+        })
+    }
+}
+
+/**
+ * Root section an activity belongs to, or '' when it is something deeper
+ * (a card, a person, "more" of a row...)
+ * @param {object} object activity
+ * @returns {string} main | movie | tv | favorite | ''
+ */
+function section(object){
+    if(!object) return ''
+
+    if(object.component == 'main' && !object.url) return 'main'
+    if(object.component == 'category' && (object.url == 'movie' || object.url == 'tv')) return object.url
+    if(object.component == 'bookmarks') return 'favorite'
+
+    return ''
+}
+
+/**
+ * Minimal UI: highlight the current section everywhere it is shown (top
+ * capsule, head bookmark, bottom tab bar) and show Back only deeper down
+ * @param {string} current section from section()
+ */
+function markSection(current){
+    html.find('.menu__item').each(function(){
+        this.classList.toggle('menu__item--current', $(this).data('action') == current)
+    })
+
+    $('.head .open--favorite').toggleClass('head__action--current', current == 'favorite')
+
+    $('.navigation-bar__item').each(function(){
+        this.classList.toggle('navigation-bar__item--current', $(this).data('action') == current)
+    })
+
+    $('body').toggleClass('section--root', Boolean(current))
 }
 
 /**
@@ -202,6 +252,16 @@ function prepared(action, name){
         if(name.indexOf(comp) >= 0) Activity.replace()
         else return true
     }
+}
+
+function openBookmarks(){
+    ParentalControl.personal('bookmarks',()=>{
+        if(prepared('bookmarks',['bookmarks'])){
+            Router.call('bookmarks', {
+                title: Lang.translate('settings_input_links')
+            })
+        }
+    }, false, true)
 }
 
 /**
@@ -279,15 +339,7 @@ function ready(){
             })
         }
 
-        if(action == 'favorite'){
-            ParentalControl.personal('bookmarks',()=>{
-                if(prepared('bookmarks',['bookmarks'])){
-                    Router.call('bookmarks', {
-                        title: Lang.translate('settings_input_links')
-                    })
-                }
-            }, false, true)
-        }
+        if(action == 'favorite') openBookmarks()
 
         if(action == 'history'){
             ParentalControl.personal('bookmarks',()=>{

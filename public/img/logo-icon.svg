@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="HOOK TV">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="HOOK TV">
 <rect width="64" height="64" rx="14" fill="#0B0B0C"/>
-<rect x="0.5" y="0.5" width="63" height="63" rx="13.5" fill="none" stroke="rgba(255,255,255,.12)"/>
-<path fill="#C8F542" d="M12.5 32A19.5 19.5 0 1 1 51.5 32A19.5 19.5 0 1 1 12.5 32Z"/>
-<path fill="#0B0F00" stroke="#0B0F00" stroke-width="2.24" stroke-linejoin="round" d="M28.07 23.02 L43.64 32 L28.07 40.98Z"/>
+<rect x="0.5" y="0.5" width="63" height="63" rx="13.5" stroke="rgba(255,255,255,.12)"/>
+<path transform="translate(32 32) scale(0.56) translate(-82.9347 -23)" stroke="#D6FF5C" stroke-width="12" stroke-linejoin="round" d="M82.93 23C82.93 13.61 90.55 6 99.93 6C109.32 6 116.94 13.61 116.94 23C116.94 32.39 109.32 40 99.93 40C90.55 40 82.93 32.39 82.93 23C82.93 13.61 75.32 6 65.93 6C56.55 6 48.93 13.61 48.93 23C48.93 32.39 56.55 40 65.93 40C75.32 40 82.93 32.39 82.93 23Z"/>
 </svg>

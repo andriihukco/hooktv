@@ -6,7 +6,6 @@ import Background from '../interaction/background'
 let timer
 let need_update = false
 let need_visible = false
-let systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : {matches: true}
 
 function init(){
     window.screen_width  = window.innerWidth
@@ -48,8 +47,6 @@ function init(){
 
 
     Storage.listener.follow('change', (event)=>{
-        if(event.name == 'interface_theme') theme()
-
         if(event.name == 'interface_brightness') brightness()
 
         if(event.name == 'interface_size'){
@@ -67,8 +64,6 @@ function init(){
     theme()
     brightness()
 
-    if(systemDark.addEventListener) systemDark.addEventListener('change', theme)
-
     size()
 
     setTimeout(blick, 5000)
@@ -77,14 +72,10 @@ function init(){
 }
 
 /**
- * Apple-style light / dark. "system" follows the OS, the other two are fixed.
- * Sets data-theme on <html>, which the token layer in sass/theme listens to.
+ * HOOK TV is dark only: data-theme stays "dark" for the token layer.
  */
 function theme(){
-    let mode = Storage.get('interface_theme', 'dark')
-    let dark = mode == 'system' ? systemDark.matches : mode == 'dark'
-
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.setAttribute('data-theme', 'dark')
 }
 
 /**

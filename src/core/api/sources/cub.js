@@ -103,13 +103,6 @@ function main(params = {}, oncomplite, onerror){
             get('top/fire/movie',params,(json)=>{
                 json.title = Lang.translate('title_fire')
                 
-                json.icon_svg     = Template.string('icon_fire')
-                json.icon_bgcolor = '#fff'
-                json.icon_color   = '#fd4518'
-
-                json.params = {
-                    module: LineModule.toggle(LineModule.MASK.base, 'Icon')
-                }
 
                 call(json)
             },call, {life: day * 7})
@@ -313,13 +306,6 @@ function category(params = {}, oncomplite, onerror){
             else{
                 get('top/fire/'+params.url,params,(json)=>{
                     json.title        = Lang.translate('title_fire')
-                    json.icon_svg     = Template.string('icon_fire')
-                    json.icon_bgcolor = '#fff'
-                    json.icon_color   = '#fd4518'
-
-                    json.params = {
-                        module: LineModule.toggle(LineModule.MASK.base, 'Icon')
-                    }
 
                     call(json)
                 },call, {life: day * 7})

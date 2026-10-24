@@ -141,7 +141,7 @@ body.minimal--ui{
         &__item{
             padding: 0.5em 1em;
             border-radius: 2em;
-            font-size: 1.05em;
+            font-size: 0.9em;
             font-weight: var(--font-weight-semibold, 600);
             white-space: nowrap;
             color: var(--text-secondary);
@@ -194,5 +194,27 @@ body.minimal--ui{
         .wrap__left .menu{
             height: 3em !important;
         }
+    }
+}
+
+/* Deeper pages (grids, lists) name themselves in the bar; the home screen does not */
+body.minimal--ui:not(.section--root) .head__title{
+    display: block !important;
+    margin-left: 1em;
+    font-size: 1.3em;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Notifications sit under the tab bar instead of covering it */
+body.minimal--ui .bell{
+    top: 5em;
+}
+
+@media (max-width: 580px){
+    body.minimal--ui .bell{
+        top: 7.6em;
     }
 }

@@ -161,6 +161,22 @@ function Component(name, component_params = {}){
     }
     
     /**
+     * HOOK TV: rows and headings the flat page drops, by param name and title
+     */
+    function hideRows(){
+        let rows   = ['background','player','player_iptv','player_torrent','player_scale_method','player_hls_method','source','protocol','request_caching','pages_save_total','time_offset','navigation_type','keyboard_type','device_name','export','terminal']
+        let titles = ['settings_interface_background','settings_main_player','more','menu_console']
+
+        rows.forEach(name=>comp.find('[data-name="' + name + '"]').remove())
+
+        comp.find('.settings-param-title').each(function(){
+            let text = $(this).text().trim().toLowerCase()
+
+            if(titles.some(key=>text == Lang.translate(key).trim().toLowerCase())) $(this).remove()
+        })
+    }
+
+    /**
      * HOOK TV: settings are one flat page. Every section's rows follow the
      * interface rows under a title, so nothing opens a second screen.
      */
@@ -183,6 +199,8 @@ function Component(name, component_params = {}){
 
             addParams(key)
         })
+
+        hideRows()
 
         let components = Api.allComponents()
 

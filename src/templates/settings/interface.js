@@ -4,12 +4,6 @@ let html = `<div>
         <div class="settings-param__value"></div>
     </div>
 
-    <div class="settings-param selector" data-type="select" data-name="interface_theme">
-        <div class="settings-param__name">#{settings_interface_theme}</div>
-        <div class="settings-param__value"></div>
-        <div class="settings-param__descr">#{settings_interface_theme_descr}</div>
-    </div>
-
     <div class="settings-param selector" data-type="select" data-name="interface_brightness">
         <div class="settings-param__name">#{settings_interface_brightness}</div>
         <div class="settings-param__value"></div>

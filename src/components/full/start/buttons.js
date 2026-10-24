@@ -1,9 +1,22 @@
 import Controller from '../../../core/controller'
 import Lang from '../../../core/lang'
 import Watch from '../../../interaction/watch'
+import Bell from '../../../interaction/bell'
+import Template from '../../../interaction/template'
+import Utils from '../../../utils/utils'
 
 export default {
     onCreate: function(){
+        // shared through api/title.js, which serves link-preview tags and then opens the app at ?card=&media=&source=
+        this.html.find('.button--share').on('hover:enter', ()=>{
+            let media = this.card.name ? 'tv' : 'movie'
+            let link  = location.origin + '/api/title?card=' + this.card.id + '&media=' + media + '&source=' + (this.card.source || 'cub')
+
+            Utils.copyTextToClipboard(link, ()=>{
+                Bell.push({text: Lang.translate('copy_secuses'), icon: Template.string('icon_check')})
+            })
+        })
+
         // Torrents (when enabled) live in the ⋯ menu instead of the action row
         this.torrent_option = (e)=>{
             if(e.type !== 'options' || e.link !== this) return

@@ -845,7 +845,7 @@ export default {
     notice_none_system: 'You currently have no notifications. We will be sure to notify you when new notifications become available.',
 
     copy_link: 'Copy video link',
-    copy_secuses: 'Link copied to clipboard',
+    copy_secuses: 'Link copied',
     copy_error: 'Error copying link',
 
     account_sync_to_profile: 'All bookmarks will be moved to the profile',
@@ -1320,5 +1320,20 @@ export default {
     remote_configuration_waite_text: 'You can now pass this code to another application to grant access to settings.',
     remote_configuration_open_button: 'Open Access',
     remote_configuration_code_life: 'Code is valid',
-    remote_configuration_notice_nocode: 'Failed to open access'
+    remote_configuration_notice_nocode: 'Failed to open access',
+    hooktv_watch_in: 'Watch in',
+    hooktv_dub_uk_descr: 'Ukrainian dub or voice-over',
+    hooktv_dub_original: 'Original',
+    hooktv_dub_original_descr: 'Original audio with Ukrainian subtitles',
+    hooktv_all_sources: 'All sources…',
+    hooktv_searching: 'Finding the best source…',
+    hooktv_not_found: 'Could not start automatically — pick a source',
+    hooktv_watch_now: 'Watch Now',
+    hooktv_details: 'Details',
+    hooktv_add_list: 'Add to List',
+    hooktv_in_list: 'In List',
+    hooktv_no_original: 'No original audio track — playing in Ukrainian',
+    hooktv_section_dub: 'Audio & dub',
+    hooktv_dub_default: 'Default language',
+    hooktv_dub_default_descr: 'Preselected in the Watch sheet'
 }

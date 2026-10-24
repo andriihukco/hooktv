@@ -2,7 +2,7 @@ import Select from './select'
 import Controller from '../core/controller'
 import Storage from '../core/storage/storage'
 import Lang from '../core/lang'
-import Loading from './loading'
+import LoadingProgress from './loading_progress'
 import Noty from './noty'
 
 // services/online registers itself here on init; importing it directly would
@@ -42,21 +42,17 @@ function start(movie, back = 'content'){
 }
 
 function play(movie, want){
-    let cancel = Online.autoPlay(movie, want, (ok)=>{
-        Loading.stop()
+    LoadingProgress.watch()
 
-        if(!ok){
-            Noty.show(Lang.translate('hooktv_not_found'))
+    Online.autoPlay(movie, want, (ok)=>{
+        if(ok) return LoadingProgress.zoom()
 
-            Online.openList(movie)
-        }
+        LoadingProgress.destroy()
+
+        Noty.show(Lang.translate('hooktv_not_found'))
+
+        Online.openList(movie)
     })
-
-    Loading.start(()=>{
-        cancel()
-
-        Loading.stop()
-    }, Lang.translate('hooktv_searching'))
 }
 
 export default {

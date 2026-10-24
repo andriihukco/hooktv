@@ -281,13 +281,6 @@ function main(params = {}, oncomplite, onerror){
         (call)=>{
             get('movie/popular',params,(json)=>{
                 json.title        = Lang.translate('title_popular_movie')
-                json.icon_svg     = Template.string('icon_fire')
-                json.icon_bgcolor = '#fff'
-                json.icon_color   = '#fd4518'
-
-                json.params = {
-                    module: LineModule.toggle(LineModule.MASK.base, 'Icon')
-                }
 
                 call(json)
             },call, {life: day * 3})
@@ -295,13 +288,6 @@ function main(params = {}, oncomplite, onerror){
         (call)=>{
             get('trending/tv/week',params,(json)=>{
                 json.title        = Lang.translate('title_popular_tv')
-                json.icon_svg     = Template.string('icon_fire')
-                json.icon_bgcolor = '#fff'
-                json.icon_color   = '#fd4518'
-
-                json.params = {
-                    module: LineModule.toggle(LineModule.MASK.base, 'Icon')
-                }
 
                 call(json)
             },call, {life: day * 3})
@@ -382,13 +368,6 @@ function category(params = {}, oncomplite, onerror){
         (call)=>{
             get(params.url == 'movie' ? 'trending/movie/week' : 'trending/tv/week',params,(json)=>{
                 json.title        = Lang.translate('title_popular')
-                json.icon_svg     = Template.string('icon_fire')
-                json.icon_bgcolor = '#fff'
-                json.icon_color   = '#fd4518'
-
-                json.params = {
-                    module: LineModule.toggle(LineModule.MASK.base, 'Icon')
-                }
 
                 call(json)
             },call, {life: day * 3})

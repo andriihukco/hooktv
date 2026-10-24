@@ -58,7 +58,8 @@ function Sources(params = {}){
             sources.forEach(this.build.bind(this))
         }
         else{
-            sources = params.sources || Api.availableDiscovery()
+            // HOOK TV: TMDB only, no source switch
+            sources = params.sources || [Api.sources.tmdb.discovery()]
 
             sources.forEach(this.build.bind(this))
 

@@ -5,6 +5,8 @@ import Activity from '../activity/activity'
 import Platform from '../../core/platform'
 import DeviceInput from '../device_input'
 import Menu from '../menu/menu'
+import Lang from '../../core/lang'
+import Storage from '../../core/storage/storage'
 
 let html
 let last
@@ -47,7 +49,10 @@ function init(){
 
     if(window.local_lampa) html.find('.head__logo-icon').append('<span class="head__logo-local">local</span>')
 
-    if(Platform.mouse()){
+    // HOOK TV: the arrow only shows deeper than a root section (body.section--root hides it)
+    let touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+
+    if(Platform.mouse() || (window.lampa_settings.minimal_ui && touch)){
         let back = Template.elem('div', {class: 'head__backward', children: [
             Template.js('icon_back')
         ]})
@@ -59,7 +64,19 @@ function init(){
 
     Utils.time(html)
 
-    html.find('.head__logo-icon, .head__menu-icon').on('mousedown',(e)=>{
+    // HOOK TV: the logo is the home button; the menu icon is the only thing that opens the menu
+    if(window.lampa_settings.minimal_ui){
+        html.find('.head__logo-icon').addClass('selector').on('hover:enter click',()=>{
+            Activity.push({
+                url: '',
+                title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
+                component: 'main',
+                source: Storage.field('source')
+            })
+        })
+    }
+
+    html.find(window.lampa_settings.minimal_ui ? '.head__menu-icon' : '.head__logo-icon, .head__menu-icon').on('mousedown',(e)=>{
         if(DeviceInput.canClick(e.originalEvent)) Menu.toggle()
     })
 

@@ -159,3 +159,18 @@ body.glass--style.platform--android{
         }
     }
 }
+.player-close{
+    position: absolute;
+    top: 1.2em;
+    right: 1.5em;
+    z-index: 30;
+    width: 2.4em;
+    height: 2.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    cursor: pointer;
+}

@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: transparent;
+    background: #000;
     z-index: 50;
     width: 100%;
 
@@ -47,8 +47,35 @@
     }
 }
 
+// the search field is plain text: no focus ring around it
+.search-box .search__input,
+.search-box .simple-keyboard-input,
+.search .simple-keyboard-input{
+    &:focus,
+    &.focus{
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: transparent !important;
+    }
+}
+
 body.system--keyboard .search-box{
     .simple-keyboard-input{
         border-bottom: 2px solid rgb(255,255,255,0.15);
     }
+}
+.search__close{
+    position: absolute;
+    top: 1em;
+    right: 1.5em;
+    z-index: 2;
+    width: 2.4em;
+    height: 2.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: none;
+    color: #fff;
+    cursor: pointer;
 }

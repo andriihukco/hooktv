@@ -82,7 +82,7 @@ function init(){
         title: 'title_settings'
     })
 
-    Head.addIcon(Template.string('icon_settings'), ()=>{
+    Head.addIcon(Template.string(window.lampa_settings.minimal_ui ? 'icon_menu' : 'icon_settings'), ()=>{
         ParentalControl.personal('settings',()=>{
             Controller.toggle('settings')
         }, false, true)

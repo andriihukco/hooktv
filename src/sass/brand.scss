@@ -123,15 +123,6 @@
     --brand-text-secondary: rgba(255,255,255,.62);
 }
 
-// Light mode (Apple systemGroupedBackground)
-[data-theme="light"] {
-    --brand-background: #F2F2F7;
-    --brand-background-secondary: #FFFFFF;
-    --brand-background-card: #FFFFFF;
-    --brand-text-primary: #000000;
-    --brand-text-secondary: #3C3C43;
-}
-
 // Compact mode (for smaller screens)
 [data-density="compact"] {
     --space-xs: 0.125rem;

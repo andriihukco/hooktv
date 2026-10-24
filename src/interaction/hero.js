@@ -6,6 +6,7 @@ import Utils from '../utils/utils'
 import Favorite from '../core/favorite'
 import Router from '../core/router'
 import Watch from './watch'
+import Layer from '../core/layer'
 
 /**
  * Apple TV-style hero for the top of Home: full-bleed backdrop, title,
@@ -161,6 +162,9 @@ Hero.module = {
 
         this.scroll.body(true).prepend(hero.render(true))
         this.scroll.render(true).classList.add('scroll--hero')
+
+        // the scroll was sized before it became a hero; resize it to full screen
+        Layer.update(this.scroll.render(true))
 
         this.items.unshift(hero)
 

@@ -65,6 +65,13 @@ function scrollTo(element){
 function create(){
     search = Template.get('search')
 
+    // mouse and touch close; the remote closes with Back
+    let close = $('<div class="search__close selector"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>')
+
+    close.on('hover:enter', destroy)
+
+    search.prepend(close)
+
     scroll = new Scroll({step: 300})
 
     scroll.height()
@@ -116,7 +123,7 @@ function createSources(){
         destroy()
     })
 
-    search.find('.search__sources').append(sources.tabs())
+    // no TMDB / CUB switch: results come from the first source only
     search.find('.search__results').append(sources.render())
 }
 

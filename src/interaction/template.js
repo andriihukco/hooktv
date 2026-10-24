@@ -79,6 +79,9 @@ import icon_fire from '../templates/icons/fire'
 import icon_hd from '../templates/icons/hd'
 import icon_collection from '../templates/icons/collection'
 import icon_search from '../templates/icons/search'
+import icon_bookmark from '../templates/icons/bookmark'
+import icon_check from '../templates/icons/check'
+import icon_menu from '../templates/icons/menu'
 import icon_settings from '../templates/icons/settings'
 import icon_bell from '../templates/icons/bell'
 import icon_bell_plus from '../templates/icons/bell_plus'
@@ -211,6 +214,9 @@ let templates = {
     icon_hd,
     icon_collection,
     icon_search,
+    icon_bookmark,
+    icon_check,
+    icon_menu,
     icon_settings,
     icon_bell,
     icon_bell_plus,

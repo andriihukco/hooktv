@@ -18,7 +18,12 @@ function init(){
     html = Template.get('player_info')
 
     html.find('.player-info__body').prepend(HeadBackward('Плеер'))
-    
+
+    // visible close for mouse and touch; the remote closes with Back
+    $('<div class="player-close selector"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>')
+        .on('hover:enter', ()=>Lampa.Player.close())
+        .appendTo(html)
+
     elems = {
         name:  $('.player-info__name,.head-backward__title',html),
         size:  $('.value--size span',html),

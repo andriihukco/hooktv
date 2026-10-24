@@ -1,184 +1,171 @@
 /**
- * Netflix-Style Splash Screen
- * Modern animated loading screen with brand logo
+ * HOOK TV splash: the infinity loop draws itself, H and K slide in from
+ * either side, TV rises, then a lime light keeps running round the loop
+ * until the app is ready. Paths come from loading_progress.js (img/logo.svg).
  */
 
-.welcome {
+$welcome-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+$welcome-lime: #D6FF5C;
+
+.welcome{
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     z-index: 100;
-    background: var(--brand-background);
+    background: radial-gradient(ellipse at 50% 45%, #0d1100 0%, #000 60%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s $welcome-ease;
 }
 
-.welcome--fade-out {
+.welcome--fade-out{
     opacity: 0;
     visibility: hidden;
+    transform: scale(1.06);
 }
 
-.welcome__logo {
-    width: 200px;
-    height: 200px;
-    margin-bottom: var(--space-2xl);
-    position: relative;
-    animation: logo-appear 1s ease-out;
-}
+.welcome__logo{
+    width: 22em;
+    max-width: 72vw;
 
-.welcome__logo svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--brand-primary);
-    animation: logo-pulse 2s ease-in-out infinite;
-}
-
-.welcome__brand-name {
-    font-size: var(--font-size-5xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--brand-primary);
-    margin-bottom: var(--space-lg);
-    animation: text-appear 1s ease-out 0.3s both;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-}
-
-.welcome__loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-md);
-    animation: loading-appear 0.5s ease-out 0.6s both;
-}
-
-.welcome__progress-bar {
-    width: 200px;
-    height: 4px;
-    background: var(--brand-background-secondary);
-    border-radius: var(--radius-full);
-    overflow: hidden;
-}
-
-.welcome__progress-fill {
-    height: 100%;
-    background: var(--brand-primary);
-    border-radius: var(--radius-full);
-    animation: progress-animation 2s ease-in-out infinite;
-    width: 0%;
-}
-
-.welcome__status {
-    font-size: var(--font-size-sm);
-    color: var(--brand-text-secondary);
-    opacity: 0.7;
-    text-align: center;
-    max-width: 300px;
-}
-
-/* Animations */
-@keyframes logo-appear {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-@keyframes logo-pulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-    }
-}
-
-@keyframes text-appear {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes loading-appear {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes progress-animation {
-    0% {
-        width: 0%;
-        transform: translateX(-100%);
-    }
-    50% {
-        width: 50%;
-        transform: translateX(0);
-    }
-    100% {
+    svg{
+        display: block;
         width: 100%;
-        transform: translateX(0);
+        height: auto;
+        overflow: visible;
+    }
+
+    path,
+    g{
+        transform-box: fill-box;
     }
 }
 
-/* Fallback for old background image */
-.welcome--fallback {
-    background: #000 url(../img/welcome.jpg) no-repeat 50% 50%;
-    background-size: cover;
+.welcome__loop{
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: welcome-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-.welcome--fallback .welcome__brand-name,
-.welcome--loading {
-    color: white;
+.welcome__tails{
+    opacity: 0;
+    animation: welcome-fade 0.4s ease 0.7s forwards;
 }
 
-/* Responsive adjustments */
-@media (max-width: $media_md) {
-    .welcome__logo {
-        width: 150px;
-        height: 150px;
-    }
-    
-    .welcome__brand-name {
-        font-size: var(--font-size-4xl);
-    }
-    
-    .welcome__progress-bar {
-        width: 150px;
+// a short lime comet: bright head, glow, loops forever
+.welcome__chase{
+    stroke-dasharray: 14 86;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(214, 255, 92, 0.8));
+    animation:
+        welcome-fade 0.4s ease 0.9s forwards,
+        welcome-chase 1.6s linear 0.9s infinite;
+}
+
+.welcome__h,
+.welcome__k,
+.welcome__t,
+.welcome__v{
+    opacity: 0;
+    animation: welcome-in 0.7s $welcome-ease forwards;
+}
+
+.welcome__h{
+    --from: translateX(45%);
+    animation-delay: 0.35s;
+}
+
+.welcome__k{
+    --from: translateX(-45%);
+    animation-delay: 0.45s;
+}
+
+.welcome__t{
+    --from: translateY(60%);
+    animation-delay: 0.65s;
+}
+
+.welcome__v{
+    --from: translateY(60%);
+    animation-delay: 0.75s;
+}
+
+.welcome__loading{
+    margin-top: 2.2em;
+}
+
+// cinema-style status line, crossfades as loading moves on
+.welcome__status{
+    min-height: 1.3em;
+    font-size: 0.95em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.55);
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition: opacity 0.35s ease, transform 0.35s $welcome-ease;
+
+    &--in{
+        opacity: 1;
+        transform: none;
     }
 }
 
-@media (max-width: $media_sm) {
-    .welcome__logo {
-        width: 120px;
-        height: 120px;
+// movie started: the logo grows past the screen while the splash fades out
+.welcome--zoom{
+    opacity: 0;
+    transform: scale(1.1);
+    pointer-events: none;
+
+    .welcome__logo{
+        transform: scale(2.6);
+        transition: transform 0.9s $welcome-ease;
     }
-    
-    .welcome__brand-name {
-        font-size: var(--font-size-3xl);
-        letter-spacing: 2px;
+}
+
+@keyframes welcome-draw{
+    to{ stroke-dashoffset: 0; }
+}
+
+@keyframes welcome-chase{
+    to{ stroke-dashoffset: -100; }
+}
+
+@keyframes welcome-in{
+    from{
+        opacity: 0;
+        transform: var(--from);
     }
-    
-    .welcome__progress-bar {
-        width: 120px;
+    to{
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes welcome-fade{
+    to{ opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .welcome__loop,
+    .welcome__tails,
+    .welcome__h,
+    .welcome__k,
+    .welcome__t,
+    .welcome__v{
+        animation: none !important;
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+
+    .welcome__status{
+        transition: none;
+        transform: none;
+    }
+
+    .welcome__chase{
+        display: none;
     }
 }

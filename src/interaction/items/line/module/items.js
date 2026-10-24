@@ -14,7 +14,7 @@ export default {
 
     onAppend: function(item, element){
         let render = item.render(true)
-        
+
         render.on('hover:focus', ()=> {
             this.last = render
 

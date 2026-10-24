@@ -13,8 +13,7 @@ $hk-glass: rgba(30, 30, 32, 0.62);
 $hk-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
 :root,
-[data-theme='dark'],
-[data-theme='light']{
+[data-theme='dark']{
     --brand-primary: #{$hk-lime};
     --brand-primary-dark: #A6D12A;
     --brand-primary-light: #D6FF5C;
@@ -61,7 +60,7 @@ body.minimal--ui{
         }
 
         &__logo-full{
-            height: 2.3em;
+            height: 1.6em;
             width: auto;
         }
 
@@ -142,6 +141,198 @@ body.minimal--ui{
 }
 
 /* ---------------------------------------------------------------------
+ * Current section, Back and the settings (menu) button
+ * ------------------------------------------------------------------- */
+button,
+input,
+textarea,
+select{
+    font-family: inherit;
+}
+
+body.minimal--ui{
+    // the section you are in is a white pill with dark text
+    .menu__list .menu__item.menu__item--current{
+        color: #000 !important;
+        background-color: #fff !important;
+
+        &.focus,
+        &.hover{
+            background-color: #fff !important;
+            color: #000 !important;
+        }
+    }
+
+    .head__action--current{
+        color: #000;
+        background: #fff;
+    }
+
+    .head__backward{
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 2.6em;
+        height: 2.6em;
+        margin-right: 0.9em;
+        border-radius: 50%;
+        cursor: pointer;
+        background: $hk-glass;
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
+        transition: background-color 0.2s, color 0.2s, transform 0.2s $hk-ease;
+
+        svg{
+            width: 1.3em;
+            height: 1.3em;
+        }
+
+        &:hover{
+            background: #fff;
+            color: #000;
+        }
+
+        &:active{
+            transform: scale(0.92);
+        }
+    }
+
+    &.section--root .head__backward{
+        display: none !important;
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * Phones: iOS tab bar at the bottom replaces the top section capsule
+ * ------------------------------------------------------------------- */
+body.minimal--ui .navigation-bar--tabs{
+    display: none !important;
+}
+
+@media (max-width: 767px){
+    body.minimal--ui{
+        .wrap__left{
+            display: none !important;
+        }
+
+        .wrap__content{
+            padding-top: 3.6em !important;
+        }
+
+        &.hero--page .wrap__content{
+            padding-top: 0 !important;
+        }
+
+        .head__body{
+            padding: 0.5em 1em;
+        }
+
+        .head__logo-icon{
+            margin-right: 0;
+        }
+
+        .head .open--search,
+        .head .open--favorite{
+            display: none !important;
+        }
+
+        .navigation-bar--tabs{
+            display: block !important;
+            top: auto !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0;
+            padding: 0;
+            z-index: 30;
+
+            .navigation-bar__body{
+                display: flex;
+                flex-direction: row !important;
+                justify-content: space-around;
+                padding: 0.45em 0.4em calc(0.45em + env(safe-area-inset-bottom));
+                border-radius: 0;
+                background: rgba(18, 18, 20, 0.78) !important;
+                backdrop-filter: blur(30px) saturate(1.6);
+                -webkit-backdrop-filter: blur(30px) saturate(1.6);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        .navigation-bar__item{
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.35em 0;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: color 0.2s, transform 0.15s $hk-ease;
+
+            &:active{
+                transform: scale(0.9);
+            }
+
+            &--current{
+                color: $hk-lime;
+            }
+        }
+
+        .navigation-bar__icon{
+            width: 1.6em;
+            height: 1.6em;
+
+            svg{
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .navigation-bar__label{
+            margin-top: 0.3em;
+            font-size: 0.7em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        &.ambience--enable .navigation-bar--tabs,
+        &.settings--open .navigation-bar--tabs,
+        &.player--open .navigation-bar--tabs{
+            visibility: hidden;
+        }
+    }
+}
+
+/* header and nav sit above everything on the page; the splash stays on top of them */
+body.minimal--ui{
+    .head,
+    .wrap__left{
+        z-index: 90 !important;
+    }
+
+    .head__actions{
+        z-index: 91;
+    }
+}
+
+/* the in-page title duplicates the header and sits under the tab bar */
+body.minimal--ui .head-backward{
+    display: none !important;
+}
+
+/* Blurred artwork sits behind movie lists and details only; every other page is plain dark */
+body.minimal--ui:not(.bg--ambient) .background{
+    display: none;
+}
+
+/* the big bookmark on empty Favorites */
+.empty__icon svg.empty-bookmark{
+    width: 7em !important;
+    height: 7em !important;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------------------------------------------------------------------
  * Home hero
  * ------------------------------------------------------------------- */
 .scroll--hero{
@@ -172,7 +363,7 @@ body.minimal--ui{
 
 .hero-tv{
     position: relative;
-    height: 83vh;
+    height: 95vh;
     min-height: 26em;
     margin-bottom: -6em;
     display: flex;
@@ -876,13 +1067,17 @@ body.selectbox--open .selectbox__layer{
         background: rgba(255, 255, 255, 0.18);
     }
 
+    // AUTO / 1080p: a rounded glass pill
     .player-panel__quality{
-        width: auto;
-        padding: 0 1em;
-        border-radius: 2em;
+        width: auto !important;
+        height: 2.6em;
+        padding: 0 1.1em !important;
+        border-radius: 2em !important;
+        background: rgba(255, 255, 255, 0.12);
         font-weight: 700;
         font-size: 0.9em;
         letter-spacing: 0.02em;
+        text-transform: uppercase;
     }
 
     // noise: jump to start/end, PiP, stream flow
@@ -902,9 +1097,17 @@ body.selectbox--open .selectbox__layer{
         padding: calc(2em + env(safe-area-inset-top)) 3em 4em !important;
     }
 
+    // title centred so the round back button never sits on top of it
     .player-info__line{
+        position: relative;
+        justify-content: center;
         align-items: center;
         gap: 0.8em;
+    }
+
+    .player-info__time{
+        position: absolute;
+        right: 0;
     }
 
     .player-info__name{
@@ -985,4 +1188,16 @@ body.selectbox--open .selectbox__layer{
     .hero-tv__backdrop img{
         transform: none !important;
     }
+}
+
+/* player controls use Material Rounded glyphs (inline svg, see templates/player/panel.js) */
+.player-panel .material-icon{
+    width: 1.6em;
+    height: 1.6em;
+}
+
+.player-panel__rprev .material-icon,
+.player-panel__rnext .material-icon{
+    width: 2em;
+    height: 2em;
 }
