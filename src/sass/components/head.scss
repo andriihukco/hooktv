@@ -95,6 +95,11 @@
 
     &__menu-icon{
         margin-left: 1.5em;
+        order: 999;
+    }
+
+    &__action.open--settings{
+        order: 999;
     }
 
     &__backward{
@@ -275,14 +280,14 @@ body.true--mobile{
         display: none;
     }
     .head__menu-icon{
-        display: block;
+        display: flex;
         margin-left: 1em;
     }
 
     .head__action{
         margin-left: 1em;
-        height: 3em;
-        width: 3em;
+        height: 3.5em;
+        width: 3.5em;
     }
 
     // Keep full logo on mobile, hide mark
@@ -305,7 +310,7 @@ body.mouse--controll:not(.true--mobile){
         display: none;
     }
     .head__menu-icon{
-        display: block;
+        display: flex;
         margin-left: 1.5em;
     }
     .head__backward{

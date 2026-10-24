@@ -14,7 +14,7 @@ let html = `<div class="head">
             <div class="head__action selector hide full--screen">
                 <svg><use xlink:href="#sprite-fullscreen"></use></svg>
             </div>
-            <div class="head__menu-icon">
+            <div class="head__action head__menu-icon">
                 <svg><use xlink:href="#sprite-menu"></use></svg>
             </div>
         </div>

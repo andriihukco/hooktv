@@ -1581,6 +1581,16 @@ body.light--version .wrap__left {
 }
 .head__menu-icon {
   margin-left: 1.5em;
+  -webkit-box-ordinal-group: 1000;
+  -webkit-order: 999;
+      -ms-flex-order: 999;
+          order: 999;
+}
+.head__action.open--settings {
+  -webkit-box-ordinal-group: 1000;
+  -webkit-order: 999;
+      -ms-flex-order: 999;
+          order: 999;
 }
 .head__backward {
   margin-right: 1em;
@@ -1759,13 +1769,16 @@ body.true--mobile .head__action.open--settings {
   display: none;
 }
 body.true--mobile .head__menu-icon {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   margin-left: 1em;
 }
 body.true--mobile .head__action {
   margin-left: 1em;
-  height: 3em;
-  width: 3em;
+  height: 3.5em;
+  width: 3.5em;
 }
 body.true--mobile .head__logo-full {
   display: block;
@@ -1781,7 +1794,10 @@ body.mouse--controll:not(.true--mobile) .head__logo-icon {
   display: none;
 }
 body.mouse--controll:not(.true--mobile) .head__menu-icon {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   margin-left: 1.5em;
 }
 body.mouse--controll:not(.true--mobile) .head__backward {
@@ -16565,7 +16581,7 @@ body.minimal--ui:not(.bg--ambient) .background {
   position: absolute;
   z-index: 2;
   right: 1.5em;
-  bottom: 9.4em;
+  bottom: 2em;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -16578,17 +16594,10 @@ body.minimal--ui:not(.bg--ambient) .background {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  gap: 0.15em;
+  gap: 0.35em;
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
-  padding: 0.2em;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  -webkit-border-radius: 2em;
-          border-radius: 2em;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 .hero-tv__dot {
   display: -webkit-box;
@@ -16604,11 +16613,11 @@ body.minimal--ui:not(.bg--ambient) .background {
       -ms-flex-pack: center;
           justify-content: center;
   -webkit-box-flex: 0;
-  -webkit-flex: 0 0 2em;
-      -ms-flex: 0 0 2em;
-          flex: 0 0 2em;
-  width: 2em;
-  height: 2em;
+  -webkit-flex: 0 0 2.2em;
+      -ms-flex: 0 0 2.2em;
+          flex: 0 0 2.2em;
+  width: 2.2em;
+  height: 2.2em;
   padding: 0;
   border: 0;
   -webkit-border-radius: 50%;
@@ -16624,8 +16633,8 @@ body.minimal--ui:not(.bg--ambient) .background {
 }
 .hero-tv__dot::before {
   content: "";
-  width: 0.42em;
-  height: 0.42em;
+  width: 0.65em;
+  height: 0.65em;
   -webkit-border-radius: 1em;
           border-radius: 1em;
   background: rgba(255, 255, 255, 0.68);
@@ -16636,7 +16645,7 @@ body.minimal--ui:not(.bg--ambient) .background {
   transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.25s, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .hero-tv__dot.active::before {
-  width: 1.1em;
+  width: 1.4em;
   background: #C8F542;
 }
 .hero-tv__dot:hover::before {
@@ -16704,26 +16713,25 @@ body.minimal--ui:not(.bg--ambient) .background {
   .hero-tv__dots {
     left: 50%;
     right: auto;
-    bottom: 9.4em;
+    bottom: 1.2em;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%);
-    gap: 0.1em;
-    padding: 0.25em;
+    gap: 0.2em;
   }
   .hero-tv__dot {
-    -webkit-flex-basis: 3em;
-        -ms-flex-preferred-size: 3em;
-            flex-basis: 3em;
-    width: 3em;
-    height: 3em;
+    -webkit-flex-basis: 2.8em;
+        -ms-flex-preferred-size: 2.8em;
+            flex-basis: 2.8em;
+    width: 2.8em;
+    height: 2.8em;
   }
   .hero-tv__dot::before {
-    width: 0.5em;
-    height: 0.5em;
+    width: 0.7em;
+    height: 0.7em;
   }
   .hero-tv__dot.active::before {
-    width: 1.35em;
+    width: 1.5em;
   }
 }
 @media (max-width: 580px) {
@@ -16731,7 +16739,7 @@ body.minimal--ui:not(.bg--ambient) .background {
     height: 75vh;
   }
   .hero-tv__dots {
-    bottom: 9.4em;
+    bottom: 1.2em;
   }
 }
 
