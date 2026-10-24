@@ -7,6 +7,7 @@ import Favorite from '../core/favorite'
 import Router from '../core/router'
 import Watch from './watch'
 import Layer from '../core/layer'
+import TMDB from '../core/tmdb/tmdb'
 
 /**
  * Apple TV-style hero for the top of Home: full-bleed backdrop, title,
@@ -20,11 +21,15 @@ class Hero extends Emit{
 
         this.cards = cards.filter(c=>c.backdrop_path).slice(0, 5)
         this.index = 0
+        this.firstLoaded = false
     }
 
     create(){
         this.html = $(`<div class="hero-tv">
-            <div class="hero-tv__backdrop"><img /></div>
+            <div class="hero-tv__backdrop">
+                <img class="hero-tv__backdrop--current" />
+                <img class="hero-tv__backdrop--next" />
+            </div>
             <div class="hero-tv__shade"></div>
             <div class="hero-tv__body">
                 <div class="hero-tv__title"></div>
@@ -40,11 +45,17 @@ class Hero extends Emit{
         </div>`)
 
         this.cards.forEach((c, i)=>{
-            $('<div class="hero-tv__dot"></div>').on('click', ()=>this.show(i)).appendTo(this.html.find('.hero-tv__dots'))
+            $(`<button class="hero-tv__dot" type="button" aria-label="Show slide ${i + 1}" aria-pressed="false"></button>`)
+                .on('click', ()=>this.show(i))
+                .appendTo(this.html.find('.hero-tv__dots'))
         })
 
         this.html.find('.hero-tv__button--watch').on('hover:enter', ()=>Watch.start(this.card(), 'items_line'))
-        this.html.find('.hero-tv__button--info').on('hover:enter', ()=>Router.call('full', this.card()))
+        this.html.find('.hero-tv__button--info').on('hover:enter', ()=>{
+            document.body.classList.add('page-transition-from-hero')
+            Router.call('full', this.card())
+            setTimeout(()=>document.body.classList.remove('page-transition-from-hero'), 700)
+        })
         this.html.find('.hero-tv__button--list').on('hover:enter', ()=>{
             Favorite.toggle('book', this.card())
 
@@ -55,6 +66,27 @@ class Hero extends Emit{
             this.last = e.target
 
             this.emit('active')
+        })
+
+        this.html.on('mousemove', (e)=>{
+            if(!Controller.own(this) || !this.html.hasClass('hero-tv--loaded')) return
+            if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+            const rect = this.html[0].getBoundingClientRect()
+            const x = (e.clientX - rect.left) / rect.width - 0.5
+            const y = (e.clientY - rect.top) / rect.height - 0.5
+
+            this.html.find('.hero-tv__backdrop--current').css({
+                transform: `scale(1.01) translate3d(${x * 6}px, ${y * 6}px, 0)`
+            })
+        })
+
+        this.html.on('mouseleave', ()=>{
+            if(this.html.hasClass('hero-tv--loaded')){
+                this.html.find('.hero-tv__backdrop--current').css({
+                    transform: ''
+                })
+            }
         })
 
         this.show(0)
@@ -81,18 +113,89 @@ class Hero extends Emit{
 
         if(vote) meta.push('★ ' + vote.toFixed(1))
 
-        this.html.find('.hero-tv__title').text(card.title || card.name)
-        this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
-        this.html.find('.hero-tv__descr').text(card.overview || '')
-        this.html.find('.hero-tv__dot').removeClass('active').eq(index).addClass('active')
+        let currentImg = this.html.find('.hero-tv__backdrop--current')
+        let nextImg = this.html.find('.hero-tv__backdrop--next')
 
-        let img = this.html.find('.hero-tv__backdrop img')
+        this.html.find('.hero-tv__dot')
+            .removeClass('active')
+            .attr('aria-pressed', 'false')
+            .eq(index)
+            .addClass('active')
+            .attr('aria-pressed', 'true')
 
-        this.html.removeClass('hero-tv--loaded')
+        if(!this.firstLoaded){
+            this.firstLoaded = true
 
-        Utils.imgLoad(img, Api.img(card.backdrop_path, 'w1280'), ()=>this.html.addClass('hero-tv--loaded'))
+            this.html.find('.hero-tv__title').text(card.title || card.name)
+            this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+            this.html.find('.hero-tv__descr').text(card.overview || '')
+
+            this.loadLogo(card)
+
+            Utils.imgLoad(currentImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
+                this.html.addClass('hero-tv--loaded')
+            })
+
+            this.listState()
+            return
+        }
+
+        this.html.removeClass('hero-tv--loaded').addClass('hero-tv--swapping')
+
+        setTimeout(()=>{
+            this.html.find('.hero-tv__title').text(card.title || card.name)
+            this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+            this.html.find('.hero-tv__descr').text(card.overview || '')
+
+            this.loadLogo(card)
+        }, 150)
+
+        nextImg.css({
+            opacity: '',
+            transform: ''
+        })
+
+        Utils.imgLoad(nextImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
+            this.html.addClass('hero-tv--swapping')
+
+            setTimeout(()=>{
+                currentImg.attr('src', nextImg.attr('src'))
+                currentImg.css('transform', '')
+                nextImg.css({
+                    opacity: '',
+                    transform: ''
+                })
+
+                this.html.removeClass('hero-tv--swapping').addClass('hero-tv--loaded')
+            }, 460)
+        })
 
         this.listState()
+    }
+
+    loadLogo(card){
+        if(Lampa.Storage && Lampa.Storage.get('logo_plugin_enabled') == '1') return
+
+        if(!card.id) return
+
+        let type = card.name ? 'tv' : 'movie'
+        let url = TMDB.api(type + '/' + card.id + '/images?api_key=4ef0d7355d9ffb5151e987764708ce96&language=' + (Lampa.Storage ? Lampa.Storage.get('language') : 'en'))
+
+        $.get(url, (response)=>{
+            if(this.card() !== card) return
+
+            if(response.logos && response.logos[0]){
+                let logo = response.logos[0].file_path
+
+                if(logo){
+                    this.html.find('.hero-tv__title').html(
+                        '<img class="hero-tv__logo" src="' +
+                        Api.img(logo.replace('.svg', '.png'), 'w500') +
+                        '" alt="' + (card.title || card.name) + '"/>'
+                    )
+                }
+            }
+        })
     }
 
     listState(){

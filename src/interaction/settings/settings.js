@@ -21,8 +21,13 @@ let main
 function init(){
     html     = Template.get('settings')
     body     = html.find('.settings__body')
-    
+
     html.find('.settings__layer').on('click',(e)=>{
+        if(DeviceInput.canClick(e.originalEvent)) Controller.back()
+    })
+
+    // Close button handler
+    html.find('.settings__close').on('hover:enter click', (e)=>{
         if(DeviceInput.canClick(e.originalEvent)) Controller.back()
     })
 
@@ -36,7 +41,7 @@ function init(){
         toggle: ()=>{
             main.render().detach()
             main.update()
-            
+
             listener.send('open', {
                 name: 'main',
                 body: main.render()
@@ -57,7 +62,7 @@ function init(){
         },
         left: ()=>{
             main.render().detach()
-            
+
             Controller.toggle('content')
         },
         gone: (to)=>{
@@ -65,7 +70,7 @@ function init(){
                 $('body').toggleClass('settings--open',false)
 
                 html.removeClass('animate').removeClass('animate-down')
-            } 
+            }
         },
         back: ()=>{
             main.render().detach()
@@ -82,11 +87,13 @@ function init(){
         title: 'title_settings'
     })
 
-    Head.addIcon(Template.string(window.lampa_settings.minimal_ui ? 'icon_menu' : 'icon_settings'), ()=>{
+    let settings_icon = Head.addIcon(Template.string(window.lampa_settings.minimal_ui ? 'icon_menu' : 'icon_settings'), ()=>{
         ParentalControl.personal('settings',()=>{
             Controller.toggle('settings')
         }, false, true)
     }).addClass('open--settings')
+
+    $('.head .open--history').insertBefore(settings_icon)
 }
 
 function swipeAction(){

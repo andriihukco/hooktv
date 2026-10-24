@@ -14,6 +14,16 @@ let listener = Subscribe()
 let category = ['like', 'wath', 'book', 'history', 'look', 'viewed', 'scheduled', 'continued', 'thrown']
 let marks    = ['look', 'viewed', 'scheduled', 'continued', 'thrown']
 
+function normalize(){
+    if(!Arrays.isObject(data)) data = {}
+
+    if(!Arrays.isArray(data.card)) data.card = []
+
+    category.forEach(a=>{
+        if(!Arrays.isArray(data[a])) data[a] = []
+    })
+}
+
 
 /**
  * Запуск
@@ -103,6 +113,8 @@ function save(){
  * @param {Object} card 
  */
 function add(where, card, limit){
+    normalize()
+
     if(Account.Permit.sync){
         listener.send('add', {where, card})
     }
@@ -151,6 +163,8 @@ function add(where, card, limit){
  * @param {Object} card 
  */
 function remove(where, card){
+    normalize()
+
     if(Account.Permit.sync){
         listener.send('remove', {where, card, method: 'id'})
     }
@@ -187,6 +201,8 @@ function remove(where, card){
  * @returns Object
  */
 function search(id){
+    normalize()
+
     let found
 
     for (let index = 0; index < data.card.length; index++) {
@@ -226,6 +242,8 @@ function toggle(where, card){
  * @returns Object
  */
 function check(card){
+    normalize()
+
     let result = {
         any: false
     }
@@ -282,13 +300,17 @@ function cloud(card){
  * @param {String} params.type - тип 
  * @returns Object
  */
-function get(params){
+function get(params = {}){
     if(Account.Permit.sync){
         return Account.Bookmarks.get(params)
     }
     else{
+        normalize()
+
         let result = []
         let ids    = data[params.type]
+
+        if(!Arrays.isArray(ids)) return result
 
         ids.forEach(id => {
             for (let i = 0; i < data.card.length; i++) {
@@ -308,6 +330,8 @@ function get(params){
  * @param {Object} card 
  */
 function clear(where, card){
+    normalize()
+
     if(Account.Permit.sync){
         Account.Bookmarks.clear(where)
     }
@@ -330,15 +354,7 @@ function clear(where, card){
 function read(nolisten = false){
     data = Storage.get('favorite','{}')
 
-    let empty = {
-        card: []
-    }
-
-    category.forEach(a=>{
-        empty[a] = []
-    })
-
-    Arrays.extend(data, empty)
+    normalize()
 
     if(nolisten) return
 
@@ -352,15 +368,7 @@ function read(nolisten = false){
  * Получить весь список что есть
  */
 function full(){
-    let empty = {
-        card: []
-    }
-
-    category.forEach(a=>{
-        empty[a] = []
-    })
-
-    Arrays.extend(data, empty)
+    normalize()
 
     return data
 }

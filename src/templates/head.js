@@ -5,15 +5,17 @@ let html = `<div class="head">
             <img class="head__logo-mark" src="./img/logo-icon.svg" alt="" />
         </div>
 
-        <div class="head__menu-icon">
-            <svg><use xlink:href="#sprite-menu"></use></svg>
-        </div>
-
         <div class="head__title"></div>
-        
+
         <div class="head__actions">
+            <div class="head__action selector open--history">
+                <svg><use xlink:href="#sprite-history"></use></svg>
+            </div>
             <div class="head__action selector hide full--screen">
                 <svg><use xlink:href="#sprite-fullscreen"></use></svg>
+            </div>
+            <div class="head__menu-icon">
+                <svg><use xlink:href="#sprite-menu"></use></svg>
             </div>
         </div>
 

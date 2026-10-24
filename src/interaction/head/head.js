@@ -82,6 +82,19 @@ function init(){
         Utils.toggleFullscreen()
     }).toggleClass('hide', Platform.tv() || Platform.is('android') || !Utils.canFullScreen())
 
+    // History button
+    html.find('.open--history').on('hover:enter click', (e)=>{
+        if(DeviceInput.canClick(e.originalEvent)){
+            Activity.push({
+                url: '',
+                title: Lang.translate('title_history'),
+                component: 'favorite',
+                page: 1,
+                type: 'history'
+            })
+        }
+    })
+
     observe()
 
     Controller.add('head',{

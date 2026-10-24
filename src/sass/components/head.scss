@@ -51,6 +51,23 @@
         &:hover{
             opacity: 0.8;
         }
+
+        img{
+            display: block;
+        }
+    }
+
+    &__logo-full{
+        height: 1.6em;
+        width: auto;
+        max-width: none;
+    }
+
+    &__logo-mark{
+        display: none;
+        width: 2.4em;
+        height: 2.4em;
+        border-radius: 0.6em;
     }
 
     &__logo-local{
@@ -67,7 +84,6 @@
     &__menu-icon,
     &__backward{
         flex-shrink: 0;
-        margin-right: 1em;
         display: none;
         cursor: pointer;
 
@@ -77,7 +93,12 @@
         } 
     }
 
+    &__menu-icon{
+        margin-left: 1.5em;
+    }
+
     &__backward{
+        margin-right: 1em;
         cursor: pointer;
         svg{
             height: 1.7em !important;
@@ -249,21 +270,27 @@
 }
 
 body.true--mobile{
-    .head__logo-icon,
     .head__action.open--search,
     .head__action.open--settings{
         display: none;
     }
     .head__menu-icon{
         display: block;
-        margin-left: 0.3em;
-        margin-right: 1.2em;
+        margin-left: 1em;
     }
 
     .head__action{
         margin-left: 1em;
         height: 3em;
         width: 3em;
+    }
+
+    // Keep full logo on mobile, hide mark
+    .head__logo-full{
+        display: block;
+    }
+    .head__logo-mark{
+        display: none;
     }
 
     &.orientation--landscape{
@@ -279,7 +306,7 @@ body.mouse--controll:not(.true--mobile){
     }
     .head__menu-icon{
         display: block;
-        margin-right: 1.2em;
+        margin-left: 1.5em;
     }
     .head__backward{
         display: block;

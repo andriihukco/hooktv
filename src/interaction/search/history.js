@@ -57,7 +57,17 @@ function History(){
             })
         })
 
-        if(!seen.length) scroll.append($('<div class="selector search-history-empty">'+Lang.translate('search_empty')+'</div>'))
+        if(!seen.length){
+            scroll.append($(`<div class="search-history-empty">
+                <div class="search-history-empty__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="m16.5 16.5 4 4"></path>
+                    </svg>
+                </div>
+                <div class="search-history-empty__copy">${Lang.translate('search_empty')}<span>${Lang.translate('search_start_typing')}</span></div>
+            </div>`))
+        }
     }
 
     this.append = function(value){

@@ -324,6 +324,11 @@ function create(object){
 
     slides.append(object.activity.render(true))
 
+    // Apply Apple-style transition if coming from hero
+    if(document.body.classList.contains('page-transition-from-hero')){
+        object.activity.render().addClass('activity--from-hero')
+    }
+
     Lampa.Listener.send('activity',{component: object.component, type: 'init', object})
 
     object.activity.create()

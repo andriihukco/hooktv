@@ -88,7 +88,7 @@ function create(){
         Layer.visible(scroll.render(true))
     }
 
-    if(Storage.field('keyboard_type') !== 'lampa') search.find('.search__input').hide()
+    if(Storage.field('keyboard_type') !== 'lampa') search.find('.search__input-shell').hide()
 
     createKeyboard()
     createHistory()

@@ -194,9 +194,11 @@ function component(object){
                 this.html.prepend(Template.elem('img', {class: 'full-start__background'}))
 
                 // Добавляем фоновую картинку
-                let background = data.movie.backdrop_path ? Api.img(data.movie.backdrop_path,'w1280') : data.movie.background_image ? data.movie.background_image : ''
+                let background = data.movie.backdrop_path
+                    ? Api.img(data.movie.backdrop_path, window.innerWidth <= 790 ? 'w780' : 'w1280')
+                    : data.movie.background_image ? data.movie.background_image : ''
 
-                if(window.innerWidth > 790 && background && !Storage.field('light_version')){
+                if(background && !Storage.field('light_version')){
                     Utils.imgLoad(this.html.find('.full-start__background'), background, (img)=>img.addClass('loaded'))
                 }
                 else this.html.find('.full-start__background').remove()

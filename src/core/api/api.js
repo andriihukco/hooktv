@@ -185,24 +185,26 @@ function collections(params, oncomplite, onerror){
  */
 function favorite(params = {}, oncomplite, onerror){
     let data = {}
+    let type = params.type || (params.filter == 'history' ? 'history' : '')
+    let page = Math.max(1, parseInt(params.page, 10) || 1)
 
-    data.results = Favorite.get(params)
+    data.results = Favorite.get({type})
 
-    if(params.filter){
+    if(params.filter == 'tv' || params.filter == 'movie'){
         data.results = data.results.filter(a=>{
             return params.filter == 'tv' ? a.name : !a.name
         })
     }
 
     data.total_pages = Math.ceil(data.results.length / 20)
-    data.page = Math.min(params.page, data.total_pages)
+    data.page = Math.min(page, Math.max(data.total_pages, 1))
 
     let offset = data.page - 1
 
     data.results = data.results.slice(20 * offset,20 * offset + 20)
 
     if(data.results.length) oncomplite(data)
-    else onerror()
+    else if(typeof onerror == 'function') onerror()
 }
 
 /**

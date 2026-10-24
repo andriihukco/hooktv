@@ -188,6 +188,8 @@
     &__playpause{
         font-size: 1.4em;
         margin: 0 1em;
+        width: 2.5em !important;
+        height: 2.5em !important;
 
         > div:first-child{
             display: none;
@@ -210,15 +212,19 @@
     &__quality{
         width: auto !important;
         padding: 0.1em 0.5em !important;
-        border-radius: 0.2em !important;
+        border-radius: 1em !important;
         text-transform: uppercase;
     }
 
     &__tstart{
         margin-right: 1em;
+        width: 2.5em !important;
+        height: 2.5em !important;
     }
     &__tend{
         margin-left: 1em;
+        width: 2.5em !important;
+        height: 2.5em !important;
     }
     &__next,
     &__prev{
@@ -226,6 +232,8 @@
     }
     &__rprev,
     &__rnext{
+        width: 2.5em !important;
+        height: 2.5em !important;
         @media screen and (max-width: $media_md) {
             display: none !important;
         }

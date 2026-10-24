@@ -8,11 +8,16 @@
 }
 
 @keyframes animation-trigger-enter {
-    40% {
-        transform: scale(1.2);
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
     }
     100% {
         transform: scale(1);
+        opacity: 1;
     }
 }
 
@@ -26,8 +31,11 @@
 }
 
 @keyframes animation-button-focus {
-    40% {
-        transform: scale(0.9);
+    0% {
+        transform: scale(0.95);
+    }
+    50% {
+        transform: scale(1.05);
     }
     100% {
         transform: scale(1);
@@ -37,7 +45,7 @@
 @keyframes animation-modal {
     0%{
         opacity: 0;
-        transform: translate3d(0,-5em,0) scale(0.9);
+        transform: translate3d(0,-5em,0) scale(0.92);
     }
     100% {
         opacity: 1;
@@ -86,28 +94,34 @@
 
 @keyframes animation-zoom-down {
     0%{
-        transform: scale(1.2);
+        transform: scale(1.15);
+        opacity: 0;
     }
     100% {
         transform: scale(1.0);
+        opacity: 1;
     }
 }
 
 @keyframes animation-activity {
     0%{
         transform: translate3d(0,14%,0);
+        opacity: 0;
     }
     100% {
         transform: translate3d(0,0,0);
+        opacity: 1;
     }
 }
 
 @keyframes animation-from-below {
     0%{
-        transform: translate3d(0,50%,0);
+        transform: translate3d(0,50%,0) scale(0.96);
+        opacity: 0;
     }
     100% {
-        transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0) scale(1);
+        opacity: 1;
     }
 }
 
@@ -124,15 +138,8 @@
 
 body.advanced--animation:not(.no--animation){
     .card:not(.card--wide){
-        &.focus,
-        &.hover{
-            .card__view{
-                animation: animation-card-focus 0.2s
-            }
-        }
-
         &.animate-trigger-enter .card__view{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
@@ -140,34 +147,34 @@ body.advanced--animation:not(.no--animation){
         &.focus,
         &.hover{
             .full-episode{
-                animation: animation-card-focus 0.2s
+                animation: animation-card-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
             }
         }
 
         &.animate-trigger-enter .full-episode{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
     .explorer-card__head-img{
         &.focus,
         &.hover{
-            animation: animation-card-focus 0.2s
+            animation: animation-card-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
         }
 
         &.animate-trigger-enter{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
     .torrent-item{
         &.focus,
         &.hover{
-            animation: animation-file-focus 0.2s
+            animation: animation-file-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
         }
 
         &.animate-trigger-enter{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
@@ -181,11 +188,11 @@ body.advanced--animation:not(.no--animation){
     .full-review-add{
         &.focus,
         &.hover{
-            animation: animation-button-focus 0.2s
+            animation: animation-button-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
         }
 
-        &.animate-trigger-enter:not([data-action]){
-            animation: animation-trigger-enter 0.2s forwards
+        &.animate-trigger-enter{
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
@@ -193,12 +200,12 @@ body.advanced--animation:not(.no--animation){
         &.focus,
         &.hover{
             .full-person__photo{
-                animation: animation-button-focus 0.2s
+                animation: animation-button-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
             }
         }
 
         &.animate-trigger-enter .full-person__photo{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
@@ -206,37 +213,37 @@ body.advanced--animation:not(.no--animation){
         &.focus,
         &.hover{
             .settings-folder__icon{
-                animation: animation-button-focus 0.2s
+                animation: animation-button-focus 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
             }
         }
 
         &.animate-trigger-enter .settings-folder__icon{
-            animation: animation-trigger-enter 0.2s forwards
+            animation: animation-trigger-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards
         }
     }
 
     .modal.animate .modal__content{
-        animation: animation-modal 0.3s;
+        animation: animation-modal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .modal.modal--full.animate .modal__content{
-        animation: animation-from-below 0.3s;
+        animation: animation-from-below 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .full-start__background.loaded{
-        animation: animation-full-background 0.3s
+        animation: animation-full-background 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)
     }
 
     .activity:not(.activity--load) .activity__body{
-        animation: animation-activity 0.2s;
+        animation: animation-activity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .animate{
         &-opacity{
-            animation: animation-opacity 0.3s
+            animation: animation-opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)
         }
 
         &-up-content{
-            animation: animation-activity 0.2s
+            animation: animation-activity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)
         }
     }
 }
