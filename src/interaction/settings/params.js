@@ -619,7 +619,7 @@ select('player_rewind',{
     '30': '30',
     '50': '50',
     '100': '100'
-},'20')
+},'10')
 
 select('player_timecode',{
     'again': '#{settings_param_player_timecode_again}',

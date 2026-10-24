@@ -20,6 +20,9 @@ let vast_api    = false
 let waite_time  = 0
 
 function init(){
+    // HOOK TV plays without prerolls, so the VAST player is never loaded
+    return
+
     if(!(Platform.is('orsay') || Platform.is('netcast'))){
         Utils.putScriptAsync([Manifest.github_lampa + '/vender/vast/vast.js'], false,false,()=>{
             vast_api = true
@@ -148,6 +151,9 @@ function getAnyPreroll(first_run = false){
 }
 
 function show(data, call){
+    // HOOK TV: no ads before playback
+    return call()
+
     if(!vast_api){
         if(!(Platform.is('orsay') || Platform.is('netcast'))){
             Metric.counter('no_vast_api', 1)

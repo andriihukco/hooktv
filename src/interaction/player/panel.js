@@ -124,6 +124,9 @@ function init(){
 
     Playlist.listener.follow('set',(e)=>{
         elems.playlist.toggleClass('hide', Boolean(e.playlist.length == 0))
+
+        // episode prev/next only make sense with something to skip to
+        html.toggleClass('panel--single', e.playlist.length < 2)
     })
 
 
@@ -1467,6 +1470,8 @@ function destroy(){
     elems.episode.toggleClass('hide',true)
     elems.playlist.toggleClass('hide',true)
     elems.flow.toggleClass('hide',true)
+
+    html.toggleClass('panel--single',true)
 
     html.toggleClass('panel--paused',false)
     html.toggleClass('panel--norewind',false)
