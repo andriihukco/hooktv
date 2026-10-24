@@ -1,6 +1,7 @@
 bot/
 build/
 build/web/
+!build/github/
 dest/
 plugins/clear
 plugins/anime

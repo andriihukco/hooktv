@@ -1,0 +1,109 @@
+/**
+ * Brand Variables - CSS Custom Properties
+ * These are automatically generated from brand.js configuration
+ * All colors, spacing, and UI tokens should use these variables
+ */
+:root {
+  --brand-primary: #C8F542;
+  --brand-primary-hover: #D6FF5C;
+  --brand-primary-dark: #A6D12A;
+  --brand-primary-light: #D6FF5C;
+  --brand-on-primary: #0B0F00;
+  --brand-background: #000;
+  --brand-background-secondary: #121214;
+  --brand-background-card: #1C1C1F;
+  --surface-1: #121214;
+  --surface-2: #1C1C1F;
+  --glass: rgba(30,30,32,.62);
+  --glass-blur: blur(30px) saturate(1.4);
+  --text-primary: #fff;
+  --text-secondary: rgba(255,255,255,.62);
+  --brand-text-primary: #FFFFFF;
+  --brand-text-secondary: rgba(255,255,255,.62);
+  --brand-text-muted: #98989D;
+  --brand-accent: var(--brand-primary);
+  --brand-accent-hover: var(--brand-primary-hover);
+  --brand-border: rgba(255,255,255,.12);
+  --brand-divider: #1C1C1F;
+  --brand-overlay: rgba(0, 0, 0, 0.7);
+  --brand-gradient-primary: linear-gradient(135deg, #D6FF5C 0%, #A6D12A 100%);
+  --brand-gradient-card: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+  --font-size-5xl: 3rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --card-width-small: 120px;
+  --card-width-medium: 160px;
+  --card-width-large: 200px;
+  --card-ratio: 1.5;
+  --focus-ring: #C8F542;
+  --focus-ring-color: var(--focus-ring);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+}
+
+[data-theme=dark] {
+  --brand-background: #000;
+  --brand-background-secondary: #121214;
+  --brand-background-card: #1C1C1F;
+  --brand-text-primary: #FFFFFF;
+  --brand-text-secondary: rgba(255,255,255,.62);
+}
+
+[data-density=compact] {
+  --space-xs: 0.125rem;
+  --space-sm: 0.25rem;
+  --space-md: 0.5rem;
+  --space-lg: 0.75rem;
+  --space-xl: 1rem;
+}
+
+[data-density=comfortable] {
+  --space-xs: 0.375rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 2rem;
+  --space-xl: 2.5rem;
+}
+
+/**
+ * HOOK TV mixins. Every UI task uses these.
+ */
