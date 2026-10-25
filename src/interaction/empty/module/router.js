@@ -1,6 +1,6 @@
 import Lang from '../../../core/lang'
 import Template from '../../template'
-import Device from '../../../core/account/device'
+import SignIn from '../../../core/account/signin'
 import Arrays from '../../../utils/arrays'
 import Permit from '../../../core/account/permit'
 
@@ -45,7 +45,7 @@ export default {
             params.buttons.push({
                 title: Lang.translate('settings_cub_signin_button'),
                 onEnter: ()=>{
-                    Device.login(this.start.bind(this))
+                    SignIn.open(this.start.bind(this))
                 }
             })
         }

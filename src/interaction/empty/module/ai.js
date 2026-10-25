@@ -1,6 +1,6 @@
 import Empty from '../empty'
 import Lang from '../../../core/lang'
-import Device from '../../../core/account/device'
+import SignIn from '../../../core/account/signin'
 import Modal from '../../../core/account/modal'
 
 export default {
@@ -40,7 +40,7 @@ export default {
                 {
                     title: Lang.translate('settings_cub_signin_button'),
                     onEnter: ()=>{
-                        Device.login(this.start.bind(this))
+                        SignIn.open(this.start.bind(this))
                     }
                 }
             ]

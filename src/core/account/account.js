@@ -8,10 +8,13 @@ import Listener from './listener'
 import Permit from './permit'
 import Profile from './profile'
 import Panel from './panel'
-import Device from './device'
+import SignIn from './signin'
+import SignOut from '../supa/signout'
 import Api from './api'
 import Modal from './modal'
 import Timer from '../timer'
+import Auth from '../supa/auth'
+import Devices from '../supa/devices'
 
 let network = new Reguest()
 let user_data
@@ -29,23 +32,35 @@ function init(){
     Bookmarks.init()
     Profile.init()
     Panel.init()
-    Device.init()
+    SignIn.init()
 
     Socket.listener.follow('open', checkAccountValidity)
 
     Timer.add(1000 * 60 * 10, checkAccountValidity)
 
-    Profile.check(()=>{
-        Api.user(user=>user_data = user)
-
-        Timeline.update()
-
-        Profile.update()
-
-        Api.persons()
-    })
+    startSession()
 
     delete Account.init
+}
+
+/**
+ * Обновить сессию и зарегистрировать устройство, затем загрузить профиль
+ * @return {void}
+ */
+function startSession(){
+    Auth.refresh().then((s)=>{
+        if(s) return Devices.register().catch((e)=>console.warn('Account', 'device register fail', e.code))
+    }).then(()=>{
+        Profile.check(()=>{
+            Api.user(user=>user_data = user)
+
+            Timeline.update()
+
+            Profile.update()
+
+            Api.persons()
+        })
+    })
 }
 
 /**
@@ -64,7 +79,7 @@ function task(call){
  * @return {void}
  */
 function checkAccountValidity(){
-    Permit.token && Socket.send('check_token',{})
+    Permit.token && Auth.refresh()
 }
 
 /**
@@ -76,16 +91,11 @@ function logoff(data){
     let account = Permit.account
 
     if(account.token && account.email == data.email){
-        Storage.set('account','',true)
-        Storage.set('account_use',false,true)
-        Storage.set('account_user','',true)
-        Storage.set('account_email','',true)
-        Storage.set('account_notice','',true)
-        Storage.set('account_bookmarks','',true)
+        SignOut.signOutThisDevice().then(()=>{
+            $('.head .open--profile').addClass('hide')
 
-        $('.head .open--profile').addClass('hide')
-
-        window.location.reload()
+            window.location.reload()
+        })
     }
 }
 

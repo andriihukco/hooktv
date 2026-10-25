@@ -1,5 +1,6 @@
 import Permit from './permit'
 import Api from './api'
+import Profiles from '../supa/profiles'
 import Arrays from '../../utils/arrays'
 import Utils from '../../utils/utils'
 import Listener from './listener'
@@ -63,16 +64,16 @@ function update(){
  */
 function check(call){
     if(Permit.access){
-        Api.load('profiles/all', {attempts: 3}).then((result)=>{
+        Profiles.list().then((profiles)=>{
             let account = Permit.account
 
             if(account.profile.id){
-                let active = result.profiles.find(p=>p.id == account.profile.id)
+                let active = profiles.find(p=>p.id == account.profile.id)
 
                 if(active) account.profile = active
             }
             else{
-                let main = result.profiles.find(p=>p.main)
+                let main = profiles.find(p=>p.main)
 
                 if(main) account.profile = main
             }
@@ -107,12 +108,12 @@ function select(callback){
             Loading.stop()
         })
 
-        Api.load('profiles/all').then((result)=>{
+        Profiles.list().then((profiles)=>{
             Loading.stop()
 
-            if(result.secuses){
-                let items = Arrays.clone(result.profiles)
-                let clone = Arrays.clone(result.profiles)
+            if(profiles){
+                let items = Arrays.clone(profiles)
+                let clone = Arrays.clone(profiles)
 
                 items.reverse()
                 clone.reverse()
@@ -159,10 +160,10 @@ function select(callback){
                                 if(name){
                                     name = Utils.capitalizeFirstLetter(name)
 
-                                    Api.load('profiles/create', {}, {name}).then((result)=>{
+                                    Profiles.create(name, Lampa.Account.hasPremium()).then(()=>{
                                         Bell.push({text: Lang.translate('account_profile_created')})
                                     }).catch((e)=>{
-                                        Noty.show(Lang.translate(e.decode_code == 200 ? 'account_profile_limited' : 'network_error').replace('{count}', maximum))
+                                        Noty.show(Lang.translate(e.code == 'profile_limit' ? 'account_profile_limited' : 'network_error').replace('{count}', maximum))
                                     })
                                 }
                             })
@@ -191,7 +192,7 @@ function select(callback){
                 })
             }
             else{
-                Noty.show(result.text)
+                Noty.show(Lang.translate('account_profiles_empty'))
 
                 callback && callback()
             }
