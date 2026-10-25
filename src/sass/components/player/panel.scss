@@ -195,8 +195,8 @@
             display: none;
         }
 
+        // keep the template order on phones: back 10 · pause · forward 10
         @media screen and (max-width: $media_sm) {
-            order: -1;
             margin-left: 0;
         }
     }
