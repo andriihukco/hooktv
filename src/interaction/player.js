@@ -302,7 +302,20 @@ function init(){
 
     /** На весь экран */
     Panel.listener.follow('fullscreen',()=>{
+        let video = Video.video()
+
+        // iPhone Safari has no page fullscreen: the video goes fullscreen in the native iOS player
+        if(!Utils.canFullScreen() && video && video.webkitEnterFullscreen) return video.webkitEnterFullscreen()
+
         Utils.toggleFullscreen()
+    })
+
+    // phones: a movie in fullscreen turns sideways, and back when it leaves
+    document.addEventListener('fullscreenchange',()=>{
+        if(!Platform.screen('mobile') || !window.screen.orientation || !window.screen.orientation.lock) return
+
+        if(document.fullscreenElement && $('body').hasClass('player--viewing')) window.screen.orientation.lock('landscape').catch(()=>{})
+        else if(window.screen.orientation.unlock) window.screen.orientation.unlock()
     })
 
     /** Картинка в картинке */

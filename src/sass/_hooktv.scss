@@ -2610,6 +2610,18 @@ body.selectbox--open .selectbox__layer{
     }
 }
 
+// touch screens: back 10 · play/pause · forward 10, plus quality, settings and fullscreen.
+// Episodes are picked before playing, audio too; iOS ignores volume set by the page
+body.true--mobile .player-panel{
+    .player-panel__prev,
+    .player-panel__next,
+    .player-panel__next-episode-name,
+    .player-panel__tracks,
+    .player-panel__volume{
+        display: none !important;
+    }
+}
+
 .player-info{
     top: 0 !important;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%) !important;

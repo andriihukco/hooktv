@@ -1326,7 +1326,10 @@ function toggle(){
 function show(){
     state.start()
 
-    html.find('.player-panel__fullscreen').toggleClass('hide',Platform.tv() || Platform.is('android') || !Utils.canFullScreen())
+    // iPhone Safari cannot put the page in fullscreen, only the video itself (player.js)
+    let video_fullscreen = Boolean(window.HTMLVideoElement && HTMLVideoElement.prototype.webkitEnterFullscreen)
+
+    html.find('.player-panel__fullscreen').toggleClass('hide',Platform.tv() || Platform.is('android') || !(Utils.canFullScreen() || video_fullscreen))
 
     addController()
 }

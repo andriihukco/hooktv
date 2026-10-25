@@ -578,16 +578,6 @@ body.true--mobile.orientation--portrait .player-panel{
         font-size: 1.6em;
     }
 
-    &__center{
-        .player-panel__next,
-        .player-panel__prev{
-            display: flex !important;
-        }
-        .player-panel__prev{
-            order: -1;
-        }
-    }
-
     &__left{
         display: none;
     }

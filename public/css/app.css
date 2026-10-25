@@ -7110,19 +7110,6 @@ body.true--mobile.orientation--portrait .player-panel__playlist {
 body.true--mobile.orientation--portrait .player-panel__timeline {
   font-size: 1.6em;
 }
-body.true--mobile.orientation--portrait .player-panel__center .player-panel__next,
-body.true--mobile.orientation--portrait .player-panel__center .player-panel__prev {
-  display: -webkit-box !important;
-  display: -webkit-flex !important;
-  display: -ms-flexbox !important;
-  display: flex !important;
-}
-body.true--mobile.orientation--portrait .player-panel__center .player-panel__prev {
-  -webkit-box-ordinal-group: 0;
-  -webkit-order: -1;
-      -ms-flex-order: -1;
-          order: -1;
-}
 body.true--mobile.orientation--portrait .player-panel__left {
   display: none;
 }
@@ -19091,6 +19078,14 @@ body.selectbox--open .selectbox__layer {
 .player-panel .player-panel__tend,
 .player-panel .player-panel__pip,
 .player-panel .player-panel__flow {
+  display: none !important;
+}
+
+body.true--mobile .player-panel .player-panel__prev,
+body.true--mobile .player-panel .player-panel__next,
+body.true--mobile .player-panel .player-panel__next-episode-name,
+body.true--mobile .player-panel .player-panel__tracks,
+body.true--mobile .player-panel .player-panel__volume {
   display: none !important;
 }
 
