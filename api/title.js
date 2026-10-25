@@ -15,6 +15,12 @@ const APP_NAME = 'HOOK TV'
 // the same public key the web app ships with
 const PUBLIC_TMDB_KEY = '4ef0d7355d9ffb5151e987764708ce96'
 
+// the home page as search results show it; the same words as public/index.html
+const HOME_TITLE       = 'HOOK TV — дивитися фільми та серіали онлайн українською'
+const HOME_DESCRIPTION = 'HOOK TV: дивитися фільми, серіали та ТБ онлайн українською мовою. Новинки, популярні та найкращі фільми й серіали з рейтингами, жанрами та озвученням.'
+const HOME_H1          = 'Фільми та серіали онлайн українською'
+const HOME_INTRO       = 'HOOK TV збирає фільми, серіали та українське кіно в одному місці: новинки тижня, найкращі за рейтингом і українська озвучка там, де вона є. Працює в браузері, на телефоні та на Smart TV.'
+
 const FALLBACK = {
     title: APP_NAME,
     description: 'Фільми, серіали та ТБ — усе в одному місці. Українською озвучкою.',
@@ -66,10 +72,58 @@ function runtime(data, media){
     return (m >= 60 ? Math.floor(m / 60) + ' год ' : '') + (m % 60 ? (m % 60) + ' хв' : '').trim()
 }
 
+// a TMDB list entry as a link target
+function item(entry){
+    let media = entry.media_type == 'tv' || (!entry.title && entry.name) ? 'tv' : 'movie'
+
+    return {
+        id: entry.id,
+        media,
+        name: entry.title || entry.name,
+        year: (entry.release_date || entry.first_air_date || '').slice(0, 4)
+    }
+}
+
+function link(entry){
+    return '/?' + new URLSearchParams({card: entry.id, media: entry.media, source: 'tmdb'}).toString()
+}
+
+function links(list){
+    return '<ul>' + list.map(e=>`<li><a href="${esc(link(e))}">${esc(e.name)}${e.year ? ' (' + esc(e.year) + ')' : ''}</a></li>`).join('') + '</ul>'
+}
+
+async function fetchList(key, path){
+    let res = await fetch(`https://api.themoviedb.org/3/${path}${path.indexOf('?') >= 0 ? '&' : '?'}language=uk-UA&api_key=${encodeURIComponent(key)}`)
+
+    if(!res.ok) return []
+
+    let data = await res.json()
+
+    return (data.results || []).filter(r=>r.title || r.name).slice(0, 20).map(item)
+}
+
+/**
+ * The home page crawlers see: what HOOK TV is, then the lists people browse,
+ * each title linked to its own page so search engines can find them all
+ */
+async function fetchHome(){
+    let key = process.env.TMDB_API_KEY || PUBLIC_TMDB_KEY
+
+    let [movies, series, ukrainian] = await Promise.all([
+        fetchList(key, 'trending/movie/week'),
+        fetchList(key, 'trending/tv/week'),
+        fetchList(key, 'discover/movie?with_original_language=uk&sort_by=popularity.desc')
+    ])
+
+    if(!movies.length && !series.length) return null
+
+    return {...FALLBACK, home: {movies, series, ukrainian}}
+}
+
 async function fetchTitle(media, id){
     let key = process.env.TMDB_API_KEY || PUBLIC_TMDB_KEY
 
-    let res = await fetch(`https://api.themoviedb.org/3/${media}/${id}?language=uk-UA&append_to_response=credits&api_key=${encodeURIComponent(key)}`)
+    let res = await fetch(`https://api.themoviedb.org/3/${media}/${id}?language=uk-UA&append_to_response=credits,recommendations&api_key=${encodeURIComponent(key)}`)
     if(!res.ok) return null
 
     let data = await res.json()
@@ -87,9 +141,14 @@ async function fetchTitle(media, id){
     let cast     = (credits.cast || []).slice(0, 6).map(p=>p.name).filter(Boolean)
     let directors = (credits.crew || []).filter(p=>p.job == 'Director').slice(0, 2).map(p=>p.name).filter(Boolean)
     let title    = year ? name + ' (' + year + ')' : name
+    let original = data.original_title || data.original_name || ''
+    let similar  = ((data.recommendations || {}).results || []).filter(r=>r.title || r.name).slice(0, 12).map(item)
 
     return {
         title,
+        // what people type: «назва» (рік) дивитися онлайн українською
+        seo_title: (media == 'tv' ? 'Серіал «' + name + '»' : '«' + name + '»') + (year ? ' (' + year + ')' : '') + ' дивитися онлайн українською',
+        seo_description: snippet('Дивіться ' + (media == 'tv' ? 'серіал ' : '') + '«' + name + '»' + (year ? ' (' + year + ')' : '') + ' онлайн українською' + (facts ? '. ' + facts : '') + '. ' + overview, 155),
         description: snippet((facts ? facts + '. ' : '') + overview, 155),
         // branded card with the poster, rating, genres and overview (api/og.js)
         image: '/api/og?' + new URLSearchParams({card: id, media}).toString(),
@@ -108,6 +167,8 @@ async function fetchTitle(media, id){
             directors,
             released: data.release_date || data.first_air_date || '',
             media,
+            original: original && original != name ? original : '',
+            similar,
             poster: data.poster_path ? 'https://image.tmdb.org/t/p/w500' + data.poster_path : ''
         }
     }
@@ -117,14 +178,32 @@ async function fetchTitle(media, id){
 function body(meta, target){
     let i = meta.info
 
+    if(meta.home){
+        let h = meta.home
+        let section = (title, list)=>list.length ? `<section><h2>${esc(title)}</h2>${links(list)}</section>` : ''
+
+        return `<main>
+<h1>${esc(HOME_H1)}</h1>
+<p>${esc(HOME_INTRO)}</p>
+${section('Популярні фільми тижня', h.movies)}
+${section('Популярні серіали тижня', h.series)}
+${section('Українські фільми', h.ukrainian)}
+<p><a href="/">Відкрити ${esc(APP_NAME)}</a></p>
+</main>`
+    }
+
     if(!i) return `<main><h1>${esc(APP_NAME)}</h1><p>${esc(meta.description)}</p><p><a href="${esc(target)}">Відкрити ${esc(APP_NAME)}</a></p></main>`
 
     let facts = [i.year, i.length].filter(Boolean)
     let rating = i.rating ? `<p>Рейтинг TMDB: ${esc(i.rating)} з 10 (${esc(i.votes)} оцінок)</p>` : ''
 
+    let section = i.media == 'tv' ? 'Серіали' : 'Фільми'
+
     return `<main>
+<nav aria-label="Навігація"><a href="/">${esc(APP_NAME)}</a> › ${section} › ${esc(i.name)}</nav>
 <article>
-<h1>${esc(meta.title)}</h1>
+<h1>${esc(meta.seo_title)}</h1>
+${i.original ? `<p>Оригінальна назва: ${esc(i.original)}</p>` : ''}
 <p>${facts.map(esc).join(' · ')}</p>
 ${i.poster ? `<img src="${esc(i.poster)}" width="500" height="750" alt="Постер: ${esc(i.name)}">` : ''}
 ${rating}
@@ -134,6 +213,7 @@ ${i.cast.length ? `<p>У ролях: ${esc(i.cast.join(', '))}</p>` : ''}
 <p>${esc(i.overview)}</p>
 <p><a href="${esc(target)}">Дивитися «${esc(i.name)}» українською на ${esc(APP_NAME)}</a></p>
 </article>
+${i.similar.length ? `<section><h2>Схожі ${i.media == 'tv' ? 'серіали' : 'фільми'}</h2>${links(i.similar)}</section>` : ''}
 </main>`
 }
 
@@ -147,6 +227,7 @@ function structured(meta, shareUrl){
         '@context': 'https://schema.org',
         '@type': i.media == 'tv' ? 'TVSeries' : 'Movie',
         name: i.name,
+        alternateName: i.original || undefined,
         description: meta.description,
         url: shareUrl,
         image: i.poster || undefined,
@@ -164,7 +245,17 @@ function structured(meta, shareUrl){
         } : undefined
     }
 
-    return data
+    let crumbs = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {'@type': 'ListItem', position: 1, name: APP_NAME, item: new URL('/', shareUrl).toString()},
+            {'@type': 'ListItem', position: 2, name: i.media == 'tv' ? 'Серіали' : 'Фільми'},
+            {'@type': 'ListItem', position: 3, name: i.name, item: shareUrl}
+        ]
+    }
+
+    return [data, crumbs]
 }
 
 function page(meta, target, shareUrl, redirect){
@@ -175,9 +266,11 @@ function page(meta, target, shareUrl, redirect){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${meta.title === APP_NAME ? APP_NAME : esc(meta.title) + ' · ' + APP_NAME}</title>
+<title>${meta.info ? esc(meta.seo_title) + ' · ' + APP_NAME : esc(HOME_TITLE)}</title>
 <link rel="canonical" href="${esc(shareUrl)}">
-<meta name="description" content="${esc(meta.description)}">
+<link rel="alternate" hreflang="uk" href="${esc(shareUrl)}">
+<link rel="alternate" hreflang="x-default" href="${esc(shareUrl)}">
+<meta name="description" content="${esc(meta.info ? meta.seo_description : HOME_DESCRIPTION)}">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:site_name" content="${APP_NAME}">
 <meta property="og:type" content="${esc(meta.type)}">
@@ -194,7 +287,7 @@ function page(meta, target, shareUrl, redirect){
 <meta name="twitter:description" content="${esc(meta.description)}">
 <meta name="twitter:image" content="${esc(meta.image)}">
 <meta name="twitter:image:alt" content="${esc(meta.title)}">
-${ld ? `<script type="application/ld+json">${json(ld)}</script>` : ''}
+${ld ? ld.map(d=>`<script type="application/ld+json">${json(d)}</script>`).join('\n') : ''}
 ${redirect ? `<meta http-equiv="refresh" content="0; url=${esc(target)}">` : ''}
 </head>
 <body>${body(meta, target)}</body>
@@ -216,7 +309,15 @@ module.exports = async (req, res) => {
     let viaApp = url.searchParams.get('preview') === '1'
 
     let meta = FALLBACK
-    if(valid){
+    if(!id){
+        try{
+            meta = (await fetchHome()) || FALLBACK
+        }
+        catch(e){
+            meta = FALLBACK
+        }
+    }
+    else if(valid){
         try{
             meta = (await fetchTitle(media, id)) || FALLBACK
         }

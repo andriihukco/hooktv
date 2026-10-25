@@ -13,11 +13,17 @@ function esc(value){
     return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 }
 
-async function list(key, media, sort){
+/**
+ * @param {string} media movie or tv
+ * @param {string} path TMDB list after the media type, may carry a query
+ */
+async function list(key, media, path){
     let calls = []
 
     for(let page = 1; page <= PAGES; page++){
-        calls.push(fetch(`https://api.themoviedb.org/3/${media}/${sort}?language=uk-UA&page=${page}&api_key=${encodeURIComponent(key)}`)
+        let url = `https://api.themoviedb.org/3/${path.indexOf('discover') == 0 ? 'discover/' + media + path.slice(8) : media + '/' + path}`
+
+        calls.push(fetch(`${url}${url.indexOf('?') >= 0 ? '&' : '?'}language=uk-UA&page=${page}&api_key=${encodeURIComponent(key)}`)
             .then(r => r.ok ? r.json() : {results: []})
             .catch(() => ({results: []})))
     }
@@ -34,8 +40,14 @@ module.exports = async (req, res) => {
     let lists = await Promise.all([
         list(key, 'movie', 'popular'),
         list(key, 'movie', 'top_rated'),
+        // new releases and airing series are what people search for this week
+        list(key, 'movie', 'now_playing'),
         list(key, 'tv', 'popular'),
-        list(key, 'tv', 'top_rated')
+        list(key, 'tv', 'top_rated'),
+        list(key, 'tv', 'on_the_air'),
+        // Ukrainian cinema: the searches the big catalogues answer worst
+        list(key, 'movie', 'discover?with_original_language=uk&sort_by=popularity.desc'),
+        list(key, 'tv', 'discover?with_original_language=uk&sort_by=popularity.desc')
     ])
 
     // a title can sit in several lists: keep each once

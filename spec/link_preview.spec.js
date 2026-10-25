@@ -25,6 +25,8 @@ suite('link previews', ()=>{
     })
 
     test('home page gets the branded card with absolute image', async ()=>{
+        vi.stubGlobal('fetch', async ()=>({ok: false}))
+
         let res = await run('/api/title?preview=1')
 
         expect(res.body).toContain('<meta property="og:image" content="https://hook.tv/img/og.png">')
@@ -59,8 +61,34 @@ suite('link previews', ()=>{
         expect(data.aggregateRating.ratingValue).toBe(8.5)
         expect(data.aggregateRating.ratingCount).toBe(1200)
         expect(data.director[0].name).toBe('Режисер Р')
-        expect(res.body).toContain('<h1>Фільм &lt;/script&gt;&lt;b&gt; (2003)</h1>')
+        expect(res.body).toContain('<h1>«Фільм &lt;/script&gt;&lt;b&gt;» (2003) дивитися онлайн українською</h1>')
         expect(res.body).toContain('У ролях: Актор А')
+    })
+
+    test('title page reads like a search: title, description, original name, breadcrumbs and similar titles', async ()=>{
+        vi.stubGlobal('fetch', async ()=>({ok: true, json: async ()=>({name: 'Пес Патрон', original_name: 'Patron', first_air_date: '2022-08-24', number_of_seasons: 2, overview: 'Опис', vote_average: 7.1, vote_count: 40, genres: [{name: 'сімейний'}], recommendations: {results: [{id: 5, name: 'Мавка', first_air_date: '2023-03-02'}]}})}))
+
+        let res = await run('/api/title?card=9&media=tv&source=tmdb')
+
+        expect(res.body).toContain('<title>Серіал «Пес Патрон» (2022) дивитися онлайн українською · HOOK TV</title>')
+        expect(res.body).toContain('<meta name="description" content="Дивіться серіал «Пес Патрон» (2022) онлайн українською. ★ 7.1 · Сімейний. Опис">')
+        expect(res.body).toContain('Оригінальна назва: Patron')
+        expect(res.body).toContain('<a href="/?card=5&amp;media=tv&amp;source=tmdb">Мавка (2023)</a>')
+
+        let ld = [...res.body.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]))
+
+        expect(ld[0].alternateName).toBe('Patron')
+        expect(ld[1]['@type']).toBe('BreadcrumbList')
+    })
+
+    test('home page for crawlers lists titles with links to their pages', async ()=>{
+        vi.stubGlobal('fetch', async ()=>({ok: true, json: async ()=>({results: [{id: 7, title: 'Мавка: Лісова пісня', release_date: '2023-03-02'}]})}))
+
+        let res = await run('/api/title?preview=1')
+
+        expect(res.body).toContain('<title>HOOK TV — дивитися фільми та серіали онлайн українською</title>')
+        expect(res.body).toContain('<h2>Українські фільми</h2>')
+        expect(res.body).toContain('<a href="/?card=7&amp;media=movie&amp;source=tmdb">Мавка: Лісова пісня (2023)</a>')
     })
 
     test('non-numeric card ids are not reflected', async ()=>{
