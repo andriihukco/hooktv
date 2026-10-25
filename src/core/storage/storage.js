@@ -1,23 +1,15 @@
 import Subscribe from '../../utils/subscribe'
 import Arrays from '../../utils/arrays'
 import Params from '../../interaction/settings/params'
-import Workers from './workers'
 import Noty from '../../interaction/noty'
 import Lang from '../lang'
 import Cache from '../../utils/cache'
 
 let listener = Subscribe();
 let readed   = {}
-let workers  = {}
 let reserve  = {}
 
 function init(){
-    sync('online_view','array_string')
-    sync('torrents_view','array_string')
-    sync('search_history','array_string')
-    sync('online_last_balanser','object_string')
-    sync('user_clarifys','object_object')
-    sync('torrents_filter_data','object_object')
 }
 
 /**
@@ -226,22 +218,6 @@ function cache(name, max, empty){
 }
 
 /**
- * Добавить переменную в синхронизацию с сервером
- * @doc
- * @name sync
- * @alias Storage
- * @param {string} field_name название
- * @param {string} class_type тип данных, доступно (array_string | array_object_id | object_string | object_object) \n\n `array_string` - ['a','b','c'] \n\n `array_object_id` - [{id:1,..},{id:2,..}] \n\n `object_string` - {a:'a',b:'b'} \n\n `object_object` - {a:{a:'a'},b:{b:'b'}}
- */
-
-function sync(field_name, class_type){
-    if(Workers[class_type] && !workers[field_name]){
-        workers[field_name] = new Workers[class_type](field_name)
-        workers[field_name].init(class_type)
-    }
-}
-
-/**
  * Удалить значение из синхронизации
  * @doc
  * @name remove
@@ -251,19 +227,11 @@ function sync(field_name, class_type){
  */
 
 function remove(field_name, value){
-    if(workers[field_name]) workers[field_name].remove(value)
-}
+    let list = get(field_name, [])
 
-/**
- * Очистить полностью значение из синхронизации
- * @doc
- * @name clean
- * @alias Storage
- * @param {string} field_name название
- */
+    if(!Arrays.isArray(list)) return
 
-function clean(field_name){
-    if(workers[field_name]) workers[field_name].clean()
+    set(field_name, list.filter(item=> (item && typeof item == 'object' ? item.id : item) != value))
 }
 
 /**
@@ -342,10 +310,8 @@ export default {
     cache,
     add,
     value,
-    sync,
     remove,
     clear,
-    clean,
     getsize,
     task
 }

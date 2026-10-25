@@ -98,7 +98,6 @@ const BRAND_CONFIG = {
         // Content
         torrents: true,
         online_sources: true,
-        iptv: true,
         
         // Social
         reactions: true,

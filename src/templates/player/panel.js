@@ -9,19 +9,6 @@ let html = `<div class="player-panel">
             <div class="player-panel__time-touch-zone hide"></div>
         </div>
 
-        <div class="player-panel__iptv">
-            <div class="player-panel-iptv">
-                <div class="player-panel-iptv__channel"></div>
-                <div class="player-panel-iptv__arrow-up">
-                    <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.12 14.71 12 10.83l3.88 3.88a.996.996 0 1 0 1.41-1.41L12.7 8.71a.996.996 0 0 0-1.41 0L6.7 13.3a.996.996 0 0 0 0 1.41c.39.38 1.03.39 1.42 0z"/></svg>                
-                </div>
-                <div class="player-panel-iptv__position">001</div>
-                <div class="player-panel-iptv__arrow-down">
-                    <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.12 9.29 12 13.17l3.88-3.88a.996.996 0 1 1 1.41 1.41l-4.59 4.59a.996.996 0 0 1-1.41 0L6.7 10.7a.996.996 0 0 1 0-1.41c.39-.38 1.03-.39 1.42 0z"/></svg>                
-                </div>
-            </div>
-        </div>
-
         <div class="player-panel__line player-panel__line-one">
             <div class="player-panel__timenow"></div>
             <div class="player-panel__timeend"></div>

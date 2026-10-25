@@ -875,6 +875,8 @@ export default {
     account_code_where: 'Go to the <span class="account-add-device__site">{site}/add</span> website and enter the code provided there.',
     account_code_input: 'Enter code',
     settings_cub_signin_button: 'Sign in',
+    settings_login: 'Login',
+    account_premium_unavailable: 'Not available in this version',
     account_signin_title: 'Account',
     account_signin_button: 'Sign in',
     account_signup_button: 'Create account',

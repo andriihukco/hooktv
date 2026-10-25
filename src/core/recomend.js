@@ -22,7 +22,7 @@ function init(){
         console.log('Recomendations', 'find history:', history.length)
 
         history.forEach(elem=>{
-            if(['cub','tmdb'].indexOf(elem.source) >= 0){
+            if(['tmdb'].indexOf(elem.source) >= 0){
                 let id = data.filter(a=>a.id == elem.id)
     
                 if(!id.length){

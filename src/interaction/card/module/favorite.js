@@ -1,44 +1,21 @@
 import Favorite from '../../../core/favorite'
 import Timeline from '../../timeline'
 import Lang from '../../../core/lang'
-import Account from '../../../core/account/account'
-import Select from '../../select'
 import Template from '../../template'
 
+/**
+ * Меню «Сохранено» и история. Статусы-метки (premium) убраны: доступны только сохранение и история.
+ */
 export default {
     onCreate: function(){
         let onCheck = (a)=>{
             Favorite.toggle(a.where, this.data)
         }
 
-        let onSelect = (a)=>{
-            onCheck(a)
-
-            this.emit('menuSelect', a, this.html, this.data)
-        }
-
-        let onDraw = (item)=>{
-            if(!Account.hasPremium()){
-                let wrap = $('<div class="selectbox-item__lock"></div>')
-                    wrap.append(Template.js('icon_lock'))
-
-                item.find('.selectbox-item__checkbox').remove()
-
-                item.append(wrap)
-
-                item.on('hover:enter',()=>{
-                    Select.close()
-
-                    Account.showCubPremium()
-                })
-            }
-        }
-
         function drawMenu(){
             let status  = Favorite.check(this.data)
             let menu    = []
             let items_check  = ['book', 'like', 'wath', 'history']
-            let items_mark   = ['look', 'viewed', 'scheduled', 'continued', 'thrown']
 
             items_check.forEach(c=>{
                 menu.push({
@@ -49,25 +26,6 @@ export default {
                     onCheck
                 })
             })
-            
-            if( window.lampa_settings.account_use){
-                menu.push({
-                    title: Lang.translate('settings_cub_status'),
-                    separator: true
-                })
-
-                items_mark.forEach(m=>{
-                    menu.push({
-                        title: Lang.translate('title_'+m),
-                        where: m,
-                        picked: Account.hasPremium() ? status[m] : false,
-                        collect: true,
-                        noenter: !Account.hasPremium(),
-                        onSelect,
-                        onDraw
-                    })
-                })
-            }
 
             return menu
         }

@@ -6,12 +6,9 @@ import Noty from '../interaction/noty'
 import Android from '../core/android'
 import Lang from '../core/lang'
 import Platform from '../core/platform'
-import Manifest from '../core/manifest'
-import Mirrors from '../core/mirrors'
 import Cache from './cache'
 import Utils from './utils'
 
-let bad_mirrors = {}
 
 /**
  * Универсальный запрос
@@ -329,67 +326,7 @@ function Request(){
     function go(params){
         params.url = params.url || 'no url'
 
-        let error     = false
-        let hasmirror = Manifest.cub_mirrors.find(m=>params.url.indexOf(m) >= 0)
-        
-        if(hasmirror && params.url.indexOf('api/checker') == -1){
-            let mirrors = Manifest.cub_mirrors
-            
-            Arrays.remove(mirrors, hasmirror)
-
-            for(let name in bad_mirrors){
-                let mirror = bad_mirrors[name]
-
-                if(Date.now() - mirror.time > 1000 * 60 * 10){
-                    mirror.time = Date.now()
-                    mirror.urls = []
-                }
-
-                if(mirror.urls.length > 10){
-                    console.log('Request','bad mirror:', name, 'count:', mirror.urls.length)
-
-                    Arrays.remove(mirrors, name)
-
-                    mirror.urls = mirror.urls.slice(-11)
-                }
-            }
-
-            error = function(jqXHR, exception){
-                if(mirrors.length > 0 && (jqXHR.status < 400 || jqXHR.error_time > 1000 * 15)){
-                    if(!bad_mirrors[hasmirror]) bad_mirrors[hasmirror] = {
-                        urls: [],
-                        time: Date.now()
-                    }
-
-                    if(bad_mirrors[hasmirror].urls.indexOf(params.url) < 0){
-                        bad_mirrors[hasmirror].urls.push(params.url)
-                    }
-
-                    let next = mirrors.shift()
-
-                    console.log('Request','try next mirror for:', params.url, 'next mirror:', next)
-
-                    Manifest.cub_mirrors.forEach(mirror=>{
-                        params.url = params.url.replace(mirror, next)
-                    })
-
-                    hasmirror = next
-
-                    request(params, error)
-                }
-                else{
-                    if(params.before_error) params.before_error(jqXHR, exception);
-
-                    if(params.error) params.error(jqXHR, exception);
-
-                    if(params.after_error) params.after_error(jqXHR, exception);
-
-                    if(params.end) params.end();
-                }
-            }
-        }
-
-        request(params, error)
+        request(params, false)
     }
 
     function cacheGet(params, callback) {
@@ -413,11 +350,6 @@ function Request(){
 
     function cacheName(params) {
         let url = params.url || ''
-
-        // убираем зеркало из урла, что бы не было дублей в кеше
-        Manifest.cub_mirrors.forEach(mirror=>{
-            url = url.replace(mirror, '')
-        })
 
         url = url.replace(/https?:\/\//i, '')
 
@@ -520,7 +452,7 @@ function Request(){
         }
 
         let datatype = params.dataType || 'json';
-        let timeout  = !Mirrors.connected() && params.url.indexOf(Manifest.cub_domain) >= 0 ? 2000 : params.timeout || need.timeout;
+        let timeout  = params.timeout || need.timeout;
 
         let data = {
             dataType: datatype,
@@ -636,7 +568,7 @@ function Request(){
             if(params.end) params.end();
         }
 
-        params.timeout = !Mirrors.connected() && params.url.indexOf(Manifest.cub_domain) >= 0 ? 3000 : params.timeout || need.timeout;
+        params.timeout = params.timeout || need.timeout;
 
         Android.httpReq(params, {complite: secuses, error: error})
 

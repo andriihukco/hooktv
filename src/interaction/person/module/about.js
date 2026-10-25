@@ -230,48 +230,8 @@ export default {
             this.prefix.tags.appendChild(tagCount(t('hooktv_person_awards'), list.length, openAwards))
         })
 
-        if(window.lampa_settings.account_use) this.emit('subscribe', this.subscribed)
-
-        if(window.lampa_settings.account_use){
-            this.html.find('.button--subscribe').on('hover:enter',()=>{
-                if(!Account.Permit.access) return Account.Modal.account()
-                
-                let subscribes = Storage.get('person_subscribes_id','[]')
-
-                this.subscribed = subscribes.find(a=>a == this.data.id)
-
-                if(!this.subscribed && !Account.hasPremium()) return Account.Modal.premium()
-
-                let person = Arrays.clone(this.data)
-
-                // Пихают там всякие иконки и прочее, удаляем лишнее
-                delete person.biography
-                delete person.work_genres
-
-                Lampa.Network.silent(Utils.protocol() + Manifest.cub_domain + '/api/person/' + (this.subscribed ? 'unsubscribe' : 'subscribe'), ()=>{
-                    if(this.subscribed) Arrays.remove(subscribes, this.data.id)
-                    else if(subscribes.indexOf(this.data.id) == -1) subscribes.push(this.data.id)
-
-                    Storage.set('person_subscribes_id', subscribes)
-
-                    this.subscribed = subscribes.find(a=>a == this.data.id)
-
-                    this.emit('subscribe', this.subscribed)
-                },(err)=>{
-                    if(err.responseJSON && err.responseJSON.code == 555) Account.Modal.premium()
-                    else Noty.show(Lang.translate('subscribe_error'))
-                },{
-                    person: JSON.stringify(person)
-                },{
-                    headers: {
-                        token: Account.Permit.token
-                    }
-                })
-            }).on('hover:focus hover:enter hover:hover',(e)=>{
-                this.last = e.target
-            })
-        }
-        else this.html.find('.button--subscribe').remove()
+        // Подписка на актеров идет через CUB и отключена
+        this.html.find('.button--subscribe').remove()
     },
 
     onDestroy: function(){

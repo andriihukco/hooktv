@@ -1,5 +1,4 @@
 import Permit from './permit'
-import Api from './api'
 import Profiles from '../supa/profiles'
 import Arrays from '../../utils/arrays'
 import Utils from '../../utils/utils'
@@ -7,7 +6,6 @@ import Listener from './listener'
 import Storage from '../storage/storage'
 import Template from '../../interaction/template'
 import Head from '../../interaction/head/head'
-import Manifest from '../manifest'
 import ParentalControl from '../../interaction/parental_control'
 import Controller from '../controller'
 import Select from '../../interaction/select'
@@ -39,6 +37,17 @@ function init(){
 }
 
 /**
+ * Аватар профиля: первая буква имени на цветном круге. Внешних картинок нет.
+ * @param {string} name - имя профиля
+ * @returns {string} - html
+ */
+function avatar(name){
+    let letter = String(name || '?').trim().charAt(0).toUpperCase().replace(/[<>&"']/g, '') || '?'
+
+    return '<div class="account-avatar">' + letter + '</div>'
+}
+
+/**
  * Обновляет иконку профиля
  * @returns {void}
  */
@@ -46,11 +55,7 @@ function update(){
     profile_icon.empty()
 
     if(Permit.token){
-        profile_icon.append(Template.elem('img'))
-
-        Utils.imgLoad(profile_icon.find('img'), Utils.protocol() + Manifest.cub_domain + '/img/profiles/' + (Permit.account.profile.icon || 'l_1') + '.png', ()=>{}, (img)=>{
-            img.src = './img/img_load.svg'
-        })
+        profile_icon.append(avatar(Permit.account.profile.name))
     }
     else{
         profile_icon.append(Template.js('icon_profile'))
@@ -103,8 +108,6 @@ function select(callback){
         let account = Permit.account
 
         Loading.start(()=>{
-            Api.clear()
-
             Loading.stop()
         })
 
@@ -119,12 +122,12 @@ function select(callback){
                 clone.reverse()
 
                 let select  = []
-                let maximum = Lampa.Account.hasPremium() ? 8 : 3
+                let maximum = Profiles.limit(false)
 
                 let list = items.map((elem, index)=>{
                     elem.title    = elem.name
                     elem.template = 'selectbox_icon'
-                    elem.icon     = '<img src="' + Utils.protocol() + Manifest.cub_domain +'/img/profiles/'+elem.icon+'.png" />'
+                    elem.icon     = avatar(elem.name)
                     elem.clone    = clone[index]
                     elem.subtitle = elem.main ? Lang.translate('account_profile_main') : elem.child ? Lang.translate('account_profile_child') + ' ' + '(' + Lang.translate('filter_rating_to') + ' ' + (elem.age || 12) + ')' : ''
 
@@ -160,7 +163,7 @@ function select(callback){
                                 if(name){
                                     name = Utils.capitalizeFirstLetter(name)
 
-                                    Profiles.create(name, Lampa.Account.hasPremium()).then(()=>{
+                                    Profiles.create(name, false).then(()=>{
                                         Bell.push({text: Lang.translate('account_profile_created')})
                                     }).catch((e)=>{
                                         Noty.show(Lang.translate(e.code == 'profile_limit' ? 'account_profile_limited' : 'network_error').replace('{count}', maximum))

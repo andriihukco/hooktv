@@ -567,18 +567,6 @@ function full(params = {}, oncomplite, onerror){
     else{
         status.need -= 4
     }
-
-    Api.sources.cub.reactionsGet(params,(json)=>{
-        status.append('reactions', json)
-    })
-
-    if(Lang.selected(['ru','uk','be']) && window.lampa_settings.account_use && !Permit.child){
-        status.need++
-
-        Api.sources.cub.discussGet(params, (json)=>{
-            status.append('discuss', json)
-        },status.error.bind(status))
-    }
 }
 
 function videos(params = {}, oncomplite, onerror){

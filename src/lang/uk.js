@@ -845,6 +845,8 @@ export default {
     account_code_where: 'Перейдіть на сайт <span class="account-add-device__site">{site}/add</span> та введіть вказаний там код.',
     account_code_input: 'Ввести код',
     settings_cub_signin_button: 'Увійти',
+    settings_login: 'Вхід',
+    account_premium_unavailable: 'Недоступно в цій версії',
     account_signin_title: 'Акаунт',
     account_signin_button: 'Увійти',
     account_signup_button: 'Створити акаунт',

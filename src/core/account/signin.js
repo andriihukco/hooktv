@@ -9,138 +9,52 @@ import Noty from '../../interaction/noty'
 import Select from '../../interaction/select'
 import Input from '../../interaction/settings/input'
 import Modal from '../../interaction/modal'
-import Loading from '../../interaction/loading'
-import Settings from '../../interaction/settings/settings'
 
 let ticket_poll
 
 /**
- * Вход по email (телефон) или по QR с телефона (ТВ)
- * @param {function} callback - вызывается после входа или отмены
+ * Войти по email и паролю и зарегистрировать устройство.
+ * При лимите устройств промис ждет выбора устройства для выхода.
+ * @param {string} email
+ * @param {string} pass
+ * @returns {Promise<void>} - reject с code (email_not_confirmed, cancelled, ...)
  */
-function open(callback){
-    if(Platform.tv()) return tvSignIn(callback)
+function signIn(email, pass){
+    return Auth.signIn(email, pass).then(()=> register())
+}
 
-    Select.show({
-        title: Lang.translate('account_signin_title'),
-        items: [
-            {title: Lang.translate('account_signin_button'), mode: 'signin'},
-            {title: Lang.translate('account_signup_button'), mode: 'signup'}
-        ],
-        onSelect: (a)=>{
-            credentials(a.mode == 'signup', callback)
-        },
-        onBack: ()=>{
-            Controller.toggle('settings_component')
+/**
+ * Регистрация. Без подтверждения email сессии нет.
+ * @param {string} email
+ * @param {string} pass
+ * @returns {Promise<'signed_in'|'confirm'>}
+ */
+function signUp(email, pass){
+    return Auth.signUp(email, pass).then((result)=>{
+        if(!result.confirmed) return 'confirm'
 
-            callback && callback()
-        }
+        return register().then(()=> 'signed_in')
     })
 }
 
 /**
- * Спросить email и пароль, затем войти или зарегистрироваться
+ * Зарегистрировать текущее устройство. При лимите - выбор устройства для выхода.
+ * @returns {Promise<void>}
  */
-function credentials(signup, callback){
-    let enabled = Controller.enabled().name
+function register(){
+    return Devices.register().catch((e)=>{
+        if(e.code == 'device_limit') return manageDevices()
 
-    Input.edit({title: Lang.translate('account_signin_email'), value: '', free: true, nosave: true, nomic: true}, (email)=>{
-        if(!email){
-            Controller.toggle(enabled)
-
-            return callback && callback()
-        }
-
-        Input.edit({title: Lang.translate('account_signin_password'), value: '', free: true, nosave: true, nomic: true, password: true}, (pass)=>{
-            Controller.toggle(enabled)
-
-            if(!pass) return callback && callback()
-
-            if(signup) doSignUp(email, pass, callback)
-            else doSignIn(email, pass, callback)
-        })
-    })
-}
-
-function doSignIn(email, pass, callback){
-    Loading.start(()=>{
-        Loading.stop()
-    })
-
-    Auth.signIn(email, pass).then(()=>{
-        Loading.stop()
-
-        registerThen(callback)
-    }).catch((e)=>{
-        Loading.stop()
-
-        if(e.code == 'email_not_confirmed') confirmEmail(email, callback)
-        else Noty.show(Lang.translate('account_signin_failed'))
-    })
-}
-
-function doSignUp(email, pass, callback){
-    Loading.start(()=>{
-        Loading.stop()
-    })
-
-    Auth.signUp(email, pass).then((result)=>{
-        Loading.stop()
-
-        if(result.confirmed) return registerThen(callback)
-
-        Noty.show(Lang.translate('account_signup_confirm'))
-
-        callback && callback()
-    }).catch(()=>{
-        Loading.stop()
-
-        Noty.show(Lang.translate('network_noconnect'))
-    })
-}
-
-/**
- * Письмо подтверждения не подтверждено: предложить отправить снова
- */
-function confirmEmail(email, callback){
-    Select.show({
-        title: Lang.translate('account_email_not_confirmed'),
-        items: [
-            {title: Lang.translate('account_resend'), resend: true},
-            {title: Lang.translate('cancel')}
-        ],
-        onSelect: (a)=>{
-            if(a.resend) Auth.resend(email).then(()=>Noty.show(Lang.translate('account_signup_confirm'))).catch(()=>{})
-
-            callback && callback()
-        },
-        onBack: ()=>{
-            callback && callback()
-        }
-    })
-}
-
-/**
- * Зарегистрировать устройство после входа. При лимите показать устройства.
- */
-function registerThen(callback){
-    Devices.register().then(()=>{
-        done(callback)
-    }).catch((e)=>{
-        if(e.code == 'device_limit') manageDevices(callback)
-        else{
-            Noty.show(Lang.translate('network_noconnect'))
-
-            callback && callback()
-        }
+        throw e
     })
 }
 
 /**
  * Лимит устройств: выбрать устройство для выхода. Отмена выходит на этом устройстве.
+ * @returns {Promise<void>}
  */
-function manageDevices(callback){
-    Devices.list().then((list)=>{
+function manageDevices(){
+    return Devices.list().then((list)=> new Promise((resolve, reject)=>{
         Select.show({
             title: Lang.translate('account_device_limit'),
             items: list.map((d)=>({
@@ -149,37 +63,42 @@ function manageDevices(callback){
                 device_id: d.device_id
             })),
             onSelect: (a)=>{
-                Devices.remove(a.device_id).then(()=> Devices.register()).then(()=>{
-                    done(callback)
-                }).catch(()=>{
-                    Noty.show(Lang.translate('network_noconnect'))
-                })
+                Devices.remove(a.device_id).then(()=> Devices.register()).then(resolve).catch(reject)
             },
             onBack: ()=>{
                 Auth.clear()
 
-                callback && callback()
+                reject({code: 'cancelled'})
             }
         })
-    }).catch(()=>{
-        Auth.clear()
-
-        Noty.show(Lang.translate('network_noconnect'))
-
-        callback && callback()
-    })
+    }))
 }
 
-function done(callback){
-    Noty.show(Lang.translate('account_signed_in'))
+/**
+ * Текст ошибки для показа пользователю. Пустая строка - ничего не показывать.
+ * @param {object} e - ошибка с code и status
+ * @returns {string}
+ */
+function errorText(e){
+    if(e.code == 'cancelled') return ''
+    if(e.code == 'email_not_confirmed') return Lang.translate('account_email_not_confirmed')
+    if(e.status === 0) return Lang.translate('network_noconnect')
 
-    callback && callback()
+    return Lang.translate('account_signin_failed')
+}
+
+/**
+ * Перезагрузить приложение с новым аккаунтом
+ */
+function done(){
+    Noty.show(Lang.translate('account_signed_in'))
 
     window.location.reload()
 }
 
 /**
  * Вход на ТВ: показать QR-код с билетом и ждать подтверждения с телефона
+ * @param {function} callback - вызывается после входа или отмены
  */
 function tvSignIn(callback){
     let box = $('<div class="account-tv-signin"><div class="account-tv-signin__qr"></div><div class="account-tv-signin__text">' + Lang.translate('account_tv_signin_text') + '</div></div>')
@@ -212,7 +131,7 @@ function tvSignIn(callback){
 
             Modal.close()
 
-            registerThen(callback)
+            register().then(done).catch((e)=> Noty.show(errorText(e)))
         }, ()=>{
             ticket_poll = null
 
@@ -232,19 +151,64 @@ function tvSignIn(callback){
 }
 
 /**
- * Кнопка входа в настройках аккаунта
+ * Вход из диалогов вне настроек (email и пароль через экранную клавиатуру)
+ * @param {function} callback - вызывается после отмены
  */
-function init(){
-    Settings.listener.follow('open',(e)=>{
-        if(e.name == 'account') e.body.find('.settings--account-device-add').on('hover:enter', ()=>{
-            open(()=>{
-                Controller.toggle('settings_component')
+function open(callback){
+    if(Platform.tv()) return tvSignIn(callback)
+
+    Select.show({
+        title: Lang.translate('account_signin_title'),
+        items: [
+            {title: Lang.translate('account_signin_button'), signup: false},
+            {title: Lang.translate('account_signup_button'), signup: true}
+        ],
+        onSelect: (a)=>{
+            credentials(a.signup, callback)
+        },
+        onBack: ()=>{
+            Controller.toggle('settings_component')
+
+            callback && callback()
+        }
+    })
+}
+
+function credentials(signup, callback){
+    let enabled = Controller.enabled().name
+
+    Input.edit({title: Lang.translate('account_signin_email'), value: '', free: true, nosave: true, nomic: true}, (email)=>{
+        if(!email){
+            Controller.toggle(enabled)
+
+            return callback && callback()
+        }
+
+        Input.edit({title: Lang.translate('account_signin_password'), value: '', free: true, nosave: true, nomic: true, password: true}, (pass)=>{
+            Controller.toggle(enabled)
+
+            if(!pass) return callback && callback()
+
+            const run = signup ? signUp(email, pass) : signIn(email, pass)
+
+            run.then((result)=>{
+                if(result == 'confirm') Noty.show(Lang.translate('account_signup_confirm'))
+                else done()
+            }).catch((e)=>{
+                Noty.show(errorText(e))
+
+                callback && callback()
             })
         })
     })
 }
 
 export default {
-    init: Utils.onceInit(init),
-    open
+    open,
+    signIn,
+    signUp,
+    register,
+    errorText,
+    done,
+    tvSignIn
 }

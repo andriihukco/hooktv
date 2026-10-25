@@ -37,10 +37,10 @@ function parseStart(){
             id: id,
             component: "full",
             method: Utils.gup('media') || 'movie',
-            source: Utils.gup('source') || 'cub',
+            source: Utils.gup('source') || 'tmdb',
             card: {
                 id: id,
-                source: Utils.gup('source') || 'cub'
+                source: Utils.gup('source') || 'tmdb'
             }
         }
     }
@@ -557,15 +557,7 @@ function last(){
     let active = Storage.get('activity','false')
     let start_from = Storage.field("start_page")
 
-    if(window.lampa_settings.iptv){
-        active = {
-            component: 'iptv',
-            page: 1
-        }
-
-        push(active)
-    }
-    else if(window.start_deep_link){
+    if(window.start_deep_link){
         window.start_deep_link.page = 1
         
         push(window.start_deep_link)

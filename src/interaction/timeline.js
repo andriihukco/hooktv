@@ -1,6 +1,5 @@
 import Template from './template'
 import Storage from '../core/storage/storage'
-import Socket from '../core/socket'
 import Utils from '../utils/utils'
 import Account from '../core/account/account'
 import Subscribe from '../utils/subscribe'

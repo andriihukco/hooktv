@@ -17,7 +17,7 @@ function init(){
 function setChildrenProfile(){
     if(!Permit.child) return
 
-    Storage.set('source', 'cub', true)
+    Storage.set('source', 'tmdb', true)
 
     Storage.add('parental_control_personal', 'account_profiles', true)
     Storage.add('parental_control_personal', 'settings', true)

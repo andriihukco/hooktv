@@ -2,7 +2,6 @@ import Permit from './permit'
 import Storage from '../storage/storage'
 import Timeline from '../../interaction/timeline'
 import Utils from '../../utils/utils'
-import Socket from '../socket'
 import Sync from '../supa/sync'
 
 function init(){
@@ -10,9 +9,6 @@ function init(){
         if(e.name == 'account_use' || e.name == 'account') refrash()
     })
 
-    Socket.listener.follow('open',()=>{
-        if(Date.now() - window.app_time_end > 1000 * 60 * 5) update()
-    })
 
     Storage.listener.follow('clear',()=>{
         refrash()

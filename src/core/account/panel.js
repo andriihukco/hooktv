@@ -1,14 +1,21 @@
+import Utils from '../../utils/utils'
 import Permit from './permit'
-import Storage from '../storage/storage'
 import Controller from '../controller'
 import Select from '../../interaction/select'
+import Input from '../../interaction/settings/input'
+import Noty from '../../interaction/noty'
 import Lang from '../lang'
 import Settings from '../../interaction/settings/settings'
 import Bookmarks from './bookmarks'
 import SignOut from '../supa/signout'
+import Auth from '../supa/auth'
+import SignIn from './signin'
 import Profile from './profile'
-import Utils from '../../utils/utils'
-import Manifest from '../manifest'
+import Platform from '../platform'
+
+// Поля входа хранятся только в памяти: пароль не попадает в localStorage
+let form = {email: '', password: ''}
+let needs_confirm = false
 
 function init(){
     Settings.listener.follow('open',(e)=>{
@@ -16,19 +23,100 @@ function init(){
     })
 }
 
+/**
+ * Открыть поле ввода в правой панели (экранная клавиатура) и записать значение в форму
+ */
+function edit(title, value, password, onValue){
+    let enabled = Controller.enabled().name
+
+    Input.edit({title: Lang.translate(title), value: value, free: true, nosave: true, nomic: true, password: password}, (v)=>{
+        Controller.toggle(enabled)
+
+        if(v !== undefined && v !== null) onValue(String(v).trim())
+    })
+}
+
+function drawForm(body){
+    body.find('.settings--account-email .settings-param__value').text(form.email || '—')
+    body.find('.settings--account-password .settings-param__value').text(form.password ? '•'.repeat(form.password.length) : '—')
+    body.find('.settings--account-resend').toggleClass('hide', !needs_confirm)
+    body.find('.settings--account-tv').toggleClass('hide', !Platform.tv())
+}
+
+function submit(body, signup){
+    if(!form.email || !form.password){
+        Noty.show(Lang.translate('account_signin_failed'))
+
+        return
+    }
+
+    let run = signup ? SignIn.signUp(form.email, form.password) : SignIn.signIn(form.email, form.password)
+
+    run.then((result)=>{
+        needs_confirm = false
+
+        if(result == 'confirm'){
+            Noty.show(Lang.translate('account_signup_confirm'))
+
+            drawForm(body)
+        }
+        else SignIn.done()
+    }).catch((e)=>{
+        needs_confirm = e.code == 'email_not_confirmed'
+
+        Noty.show(SignIn.errorText(e))
+
+        drawForm(body)
+    })
+}
+
 function render(body){
     let account = Permit.account
     let signed  = Boolean(Permit.token)
-    let premium = Utils.countDays(Date.now(), Permit.user.premium)
 
     if(!window.lampa_settings.account_sync){
         body.find('[data-name="account_use"]').remove()
     }
 
-    
-    body.find('.settings--account-signin').toggleClass('hide',signed)
-    body.find('.settings--account-user').toggleClass('hide',!signed)
-    body.find('.settings-param__label').toggleClass('hide',!Boolean(premium))
+    body.find('.settings--account-signin').toggleClass('hide', signed)
+    body.find('.settings--account-user').toggleClass('hide', !signed)
+
+    if(!signed){
+        drawForm(body)
+
+        body.find('.settings--account-email').on('hover:enter', ()=>{
+            edit('account_signin_email', form.email, false, (v)=>{
+                form.email = v
+
+                drawForm(body)
+            })
+        })
+
+        body.find('.settings--account-password').on('hover:enter', ()=>{
+            edit('account_signin_password', form.password, true, (v)=>{
+                form.password = v
+
+                drawForm(body)
+            })
+        })
+
+        body.find('.settings--account-do-signin').on('hover:enter', ()=> submit(body, false))
+        body.find('.settings--account-do-signup').on('hover:enter', ()=> submit(body, true))
+
+        body.find('.settings--account-resend').on('hover:enter', ()=>{
+            Auth.resend(form.email).then(()=>{
+                Noty.show(Lang.translate('account_signup_confirm'))
+            }).catch(()=>{
+                Noty.show(Lang.translate('network_noconnect'))
+            })
+        })
+
+        body.find('.settings--account-tv').on('hover:enter', ()=>{
+            SignIn.tvSignIn(()=>{
+                Controller.toggle('settings_component')
+            })
+        })
+    }
 
     if(signed){
         body.find('.settings--account-user-info .settings-param__value').text(account.email)

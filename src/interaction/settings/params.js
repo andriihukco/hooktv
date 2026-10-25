@@ -22,12 +22,7 @@ function init(){
             'tizen': 'Tizen',
         },'tizen')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'tizen': 'Tizen',
-        },'tizen')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'tizen': 'Tizen',
         },'tizen')
@@ -38,12 +33,7 @@ function init(){
             'orsay': 'Orsay',
         },'orsay')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'orsay': 'Orsay',
-        },'orsay')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'orsay': 'Orsay',
         },'orsay')
@@ -54,12 +44,7 @@ function init(){
             'webos': 'WebOS',
         },'inner')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'webos': 'WebOS',
-        },'inner')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'webos': 'WebOS',
         },'inner')
@@ -70,12 +55,7 @@ function init(){
             'android': 'Android'
         }, 'android')
 
-        select('player_iptv', {
-            'inner': '#{settings_param_player_inner}',
-            'android': 'Android'
-        }, 'android')
-
-        select('player_torrent', {
+                select('player_torrent', {
             'android': 'Android'
         }, 'android')
 
@@ -87,12 +67,7 @@ function init(){
             'other': '#{settings_param_player_outside}',
         },'inner')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'other': '#{settings_param_player_outside}',
-        },'inner')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'other': '#{settings_param_player_outside}',
         },'inner')
@@ -107,16 +82,7 @@ function init(){
             'tracyplayer': 'TracyPlayer',		
         },'inner')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'iina': 'IINA',
-            'infuse': 'Infuse',
-            'mpv': 'MPV',
-            'nplayer': 'nPlayer',
-            'tracyplayer': 'TracyPlayer',		
-        },'inner')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'iina': 'IINA',
             'infuse': 'Infuse',
@@ -138,18 +104,7 @@ function init(){
             'senplayer': 'SenPlayer',	
         },'inner')
 
-        select('player_iptv',{
-            'inner': '#{settings_param_player_inner}',
-            'ios': 'iOS',
-            'vlc': 'VLC',
-            'nplayer': 'nPlayer',
-            'infuse': 'Infuse',
-            'svplayer': 'SVPlayer',
-            'tracyplayer': 'TracyPlayer',
-            'senplayer': 'SenPlayer',		
-        },'inner')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'inner': '#{settings_param_player_inner}',
             'ios': 'iOS',
             'vlc': 'VLC',
@@ -174,19 +129,7 @@ function init(){
             'svplayer': 'SVPlayer'
         },'tvos')
 
-        select('player_iptv',{
-            'tvospro': '#{settings_param_player_inner_tvos} tvOS Pro',
-            'tvos': '#{settings_param_player_inner_tvos} tvOS Universal',
-            'tvosl': '#{settings_param_player_inner_tvos} tvOS Online',
-            'tvosSelect': '#{settings_param_player_outside}',
-            'vlc': 'VLC',
-            'infuse': 'Infuse',
-            'vidhub': 'Vidhub',
-            'inner': '#{settings_param_player_inner}',
-            'svplayer': 'SVPlayer'
-        },'inner')
-
-        select('player_torrent',{
+                select('player_torrent',{
             'tvospro': '#{settings_param_player_inner_tvos} tvOS Pro',
             'tvos': '#{settings_param_player_inner_tvos} tvOS Universal',
             'tvosSelect': '#{settings_param_player_outside}',
@@ -559,10 +502,6 @@ select('player',{
     'inner': '#{settings_param_player_inner}'
 },'inner')
 
-select('player_iptv',{
-    'inner': '#{settings_param_player_inner}'
-},'inner')
-
 select('player_torrent',{
     'inner': '#{settings_param_player_inner}',
 },'inner')
@@ -626,8 +565,7 @@ select('player_hls_method',{
 
 
 select('source',{
-    'tmdb': 'TMDB',
-    'cub': 'CUB'
+    'tmdb': 'TMDB'
 },'tmdb')
 
 select('start_page', {
@@ -709,14 +647,6 @@ select('player_launch_trailers',{
     'inner': '#{settings_param_player_inner}',
     'youtube': 'YouTube',
 },'inner')
-
-let mirrors_select = {}
-
-Manifest.cub_mirrors.forEach((mirror)=>{
-    mirrors_select[mirror] = mirror
-})
-
-select('cub_domain', mirrors_select, Manifest.cub_domain)
 
 /**
  * Добовляем триггеры

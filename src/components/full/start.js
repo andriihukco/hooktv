@@ -5,17 +5,13 @@ import Api from '../../core/api/api'
 import Arrays from '../../utils/arrays'
 import Storage from '../../core/storage/storage'
 import Lang from '../../core/lang'
-import Event from '../../utils/event'
 import Emit from '../../utils/emit'
 import TMDB from '../../core/api/sources/tmdb'
 import Permit from '../../core/account/permit'
 
 import Options from './start/options'
 import Torrents from './start/torrents'
-import Subscribed  from './start/subscribed'
 import Poster from './start/poster'
-import Reactions from './start/reactios'
-import Translations from './start/translations'
 import Bookmarks from './start/bookmarks'
 import Buttons from './start/buttons'
 import Extra from '../../utils/tmdb_extra'
@@ -26,7 +22,6 @@ class Start extends Emit {
 
         this.data  = data
         this.card  = data.movie
-        this.event = new Event()
 
         Arrays.extend(this.card,{
             title: this.card.name,
@@ -38,11 +33,8 @@ class Start extends Emit {
         Utils.canWatchChildren(TMDB.parsePG(data.movie), Permit.profile.age) && this.use(Torrents)
 
         this.use(Options)
-        this.use(Subscribed)
         this.use(Poster)
-        this.use(Translations)
         this.use(Bookmarks)
-        this.use(Reactions)
         this.use(Buttons)
 
         this.emit('init')
@@ -217,7 +209,6 @@ class Start extends Emit {
     }
 
     destroy(){
-        this.event.destroy()
 
         this.html.remove()
 

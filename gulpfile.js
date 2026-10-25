@@ -154,9 +154,30 @@ function plugin_sass(plugin_src){
 
 var copy_timer;
 
+/** Ключи Supabase для WEB: .env.local, а переменные окружения важнее (Vercel) **/
+function supabaseEnv(){
+    let env = {}
+
+    try{
+        fs.readFileSync('.env.local', 'utf8').split('\n').forEach(line=>{
+            let m = line.match(/^\s*([A-Z_]+)\s*=\s*(.*?)\s*$/)
+
+            if(m) env[m[1]] = m[2]
+        })
+    }
+    catch(e){}
+
+    return {
+        url:    process.env.SUPABASE_URL || env.SUPABASE_URL || '',
+        anon:   process.env.SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY || '',
+        signin: process.env.SUPABASE_SIGNIN_URL || env.SUPABASE_SIGNIN_URL || ''
+    }
+}
+
 /** Обновляем файл для WEB **/
 function build_web(){
     let date      = new Date();
+    let supa      = supabaseEnv();
     let full_date = date.getFullYear() + '-' +
                     ('0' + (date.getMonth()+1)).slice(-2) + '-' +
                     ('0' + date.getDate()).slice(-2) + ' ' +
@@ -166,6 +187,9 @@ function build_web(){
     let bundle = src(dstFolder+'app.js')
         .pipe(replace('{__APP_HASH__}', getFileHash(dstFolder + '/app.js')))
         .pipe(replace('{__APP_BUILD__}', full_date))
+        .pipe(replace('supabase_url: undefined', 'supabase_url: ' + JSON.stringify(supa.url)))
+        .pipe(replace('supabase_anon_key: undefined', 'supabase_anon_key: ' + JSON.stringify(supa.anon)))
+        .pipe(replace('supabase_signin_url: undefined', 'supabase_signin_url: ' + JSON.stringify(supa.signin)))
 
     if(isReleaseEnabled) bundle = bundle.pipe(uglify())
 

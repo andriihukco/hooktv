@@ -3,7 +3,6 @@ import Description from '../components/full/descr'
 import Persons from './full/persons'
 import Api from '../core/api/api'
 import Arrays from '../utils/arrays'
-import Discuss from './full/discuss'
 import Episodes from './full/episodes'
 import Timetable from '../core/timetable'
 import Lang from '../core/lang'
@@ -28,7 +27,6 @@ let components = {
     persons: Persons,
     cards: Cards,
     trailers: TrailersRow,
-    discuss: Discuss,
     episodes: Episodes
 }
 
@@ -160,14 +158,6 @@ function component(object){
                 if(!adult_block && data.persons && data.persons.cast && data.persons.cast.length) this.rows.push(['persons', {
                     results: data.persons.cast,
                     title: Lang.translate('title_actors')
-                }])
-
-                // Создаем отзывы
-                if(!adult_block && data.discuss) this.rows.push(['discuss', {
-                    ...data.discuss,
-                    movie: data.movie,
-                    title: Lang.translate('title_comments'),
-                    results: data.discuss.result || []
                 }])
 
                 // Создаем коллекцию

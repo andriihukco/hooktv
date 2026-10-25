@@ -50,22 +50,13 @@ function Sources(params = {}){
             horizontal: true
         })
 
-        let sources
+        // TMDB only, no source switch
+        let sources = params.sources || [Api.sources.tmdb.discovery()]
 
-        if(Permit.child){
-            sources = [Api.sources.cub.discovery()]
+        sources.forEach(this.build.bind(this))
 
-            sources.forEach(this.build.bind(this))
-        }
-        else{
-            // HOOK TV: TMDB only, no source switch
-            sources = params.sources || [Api.sources.tmdb.discovery()]
-
-            sources.forEach(this.build.bind(this))
-
-            if(!params.sources){
-                params.additional.forEach(this.build.bind(this))
-            }
+        if(!params.sources){
+            params.additional.forEach(this.build.bind(this))
         }
 
         this.enable(results[0])

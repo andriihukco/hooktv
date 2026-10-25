@@ -13,7 +13,6 @@ import Utils from '../../utils/utils'
 import DeviceInput from '../device_input'
 import Orsay from './orsay'
 import YouTube from './youtube'
-import TV from './iptv'
 import Controller from '../../core/controller'
 import Player from '../player'
 import Segments from './segments'
@@ -73,13 +72,12 @@ function init(){
             
             click_nums++
 
-            if(TV.playning()) click_nums = 1
 
             if (click_nums === 1) {
                 click_timer = setTimeout(() => {
                     click_nums = 0
 
-                    if(Panel.visibleStatus() && !TV.playning()) playpause()
+                    if(Panel.visibleStatus()) playpause()
                     else Panel.mousemove()
                 }, 300)
             }
@@ -1037,7 +1035,7 @@ function loader(status){
                     hls.currentLevel = hlsLevelDefault(hls)
                 })
             }
-            else if(!change_quality && !TV.playning()){
+            else if(!change_quality){
                 console.log('Player','hls start parse')
 
                 let send_load_ready = false

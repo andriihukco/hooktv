@@ -10,7 +10,6 @@ import Lang from '../../core/lang'
 import Utils from '../../utils/utils'
 import DeviceInput from '../device_input'
 import Video from './video'
-import TV from './iptv'
 import Footer from './footer'
 import Playlist from './playlist'
 import Segments from './segments'
@@ -55,10 +54,6 @@ function init(){
         rewind_touch: $('.player-panel__time-touch-zone',html),
         playlist: html.find('.player-panel__playlist'),
 
-        iptv_channel: $('.player-panel-iptv__channel',html),
-        iptv_arrow_up: $('.player-panel-iptv__arrow-up',html),
-        iptv_arrow_down: $('.player-panel-iptv__arrow-down',html),
-        iptv_position: $('.player-panel-iptv__position',html),
 
         segments: $('.player-panel__timeline-segments',html),
     }
@@ -111,13 +106,8 @@ function init(){
                 clearTimeout(timer.hide)
 
                 timer.hide = setTimeout(()=>{
-                    if(TV.playning()){
-                        TV.reset()
-
-                        Controller.toggle('player')
-                    } 
-                    else if(!Video.video().paused) visible(false)
-                },TV.playning() ? 5000 : 3000)
+                    if(!Video.video().paused) visible(false)
+                },3000)
             }
         }
     })
@@ -448,9 +438,6 @@ function init(){
         }
     })
 
-    TV.listener.follow('channel', channel)
-    TV.listener.follow('draw-program', program)
-
     Footer.listener.follow('open',()=>{
         html.addClass('panel--footer-open')
     })
@@ -536,102 +523,6 @@ function showParams(){
             Controller.toggle(enabled)
         }
     })
-}
-
-function program(data){
-    if(elems.iptv_channel_active){
-        let prog = elems.iptv_channel_active.find('.player-panel-iptv-item__prog')
-
-        TV.drawProgram(prog)
-
-        playAnimation(prog,data.dir > 0 ? 'endless-left' : 'endless-right')
-    }
-}
-
-function playAnimation(elem, anim){
-    elem.css('animation','none')
-    elem[0].offsetHeight
-    elem.css('animation',(anim || 'pulse') + ' 0.2s ease')
-}
-
-function channel(data){
-    let select = TV.select()
-
-    elems.iptv_channel.removeClass('up down')
-
-    let active = elems.iptv_channel.find('.active')
-
-    elems.iptv_channel.find('> div:not(.active)').remove()
-
-    let new_item = $(`
-        <div class="player-panel-iptv-item active">
-            <div class="player-panel-iptv-item__left">
-                <img class="player-panel-iptv-item__ico" />
-            </div>
-            <div class="player-panel-iptv-item__body">
-                <div class="player-panel-iptv-item__group">${select.group}</div>
-                <div class="player-panel-iptv-item__name">${select.name}</div>
-                <div class="player-panel-iptv-item__prog">
-                    <div class="player-panel-iptv-item__prog-load">${Lang.translate('loading')}...</div>
-                </div>
-            </div>
-        </div>
-    `)
-
-    if(select.icons){
-        select.icons.forEach(ic=>{
-            new_item.find('.player-panel-iptv-item__name').append($('<div class="player-panel-iptv-item__icons-item">'+ic+'</div>'))
-        })
-    }
-
-    let ico = new_item.find('.player-panel-iptv-item__ico')
-    let img = ico[0]
-
-    img.onload = ()=>{
-        ico.addClass('loaded')
-    }
-
-    img.onerror = ()=>{
-        ico.remove()
-
-        $('.player-panel-iptv-item__left', new_item).append(`
-            <svg width="62" height="60" viewBox="0 0 62 60" class="loaded" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10.355" y="9.78363" width="15.8806" height="15.8806" rx="4" stroke="white" stroke-width="2"/>
-                <rect x="36.4946" y="33.5455" width="15.8806" height="15.8806" rx="4" stroke="white" stroke-width="2"/>
-                <rect x="18.2949" y="31.258" width="14.4642" height="14.4642" rx="4" transform="rotate(45 18.2949 31.258)" stroke="white" stroke-width="2"/>
-                <rect x="44.4351" y="7.49618" width="14.4642" height="14.4642" rx="4" transform="rotate(45 44.4351 7.49618)" stroke="white" stroke-width="2"/>
-            </svg>
-        `)
-    }
-
-    if(select.logo) img.src = select.logo
-    else img.onerror()
-
-
-    new_item.css({
-        '-webkit-transform': 'translate3d(0,'+(data.dir > 0 ? '100%' : '-100%')+',0)'
-    })
-
-    elems.iptv_channel.append(new_item)
-
-    elems.iptv_channel_active = new_item
-
-    playAnimation(elems.iptv_position)
-    playAnimation(data.dir > 0 ? elems.iptv_arrow_down : elems.iptv_arrow_up)
-
-    setTimeout(()=>{
-        new_item.css({
-            '-webkit-transform': 'translate3d(0,0,0)',
-            opacity: 1
-        })
-
-        if(active.length) active.removeClass('active').css({
-            '-webkit-transform': 'translate3d(0,'+(data.dir > 0 ? '-100%' : '100%')+',0)',
-            opacity: 0
-        })
-
-        elems.iptv_position.text((data.position + 1).pad(3))
-    },10)
 }
 
 function settings(){
@@ -1109,53 +1000,6 @@ function normalName(name){
  * Добавить контроллеры
  */
  function addController(){
-    Controller.add('player_tv',{
-        invisible: true,
-        toggle: ()=>{
-            Controller.clear()
-
-            condition.visible = false
-
-            state.start()
-        },
-        up: ()=>{
-            TV.prevChannel()
-
-            state.start()
-        },
-        down: ()=>{
-            TV.nextChannel()
-
-            state.start()
-        },
-        left: ()=>{
-            condition.visible = true
-
-            TV.openMenu()
-
-            state.start()
-        },
-        right: ()=>{
-            condition.visible = true
-
-            showParams()
-
-            state.start()
-        },
-        enter: ()=>{
-            TV.play()
-
-            state.start()
-        },
-        back: ()=>{
-            TV.reset()
-
-            Controller.toggle('player')
-
-            hide()
-        }
-    })
-
     Controller.add('player_rewind',{
         toggle: ()=>{
             Controller.collectionSet(render())
@@ -1185,11 +1029,9 @@ function normalName(name){
 
     Controller.add('player_panel',{
         toggle: ()=>{
-            if(TV.playning()) Controller.toggle('player_tv')
-            else{
+
                 Controller.collectionSet(render())
                 Controller.collectionFocus(last_panel_focus ? last_panel_focus : $(isTV() ? '.player-panel__next' : '.player-panel__playpause',html)[0],render())
-            } 
         },
         up: ()=>{
             isTV() || html.hasClass('panel--norewind') ? Controller.toggle('player') : toggleRewind()
@@ -1316,8 +1158,7 @@ function toggle(){
 
     state.start()
 
-    if(TV.playning()) Controller.toggle('player_tv')
-    else if(!Platform.screen('mobile')) toggleRewind()
+    if(!Platform.screen('mobile')) toggleRewind()
 }
 
 /**

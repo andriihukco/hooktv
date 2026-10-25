@@ -10,7 +10,6 @@ import Platform from '../core/platform'
 import Screensaver from './screensaver'
 import Torserver from './torserver'
 import Android from '../core/android'
-import Broadcast from './broadcast'
 import Select from './select'
 import Modal from './modal'
 import Settings from './settings/settings'
@@ -19,9 +18,12 @@ import Noty from '../interaction/noty'
 import Lang from '../core/lang'
 import Arrays from '../utils/arrays'
 import Background from './background'
-import TV from './player/iptv' 
 import ParentalControl from './parental_control'
-import Preroll from './advert/preroll'
+
+// Реклама убрана: шаг воспроизведения выполняется сразу
+function afterAds(data, call){
+    call()
+}
 import Footer from './player/footer'
 import Segments from './player/segments'
 import ExternalPlayer from '../core/externalPlayer.js'
@@ -60,7 +62,6 @@ function init(){
     Video.init()
     Info.init()
     Footer.init()
-    TV.init()
 
     html = Template.get('player')
     html.append(Video.render())
@@ -364,17 +365,6 @@ function init(){
         }
     })
 
-    /** Нажали на кнопку (отправить) */
-    Panel.listener.follow('share',(e)=>{
-        Broadcast.open({
-            type: 'play',
-            object: {
-                player: work,
-                playlist: Playlist.get()
-            }
-        })
-    })
-
     /** Событие на переключение серии */
     Playlist.listener.follow('select',(e)=>{
         let type = typeof e.item.url
@@ -435,19 +425,6 @@ function init(){
         }
     })
 
-    TV.listener.follow('play',(data)=>{
-        locked(data.channel, ()=>{
-            Video.destroy()
-
-            console.log('Player','url:',data.channel.url)
-
-            Video.url(data.channel.url)
-
-            Info.set('name', '')
-
-            Controller.toggle('player_tv')
-        })
-    })
 }
 
 /**
@@ -466,31 +443,28 @@ function toggle(){
             Panel.toggle()
         },
         right: ()=>{
-            if(TV.playning()) Panel.toggle()
-            else Video.rewind(true)
+            Video.rewind(true)
         },
         left: ()=>{
-            if(TV.playning()) Panel.toggle()
-            else Video.rewind(false)
+            Video.rewind(false)
         },
         enter: ()=>{
-            if(TV.playning()) Panel.toggle()
-            else Video.playpause()
+            Video.playpause()
         },
         playpause: () => {
-            if(!TV.playning()) Video.playpause()
+            Video.playpause()
         },
         play: () => {
-            if(!TV.playning()) Video.play()
+            Video.play()
         },
         pause: () => {
-            if(!TV.playning()) Video.pause()
+            Video.pause()
         },
         rewindForward: () => {
-            if(!TV.playning()) Video.rewind(true)
+            Video.rewind(true)
         },
         rewindBack: () => {
-            if(!TV.playning()) Video.rewind(false)
+            Video.rewind(false)
         },
         stop: backward,
         back: backward
@@ -560,7 +534,6 @@ function destroy(){
     html.removeClass('player--panel-visible')
     html.removeClass('player--loading')
 
-    TV.destroy()
 
     Video.destroy()
 
@@ -883,7 +856,7 @@ function start(data, need, inner){
         })
 
         if (external_url) {
-            Preroll.show(data,()=>{
+            afterAds(data,()=>{
                 listener.send('external',data)
 
                 window.location.assign(external_url)
@@ -905,7 +878,7 @@ function start(data, need, inner){
         })
 
         if (external_url) {
-            Preroll.show(data,()=>{
+            afterAds(data,()=>{
                 listener.send('external',data)
 
                 window.location.assign(external_url)
@@ -932,7 +905,7 @@ function start(data, need, inner){
         })
 
         if (external_url) {
-            Preroll.show(data,()=>{
+            afterAds(data,()=>{
                 listener.send('external',data)
 
                 window.location.assign(external_url)
@@ -941,7 +914,7 @@ function start(data, need, inner){
         else launchInner()
     }
     else if(Platform.is('webos') && (Storage.field(player_need) == 'webos' || launch_player == 'webos')){
-        Preroll.show(data,()=>{
+        afterAds(data,()=>{
             runWebOS({
                 need: 'com.webos.app.photovideo',
                 url: data.url.replace('&preload','&play'),
@@ -965,7 +938,7 @@ function start(data, need, inner){
             })
         }
 
-        Preroll.show(data,()=>{
+        afterAds(data,()=>{
             data.position = data.timeline ? (data.timeline.time || -1) : -1
 
             Android.openPlayer(data.url, data)
@@ -978,7 +951,7 @@ function start(data, need, inner){
         const supportedTypes = Object.values(ExternalPlayer.PLAYER_TYPES)
         const detectedType = supportedTypes.find(type => path.toLowerCase().indexOf(type) !== -1)
 
-        Preroll.show(data,()=>{
+        afterAds(data,()=>{
             const url = data.url.replace('&preload','&play')
             if (detectedType) {
                 ExternalPlayer.openPlayer(url, data, {
@@ -1067,7 +1040,7 @@ function play(data){
     let lauch = ()=>{
         work = data
 
-        Preroll.show(data,()=>{
+        afterAds(data,()=>{
             Background.theme('black')
 
             $('body').addClass('player--viewing')
@@ -1133,45 +1106,6 @@ function play(data){
     start(data, data.torrent_hash ? 'torrent' : '', lauch)
 
     launch_player = ''
-}
-
-function iptv(data){
-    locked(data, ()=>{
-        console.log('Player','play iptv')
-
-        data.iptv = true //пометка для ведра, что это iptv
-
-        let lauch = ()=>{
-            Background.theme('black')
-
-            listener.send('start',data)
-
-            html.toggleClass('iptv',true)
-
-            TV.start(data)
-
-            Video.size(Storage.get('player_size','default'))
-
-            Video.speed(Storage.get('player_speed','default'))
-
-            $('body').append(html)
-
-            is_opened = true
-
-            toggle()
-
-            Panel.show(true)
-
-            listener.send('ready',data)
-        }
-
-        let ads = ()=>{
-            if(data.vast_url) Preroll.show(data,lauch)
-            else lauch()
-        }
-
-        start(data, 'iptv', ads)
-    })
 }
 
 /**
@@ -1296,8 +1230,6 @@ export default {
     runas,
     callback: onBack,
     opened,
-    iptv,
-    programReady: TV.programReady,
     close: backward,
     getUrlQuality,
     loading,
