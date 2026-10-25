@@ -4,8 +4,6 @@ import Arrays from '../../utils/arrays'
 import Utils from '../../utils/utils'
 import Listener from './listener'
 import Storage from '../storage/storage'
-import Template from '../../interaction/template'
-import Head from '../../interaction/head/head'
 import ParentalControl from '../../interaction/parental_control'
 import Controller from '../controller'
 import Select from '../../interaction/select'
@@ -16,24 +14,10 @@ import Advert from './modal'
 import Input from '../../interaction/settings/input'
 import Bell from '../../interaction/bell'
 
-let profile_icon
-
 function init(){
-    profile_icon = Template.elem('div', {class: 'head__action selector open--profile'})
-
-    profile_icon.on('hover:enter', select.bind(null, Controller.toggle.bind(Controller, 'head')))
-
-    Head.render().find('.full--screen').before(profile_icon)
-
-    Storage.listener.follow('change',(e)=>{
-        if(e.name == 'account' || e.name == 'protocol') update()
-    })
-
     ParentalControl.add('account_profiles',{
         title: 'account_profiles'
     })
-
-    if(!Permit.token) update()
 }
 
 /**
@@ -45,21 +29,6 @@ function avatar(name){
     let letter = String(name || '?').trim().charAt(0).toUpperCase().replace(/[<>&"']/g, '') || '?'
 
     return '<div class="account-avatar">' + letter + '</div>'
-}
-
-/**
- * Обновляет иконку профиля
- * @returns {void}
- */
-function update(){
-    profile_icon.empty()
-
-    if(Permit.token){
-        profile_icon.append(avatar(Permit.account.profile.name))
-    }
-    else{
-        profile_icon.append(Template.js('icon_profile'))
-    }
 }
 
 /**
@@ -209,7 +178,6 @@ function select(callback){
 
 export default {
     init: Utils.onceInit(init),
-    update,
     check,
     select
 }

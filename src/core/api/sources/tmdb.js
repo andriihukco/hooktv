@@ -494,7 +494,8 @@ function category(params = {}, oncomplite, onerror){
 }
 
 function full(params = {}, oncomplite, onerror){
-    let status = new Status(9)
+    // main counts twice (append + need--), every other request once: 8 slots, the reactions call is gone
+    let status = new Status(8)
         status.onComplite = oncomplite
 
     if(Utils.dcma(params.method, params.id)) return onerror()

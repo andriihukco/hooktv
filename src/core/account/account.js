@@ -43,8 +43,6 @@ function startSession(){
             Api.user()
 
             Timeline.update()
-
-            Profile.update()
         })
     })
 }
@@ -78,8 +76,6 @@ function logoff(data){
 
     if(account.token && account.email == data.email){
         SignOut.signOutThisDevice().then(()=>{
-            $('.head .open--profile').addClass('hide')
-
             window.location.reload()
         })
     }
