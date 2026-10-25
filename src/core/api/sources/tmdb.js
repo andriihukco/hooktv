@@ -755,8 +755,9 @@ function person(params = {}, oncomplite, onerror){
         else{
             let department = ['directing','writing','editing','creator']
 
+            // the label goes beside TMDB's department, which the profile rows still need
             credits.crew.forEach((a) => {
-                a.department = Lang.translate(department.indexOf(a.department.toLowerCase()) == -1 ? 'settings_main_rest' : 'full_' + a.department.toLowerCase())
+                a.department_name = Lang.translate(department.indexOf((a.department || '').toLowerCase()) == -1 ? 'settings_main_rest' : 'full_' + a.department.toLowerCase())
             })
 
             let cast  = sortCredits(credits.cast),
@@ -767,7 +768,7 @@ function person(params = {}, oncomplite, onerror){
 
             //Наиболее известные работы человека
             //1. Группируем все работы по департаментам (Актер, Режиссер, Сценарист и т.д.)
-            knownFor = Arrays.groupBy(crew, 'department')
+            knownFor = Arrays.groupBy(crew, 'department_name')
 
             if(movie.length > 0) knownFor[Lang.translate('menu_movies')] = movie;
             if(tv.length > 0) knownFor[Lang.translate('menu_tv')] = tv;

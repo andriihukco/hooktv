@@ -3208,3 +3208,203 @@ body.minimal--ui .head__logo-icon{
     user-select: none;
     -webkit-user-select: none;
 }
+
+/* People: every portrait is a circle, wherever a person appears */
+.full-person__photo{
+    border-radius: 50% !important;
+    background-color: var(--surface-media, #1c1c1e);
+
+    > img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 20%;
+    }
+}
+
+/* Cast and crew rows: Apple TV style, a round portrait with the name and role under it.
+   Focus rings the portrait instead of turning the whole tile white */
+.items-line__body .full-person{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 9.5em;
+    padding: 0.4em 0.3em 0.6em;
+    margin-right: 0.8em;
+    border-radius: 1em;
+    background: none !important;
+    color: inherit !important;
+
+    .full-person__photo{
+        width: 7.4em;
+        height: 7.4em;
+        margin: 0 0 0.8em;
+        box-shadow: 0 0 0 0 transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .full-person__body{
+        width: 100%;
+    }
+
+    .full-person__name{
+        font-size: 1.05em;
+        font-weight: 600;
+        line-height: 1.25;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .full-person__role{
+        font-size: 0.9em;
+        margin-top: 0.3em;
+        opacity: 0.6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &.focus .full-person__photo,
+    &.hover .full-person__photo{
+        transform: scale(1.06);
+        box-shadow: 0 0 0 0.2em #000, 0 0 0 0.42em var(--focus-ring-color, var(--focus-fill));
+    }
+
+    &.focus .full-person__name{
+        color: var(--focus-ring-color, var(--focus-fill));
+    }
+}
+
+/* Profile header: round portrait, who they are, the facts, the start of the biography */
+.person-start{
+    &__body{
+        align-items: center;
+    }
+
+    &__img{
+        width: 15em !important;
+        height: 15em !important;
+        border-radius: 50% !important;
+        object-fit: cover;
+        object-position: 50% 20%;
+        background-color: var(--surface-media, #1c1c1e);
+    }
+
+    &__left{
+        min-width: 0;
+    }
+
+    &__eyebrow{
+        font-size: 1.15em;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        color: var(--accent, #c8f542);
+        margin-bottom: 0.45em;
+
+        &:empty{
+            display: none;
+        }
+    }
+
+    &__name{
+        margin: 0 0 0.45em;
+        line-height: 1.05;
+    }
+
+    &__facts{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4em 2.2em;
+        margin-bottom: 1em;
+        font-size: 1.15em;
+
+        &:empty{
+            display: none;
+        }
+    }
+
+    &__fact{
+        display: flex;
+        flex-direction: column;
+        gap: 0.2em;
+    }
+
+    &__fact-label{
+        font-size: 0.75em;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.55;
+    }
+
+    &__bio{
+        max-width: 46em;
+        font-size: 1.1em;
+        line-height: 1.5;
+        opacity: 0.8;
+        margin-bottom: 1.2em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    &__bottom .button--info{
+        width: auto;
+        padding-left: 1.1em;
+        padding-right: 1.3em;
+        gap: 0.5em;
+
+        span{
+            display: inline !important;
+        }
+    }
+}
+
+/* Phones: the portrait sits above the text, everything centred */
+@media screen and (max-width: 580px){
+    .person-start{
+        &__body{
+            flex-direction: column;
+            text-align: center;
+        }
+
+        &__img{
+            width: 10em !important;
+            height: 10em !important;
+        }
+
+        &__left{
+            padding-left: 0 !important;
+            padding-top: 1.2em;
+            width: 100%;
+        }
+
+        &__name{
+            max-width: 100% !important;
+        }
+
+        &__facts{
+            justify-content: center;
+        }
+
+        &__bio{
+            -webkit-line-clamp: 4;
+        }
+
+        &__bottom{
+            justify-content: center;
+        }
+    }
+
+    .items-line__body .full-person{
+        width: 7.6em;
+
+        .full-person__photo{
+            width: 6em;
+            height: 6em;
+        }
+    }
+}
