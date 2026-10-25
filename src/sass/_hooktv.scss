@@ -284,8 +284,9 @@ body.minimal--ui .navigation-bar--tabs{
             }
         }
 
-        // the side menu is hidden on phones; the settings button (menu icon) replaces it
-        .head .head__menu-icon{
+        // phones keep just history and the menu (settings) button: the side menu is hidden
+        // here, and icons that plugins add would crowd the bar or duplicate the menu
+        .head .head__actions > :not(.open--history):not(.open--settings){
             display: none !important;
         }
 
@@ -1543,6 +1544,15 @@ $hk-spring-time: 0.5s;
     max-height: min(18vh, 9rem);
     object-fit: contain;
     object-position: left center;
+}
+
+// phones and tablets center the details page (see .full-start-new below 900px)
+@media (max-width: 900px){
+    .full-start-new__title--logo img{
+        max-width: min(100%, 72vw, 22rem);
+        margin: 0 auto 0.4em;
+        object-position: center;
+    }
 }
 
 @media (prefers-reduced-motion: reduce){

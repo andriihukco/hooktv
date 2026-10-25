@@ -16357,7 +16357,7 @@ body.minimal--ui .navigation-bar--tabs {
     width: 2.6em !important;
     height: 2.6em !important;
   }
-  body.minimal--ui .head .head__menu-icon {
+  body.minimal--ui .head .head__actions > :not(.open--history):not(.open--settings) {
     display: none !important;
   }
   body.minimal--ui .navigation-bar--tabs {
@@ -17887,6 +17887,14 @@ body.true--mobile .card.card--details-overlay.focus .card__hover-info, body.true
      object-position: left center;
 }
 
+@media (max-width: 900px) {
+  .full-start-new__title--logo img {
+    max-width: min(100%, 72vw, 22rem);
+    margin: 0 auto 0.4em;
+    -o-object-position: center;
+       object-position: center;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .card-peek {
     -webkit-transition: none;
