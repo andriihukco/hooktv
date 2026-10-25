@@ -744,6 +744,8 @@ function createV2(sourceKey) {
                     filter()
                     buildEpisodes()
                 } else {
+                    // autoplay has no one to notice a same-name remake, so it checks first
+                    if (object.verify && !Dub.contentMatches(json, object.movie)) return comp.mismatch()
                     lazy_state = createLazyState()
                     drawMovie(json)
                 }
@@ -1319,7 +1321,8 @@ function autoSources(movie, call) {
 function autoProbe(key, movie, want) {
     return new Promise(function(resolve) {
         var api = new APIClient()
-        var object = { movie: movie }
+        var object = { movie: movie, verify: true }
+        var candidates = []
         var serial = !!movie.name
         var finished = false
         var voice_chosen = false
@@ -1351,9 +1354,14 @@ function autoProbe(key, movie, want) {
                 if (on_error) on_error(text)
             },
             similars: function(list) {
-                var match = Dub.pickSimilar(list, movie)
-                if (match) adapter.search(object, [match])
-                else finish(null, 'no title match')
+                candidates = Dub.rankSimilar(list, movie)
+                comp.mismatch('no title match')
+            },
+            // the loaded title was another film: try the next candidate
+            mismatch: function(why) {
+                var next = candidates.shift()
+                if (next) adapter.search(object, [next])
+                else finish(null, why || 'wrong title')
             },
             filter: function(items, choice) {
                 seasons = items.season ? items.season.length : 0

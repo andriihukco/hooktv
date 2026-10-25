@@ -75,31 +75,72 @@ function pickTrack(tracks, want){
     return index
 }
 
+function getYear(movie){
+    return parseInt((movie.release_date || movie.first_air_date || '0000').slice(0, 4)) || 0
+}
+
 /**
- * Best match from a list of search results for the movie.
+ * Search results that can be the movie, best first. A result whose year is
+ * known and more than a year off is a different film (a remake), never a match.
  * @param {{title?:string,orig_title?:string,year?:number|string}[]} list
  * @param {{title?:string,name?:string,original_title?:string,original_name?:string,release_date?:string,first_air_date?:string}} movie
  */
-function pickSimilar(list, movie){
-    let year  = parseInt((movie.release_date || movie.first_air_date || '0000').slice(0, 4))
+function rankSimilar(list, movie){
+    let year  = getYear(movie)
     let names = [movie.title, movie.name, movie.original_title, movie.original_name].filter(Boolean).map(n=>n.toLowerCase())
 
     let rank = (item)=>{
         let text = [item.title, item.orig_title].filter(Boolean).join(' / ').toLowerCase()
         let same = names.some(n=>text.split(' / ').indexOf(n) >= 0) ? 2 : names.some(n=>text.indexOf(n) >= 0) ? 1 : 0
-        let near = item.year ? (Math.abs(parseInt(item.year) - year) <= 1 ? 1 : -1) : 0
 
-        return same * 2 + near
+        if(item.year && year && Math.abs(parseInt(item.year) - year) > 1) return -1
+
+        return same * 2 + (item.year && year ? 1 : 0)
     }
 
-    let best = list.map(item=>({item, rank: rank(item)})).sort((a, b)=>b.rank - a.rank)[0]
+    return list.map(item=>({item, rank: rank(item)})).filter(r=>r.rank >= 2).sort((a, b)=>b.rank - a.rank).map(r=>r.item)
+}
 
-    return best && best.rank >= 2 ? best.item : null
+/**
+ * Best match from a list of search results for the movie.
+ */
+function pickSimilar(list, movie){
+    return rankSimilar(list, movie)[0] || null
+}
+
+/**
+ * Whether loaded content is this movie and not another film of the same name.
+ * Balancers often drop the year from search, but the release file name keeps
+ * it («night_of_the_living_dead_1990_bdremux»), and the runtime gives remakes
+ * and different cuts away. Unknown means yes: only clear evidence rejects.
+ * @param {{type?:string,info?:{duration?:number},streams?:{title?:string,raw?:{url?:string,title?:string}}[]}} json /content reply
+ * @param {{runtime?:number,release_date?:string,name?:string}} movie TMDB card
+ */
+function contentMatches(json, movie){
+    if(!json || json.type == 'series' || movie.name) return true
+
+    let year = getYear(movie)
+    let text = (json.streams || []).map(s=>[s.title, s.raw && s.raw.url, s.raw && s.raw.title].join(' ')).join(' ')
+    let found = []
+
+    text.replace(/[._\-\s(]((?:19|20)\d{2})(?=[._\-\s)])/g, (m, y)=>found.push(parseInt(y)))
+
+    if(year && found.length && !found.some(y=>Math.abs(y - year) <= 1)) return false
+
+    let duration = json.info && json.info.duration
+    let runtime  = movie.runtime
+
+    // a quarter off is a different film, not a director's cut or credits
+    if(duration > 0 && runtime > 0 && Math.abs(duration / 60 - runtime) > runtime * 0.25) return false
+
+    return true
 }
 
 export default {
     classify,
     pickVoices,
     pickTrack,
-    pickSimilar
+    rankSimilar,
+    pickSimilar,
+    contentMatches
 }
