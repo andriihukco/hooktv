@@ -1897,6 +1897,115 @@ $hk-spring-time: 0.5s;
     }
 }
 
+// Phones and tablets: poster, info and both button rows fit the first screen. Sizes follow the
+// screen's height (svh: the space left under mobile browser bars) so short phones shrink the poster
+// and title logo instead of pushing the buttons below the fold
+@media (max-width: 900px) and (orientation: portrait){
+    .full-start-new{
+        padding-top: min(4.5em, 7.5vh);
+        padding-top: min(4.5em, 7.5svh);
+
+        &__left{
+            width: min(44vw, 14em, 18vh);
+            width: min(44vw, 14em, 18svh);
+        }
+
+        &__right{
+            margin-top: min(1em, 1.6vh);
+            margin-top: min(1em, 1.6svh);
+            padding-top: min(1.2em, 1.2vh);
+            padding-top: min(1.2em, 1.2svh);
+        }
+
+        &__head{
+            margin-bottom: min(0.6em, 1vh);
+        }
+
+        &__tagline{
+            margin-bottom: min(1em, 1.6vh);
+        }
+
+        &__rate-line{
+            padding-top: 0;
+            margin-bottom: min(1em, 1.4vh);
+        }
+
+        &__details{
+            margin-bottom: min(1em, 1.6vh);
+        }
+
+        &__title--logo img{
+            max-height: min(9rem, 10.5vh);
+            max-height: min(9rem, 10.5svh);
+        }
+    }
+}
+
+// Phones sideways: no height for a stack, so poster on the left and the info beside it
+@media (max-width: 900px) and (orientation: landscape){
+    .full-start-new{
+        padding: 3.4em 1.5em 2em;
+        padding-left: max(1.5em, env(safe-area-inset-left));
+        padding-right: max(1.5em, env(safe-area-inset-right));
+
+        &__body{
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        &__left{
+            flex: 0 0 auto;
+            width: min(26vw, 42vh);
+            width: min(26vw, 42svh);
+            margin: 0 1.5em 0 0;
+        }
+
+        &__right{
+            flex: 1 1 auto;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        &__rate-line,
+        &__details,
+        &__reactions{
+            justify-content: flex-start;
+        }
+
+        &__title{
+            font-size: 1.7em;
+        }
+
+        &__title--logo img{
+            max-height: min(6rem, 14vh);
+            max-height: min(6rem, 14svh);
+            margin: 0 0 0.3em;
+            object-position: left center;
+        }
+
+        // one row: play, then the two smaller actions
+        &__buttons{
+            grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+        }
+
+        .button--play{
+            grid-column: auto;
+        }
+
+        // no room under the buttons; a swipe reaches the details
+        &__scroll{
+            display: none !important;
+        }
+    }
+}
+
+// touch screens of any width: the minimal UI has no side menu, so no icon for it
+// (phones in landscape are wider than the phone header rules above)
+body.true--mobile.minimal--ui .head .head__actions > .head__menu-icon{
+    display: none !important;
+}
+
 .search{
     background:
         radial-gradient(ellipse at 18% 0%, rgba(200, 245, 66, 0.1), transparent 38%),
@@ -2008,7 +2117,8 @@ $hk-spring-time: 0.5s;
         padding-left: 0.8em;
 
         &__left{
-            width: min(52vw, 13em);
+            width: min(52vw, 13em, 18vh);
+            width: min(52vw, 13em, 18svh);
         }
 
         &__right{
