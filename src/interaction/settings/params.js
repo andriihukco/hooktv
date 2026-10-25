@@ -201,14 +201,7 @@ function init(){
     trigger('glass_style', Platform.screen('mobile'))
     trigger('advanced_animation', Platform.is('apple_tv') || Platform.is('browser') || Platform.desktop() || navigator.userAgent.toLowerCase().indexOf('shield') >= 0)
 
-    let screensaver_types = {
-        'nature': '#{settings_param_screensaver_nature}',
-        'chrome': 'ChromeCast',
-        'cub': 'CUB',
-        'aerial': 'Aerial'
-    }
-
-    select('screensaver_type',screensaver_types,'aerial')
+    select('screensaver_type',{'ukraine': 'Україна'},'ukraine')
 
     select('keyboard_type', {
         'lampa': '#{settings_param_keyboard_lampa}',

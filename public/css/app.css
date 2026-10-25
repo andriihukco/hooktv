@@ -12849,6 +12849,24 @@ body.mouse--controll .pincode__container {
             transform: scale(1.2);
   }
 }
+/* HOOK TV: Ukrainian landscapes. Photos of any shape fill the screen, and the credit stays readable */
+.screensaver--ukraine .screensaver__slides > img {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.screensaver--ukraine .screensaver__title.visible {
+  opacity: 0.85;
+}
+.screensaver--ukraine .screensaver__title-name {
+  font-size: 2.4em;
+  font-weight: 500;
+}
+.screensaver--ukraine .screensaver__title-tagline {
+  font-size: 1em;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
 .plugins-catalog__title {
   font-size: 1.7em;
   line-height: 1.4;

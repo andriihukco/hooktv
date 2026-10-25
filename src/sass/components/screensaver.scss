@@ -181,3 +181,26 @@
         transform: scale(1.2);
     }
 }
+/* HOOK TV: Ukrainian landscapes. Photos of any shape fill the screen, and the credit stays readable */
+.screensaver--ukraine{
+    .screensaver__slides > img{
+        object-fit: cover;
+    }
+
+    .screensaver__title{
+        &.visible{
+            opacity: 0.85;
+        }
+
+        &-name{
+            font-size: 2.4em;
+            font-weight: 500;
+        }
+
+        &-tagline{
+            font-size: 1em;
+            font-weight: 400;
+            opacity: 0.75;
+        }
+    }
+}

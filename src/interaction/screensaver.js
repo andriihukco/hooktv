@@ -2,10 +2,7 @@ import Subscribe from '../utils/subscribe'
 import Keypad from "../core/keypad"
 import Storage from "../core/storage/storage"
 
-import Nature from './screensaver/nature'
-import Chrome from './screensaver/chrome'
-import Cub from './screensaver/cub'
-import Aerial from './screensaver/aerial'
+import Ukraine from './screensaver/ukraine'
 
 /**
  * Скринсейвер
@@ -25,11 +22,9 @@ class Screensaver{
         this.time_reset = 0
         this.time_start = 0
 
+        // HOOK TV: Ukrainian landscapes are the only screensaver
         this.class_list = {
-            nature: Nature,
-            chrome: Chrome,
-            cub: Cub,
-            aerial: Aerial
+            ukraine: Ukraine
         }
     }
 
@@ -92,13 +87,7 @@ class Screensaver{
 
         this.listener.send('start',{})
 
-        let select = Storage.field('screensaver_type')
-
-        if(typeof type == 'string') select = type
-
-        let Class = Chrome
-
-        if(this.class_list[select]) Class = this.class_list[select]
+        let Class = this.class_list[type] || Ukraine
 
         this.screensaver = new Class(params)
         this.screensaver.create()
