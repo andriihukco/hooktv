@@ -119,15 +119,34 @@ function discover(path, f){
         query.push(key + '=' + value)
     }
 
+    let date = kind == 'tv' ? 'first_air_date' : 'primary_release_date'
+
     if(path.indexOf('discover/') !== 0){
         query = []
 
         put('sort_by', /top_rated/.test(path) ? 'vote_average.desc' : 'popularity.desc')
 
         if(/top_rated/.test(path)) put('vote_count.gte', 300)
-    }
 
-    let date = kind == 'tv' ? 'first_air_date' : 'primary_release_date'
+        // a filtered list keeps what it was: in cinemas now, coming soon, on air this week
+        let day = (shift)=>new Date(Date.now() + shift * 86400000).toISOString().slice(0, 10)
+
+        if(/now_playing/.test(path)){
+            put('primary_release_date.gte', day(-42))
+            put('primary_release_date.lte', day(0))
+            put('with_release_type', '2|3')
+        }
+
+        if(/upcoming/.test(path)){
+            put('primary_release_date.gte', day(1))
+            put('with_release_type', '2|3')
+        }
+
+        if(/on_the_air|airing_today/.test(path)){
+            put('air_date.gte', day(/airing_today/.test(path) ? 0 : -7))
+            put('air_date.lte', day(/airing_today/.test(path) ? 0 : 7))
+        }
+    }
 
     if(f.rating && f.rating[0] != null) put('vote_average.gte', f.rating[0])
     if(f.rating && f.rating[1] != null) put('vote_average.lte', f.rating[1])

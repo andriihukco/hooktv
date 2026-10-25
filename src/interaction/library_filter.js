@@ -66,8 +66,8 @@ function context(){
 
     let c = object.component
 
-    // Saved and History themselves (not their folders), and only with something in them
-    if(c == 'bookmarks' || (c == 'favorite' && object.type == 'history')){
+    // Saved, History and every Saved folder, only with something in them
+    if(c == 'bookmarks' || c == 'favorite'){
         let cards = library()
 
         return cards.length ? {kind: 'library', filter: object.library_filter, cards} : null
@@ -78,7 +78,15 @@ function context(){
 
     if(c == 'category' && (object.url == 'movie' || object.url == 'tv')) return {kind: 'remote', jump: true, type: object.url, filter: last[object.url]}
 
+    // a row opened with More (Watching now, Top rated, a genre…): the filter narrows that list
+    if(c == 'category_full' && tmdbList(object)) return {kind: 'remote', type: Filter.type(object.url), path: object.url, filter: object.library_filter}
+
     return null
+}
+
+// TMDB lists the API can re-ask with a filter; search results filter what came back
+function tmdbList(object){
+    return (!object.source || object.source == 'tmdb') && /^(movie|tv|trending|discover)\//.test(object.url || '')
 }
 
 function library(){
@@ -165,7 +173,7 @@ function remoteCount(){
     if(ctx.kind !== 'remote') return button.textContent = showText(null)
 
     counting = setTimeout(()=>{
-        let path  = Filter.discover('discover/' + ctx.type, draft)
+        let path  = Filter.discover(ctx.path || 'discover/' + ctx.type, draft)
         let asked = draft
 
         $.get(TMDB.api(path + '&api_key=' + TMDB.key()), (data)=>{

@@ -63,6 +63,29 @@ suite('library filter', () => {
         expect(q).not.toContain('with_genres=16')
     })
 
+    test('a filtered list keeps its meaning: in cinemas now, coming soon, on air', () => {
+        let f = {...Filter.empty(), genres: [28]}
+        let now = Filter.discover('movie/now_playing', f)
+        let soon = Filter.discover('movie/upcoming', f)
+        let air = Filter.discover('tv/on_the_air', f)
+
+        expect(now).toContain('primary_release_date.gte=')
+        expect(now).toContain('primary_release_date.lte=')
+        expect(now).toContain('with_genres=28')
+        expect(soon).toContain('primary_release_date.gte=')
+        expect(soon).not.toContain('primary_release_date.lte=')
+        expect(air.indexOf('discover/tv?')).toBe(0)
+        expect(air).toContain('air_date.gte=')
+        expect(Filter.discover('movie/popular', f)).not.toContain('release_date')
+    })
+
+    test('the filter\'s years replace the list\'s window', () => {
+        let q = Filter.discover('movie/now_playing', {...Filter.empty(), year: [2020, null]})
+
+        expect(q).toContain('primary_release_date.gte=2020-01-01')
+        expect(q.match(/primary_release_date\.gte=/g)).toHaveLength(1)
+    })
+
     test('options list what the cards contain, most common first', () => {
         let o = Filter.options(cards)
 
