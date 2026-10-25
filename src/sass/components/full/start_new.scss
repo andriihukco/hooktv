@@ -252,7 +252,8 @@
             overflow: auto;
         }
 
-        .full-start__button:not(.focus) span{
+        // the Like / Dislike counts stay visible; the other labels show on focus only
+        .full-start__button:not(.focus):not(.button--like):not(.button--dislike) span{
             display: none;
         }
     }

@@ -35,9 +35,10 @@ function mount(comp, chips){
     comp.html.classList.add('library-page')
 
     // a grid (Category) keeps its own body, so the header goes in front of it;
-    // a row list (Main) has no body of its own, so the header is its first child
+    // a row list (Main) scrolls its rows as one body, which would carry the header
+    // off the top as soon as a card takes focus, so the header sits above the scroller
     if(comp.body) comp.body.parentNode.insertBefore(head[0], comp.body)
-    else comp.scroll.render(true).querySelector('.scroll__body').prepend(head[0])
+    else comp.scroll.render(true).parentNode.insertBefore(head[0], comp.scroll.render(true))
 }
 
 export default {

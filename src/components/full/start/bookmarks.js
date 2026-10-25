@@ -96,7 +96,7 @@ export default {
         let marks  = ['look', 'viewed', 'scheduled', 'continued', 'thrown']
         let any_marker = marks.find(m=>status[m])
 
-        $('.button--book path', this.html).attr('fill', any ? 'currentColor' : 'transparent')
+        this.html.find('.button--book').toggleClass('saved', Boolean(any))
 
         this.html.find('.full-start-new__poster .card__marker').remove()
 

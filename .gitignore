@@ -21,3 +21,5 @@ temp/
 package-lock.json
 src/utils/api/okko.js
 .DS_Store
+# Local Supabase config (keys)
+.env.local

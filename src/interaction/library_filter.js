@@ -104,6 +104,9 @@ function library(){
     if(object.component == 'bookmarks'){
         let all = Favorite.all()
 
+        // Saved shows its shelves only; History is a page of its own, so its items don't count here
+        delete all.history
+
         for(let key in all) if(Array.isArray(all[key])) all[key].forEach(add)
     }
     else{

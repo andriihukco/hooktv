@@ -41,7 +41,7 @@ let html = `<div>
         <div class="settings-param__value"></div>
     </div>
 
-    <div class="settings-param-title settings--account-user hide"><span>#{more}</span></div>
+    <div class="settings-param-title settings--account-user hide"><span>#{hooktv_group_data}</span></div>
 
     <div class="settings-param selector settings--account-user settings--account-user-sync hide" data-static="true">
         <div class="settings-param__name">#{settings_cub_sync_btn}</div>

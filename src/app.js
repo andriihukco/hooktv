@@ -186,7 +186,7 @@ Arrays.extend(window.lampa_settings,{
         // Блокировка ЛГБТ-контента
         lgbt: false,
         // Реакции
-        reactions: true,
+        reactions: false,
         // Обсуждения
         discuss: true,
         // ИИ

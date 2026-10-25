@@ -1,4 +1,5 @@
-// the biography sidebar: docked to the right edge, the same surface as the app's other panels
+// the biography and awards sidebar: the same docked sheet as Settings and the Filters panel
+// (surface, blur, radius, head with title and round close button)
 .person-bio{
     position: fixed;
     top: 0;
@@ -7,13 +8,15 @@
     z-index: 230;
     display: flex;
     flex-direction: column;
-    width: 34em;
+    width: 30em;
     max-width: 100%;
-    padding: $offset;
-    background-color: var(--surface-overlay);
-    border-top-left-radius: 1em;
-    border-bottom-left-radius: 1em;
-    box-shadow: -1em 0 3em rgba(0, 0, 0, 0.3);
+    padding: 2em 2em 0;
+    background: rgba(28, 28, 30, 0.8);
+    backdrop-filter: blur(40px) saturate(1.6);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    border-top-left-radius: 2em;
+    border-bottom-left-radius: 2em;
+    box-shadow: -1em 0 4em rgba(0, 0, 0, 0.5);
     transform: translateX(100%);
     transition: transform 0.3s ease;
 
@@ -23,46 +26,25 @@
 
     &__head{
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.5em;
+        gap: 1em;
+        margin-bottom: 1.2em;
     }
 
     &__title{
-        font-size: 2em;
-        font-weight: 300;
+        font-size: 2.2em;
+        font-weight: 700;
+        letter-spacing: -0.02em;
         line-height: 1.2;
-        padding-right: 1em;
-    }
-
-    // the same round icon as the header's: white when it has focus or hover
-    &__close{
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.8em;
-        height: 2.8em;
-        border-radius: 100%;
-        cursor: pointer;
-
-        > svg{
-            width: 1.4em;
-            height: 1.4em;
-        }
-
-        &.focus,
-        &.hover{
-            background: var(--focus-fill);
-            color: var(--focus-fill-text);
-        }
     }
 
     &__body{
         flex: 1;
         min-height: 0;
         overflow-y: auto;
-        font-size: 1.3em;
+        padding-bottom: 2em;
+        font-size: 1.2em;
         font-weight: 300;
         line-height: 1.5;
         white-space: pre-line;
@@ -70,6 +52,7 @@
 
     @media screen and (max-width: $media_xm) {
         width: 100%;
-        border-radius: 0;
+        border-radius: 2em 2em 0 0;
+        padding-bottom: env(safe-area-inset-bottom);
     }
 }

@@ -82,13 +82,12 @@ class Start extends Emit {
         this.card.name && this.html.find('.full-start-new__poster').addClass('card--tv').append('<div class="card__type">TV</div>')
         this.card.adult && this.html.find('.full-start-new__poster').addClass('card--adult').append('<div class="card__type">ADULT</div>')
 
-        if(year){
-            this.html.find('.tag--year').removeClass('hide').find('> div').text(year)
+        // the release year and the countries sit in the rate line, each in its own chip
+        if(year) this.html.find('.full-start__year').removeClass('hide').text(year)
 
-            head.push('<span>' + year + '</span>')
-        }
+        // each country is its own chip in the rate line
+        countries.slice(0,5).forEach(c=>this.html.find('.full-start-new__rate-line').append($('<div class="full-start__country"></div>').text(c)))
 
-        countries.length && head.push(countries.slice(0,5).join(' | '))
 
         !this.card.tagline && this.html.find('.full--tagline').remove()
 
@@ -101,7 +100,6 @@ class Start extends Emit {
         if(logo) showLogo(logo)
         else Extra.get(this.card).then(extra=>extra && this.html && showLogo(extra.logo))
 
-        this.card.runtime > 0 && info.push('<span>' + Utils.secondsToTime(this.card.runtime * 60, true)+'</span>')
 
         seasons && info.push('<span>' + Lang.translate('title_seasons') + ': ' + seasons + '</span>')
 
@@ -115,6 +113,11 @@ class Start extends Emit {
 
         this.card.vote_average == 0 && this.html.find('.rate--tmdb').addClass('hide')
 
+        // the rating colour follows the score: strong, fair, weak
+        let score = parseFloat(this.card.vote_average || 0)
+
+        this.html.find('.rate--tmdb').addClass(score >= 7 ? 'rate--good' : score >= 5 ? 'rate--mid' : 'rate--bad')
+
         this.card.status && this.html.find('.full-start__status').removeClass('hide').text(Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')))
 
         if(this.card.imdb_rating && parseFloat(this.card.imdb_rating) > 0){
@@ -125,13 +128,14 @@ class Start extends Emit {
             this.html.find('.rate--kp').removeClass('hide').find('> div').eq(0).text(parseFloat(this.card.kp_rating) >= 10 ? 10 : this.card.kp_rating)
         }
 
-        if(this.card.genres){
-            genres = this.card.genres.slice(0,5).map((a)=>{
-                return Utils.capitalizeFirstLetter(a.name)
-            }).join(' | ')
+        // duration and genres share one chip row under the details line
+        let chips = []
 
-            info.push('<span>' + genres + '</span>')
-        }
+        if(this.card.runtime > 0) chips.push('<span class="full-start-new__runtime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' + Utils.secondsToTime(this.card.runtime * 60, true) + '</span>')
+
+        if(this.card.genres) this.card.genres.slice(0,5).forEach(a=>chips.push('<span class="full-start-new__genre">' + Utils.capitalizeFirstLetter(a.name) + '</span>'))
+
+        this.html.find('.full-start-new__genres').html(chips.join(''))
 
         if(quality){
             this.html.find('.tag--quality').removeClass('hide').find('> div').text(quality)
@@ -158,7 +162,7 @@ class Start extends Emit {
         })
         
         this.html.find('.full-start-new__head').toggleClass('hide',!head.length).html(head.join(', '))
-        this.html.find('.full-start-new__details').html(info.join('<span class="full-start-new__split">●</span>'))
+        this.html.find('.full-start-new__details').toggleClass('hide', !info.length).html(info.join('<span class="full-start-new__split">●</span>'))
 
         this.html.find('.full-start-new__scroll').on('hover:enter click', ()=>{
             let next = this.html[0].nextElementSibling

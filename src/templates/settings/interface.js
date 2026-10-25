@@ -10,10 +10,15 @@ let html = `<div>
     </div>
     -->
 
+    <!-- one group per topic, most used first: language, how the app looks, what plays -->
+    <div class="settings-param-title"><span>#{hooktv_group_language}</span></div>
+
     <div class="settings-param selector" data-static="true">
         <div class="settings-param__name">#{settings_interface_lang}</div>
         <div class="settings-param__value"></div>
     </div>
+
+    <div class="settings-param-title"><span>#{hooktv_group_appearance}</span></div>
 
     <div class="settings-param selector" data-type="select" data-name="interface_brightness">
         <div class="settings-param__name">#{settings_interface_brightness}</div>
@@ -32,15 +37,6 @@ let html = `<div>
         <div class="settings-param__value"></div>
         <div class="settings-param__descr">#{hooktv_dub_default_descr}</div>
     </div>
-
-    <div class="settings-param-title"><span>#{settings_interface_background}</span></div>
-
-    <div class="settings-param selector" data-type="toggle" data-name="background">
-        <div class="settings-param__name">#{settings_interface_background_use}</div>
-        <div class="settings-param__value"></div>
-    </div>
-
-
 </div>`
 
 export default html

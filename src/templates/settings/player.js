@@ -89,7 +89,7 @@ let html = `<div>
         </div>
     </div>
 
-    <div class="settings-param-title"><span>#{more}</span></div>
+    <div class="settings-param-title"><span>#{hooktv_group_video}</span></div>
 
     <div class="settings-param selector" data-type="select" data-name="video_quality_default">
         <div class="settings-param__name">#{settings_player_quality}</div>

@@ -80,7 +80,7 @@ let html = `<div>
             </div>
         </div>
 
-        <div class="settings-param-title"><span>#{more}</span></div>
+        <div class="settings-param-title"><span>#{hooktv_group_search}</span></div>
 
         <div class="settings-param selector" data-type="select" data-name="parse_lang">
             <div class="settings-param__name">#{settings_parser_search}</div>

@@ -181,9 +181,11 @@ function Component(name, component_params = {}){
      * interface rows under a title, so nothing opens a second screen.
      */
     function addSections(){
+        // the groups inside each template carry their own titles; a section title only
+        // stands in front of a section whose groups would otherwise lose their context
         let sections = [
             ['player', 'settings_main_player'],
-            ['more', 'settings_main_rest']
+            ['more', '']
         ]
 
         sections.forEach(([key, title])=>{
@@ -191,7 +193,7 @@ function Component(name, component_params = {}){
 
             section.find('.settings-folder').remove()
 
-            comp.append(`<div class="settings-param-title"><span>${Lang.translate(title)}</span></div>`)
+            if(title) comp.append(`<div class="settings-param-title"><span>${Lang.translate(title)}</span></div>`)
             comp.append(section.children())
 
             addParams(key)

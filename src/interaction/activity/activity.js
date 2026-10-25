@@ -436,12 +436,31 @@ function renderLayers(js){
  * Обработать событие назад
  * @return {void}
  */
+/**
+ * The Home page object, used when there is no earlier page to go back to
+ * @returns {object}
+ */
+function home(){
+    return {
+        url: '',
+        title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
+        component: 'main',
+        source: Storage.field('source'),
+        page: 1
+    }
+}
+
 function backward(){
     callback = false;
 
     listener.send('backward',{count: activites.length})
 
-    if(activites.length == 1) return
+    // a page opened from a link (or a new tab) has nothing before it: back goes to Home instead
+    if(activites.length == 1){
+        if(active() && active().component != 'main') replace(home(), true)
+
+        return
+    }
 
     Array.from(slides.children).forEach(slide=>slide.classList.remove('activity--active'))
 

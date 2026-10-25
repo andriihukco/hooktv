@@ -11,14 +11,15 @@ let html = `<div class="full-start-new">
             <div class="full-start-new__title">{title}</div>
             <div class="full-start-new__tagline full--tagline">{tagline}</div>
             <div class="full-start-new__rate-line">
-                <div class="full-start__rate rate--tmdb"><div>{rating}</div><div class="source--name">TMDB</div></div>
+                <div class="full-start__rate rate--tmdb"><div>{rating}</div><div class="source--name"><svg viewBox="0 0 24 24" aria-label="TMDB"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></div>
                 <div class="full-start__rate rate--imdb hide"><div></div><div>IMDB</div></div>
                 <div class="full-start__rate rate--kp hide"><div></div><div>KP</div></div>
 
                 <div class="full-start__pg hide"></div>
                 <div class="full-start__status hide"></div>
-            </div>
+                <div class="full-start__year hide"></div>            </div>
             <div class="full-start-new__details"></div>
+            <div class="full-start-new__genres"></div>
 
             <div class="full-start-new__buttons">
                 <div class="full-start__button selector button--play">
@@ -33,12 +34,6 @@ let html = `<div class="full-start-new">
                     </svg>
 
                     <span>#{settings_input_links}</span>
-                </div>
-
-                <div class="full-start__button selector button--reaction">
-                    <svg><use xlink:href="#sprite-reaction"></use></svg>           
-
-                    <span>#{title_reactions}</span>
                 </div>
 
                 <div class="full-start__button selector button--like" title="#{reactions_nice}">
@@ -68,10 +63,6 @@ let html = `<div class="full-start-new">
                     <span>#{copy_link_buffer}</span>
                 </div>
             </div>
-
-            <div class="full-start-new__reactions">
-                <div>#{reactions_none}</div>
-            </div>
         </div>
     </div>
 
@@ -84,7 +75,7 @@ let html = `<div class="full-start-new">
     </div>
 
     <button class="full-start-new__scroll selector" type="button" aria-label="#{hooktv_scroll_down}">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 8 7 7 7-7m-14 4 7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
 </div>`
 

@@ -34,7 +34,7 @@ let html = `<div>
     </div>
 
     <!-- DETAILED SETTINGS -->
-    <div class="settings-param-title"><span>#{settings_rest_start}</span></div>
+    <div class="settings-param-title"><span>#{hooktv_group_start}</span></div>
 
     <div class="settings-param selector" data-type="select" data-name="start_page">
         <div class="settings-param__name">#{settings_rest_start}</div>
@@ -78,7 +78,7 @@ let html = `<div>
     </div>
 
     
-    <div class="settings-param-title"><span>#{more}</span></div>
+    <div class="settings-param-title"><span>#{hooktv_group_cards}</span></div>
 
     <div class="settings-param selector" data-type="select" data-name="pages_save_total">
         <div class="settings-param__name">#{settings_rest_pages}</div>
