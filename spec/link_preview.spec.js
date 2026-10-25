@@ -45,6 +45,24 @@ suite('link previews', ()=>{
         expect(res.body).toContain('http-equiv="refresh" content="0; url=/?card=42&amp;media=movie&amp;source=tmdb"')
     })
 
+    test('movie page has readable content and schema.org data, and cannot break out of the script', async ()=>{
+        vi.stubGlobal('fetch', async ()=>({ok: true, json: async ()=>({title: 'Фільм </script><b>', release_date: '2003-12-17', overview: 'Опис', poster_path: '/p.jpg', vote_average: 8.5, vote_count: 1200, runtime: 201, genres: [{name: 'пригоди'}], credits: {cast: [{name: 'Актор А'}], crew: [{name: 'Режисер Р', job: 'Director'}]}})}))
+
+        let res = await run('/api/title?card=122&media=movie&source=tmdb')
+        let ld = res.body.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
+
+        expect(ld).not.toBeNull()
+        expect(ld[1]).not.toContain('</script>')
+        let data = JSON.parse(ld[1])
+
+        expect(data['@type']).toBe('Movie')
+        expect(data.aggregateRating.ratingValue).toBe(8.5)
+        expect(data.aggregateRating.ratingCount).toBe(1200)
+        expect(data.director[0].name).toBe('Режисер Р')
+        expect(res.body).toContain('<h1>Фільм &lt;/script&gt;&lt;b&gt; (2003)</h1>')
+        expect(res.body).toContain('У ролях: Актор А')
+    })
+
     test('non-numeric card ids are not reflected', async ()=>{
         let res = await run('/api/title?card=<script>')
 

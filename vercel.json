@@ -1,4 +1,7 @@
 {
   "buildCommand": "npm run release",
-  "outputDirectory": "build/web"
+  "outputDirectory": "build/web",
+  "rewrites": [
+    {"source": "/sitemap.xml", "destination": "/api/sitemap"}
+  ]
 }
