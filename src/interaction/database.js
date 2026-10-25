@@ -2,12 +2,12 @@ import Settings from './settings/api'
 import Lang from '../core/lang'
 import Storage from '../core/storage/storage'
 import Utils from '../utils/utils'
-import StorageManager from './storage_manager'
 import Controller from '../core/controller'
 import Select from './select'
 import Cache from '../utils/cache'
 import Favorite from '../core/favorite'
 import Noty from './noty'
+import Usage from '../utils/storage_usage'
 
 let component = 'data'
 let icon = `<svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,45 +15,109 @@ let icon = `<svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="h
     <rect x="10.7227" y="24.4752" width="15.2754" height="11.2209" rx="1.5" stroke="white" stroke-width="3"/>
 </svg>`
 
+// one colour per kind of data, in the bar and its legend
+let KINDS = {
+    history:  {color: '#C8F542', name: 'hooktv_storage_history', descr: 'hooktv_storage_history_descr'},
+    cache:    {color: '#FF9F0A', name: 'hooktv_storage_cache', descr: 'hooktv_storage_cache_descr'},
+    settings: {color: '#0A84FF', name: 'hooktv_storage_settings', descr: 'hooktv_storage_settings_descr'},
+    search:   {color: '#BF5AF2', name: 'hooktv_storage_search', descr: 'hooktv_storage_search_descr'}
+}
+
+let view
+
+function size(bytes){
+    return Utils.bytesToSize(bytes || 0)
+}
+
+/**
+ * The bar, the total and a legend that says what each part is
+ */
+function draw(){
+    if(!view) return
+
+    view.addClass('storage-view--loading')
+
+    Usage.measure((sizes)=>{
+        if(!view) return
+
+        let parts = Usage.parts(sizes)
+        let used  = parts.reduce((sum, p)=>sum + p.bytes, 0)
+        let bar   = view.find('.storage-view__bar').empty()
+        let list  = view.find('.storage-view__legend').empty()
+
+        view.find('.storage-view__total').text(Lang.translate('hooktv_storage_used').replace('{size}', size(used)))
+        view.find('.storage-view__free').text(sizes.quota ? Lang.translate('hooktv_storage_free').replace('{size}', size(Math.max(0, sizes.quota - used))) : '')
+
+        parts.forEach(p=>{
+            let kind = KINDS[p.key]
+
+            // tiny parts stay visible as a sliver
+            $('<div class="storage-view__part"></div>').css({background: kind.color, flexGrow: Math.max(p.share, 0.015)}).appendTo(bar)
+
+            let row = $(`<div class="storage-view__item">
+                <div class="storage-view__dot"></div>
+                <div class="storage-view__text">
+                    <div class="storage-view__name"></div>
+                    <div class="storage-view__descr"></div>
+                </div>
+                <div class="storage-view__size"></div>
+            </div>`)
+
+            row.find('.storage-view__dot').css('background', kind.color)
+            row.find('.storage-view__name').text(Lang.translate(kind.name))
+            row.find('.storage-view__descr').text(Lang.translate(kind.descr))
+            row.find('.storage-view__size').text(size(p.bytes))
+
+            list.append(row)
+        })
+
+        if(sizes.cache === null){
+            list.append($('<div class="storage-view__note"></div>').text(Lang.translate('hooktv_storage_cache_unknown')))
+        }
+
+        // local storage has a hard limit; warn before settings or history stop saving
+        let share = Math.round(sizes.local_share * 100)
+        let note  = view.find('.storage-view__limit')
+
+        note.text(Lang.translate('hooktv_storage_limit').replace('{percent}', share)).toggleClass('storage-view__limit--warn', share >= 80)
+
+        view.removeClass('storage-view--loading')
+    })
+}
+
 function init(){
     Settings.addComponent({
         component: component,
         icon,
-        name: Lang.translate('settings_rest_cache_all'),
+        name: Lang.translate('hooktv_storage_title'),
         after: 'parental_control',
     })
 
-    let status
-
     Settings.addParam({
         component,
         param: {
-            type: 'button'
+            type: 'static'
         },
         field: {
-            name: Lampa.Lang.translate('settings_rest_cache_calculate'),
+            name: ''
         },
         onRender: (item)=>{
-            status = $(`<div class="settings-param__descr hide"></div>`)
+            item.addClass('storage-view').empty().append(`
+                <div class="storage-view__head">
+                    <div class="storage-view__total"></div>
+                    <div class="storage-view__free"></div>
+                </div>
+                <div class="storage-view__bar"></div>
+                <div class="storage-view__legend"></div>
+                <div class="storage-view__limit"></div>
+            `)
 
-            item.append(status)
-        },
-        onChange: (a,b)=>{
-            status.removeClass('hide')
+            view = item
 
-            Storage.getsize((size)=>{
-                status.text(Lang.translate('title_left') + ' - ' + Utils.bytesToSize(size))
-            })
-        }
-    })
+            // Enter measures again
+            item.on('hover:enter', draw)
 
-    Settings.addParam({
-        component,
-        param: {
-            type: 'title'
-        },
-        field: {
-            name: Lampa.Lang.translate('more'),
+            draw()
         }
     })
 
@@ -63,14 +127,18 @@ function init(){
             type: 'button'
         },
         field: {
-            name: Lampa.Lang.translate('extensions_edit'),
+            name: Lang.translate('settings_rest_cache'),
+            description: Lang.translate('hooktv_storage_cache_clear_descr')
         },
         onChange: ()=>{
-            StorageManager.open({
-                onBack: ()=>{
-                    Controller.toggle('settings_component')
-                }
-            })
+            let done = ()=>{
+                Noty.show(Lang.translate('hooktv_storage_cache_cleared'))
+
+                // the browser updates its size estimate a moment after the tables empty
+                setTimeout(draw, 1200)
+            }
+
+            Cache.clearAll().then(done, done)
         }
     })
 
@@ -80,12 +148,15 @@ function init(){
             type: 'button'
         },
         field: {
-            name: Lampa.Lang.translate('fav_clear_title'),
+            name: Lang.translate('fav_clear_title'),
+            description: Lang.translate('hooktv_storage_history_clear_descr')
         },
         onChange: ()=>{
             Favorite.clear('history')
 
-            Noty.show(Lang.translate('torrent_error_made'))
+            Noty.show(Lang.translate('hooktv_storage_history_cleared'))
+
+            draw()
         }
     })
 
@@ -95,33 +166,44 @@ function init(){
             type: 'button'
         },
         field: {
-            name: Lampa.Lang.translate('settings_rest_cache'),
+            name: Lang.translate('hooktv_storage_reset'),
+            description: Lang.translate('settings_rest_cache_all_descr')
         },
         onChange: ()=>{
             Select.show({
-                title: Lang.translate('settings_rest_cache'),
+                title: Lang.translate('hooktv_storage_reset'),
                 items: [
-                    {
-                        title: Lang.translate('settings_rest_cache_only'),
-                        subtitle: Lang.translate('settings_rest_cache_only_descr')
-                    },
-                    {
-                        title: Lang.translate('settings_rest_cache_all'),
-                        subtitle: Lang.translate('settings_rest_cache_all_descr'),
-                        full: true
-                    }
+                    {title: Lang.translate('hooktv_storage_reset_confirm'), subtitle: Lang.translate('settings_rest_cache_all_descr'), reset: true},
+                    {title: Lang.translate('cancel')}
                 ],
                 onSelect: (a)=>{
                     Controller.toggle('settings_component')
 
-                    Storage.clear(a.full)
+                    if(!a.reset) return
 
-                    Cache.clearAll()
+                    let reset = ()=>Storage.clear(true)
+
+                    Cache.clearAll().then(reset, reset)
                 },
                 onBack: ()=>{
                     Controller.toggle('settings_component')
                 }
             })
+        }
+    })
+
+    // when something is stuck: a clean start without losing anything
+    Settings.addParam({
+        component,
+        param: {
+            type: 'button'
+        },
+        field: {
+            name: Lang.translate('hooktv_reload'),
+            description: Lang.translate('hooktv_reload_descr')
+        },
+        onChange: ()=>{
+            window.location.reload()
         }
     })
 }

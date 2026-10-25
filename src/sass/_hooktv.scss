@@ -3437,3 +3437,159 @@ body.minimal--ui .head__logo-icon{
         transform: scale(0.97);
     }
 }
+
+/* Settings → Storage: one bar like macOS shows a disk, and a legend that says what each part is */
+.settings-param.storage-view{
+    display: block;
+    padding: 1.1em 1.2em 1em;
+
+    .storage-view__head{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1em;
+        margin-bottom: 0.7em;
+    }
+
+    .storage-view__total{
+        font-size: 1.15em;
+        font-weight: 600;
+    }
+
+    .storage-view__free{
+        font-size: 0.95em;
+        opacity: 0.6;
+        white-space: nowrap;
+    }
+
+    .storage-view__bar{
+        display: flex;
+        gap: 2px;
+        height: 1.1em;
+        border-radius: 0.55em;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+        margin-bottom: 1em;
+    }
+
+    .storage-view__part{
+        flex-basis: 0;
+        min-width: 4px;
+        transition: flex-grow 0.4s ease;
+    }
+
+    .storage-view__legend{
+        display: flex;
+        flex-direction: column;
+        gap: 0.75em;
+    }
+
+    .storage-view__item{
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7em;
+    }
+
+    .storage-view__dot{
+        flex-shrink: 0;
+        width: 0.7em;
+        height: 0.7em;
+        margin-top: 0.3em;
+        border-radius: 50%;
+    }
+
+    .storage-view__text{
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .storage-view__name{
+        font-weight: 600;
+    }
+
+    .storage-view__descr{
+        font-size: 0.85em;
+        line-height: 1.35;
+        opacity: 0.6;
+        margin-top: 0.15em;
+    }
+
+    .storage-view__size{
+        flex-shrink: 0;
+        font-variant-numeric: tabular-nums;
+        opacity: 0.85;
+    }
+
+    .storage-view__note,
+    .storage-view__limit{
+        font-size: 0.85em;
+        opacity: 0.55;
+    }
+
+    .storage-view__limit{
+        margin-top: 0.9em;
+    }
+
+    .storage-view__limit--warn{
+        opacity: 1;
+        color: #FF9F0A;
+    }
+
+    &.storage-view--loading .storage-view__bar{
+        opacity: 0.5;
+    }
+
+    // focused, the card brightens instead of turning white, so the colours stay readable
+    &.focus{
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: inherit !important;
+        box-shadow: 0 0 0 0.15em var(--focus-ring-color, var(--focus-fill));
+    }
+}
+
+/* The tab pill and the round buttons beside it share one height, and every tab
+   fills the pill top to bottom, so tabs and buttons are the same touch target */
+$hk-control: 2.85em;
+
+body.minimal--ui{
+    .head .head__action,
+    .head .head__menu-icon{
+        box-sizing: border-box;
+        width: $hk-control;
+        height: $hk-control;
+        flex: 0 0 $hk-control;
+    }
+
+    .menu__list{
+        box-sizing: border-box;
+        height: $hk-control !important;
+        padding: 0.22em !important;
+        align-items: stretch;
+        // centred on the same line as the buttons
+        margin-top: 0.59em !important;
+    }
+
+    .menu__item{
+        display: flex !important;
+        align-items: center;
+        height: 100%;
+        box-sizing: border-box;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+@media (max-width: 580px){
+    body.minimal--ui{
+        .head .head__action,
+        .head .head__menu-icon{
+            width: 48px;
+            height: 48px;
+            flex-basis: 48px;
+        }
+
+        .menu__list{
+            height: 48px !important;
+        }
+    }
+}

@@ -202,7 +202,7 @@ function Component(name, component_params = {}){
         let components = Api.allComponents()
 
         // sources pick themselves and remote setup is for developers: neither is a choice to offer
-        let hidden = ['hook_online', 'remote_configuration']
+        let hidden = ['hook_online', 'remote_configuration', 'content_rows']
 
         for(let key in components){
             if(key == name || hidden.indexOf(key) >= 0) continue
