@@ -27,3 +27,33 @@ describe('WhereToWatch.available', () => {
         expect(WhereToWatch.available({link: 'x'})).toEqual([])
     })
 })
+
+describe('WhereToWatch.rows', () => {
+    let movie = {title: 'Початок', original_title: 'Inception', original_language: 'en'}
+    let found = {link: 'https://tmdb/watch', flatrate: [{provider_id: 1899, provider_name: 'HBO Max'}]}
+    let rows  = WhereToWatch.rows(movie, found, 'Inception')
+    let named = (name)=>rows.find(r=>r.title == name && !r.separator)
+
+    it('searches Ukrainian services by the card title and international ones in English', () => {
+        expect(named('Megogo').url).toContain('q=' + encodeURIComponent('Початок'))
+        expect(named('Netflix').url).toBe('https://www.netflix.com/search?q=Inception')
+        expect(named('HBO Max').url).toBe('https://play.hbomax.com/search?q=Inception')
+    })
+
+    it('lists a service once, under where it streams', () => {
+        expect(rows.filter(r=>r.title == 'HBO Max')).toHaveLength(1)
+        expect(named('HBO Max').subtitle).toBe('hooktv_where_subscription')
+    })
+
+    it('says which services are not sold in Ukraine', () => {
+        expect(named('Hulu').subtitle).toBe('hooktv_where_us_only')
+        expect(named('Disney+').subtitle).toBe('hooktv_where_not_ua')
+    })
+
+    it('offers no manual source list and Takflix only for Ukrainian films', () => {
+        expect(rows.some(r=>r.sources)).toBe(false)
+        expect(named('Takflix')).toBeUndefined()
+        expect(WhereToWatch.rows({...movie, original_language: 'uk'}, null, 'x').some(r=>r.title == 'Takflix')).toBe(true)
+    })
+})
+

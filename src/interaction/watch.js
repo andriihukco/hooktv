@@ -49,7 +49,7 @@ function play(movie, want, back = 'content'){
 
         LoadingProgress.destroy()
 
-        WhereToWatch.show(movie, Online.openList, back)
+        WhereToWatch.show(movie, back)
     })
 }
 
