@@ -636,11 +636,11 @@ function ask(){
                 title: Lang.translate('title_action'),
                 items: [
                     {
-                        title: Lang.translate('player_start_from') + ' ' + Utils.secondsToTime(work.timeline.time)+'?',
+                        title: Lang.translate('player_continue_from') + ' ' + Utils.secondsToTime(work.timeline.time),
                         yes: true
                     },
                     {
-                        title: Lang.translate('settings_param_no')
+                        title: Lang.translate('player_start_from_beginning')
                     }
                 ],
                 onBack: ()=>{
@@ -667,9 +667,9 @@ function ask(){
 
             clearTimeout(timer_ask)
 
+            // Без ответа продолжаем с сохранённого места, как и без вопроса
             timer_ask = setTimeout(()=>{
-                work.timeline.continued = true
-                work.timeline.continued_bloc = true
+                work.timeline.waiting_for_user = false
 
                 Select.hide()
                 
