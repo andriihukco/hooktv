@@ -29,7 +29,8 @@ export default {
         }
         
         let draw = ()=>{
-            if(reactions_data && reactions_data.result && reactions_data.result.length){
+            // the five-reaction row is not in the template any more; the thumbs below still show the counts
+            if(reactions_data && reactions_data.result && reactions_data.result.length && this.html.find('.full-start-new__reactions').length){
                 let reactions = reactions_data.result
                 let reactions_body = this.html.find('.full-start-new__reactions')[0]
 
