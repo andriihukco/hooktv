@@ -1,0 +1,6 @@
+{
+	"name": "HOOK TV",
+	"version": "latest",
+	"parameter": "content:https://www.hooktv.online/msx/start.json",
+	"action": "link:https://www.hooktv.online"
+}

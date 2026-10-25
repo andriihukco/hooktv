@@ -3,5 +3,8 @@
   "outputDirectory": "build/web",
   "rewrites": [
     {"source": "/sitemap.xml", "destination": "/api/sitemap"}
+  ],
+  "headers": [
+    {"source": "/msx/(.*)", "headers": [{"key": "Access-Control-Allow-Origin", "value": "*"}]}
   ]
 }
