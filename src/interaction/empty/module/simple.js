@@ -8,17 +8,6 @@ export default {
         let params = this.params.empty || {}
             params.buttons = params.buttons || []
 
-        if(this.object.source == 'tmdb' && params.cub_button && !params.forbidden){
-            params.buttons.push({
-                title: Lang.translate('change_source_on_cub'),
-                onEnter: ()=>{
-                    Storage.set('source','cub')
-
-                    Activity.replace({source: 'cub'})
-                }
-            })
-        }
-
         this.empty_class = new Empty(params)
 
         if(params.info_button && !params.forbidden) this.empty_class.addInfoButton(params.info_button)

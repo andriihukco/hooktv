@@ -17,9 +17,6 @@ import LineMap from './items/line/module/map'
 import Company from './company/company'
 import CompanyModule from './company/module/module'
 import CompanyMap from './company/module/map'
-import Discuss from './discuss/discuss'
-import DiscussModule from './discuss/module/module'
-import DiscussMap from './discuss/module/map'
 import Episode from './episode/episode'
 import EpisodeModule from './episode/module/module'
 import EpisodeMap from './episode/module/map'
@@ -43,7 +40,6 @@ let classes = {
     Category: Category,
     Line: Line,
     Company: Company,
-    Discuss: Discuss,
     Episode: Episode,
     Person: Person,
     Register: Register,
@@ -58,7 +54,6 @@ let modules = {
     Category: CategoryModule,
     Line: LineModule,
     Company: CompanyModule,
-    Discuss: DiscussModule,
     Episode: EpisodeModule,
     Person: PersonModule,
     Register: RegisterModule,
@@ -73,7 +68,6 @@ let maps = {
     Category: CategoryMap,
     Line: LineMap,
     Company: CompanyMap,
-    Discuss: DiscussMap,
     Person: PersonMap,
     Register: RegisterMap,
     Season: SeasonMap,

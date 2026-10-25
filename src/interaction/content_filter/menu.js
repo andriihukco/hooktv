@@ -20,8 +20,6 @@ function main(){
         search: true
     },data.type,data.rating,data['genres_'+type],data.language,data.year]
 
-    if(Storage.field('source') == 'cub') items.push(data.pgrating,data.sort,data.quality)
-
     items.forEach(itm=>{
         itm.title = Lang.translate(itm.title)
 
@@ -118,77 +116,6 @@ function queryForTMDB(){
  * Запрос для CUB
  * @returns {string} - строка запроса
  */
-function queryForCUB(){
-    let query    = []
-    let cat      = data.type.items.find(s=>s.selected).cat
-    let type     = cat.indexOf('movie') >= 0 ? 'movie' : 'tv'
-    let genres   = []
-    let sort     = data.sort.items.find(s=>s.selected && s.sort)
-    let quality  = data.quality.items.find(s=>s.selected && s.uhd)
-    let languages = []
-
-    data.rating.items.forEach(a=>{
-        if(a.selected && (a.voite || a.start)){
-            if(a.start){
-                query.push('vote='+a.start)
-            }
-            else{
-                query.push('vote='+a.voite.split('-')[0]+'-'+a.voite.split('-')[1])
-            }
-        }
-    })
-
-    data.language.items.forEach(a=>{
-        if(a.checked) languages.push(a.code.split('|')[0])
-    })
-
-    data.year.items.forEach(a=>{
-        if(a.selected && !a.any){
-            if(a.title.indexOf('-') >= 0){
-                query.push('airdate='+a.title.split('-')[1]+'-'+a.title.split('-')[0])
-            }
-            else{
-                query.push('airdate='+a.title)
-            }
-        }
-    })
-
-    data.pgrating.items.forEach(a=>{
-        if(a.selected){
-            if(a.title.indexOf('-') >= 0){
-                query.push('pgrating='+a.pg.split('-')[0]+'-'+a.pg.split('-')[1])
-            }
-            else{
-                query.push('pgrating='+a.pg)
-            }
-        }
-    })
-
-    data['genres_'+type].items.forEach(a=>{
-        if(a.checked)  genres.push(a.id)
-    })
-
-    if((cat == 'multmovie' || cat == 'multtv' || Permit.child_small) && genres.indexOf(16) == -1) genres.push(16)
-
-    if((cat == 'movie' || cat == 'tv') && !Permit.child_small) query.push('without_genres=16')
-
-    if(genres.length){
-        query.push('genre='+genres.join(','))
-    }
-
-    if(cat == 'anime') type = 'anime'
-
-    if(languages.length){
-        query.push('language='+languages.join(','))
-    }
-
-    if(sort) query.push('sort='+sort.sort)
-
-    if(quality) query.push('uhd=true')
-
-    return '?cat=' + type + '&' + query.join('&')
-}
-
 /**
  * Запуск поиска
  */
@@ -196,13 +123,13 @@ function search(){
     Controller.toggle('content')
 
     let source = Storage.field('source')
-    let query  = source == 'cub' ? queryForCUB() : queryForTMDB()
+    let query  = queryForTMDB()
 
     let activity = {
         url: query,
         title: Lang.translate('title_filter'),
         component: 'category_full',
-        source: source == 'cub' ? 'cub' : 'tmdb',
+        source: 'tmdb',
         card_type: true,
         page: 1
     }

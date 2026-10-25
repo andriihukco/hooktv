@@ -43,7 +43,7 @@ class Descriptiopn extends Emit{
                 Activity.push({
                     url: genre.url || media,
                     title: Utils.capitalizeFirstLetter(genre.name),
-                    component: this.card.source == 'cub' ? 'category' : 'category_full',
+                    component: 'category_full',
                     genres: genre.id,
                     source: this.card.source,
                     page: 1

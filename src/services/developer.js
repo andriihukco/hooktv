@@ -81,10 +81,6 @@ function params(){
 
     let display = Arrays.clone(buttons)
 
-    if(!Account.hasPremium()){
-        Arrays.remove(display, 'ads')
-    }
-
     display.forEach(name=>{
         Lampa.SettingsApi.addParam({
             component,
@@ -102,24 +98,6 @@ function params(){
         })
     })
 
-    let values = {}
-
-    Manifest.cub_mirrors.forEach(domain=>{
-        values[domain] = domain
-    })
-
-    Lampa.SettingsApi.addParam({
-        component,
-        param: {
-            name: 'cub_domain',
-            type: 'select',
-            values,
-            default: Manifest.cub_domain
-        },
-        field: {
-            name: Lampa.Lang.translate('settings_cub_domain'),
-        }
-    })
 }
 
 function activate(){

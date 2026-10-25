@@ -637,7 +637,8 @@ body.no--animation *::after {
       -ms-flex-pack: center;
           justify-content: center;
   overflow-y: auto;
-  padding: max(3em, env(safe-area-inset-top, 0px) + 1.5em) 2em max(2em, env(safe-area-inset-bottom, 0px) + 1em);
+  padding: -webkit-calc(3em + env(safe-area-inset-top, 0px)) 2em -webkit-calc(2em + env(safe-area-inset-bottom, 0px));
+  padding: calc(3em + env(safe-area-inset-top, 0px)) 2em calc(2em + env(safe-area-inset-bottom, 0px));
   background: #000;
   color: #fff;
   -webkit-animation: lang-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -650,8 +651,10 @@ body.no--animation *::after {
 }
 .lang__close {
   position: absolute;
-  top: max(1.2em, env(safe-area-inset-top, 0px));
-  right: max(1.5em, env(safe-area-inset-right, 0px));
+  top: -webkit-calc(1.2em + env(safe-area-inset-top, 0px));
+  top: calc(1.2em + env(safe-area-inset-top, 0px));
+  right: -webkit-calc(1.5em + env(safe-area-inset-right, 0px));
+  right: calc(1.5em + env(safe-area-inset-right, 0px));
   z-index: 1;
   display: -webkit-box;
   display: -webkit-flex;
@@ -709,7 +712,7 @@ body.no--animation *::after {
 }
 .lang__body {
   width: 100%;
-  max-width: 26em;
+  max-width: 34em;
   margin: auto 0;
   text-align: center;
 }
@@ -734,7 +737,7 @@ body.no--animation *::after {
           animation: lang-logo-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .lang__logo img {
-  width: 13em;
+  width: 18em;
   max-width: 80%;
   height: auto;
   -webkit-transform: translateX(-0.05em);
@@ -749,9 +752,12 @@ body.no--animation *::after {
   line-height: 1.1;
 }
 .lang__subtitle {
-  margin-top: 0.4em;
-  font-size: 1.2em;
-  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.2em;
+  font-size: 2.1em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
 }
 .lang__intro {
   margin: 0.8em auto 0;
@@ -859,7 +865,7 @@ body.no--animation *::after {
           align-items: center;
   gap: 0.6em;
   line-height: 1.25;
-  padding: 0.85em 1em;
+  padding: 1em 1.2em;
   -webkit-border-radius: 0.85em;
           border-radius: 0.85em;
   font-size: 1.2em;
@@ -936,7 +942,8 @@ body.no--animation *::after {
 }
 @media (max-width: 580px) {
   .lang {
-    padding: max(1.2em, env(safe-area-inset-top, 0px) + 0.8em) 1.2em max(1.2em, env(safe-area-inset-bottom, 0px) + 0.8em);
+    padding: -webkit-calc(2.6em + env(safe-area-inset-top, 0px)) 1.2em -webkit-calc(0.8em + env(safe-area-inset-bottom, 0px));
+    padding: calc(2.6em + env(safe-area-inset-top, 0px)) 1.2em calc(0.8em + env(safe-area-inset-bottom, 0px));
   }
   .lang__title {
     font-size: 2.2em;
@@ -1028,7 +1035,8 @@ body.no--animation *::after {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 6em 1.2em max(1.6em, env(safe-area-inset-bottom, 0px) + 1em);
+  padding: 6em 1.2em -webkit-calc(1.6em + env(safe-area-inset-bottom, 0px));
+  padding: 6em 1.2em calc(1.6em + env(safe-area-inset-bottom, 0px));
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), color-stop(50%, rgba(0, 0, 0, 0.85)), color-stop(75%, #000));
   background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
   background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
@@ -1085,6 +1093,44 @@ body.no--animation *::after {
             transform: none;
   }
 }
+/**
+ * Profile avatar: the first letter of the name on a colored circle.
+ * Used in the header and the profile picker; no external images.
+ */
+.account-avatar {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-width: 2em;
+  min-height: 2em;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+  background: -webkit-linear-gradient(315deg, var(--brand-primary, #C8F542), #3d7a1e);
+  background: -o-linear-gradient(315deg, var(--brand-primary, #C8F542), #3d7a1e);
+  background: linear-gradient(135deg, var(--brand-primary, #C8F542), #3d7a1e);
+  color: #0b0b0b;
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
 @font-face {
   font-family: "SegoeUI";
   font-display: swap;
@@ -19352,6 +19398,46 @@ body.true--mobile.minimal--ui .head .head__actions > .head__menu-icon {
   -o-transition: background-color 0.15s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   transition: background-color 0.15s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   transition: background-color 0.15s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.selectbox-item--icon {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.selectbox-item__icon {
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  width: 5em;
+  height: 2.8em;
+  margin-right: 1em;
+  padding: 0.4em;
+  -webkit-border-radius: 0.6em;
+          border-radius: 0.6em;
+  background: rgba(255, 255, 255, 0.92);
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.selectbox-item__icon img {
+  max-width: 100%;
+  max-height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 .selectbox-item.focus {
   background: #fff !important;

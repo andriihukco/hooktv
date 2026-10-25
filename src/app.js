@@ -12,9 +12,6 @@ import Layer from './core/layer'
 import Select from './interaction/select'
 import Favorite from './core/favorite'
 import Background from './interaction/background'
-import Notice from './interaction/notice/notice'
-import NoticeClass from './interaction/notice/class'
-import NoticeClassLampa from './interaction/notice/lampa'
 import Head from './interaction/head/head'
 import Menu from './interaction/menu/menu'
 import Utils from './utils/utils'
@@ -41,7 +38,6 @@ import PlayerVideo from './interaction/player/video'
 import PlayerPanel from './interaction/player/panel'
 import PlayerFooter from './interaction/player/footer'
 import PlayerInfo from './interaction/player/info'
-import PlayerIPTV from './interaction/player/iptv'
 import PlayerPlaylist from './interaction/player/playlist'
 import Timeline from './interaction/timeline'
 import Settings from './interaction/settings/settings'
@@ -52,11 +48,9 @@ import Info from './interaction/info_old'
 import Card from './interaction/card'
 import Account from './core/account/account'
 import Plugins from './core/plugins'
-import Socket from './core/socket'
 import Recomends from './core/recomend'
 import PersonalRows from './core/personal_rows'
 import TimeTable from './core/timetable'
-import Broadcast from './interaction/broadcast'
 import Helper from './interaction/helper'
 import Tizen from './core/tizen'
 import InteractionMain from './interaction/items/old/main'
@@ -64,7 +58,6 @@ import InteractionCategory from './interaction/items/old/category'
 import InteractionLine from './interaction/items/old/line'
 import Status from './utils/status'
 import LangChoice from './interaction/lang'
-import Extensions from './interaction/extensions/extensions'
 import Iframe from './interaction/iframe'
 import Parser from './core/api/sources/parser'
 import TMDB from './core/tmdb/tmdb'
@@ -72,13 +65,11 @@ import Base64 from './utils/base64'
 import Loading from './interaction/loading'
 import YouTube from './interaction/youtube'
 import WebOSLauncher from './interaction/webos_launcher'
-import Event from './utils/event'
 import Search from './interaction/search/global'
 import Developer from './interaction/developer'
 import DeviceInput from './interaction/device_input'
 import AppWorker from './utils/worker'
 import Theme from './core/theme'
-import AdManager from './interaction/advert/manager'
 import DB from './utils/db'
 import NavigationBar from './interaction/navigation_bar'
 import LibraryFilter from './interaction/library_filter'
@@ -94,18 +85,12 @@ import Processing from './interaction/processing'
 import ParentalControl from './interaction/parental_control'
 import Personal from './core/personal'
 import Sound from './core/sound'
-import Iptv from './core/iptv'
 import Bell from './interaction/bell'
 import HoverSwitcher from './core/switcher'
-import Ai from './core/api/sources/ai'
-import Mirrors from './core/mirrors'
-import HTTPS from './core/https'
 import Task from './core/loading'
 import App from './interaction/app'
 import LoadingProgress from './interaction/loading_progress'
-import Logs from './interaction/logs'
 import StorageMenager from './interaction/storage_manager'
-import Markers from './core/markers'
 import RemoteHelper from './interaction/remote_helper'
 import DataBase from './interaction/database'
 import Maker from './interaction/maker'
@@ -118,18 +103,12 @@ import Router from './core/router'
 import Timer from './core/timer'
 
 import ServiceTorserver from './services/torrserver'
-import ServiceWatched from './services/watched'
 import ServiceSettings from './services/settings'
-import ServiceLibs from './services/libs'
-import ServiceMetric from './services/metric'
 import ServiceDeveloper from './services/developer'
 import ServiceRemoteFavorites from './services/remote_favorites'
-import ServiceDMCA from './services/dmca'
-import ServiceLGBT from './services/lgbt'
+import ServiceBlocklists from './services/blocklists'
 import ServiceFPS from './services/fps'
-import ServiceEvents from './services/events'
 import ServiceChildren from './services/children'
-import ServiceRemoteConfiguration from './services/remote_configuration'
 import ServiceOnline from './services/online'
 
 window.screen_width  = window.innerWidth
@@ -232,9 +211,6 @@ Arrays.extend(window.lampa_settings,{
     // Добавлять в адресную строку название текущего экрана
     push_state: true,
 
-    // Является ли приложение IPTV
-    iptv: false,
-
     // Показать ленту
     feed: false,
 
@@ -280,14 +256,8 @@ const supa_ready = Boolean(window.lampa_settings.supabase_url && window.lampa_se
 window.lampa_settings.account_use  = supa_ready
 window.lampa_settings.account_sync = supa_ready
 
-// Если IPTV, то отключаем все лишнее
-if(window.lampa_settings.iptv){
-    window.lampa_settings.socket_use    = false
-    window.lampa_settings.plugins_store = false
-    window.lampa_settings.plugins_use   = false
-    window.lampa_settings.account_sync  = false
-    window.lampa_settings.torrents_use  = false
-}
+// Realtime-сокет CUB не нужен: синхронизация идет через Supabase
+window.lampa_settings.socket_use = false
 
 /**
  * Делаем классы доступными в глобальной области видимости
@@ -304,9 +274,6 @@ function initClass(){
         Params,
         Menu,
         Head,
-        Notice,
-        NoticeClass,
-        NoticeClassLampa,
         Background,
         Favorite,
         Select,
@@ -329,7 +296,6 @@ function initClass(){
         PlayerInfo,
         PlayerPanel,
         PlayerFooter,
-        PlayerIPTV,
         PlayerPlaylist,
         Timeline,
         Modal,
@@ -340,19 +306,16 @@ function initClass(){
         Card,
         Info,
         Account,
-        Socket,
         Input,
         Screensaver,
         Recomends,
         TimeTable,
-        Broadcast,
         Helper,
         InteractionMain,
         InteractionCategory,
         InteractionLine,
         Status,
         Plugins,
-        Extensions,
         Tizen,
         Layer,
         Console,
@@ -364,7 +327,6 @@ function initClass(){
         Loading,
         YouTube,
         WebOSLauncher,
-        Event,
         Search,
         DeviceInput,
         Worker: AppWorker,
@@ -541,11 +503,7 @@ function startApp(){
     Timeline.init()
     LoadingProgress.status('Timeline init')
 
-    HTTPS.init()
-    LoadingProgress.status('HTTPS init')
 
-    Mirrors.init()
-    LoadingProgress.status('Mirrors init')
 
     Personal.init()
     LoadingProgress.status('Personal init')
@@ -565,11 +523,7 @@ function startApp(){
     Background.init()
     LoadingProgress.status('Background init')
 
-    Markers.init()
-    LoadingProgress.status('Markers init')
 
-    Notice.init()
-    LoadingProgress.status('Notice init')
 
     Bell.init()
     LoadingProgress.status('Bell init')
@@ -583,14 +537,10 @@ function startApp(){
     Screensaver.init()
     LoadingProgress.status('Screensaver init')
 
-    Socket.init()
-    LoadingProgress.status('Socket init')
 
     Account.init()
     LoadingProgress.status('Account init')
 
-    Extensions.init()
-    LoadingProgress.status('Extensions init')
 
     Plugins.init()
     LoadingProgress.status('Plugins init')
@@ -625,8 +575,6 @@ function startApp(){
     Theme.init()
     LoadingProgress.status('Theme init')
 
-    AdManager.init()
-    LoadingProgress.status('AdManager init')
 
     NavigationBar.init()
     LoadingProgress.status('NavigationBar init')
@@ -651,14 +599,8 @@ function startApp(){
     Sound.init()
     LoadingProgress.status('Sound init')
 
-    Iptv.init()
-    LoadingProgress.status('Iptv init')
 
-    Logs.init()
-    LoadingProgress.status('Logs init')
 
-    if(!window.lampa_settings.minimal_ui) Broadcast.init()
-    LoadingProgress.status('Broadcast init')
 
     Search.init()
     LoadingProgress.status('Search init')
@@ -673,7 +615,6 @@ function startApp(){
     
     // Добавляем источники поиска
 
-    if(window.lampa_settings.account_use && !window.lampa_settings.disable_features.ai) Search.addSource(Ai.discovery())
 
     LoadingProgress.status('Initialization successful')
 
@@ -714,38 +655,26 @@ function startApp(){
     ServiceTorserver.init()
     LoadingProgress.status('ServiceTorserver init')
 
-    ServiceWatched.init()
-    LoadingProgress.status('ServiceWatched init')
 
     ServiceSettings.init()
     LoadingProgress.status('ServiceSettings init')
 
-    ServiceMetric.init()
-    LoadingProgress.status('ServiceMetric init')
 
     ServiceRemoteFavorites.init()
+    LoadingProgress.status('ServiceBlocklists init')
+    ServiceBlocklists.init()
     LoadingProgress.status('ServiceRemoteFavorites init')
 
-    ServiceDMCA.init()
-    LoadingProgress.status('ServiceDMCA init')
 
     ServiceFPS.init()
     LoadingProgress.status('ServiceFPS init')
 
-    ServiceEvents.init()
-    LoadingProgress.status('ServiceEvents init')
 
-    ServiceLibs.init()
-    LoadingProgress.status('ServiceLibs init')
 
-    ServiceLGBT.init()
-    LoadingProgress.status('ServiceLGBT init')
 
     ServiceChildren.init()
     LoadingProgress.status('ServiceChildren init')
 
-    ServiceRemoteConfiguration.init()
-    LoadingProgress.status('ServiceRemoteConfiguration init')
 
     ServiceOnline.init()
     LoadingProgress.status('ServiceOnline init')
@@ -832,14 +761,6 @@ function loadTask(){
         LoadingProgress.status('Storage load reserve')
         
         Storage.task(next)
-    })
-
-    Task.queue((next)=>{
-        LoadingProgress.status('Mirrors initialization')
-
-        LoadingProgress.step(2)
-
-        Mirrors.task(next)
     })
 
     Task.queue((next)=>{

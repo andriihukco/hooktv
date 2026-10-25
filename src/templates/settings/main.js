@@ -1,7 +1,8 @@
 import Material from '../../utils/material'
 
 /**
- * Главное меню настроек: одна секция. Язык, тема, яркость и размер — внутри неё.
+ * Главное меню настроек: интерфейс и вход в аккаунт.
+ * Вход скрывается, если аккаунты выключены (см. interaction/settings/main.js).
  */
 let html = `<div>
     <div class="settings-folder selector" data-component="interface">
@@ -9,6 +10,13 @@ let html = `<div>
             ${Material.icon('tv')}
         </div>
         <div class="settings-folder__name">#{settings_main_interface}</div>
+    </div>
+
+    <div class="settings-folder selector" data-component="account">
+        <div class="settings-folder__icon">
+            ${Material.icon('person')}
+        </div>
+        <div class="settings-folder__name">#{settings_login}</div>
     </div>
 </div>`
 

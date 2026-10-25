@@ -10,7 +10,7 @@ export default {
         // shared through api/title.js, which serves link-preview tags and then opens the app at ?card=&media=&source=
         this.html.find('.button--share').on('hover:enter', ()=>{
             let media = this.card.name ? 'tv' : 'movie'
-            let link  = location.origin + '/api/title?card=' + this.card.id + '&media=' + media + '&source=' + (this.card.source || 'cub')
+            let link  = location.origin + '/api/title?card=' + this.card.id + '&media=' + media + '&source=' + (this.card.source || 'tmdb')
 
             Utils.copyTextToClipboard(link, ()=>{
                 Bell.push({text: Lang.translate('copy_secuses'), icon: Template.string('icon_check')})

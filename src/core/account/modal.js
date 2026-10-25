@@ -1,12 +1,9 @@
 import Template from '../../interaction/template'
 import Modal from '../../interaction/modal'
 import Controller from '../controller'
-import Utils from '../../utils/utils'
-import Manifest from '../manifest'
-import SignIn from './signin'
-import Permit from './permit'
-import Platform from '../platform'
+import Noty from '../../interaction/noty'
 import Lang from '../lang'
+import SignIn from './signin'
 
 function show(template_name){
     let enabled = Controller.enabled().name
@@ -23,7 +20,7 @@ function show(template_name){
 }
 
 /**
- * Вход в аккаунт: email/пароль или QR с телефона (см. signin.js)
+ * Вход в аккаунт: email и пароль или QR с телефона (см. signin.js)
  */
 function account(){
     let enabled = Controller.enabled().name
@@ -37,48 +34,12 @@ function limited(){
     show('account_limited')
 }
 
+/**
+ * Премиум не используется: подписки и CUB-страницы убраны
+ */
 function premium(){
-    let enabled = Controller.enabled().name
-    let html    = Template.js('account_premium')
-
-    if(Platform.tv()){
-        html.addClass('layer--' + (Platform.mouse() ? 'wheight' : 'height'))
-
-        Utils.qrcode('https://' +  Manifest.cub_site + '/premium', html.find('.account-modal-split__qr-code'), ()=>{
-            html.find('.account-modal-split__qr').remove()
-        })
-    }
-    else html.addClass('account-modal-split--mobile')
-
-    if(!Permit.token){
-        let button = Template.elem('div', {class: 'simple-button simple-button--inline selector', text: Lang.translate('settings_cub_signin_button')})
-
-        button.on('hover:enter', ()=>{
-            Modal.close()
-
-            Controller.toggle(enabled)
-
-            account()
-        })
-
-        html.find('.account-modal-split__info').append(button)
-    }
-
-    Modal.open({
-        title: '',
-        html: $(html),
-        size: Platform.tv() ? 'full' : 'medium',
-        scroll: {
-            nopadding: true
-        },
-        onBack: ()=>{
-            Modal.close()
-
-            Controller.toggle(enabled)
-        }
-    })
+    Noty.show(Lang.translate('account_premium_unavailable'))
 }
-
 
 export default {
     account,

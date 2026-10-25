@@ -1,6 +1,5 @@
 import Controller from '../../../core/controller'
 import Select from '../../../interaction/select'
-import Activity from '../../../interaction/activity/activity'
 import Lang from '../../../core/lang'
 
 export default {
@@ -15,42 +14,6 @@ export default {
                 options
             })
 
-            if(!window.lampa_settings.disable_features.ai){
-                if(options.length){
-                    options.push({
-                        title: Lang.translate('title_ai_assistant'),
-                        separator: true,
-                    })
-                }
-
-                options.push({
-                    title: Lang.translate('title_recomendations'),
-                    onSelect: ()=>{
-                        Controller.toggle('content')
-
-                        Activity.push({
-                            url: '',
-                            title: Lang.translate('title_recomendations'),
-                            component: 'ai_recommendations',
-                            card: this.card
-                        })
-                    }
-                })
-
-                options.push({
-                    title: Lang.translate('title_facts'),
-                    onSelect: ()=>{
-                        Controller.toggle('content')
-
-                        Activity.push({
-                            url: '',
-                            title: Lang.translate('title_facts'),
-                            component: 'ai_facts',
-                            card: this.card
-                        })
-                    }
-                })
-            }
 
             Select.show({
                 title: Lang.translate('more'),

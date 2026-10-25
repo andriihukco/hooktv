@@ -2,14 +2,11 @@ import Utils from '../utils/utils'
 import Storage from './storage/storage'
 import Settings from '../interaction/settings/settings'
 import Arrays from '../utils/arrays'
-import Account from './account/account'
 import Lang from './lang'
-import Extensions from '../interaction/extensions/extensions'
 import Noty from '../interaction/noty'
 import Base64 from '../utils/base64'
 import Request from '../utils/reguest'
 import Cache from '../utils/cache'
-import Manifest from './manifest'
 import Status from '../utils/status'
 import ParentalControl from '../interaction/parental_control'
 
@@ -26,11 +23,6 @@ let _noload = []
 function init(){
     _loaded = Storage.get('plugins','[]')
 
-    Settings.main().render().find('[data-component="plugins"]').unbind('hover:enter').on('hover:enter',()=>{
-        ParentalControl.personal('extensions',()=>{
-            Extensions.show()
-        }, false, true)
-    })
 }
 
 function get(){
@@ -45,7 +37,7 @@ function modify(){
     })
 
     list.forEach(a=>{
-        a.url = (a.url + '').replace('cub.watch', Manifest.cub_domain).replace('bwa.to', 'bwa.ad')
+        a.url = (a.url + '').replace('bwa.to', 'bwa.ad')
     })
 
     console.log('Plugins','modify:', list)
@@ -97,62 +89,19 @@ function save(){
     Storage.set('plugins', _loaded)
 }
 
-function updatePluginDB(name, url){
-    //if(Account.hasPremium()){
-        let cu = Utils.addUrlComponent(url, 'cache=true')
+function updatePluginDB(name, url){}
 
-        _network.native(cu,(str)=>{
-            Cache.rewriteData('plugins', name, str).then(()=>{
-                console.log('Plugins','update plugin cache:', name)
-            }).catch((e)=>{
-                console.warn('Plugins','add to cache fail:', name, typeof e == 'string' ? e : e ? e.message : 'no details')
-            })
-        },false,false,{
-            dataType: 'text'
-        })
-    //}
-}
-
-function createPluginDB(name){
-    //if(Account.hasPremium()){
-        Cache.getData('plugins',name).then(code=>{
-            if(code){
-                let s = document.createElement('script')
-                    s.type = 'text/javascript'
-                
-                try {
-                    s.appendChild(document.createTextNode(code))
-                    document.body.appendChild(s)
-                } 
-                catch (e) {
-                    s.text = code
-                    document.body.appendChild(s)
-                }
-
-                console.log('Plugins','add plugin from cache:', name)
-            }
-            else console.warn('Plugins','no find in cache:', name)
-        }).catch(e=>{
-            console.warn('Plugins','include from cache fail:', name, typeof e == 'string' ? e : e.message)
-        })
-    //}
-}
+function createPluginDB(name){}
 
 function addPluginParams(url){
     let encode = url
 
-    encode = encode.replace('cub.watch', Manifest.cub_domain)
-
-    encode = Utils.fixMirrorLink(encode)
         
     if(!/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/.test(encode)){
         encode = encode.replace(/\{storage_(\w+|\d+|_|-)\}/g,(match,key)=>{
             return encodeURIComponent(Base64.encode(localStorage.getItem(key) || ''))
         })
 
-        if(Account.Permit.access) encode = Utils.addUrlComponent(encode, 'email='+encodeURIComponent(Base64.encode(Account.Permit.account.email)))
-
-        encode = Utils.addUrlComponent(encode, 'logged='+encodeURIComponent(Account.Permit.access ? 'true' : 'false'))
         encode = Utils.addUrlComponent(encode, 'reset='+Math.random())
         encode = Utils.addUrlComponent(encode, 'origin='+encodeURIComponent(Base64.encode(window.location.host)))
 
@@ -165,22 +114,10 @@ function addPluginParams(url){
 function loadBlackList(call){
     if(window.lampa_settings.disable_features.blacklist) return call([])
     
-    let status = new Status(2)
+    let status = new Status(1)
         status.onComplite = (res)=>{
-            call([].concat(res.cub, res.custom))
+            call([].concat(res.custom))
         }
-
-    _network.silent(Utils.protocol() + Manifest.cub_domain + '/api/plugins/blacklist',(result)=>{
-        let list = result.map(a=>a.url)
-
-        Storage.set('plugins_blacklist', list)
-
-        status.append('cub', list)
-    },()=>{
-        status.append('cub', Storage.get('plugins_blacklist','[]'))
-    }, false, {
-        timeout: 1000 * 5
-    })
 
     _network.silent('./plugins_black_list.json',(list)=>{
         status.append('custom', list)
@@ -240,7 +177,7 @@ function task(call){
     _loaded = Storage.get('plugins','[]')
 
     loadBlackList((black_list)=>{
-        Account.Api.plugins((plugins)=>{
+        ((plugins)=>{
             let puts = window.lampa_settings.plugins_use ? plugins.filter(plugin=>plugin.status).map(plugin=>plugin.url).concat(Storage.get('plugins','[]').filter(plugin=>plugin.status).map(plugin=>plugin.url)) : []
 
             if(!window.lampa_settings.minimal_ui){
@@ -280,7 +217,7 @@ function task(call){
             _awaits = puts
 
             call()
-        })
+        })([])
     })
 }
 

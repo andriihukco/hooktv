@@ -100,27 +100,6 @@ function lauchPick(){
             if(data.sections.length) setPick(data)
         }
 
-    Account.Api.notices((notices)=>{
-        let new_notices = notices.filter(n=>!n.viewed).slice(0,3)
-
-        if(new_notices.length){
-            let section = {
-                title: Lang.translate('title_notice'),
-                tiles: [],
-                position: 0
-            }
-
-            new_notices.forEach(noty => {
-                let info = JSON.parse(noty.data)
-
-                section.tiles.push(cardToTile(info.card,info.type == 'new_episode' ? Lang.translate('notice_new_episode') : Lang.translate('notice_in_quality')))
-            })
-
-            status.append('notice',section)
-        }
-        else status.error()
-    })
-
     TMDB.get('movie/popular',{},(result)=>{
         if(result.results.length){
             let section = {

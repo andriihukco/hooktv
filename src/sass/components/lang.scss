@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     overflow-y: auto;
-    padding: max(3em, calc(env(safe-area-inset-top, 0px) + 1.5em)) 2em max(2em, calc(env(safe-area-inset-bottom, 0px) + 1em));
+    padding: calc(3em + env(safe-area-inset-top, 0px)) 2em calc(2em + env(safe-area-inset-bottom, 0px));
     background: #000;
     color: #fff;
     animation: lang-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -19,8 +19,8 @@
 
     &__close{
         position: absolute;
-        top: max(1.2em, env(safe-area-inset-top, 0px));
-        right: max(1.5em, env(safe-area-inset-right, 0px));
+        top: calc(1.2em + env(safe-area-inset-top, 0px));
+        right: calc(1.5em + env(safe-area-inset-right, 0px));
         z-index: 1;
         display: flex;
         align-items: center;
@@ -65,7 +65,7 @@
 
     &__body{
         width: 100%;
-        max-width: 26em;
+        max-width: 34em;
         margin: auto 0;
         text-align: center;
     }
@@ -81,7 +81,7 @@
     }
 
     &__logo img{
-        width: 13em;
+        width: 18em;
         max-width: 80%;
         height: auto;
         transform: translateX(-0.05em);
@@ -96,9 +96,12 @@
     }
 
     &__subtitle{
-        margin-top: 0.4em;
-        font-size: 1.2em;
-        color: rgba(255, 255, 255, 0.55);
+        margin-top: 0.2em;
+        font-size: 2.1em;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        color: #fff;
     }
 
     &__intro{
@@ -195,7 +198,7 @@
             align-items: center;
             gap: 0.6em;
             line-height: 1.25;
-            padding: 0.85em 1em;
+            padding: 1em 1.2em;
             border-radius: 0.85em;
             font-size: 1.2em;
             cursor: pointer;
@@ -264,7 +267,7 @@
     }
 
     @media (max-width: 580px){
-        padding: max(1.2em, calc(env(safe-area-inset-top, 0px) + 0.8em)) 1.2em max(1.2em, calc(env(safe-area-inset-bottom, 0px) + 0.8em));
+        padding: calc(2.6em + env(safe-area-inset-top, 0px)) 1.2em calc(0.8em + env(safe-area-inset-bottom, 0px));
 
         &__title{
             font-size: 2.2em;
@@ -348,7 +351,7 @@ $lang-top-fade: 1.6em;
         z-index: 2;
         display: flex;
         justify-content: center;
-        padding: 6em 1.2em max(1.6em, calc(env(safe-area-inset-bottom, 0px) + 1em));
+        padding: 6em 1.2em calc(1.6em + env(safe-area-inset-bottom, 0px));
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
         pointer-events: none;
     }

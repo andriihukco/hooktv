@@ -42,7 +42,7 @@ function init(){
         if(e.target == 'favorite' && e.reason == 'update' && (e.method == 'add' || e.method == 'added') && e.type !== 'history'){
             console.log('Timetable', 'favorite changed:', e.reason, e.type, e.card.id)
 
-            if(e.card.original_name && (e.card.source == 'tmdb' || e.card.source == 'cub')) update(e.card)
+            if(e.card.original_name && (e.card.source == 'tmdb')) update(e.card)
         }
     })
 
@@ -168,7 +168,7 @@ function loadEpisodes(){
  * @param {[{id:integer,number_of_seasons:integer}]} elems - карточки
  */
 function add(elems, log_type){
-    let filtred = elems.filter(elem=>elem.original_name && typeof elem.id == 'number' && (elem.source == 'tmdb' || elem.source == 'cub'))
+    let filtred = elems.filter(elem=>elem.original_name && typeof elem.id == 'number' && (elem.source == 'tmdb'))
 
     console.log('Timetable', 'add:', elems.length, 'filtred:', filtred.length, 'type:', log_type || 'unknown')
 
@@ -367,7 +367,7 @@ function get(elem, callback){
  * @param {{id:integer,number_of_seasons:integer}} elem - карточка
  */
 function update(elem){
-    if(elem.original_name && typeof elem.id == 'number' && (elem.source == 'tmdb' || elem.source == 'cub')){
+    if(elem.original_name && typeof elem.id == 'number' && (elem.source == 'tmdb')){
         let check = Favorite.check(elem)
         let any   = Favorite.checkAnyNotHistory(check)
         let id    = data.filter(a=>a.id == elem.id)
@@ -491,7 +491,7 @@ function favoriteCards(){
 
     if(Account.Permit.sync) fav = Account.Bookmarks.all()
 
-    fav = fav.filter(f=>f.original_name && (f.source == 'tmdb' || f.source == 'cub'))
+    fav = fav.filter(f=>f.original_name && (f.source == 'tmdb'))
 
     return fav
 }

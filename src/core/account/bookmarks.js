@@ -1,6 +1,5 @@
 import Favorite from '../favorite'
 import Permit from './permit'
-import Socket from '../socket'
 import Sync from '../supa/sync'
 import Arrays from '../../utils/arrays'
 import Utils from '../../utils/utils'
@@ -59,7 +58,6 @@ function processQueue(){
 
         update_timer = setTimeout(()=>{
             update(()=>{
-                Socket.send('bookmarks',{})
 
                 Lampa.Listener.send('state:changed', {
                     target: 'favorite',
@@ -251,7 +249,6 @@ function clear(where){
         Sync.flush().then(()=>{
             update(()=>{
                 // Оповещаем другие устройства о изменении закладок
-                Socket.send('bookmarks',{})
 
                 // Глобальное оповещение об изменении закладок для обновления карточек
                 Lampa.Listener.send('state:changed', {

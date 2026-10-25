@@ -5,12 +5,6 @@ let html = `<div>
         <div class="settings-param__descr">#{settings_player_type_descr}</div>
     </div>
 
-    <div class="settings-param selector is--player" data-type="select" data-name="player_iptv">
-        <div class="settings-param__name">#{settings_player_iptv_type}</div>
-        <div class="settings-param__value"></div>
-        <div class="settings-param__descr">#{settings_player_iptv_type_descr}</div>
-    </div>
-
     <div class="settings-param selector is--player" data-type="select" data-name="player_torrent">
         <div class="settings-param__name">#{settings_player_torrent_type}</div>
         <div class="settings-param__value"></div>
