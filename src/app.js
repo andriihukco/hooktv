@@ -645,14 +645,13 @@ function startApp(){
     Search.init()
     LoadingProgress.status('Search init')
 
-    // registered first so Tastes is the first item in the Other list
-    TastesSettings.init()
-
     DataBase.init()
     LoadingProgress.status('DataBase init')
 
     ContentRows.init()
     LoadingProgress.status('ContentRows init')
+
+    TastesSettings.init()
     
     // Добавляем источники поиска
 
