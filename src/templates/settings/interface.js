@@ -1,7 +1,7 @@
 import Material from '../../utils/material'
 
 let html = `<div>
-    <div class="settings-folder selector" data-component="tastes">
+    <div class="settings-folder settings-folder--tastes selector" data-component="tastes">
         <div class="settings-folder__icon">
             ${Material.icon('auto_awesome')}
         </div>
