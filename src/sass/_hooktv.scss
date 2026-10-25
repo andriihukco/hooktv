@@ -1492,11 +1492,12 @@ $hk-spring-time: 0.5s;
         box-sizing: border-box;
         height: $hk-action-height;
         min-height: $hk-min-touch-target;
-        padding: 0 1.25em;
+        // two halves of a narrow pane: a smaller label and wider side padding keep the text off the edge
+        padding: 0 1.2em;
         border: 0;
         border-radius: 3em;
         font: inherit;
-        font-size: $hk-action-font;
+        font-size: 0.9em;
         font-weight: 700;
         white-space: nowrap;
         color: #fff;
@@ -1510,6 +1511,12 @@ $hk-spring-time: 0.5s;
             flex-shrink: 0;
             width: $hk-action-icon;
             height: $hk-action-icon;
+        }
+
+        span{
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         &:hover{
@@ -4294,4 +4301,10 @@ body.minimal--ui{
     font-size: 0.9em;
     font-weight: 500;
     white-space: nowrap;
+}
+
+// Login is its own cell at the end of the settings page, apart from the groups above
+.settings-folder.settings-account{
+    margin-top: 1.6em;
+    border-top: 0;
 }

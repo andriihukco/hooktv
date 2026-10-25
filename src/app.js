@@ -1,4 +1,3 @@
-import { inject } from '@vercel/analytics'
 import Define from './utils/define/define'
 import PromisePolyfill from './utils/define/promise'
 import Brand from './core/brand'
@@ -873,9 +872,6 @@ function loadApp(){
 
 if(!window.fitst_load){
     window.fitst_load = true
-
-    // Initialize Vercel Web Analytics
-    inject()
 
     initClass()
     

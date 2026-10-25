@@ -7,8 +7,8 @@ import Platform from '../platform'
 import Lang from '../lang'
 import Noty from '../../interaction/noty'
 import Select from '../../interaction/select'
-import Input from '../../interaction/settings/input'
 import Modal from '../../interaction/modal'
+import Settings from '../../interaction/settings/settings'
 
 let ticket_poll
 
@@ -151,56 +151,16 @@ function tvSignIn(callback){
 }
 
 /**
- * Вход из диалогов вне настроек (email и пароль через экранную клавиатуру)
- * @param {function} callback - вызывается после отмены
+ * Вход и регистрация: всё в правой панели настроек (см. panel.js).
+ * На ТВ вход идет по QR-коду с телефона.
+ * @param {function} callback - вызывается после входа на ТВ или отмены
  */
 function open(callback){
     if(Platform.tv()) return tvSignIn(callback)
 
-    Select.show({
-        title: Lang.translate('account_signin_title'),
-        items: [
-            {title: Lang.translate('account_signin_button'), signup: false},
-            {title: Lang.translate('account_signup_button'), signup: true}
-        ],
-        onSelect: (a)=>{
-            credentials(a.signup, callback)
-        },
-        onBack: ()=>{
-            Controller.toggle('settings_component')
+    Controller.toggle('settings')
 
-            callback && callback()
-        }
-    })
-}
-
-function credentials(signup, callback){
-    let enabled = Controller.enabled().name
-
-    Input.edit({title: Lang.translate('account_signin_email'), value: '', free: true, nosave: true, nomic: true}, (email)=>{
-        if(!email){
-            Controller.toggle(enabled)
-
-            return callback && callback()
-        }
-
-        Input.edit({title: Lang.translate('account_signin_password'), value: '', free: true, nosave: true, nomic: true, password: true}, (pass)=>{
-            Controller.toggle(enabled)
-
-            if(!pass) return callback && callback()
-
-            const run = signup ? signUp(email, pass) : signIn(email, pass)
-
-            run.then((result)=>{
-                if(result == 'confirm') Noty.show(Lang.translate('account_signup_confirm'))
-                else done()
-            }).catch((e)=>{
-                Noty.show(errorText(e))
-
-                callback && callback()
-            })
-        })
-    })
+    Settings.create('account', {onBack: ()=> Settings.create('interface')})
 }
 
 export default {
