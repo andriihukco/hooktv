@@ -16,7 +16,6 @@ import MainModule from '../interaction/items/main/module/module'
 import Cards from './full/cards'
 import TrailersRow from './full/trailers'
 import Trailers from './full/start/trailers'
-import Background from '../interaction/background'
 import Template from '../interaction/template'
 import Permit from '../core/account/permit'
 import TMDB from '../core/api/sources/tmdb'
@@ -235,9 +234,17 @@ function component(object){
             if(!this.tv) this.emit('scroll', 0)
         },
         onStart: function(){
-            this.props.get('movie') && Background.immediately(Utils.cardImgBackgroundBlur(this.props.get('movie')))
+            document.body.classList.add('full--page')
+        },
+        onPause: function(){
+            document.body.classList.remove('full--page')
+        },
+        onDestroy: function(){
+            document.body.classList.remove('full--page')
         },
         onScroll: function(position){
+            this.html.toggleClass('full-page--scrolled', position > 120)
+
             let size = this.tv ? (Math.round(this.active / this.view) + 1) * this.view + 1 : this.rows.length
             let add  = this.rows.slice(this.items.length, size)
 
@@ -249,7 +256,7 @@ function component(object){
                 this.scroll.append(this.fragment)
             }
 
-            this.html.find('.full-start__background')?.toggleClass('dim', position > 0)
+            this.html.find('.full-start__background')?.toggleClass('dim', position > 120)
     
             Layer.visible(this.scroll.render())
         },

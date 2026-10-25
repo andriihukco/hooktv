@@ -895,14 +895,16 @@ function loadApp(){
     }
     else{
         // Иначе предлагаем выбрать язык
-        LangChoice.open((code)=>{
+        let selectLanguage = (code)=>{
             Storage.set('language', code, true)
             Storage.set('tmdb_lang',code, true)
 
             Keypad.disable()
 
             loadLang()
-        })
+        }
+
+        LangChoice.open(selectLanguage, selectLanguage)
 
         Keypad.enable()
     }

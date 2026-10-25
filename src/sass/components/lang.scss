@@ -16,6 +16,47 @@
     animation: lang-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     transition: opacity 0.4s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 
+    &__close{
+        position: absolute;
+        top: max(1.2em, env(safe-area-inset-top, 0px));
+        right: max(1.5em, env(safe-area-inset-right, 0px));
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.6em;
+        height: 2.6em;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--hk-glass, rgba(30, 30, 32, 0.62));
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
+        cursor: pointer;
+        touch-action: manipulation;
+        transition: background-color 0.2s, color 0.2s, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+        svg{
+            width: 1.3em;
+            height: 1.3em;
+        }
+
+        &:hover{
+            background: #fff;
+            color: #000;
+        }
+
+        &:active{
+            transform: scale(0.92);
+        }
+
+        &:focus-visible{
+            outline: 3px solid var(--focus-ring-color, #fff);
+            outline-offset: 3px;
+        }
+    }
+
     &--out{
         opacity: 0;
         transform: scale(1.04);

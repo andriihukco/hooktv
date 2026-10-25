@@ -41,6 +41,26 @@ function open(callSelected, callCancel){
     let codes  = Lang.codes()
     let browser = (navigator.language || '').toLowerCase().split('-')[0]
     let initial = Storage.get('language', codes[browser] ? browser : 'en')
+    let closing = false
+
+    function cleanup(){
+        scroll.destroy()
+        html.remove()
+
+        scroll = null
+        html   = null
+    }
+
+    function dismiss(){
+        if(!html || closing) return
+
+        closing = true
+        html.addClass('lang--out')
+
+        setTimeout(cleanup, 400)
+
+        if(callCancel) callCancel(initial)
+    }
 
     function greet(code){
         let text = GREETING[code] || GREETING.en
@@ -60,19 +80,14 @@ function open(callSelected, callCancel){
 
         item.on('hover:enter click',(e)=>{
             // a mouse click fires both events
-            if(!html || html.hasClass('lang--out')) return
+            if(!html || closing) return
 
+            closing = true
             if(callSelected) callSelected(code)
 
             html.addClass('lang--out')
 
-            setTimeout(()=>{
-                scroll.destroy()
-                html.remove()
-
-                scroll = null
-                html   = null
-            },400)
+            setTimeout(cleanup,400)
         }).on('hover:focus',(e)=>{
             scroll.update($(e.target), true)
 
@@ -91,6 +106,7 @@ function open(callSelected, callCancel){
     greet(initial)
 
     html.find('.lang__selector').append(scroll.render())
+    html.find('.lang__close').on('click hover:enter', dismiss)
 
     $('body').append(html)
 
@@ -108,15 +124,7 @@ function open(callSelected, callCancel){
             Navigator.move('down')
         },
         back: ()=>{
-            if(callCancel){
-                scroll.destroy()
-                html.remove()
-
-                scroll = null
-                html   = null
-
-                callCancel()
-            } 
+            dismiss()
         }
     })
     

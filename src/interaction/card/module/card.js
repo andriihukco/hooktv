@@ -2,6 +2,7 @@ import TMDB from '../../../core/api/sources/tmdb'
 import TMDBApi from '../../../core/tmdb/tmdb'
 import Template from '../../template'
 import VPN from '../../../core/vpn'
+import addCardDetails from '../details'
 
 export default {
     onInit: function(){
@@ -64,6 +65,10 @@ export default {
         this.html.card_data = this.data
 
         this.html.find('.card__title')?.text(this.data.title || '')
+
+        if(this.params.style.name != 'wide'){
+            addCardDetails(this.html, this.data)
+        }
 
         this.html.on('visible',this.emit.bind(this, 'visible'))
     },

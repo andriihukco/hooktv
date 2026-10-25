@@ -1,5 +1,4 @@
 let html = `<div class="full-start-new">
-
     <div class="full-start-new__body">
         <div class="full-start-new__left">
             <div class="full-start-new__poster">
@@ -20,9 +19,6 @@ let html = `<div class="full-start-new">
                 <div class="full-start__status hide"></div>
             </div>
             <div class="full-start-new__details"></div>
-            <div class="full-start-new__reactions">
-                <div>#{reactions_none}</div>
-            </div>
 
             <div class="full-start-new__buttons">
                 <div class="full-start__button selector button--play">
@@ -59,6 +55,10 @@ let html = `<div class="full-start-new">
 
                     <span>#{copy_link_buffer}</span>
                 </div>
+            </div>
+
+            <div class="full-start-new__reactions">
+                <div>#{reactions_none}</div>
             </div>
         </div>
     </div>

@@ -1,0 +1,16 @@
+.logo-plugin-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 8em;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.hero-tv__logo {
+    max-width: 100%;
+    height: auto;
+    max-height: 6em;
+    object-fit: contain;
+    display: block;
+}

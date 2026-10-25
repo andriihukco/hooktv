@@ -1,5 +1,6 @@
 import Template from './template'
 import Api from '../core/api/api'
+import addCardDetails from './card/details'
 import Arrays from '../utils/arrays'
 import Select from './select'
 import Favorite from '../core/favorite'
@@ -143,6 +144,10 @@ function Card(data, params = {}){
                 let year = this.card.querySelector('.card__age')
 
                 if(year) year.innerText = data.release_year
+            }
+
+            if(!params.card_wide){
+                addCardDetails(this.card, data)
             }
 
             

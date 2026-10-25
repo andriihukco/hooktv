@@ -35,10 +35,12 @@ class Hero extends Emit{
                 <div class="hero-tv__title"></div>
                 <div class="hero-tv__meta"></div>
                 <div class="hero-tv__descr"></div>
-                <div class="hero-tv__buttons">
-                    <button class="hero-tv__button hero-tv__button--watch selector" type="button"><svg aria-hidden="true"><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></button>
-                    <button class="hero-tv__button hero-tv__button--list selector" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></button>
-                    <button class="hero-tv__button hero-tv__button--info selector" type="button"><span>${Lang.translate('hooktv_details')}</span></button>
+                <div class="hero-tv__controls">
+                    <div class="hero-tv__buttons">
+                        <button class="hero-tv__button hero-tv__button--watch selector" type="button"><svg aria-hidden="true"><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></button>
+                        <button class="hero-tv__button hero-tv__button--list selector" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></button>
+                        <button class="hero-tv__button hero-tv__button--info selector" type="button"><span>${Lang.translate('hooktv_details')}</span></button>
+                    </div>
                 </div>
             </div>
             <div class="hero-tv__dots"></div>
