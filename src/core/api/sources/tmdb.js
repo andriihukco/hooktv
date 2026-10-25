@@ -15,6 +15,7 @@ import Router from '../../router'
 import Permit from '../../account/permit'
 import VPN from '../../../core/vpn'
 import Keys from '../../tmdb/keys'
+import Ratings from './ratings'
 import LibraryFilter from '../../../utils/library_filter'
 
 
@@ -494,9 +495,14 @@ function category(params = {}, oncomplite, onerror){
 }
 
 function full(params = {}, oncomplite, onerror){
-    // main counts twice (append + need--), every other request once: 8 slots, the reactions call is gone
-    let status = new Status(8)
-        status.onComplite = oncomplite
+    // main counts twice (append + need--), every other request once, plus the ratings lookup
+    let status = new Status(9)
+        status.onComplite = (data)=>{
+            // ratings arrive from a separate lookup; merge them before the page reads the movie
+            if(data.ratings && data.movie) Object.assign(data.movie, data.ratings)
+
+            oncomplite(data)
+        }
 
     if(Utils.dcma(params.method, params.id)) return onerror()
 
@@ -568,6 +574,10 @@ function full(params = {}, oncomplite, onerror){
     else{
         status.need -= 4
     }
+
+    Ratings.get(params, (ratings)=>{
+        status.append('ratings', ratings)
+    }, status.error.bind(status))
 }
 
 function videos(params = {}, oncomplite, onerror){
