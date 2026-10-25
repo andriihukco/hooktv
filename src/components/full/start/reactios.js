@@ -171,7 +171,7 @@ export default {
             this.html.find('.button--' + key).on('hover:enter', ()=>{
                 let state = mine()
 
-                // tap the active thumb again: undo on this screen only
+                // tap the active thumb again: remove it on this screen only
                 if(state.active === key){
                     state.active = null
 
@@ -180,29 +180,48 @@ export default {
                     return paint()
                 }
 
-                // the vote was already counted on the server: just make it active again
-                if(state.sent.indexOf(thumb.send) >= 0){
-                    state.active = key
+                // like, or switch from the other thumb: the choice shows at once
+                state.active = key
 
-                    keep(state)
+                keep(state)
 
-                    return paint()
-                }
+                paint()
+
+                // the vote already reached the server before: nothing more to send
+                if(state.sent.indexOf(thumb.send) >= 0 || thumb.pending) return
+
+                thumb.pending = true
 
                 Reactions.add({
                     method: this.card.name ? 'tv' : 'movie',
                     id: this.card.id,
                     type: thumb.send
                 },()=>{
-                    state.sent.push(thumb.send)
-                    state.active = key
+                    thumb.pending = false
 
-                    keep(state)
+                    let now = mine()
+
+                    if(now.sent.indexOf(thumb.send) < 0) now.sent.push(thumb.send)
+
+                    keep(now)
 
                     thumb.added = (thumb.added || 0) + 1
 
                     paint()
-                }, ()=>{})
+                },()=>{
+                    thumb.pending = false
+
+                    // the vote did not reach the server, so the thumb goes back
+                    let now = mine()
+
+                    if(now.active === key){
+                        now.active = null
+
+                        keep(now)
+
+                        paint()
+                    }
+                })
             })
         })
 
