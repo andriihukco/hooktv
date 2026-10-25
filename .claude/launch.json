@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hooktv",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", "build/web", "-p", "3010", "-c-1", "-s"],
+      "port": 3010
+    }
+  ]
+}
