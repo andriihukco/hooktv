@@ -16,6 +16,7 @@ import Permit from '../../account/permit'
 import VPN from '../../../core/vpn'
 import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
+import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
 
 
@@ -495,8 +496,8 @@ function category(params = {}, oncomplite, onerror){
 }
 
 function full(params = {}, oncomplite, onerror){
-    // main counts twice (append + need--), every other request once, plus the ratings lookup
-    let status = new Status(9)
+    // main counts twice (append + need--), every other request once, plus the ratings and reactions lookups
+    let status = new Status(10)
         status.onComplite = (data)=>{
             // ratings arrive from a separate lookup; merge them before the page reads the movie
             if(data.ratings && data.movie) Object.assign(data.movie, data.ratings)
@@ -574,6 +575,10 @@ function full(params = {}, oncomplite, onerror){
     else{
         status.need -= 4
     }
+
+    Reactions.get(params, (json)=>{
+        status.append('reactions', json)
+    })
 
     Ratings.get(params, (ratings)=>{
         status.append('ratings', ratings)

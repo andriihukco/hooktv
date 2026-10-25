@@ -12,6 +12,7 @@ import Permit from '../../core/account/permit'
 import Options from './start/options'
 import Torrents from './start/torrents'
 import Poster from './start/poster'
+import Reactions from './start/reactios'
 import Bookmarks from './start/bookmarks'
 import Buttons from './start/buttons'
 import Extra from '../../utils/tmdb_extra'
@@ -34,6 +35,7 @@ class Start extends Emit {
 
         this.use(Options)
         this.use(Poster)
+        this.use(Reactions)
         this.use(Bookmarks)
         this.use(Buttons)
 
