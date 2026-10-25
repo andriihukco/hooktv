@@ -1,4 +1,13 @@
+import Material from '../../utils/material'
+
 let html = `<div>
+    <div class="settings-folder selector" data-component="tastes">
+        <div class="settings-folder__icon">
+            ${Material.icon('auto_awesome')}
+        </div>
+        <div class="settings-folder__name">#{tastes_title}</div>
+    </div>
+
     <div class="settings-param selector" data-static="true">
         <div class="settings-param__name">#{settings_interface_lang}</div>
         <div class="settings-param__value"></div>
