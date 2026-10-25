@@ -3,6 +3,7 @@ import Keybord from '../keyboard/keyboard'
 import Controller from '../../core/controller'
 import Select from '../select'
 import Storage from '../../core/storage/storage'
+import Platform from '../../core/platform'
 import Arrays from '../../utils/arrays'
 import Noty from '../noty'
 import Lang from '../../core/lang'
@@ -20,7 +21,7 @@ function edit(params, call){
 
     input = html.find('.settings-input__input')
 
-    if((params.keyboard || Storage.field('keyboard_type')) !== 'lampa') input.hide()
+    if(params.keyboard ? params.keyboard !== 'lampa' : Platform.systemKeyboard()) input.hide()
 
     $('body').addClass('keyboard-input--visible').append(html)
 

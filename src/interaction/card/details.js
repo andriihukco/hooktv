@@ -1,8 +1,12 @@
 import Api from '../../core/api/api'
 import Peek from './peek'
+import Keys from '../../core/tmdb/keys'
 
 export default function addCardDetails(card, data){
     let view = card.querySelector('.card__view')
+
+    // HOOK TV: Russian titles stay in results, blurred and without actions
+    card.classList.toggle('card--russian', Keys.russian(data))
 
     if(!view) return
 
@@ -51,6 +55,7 @@ export default function addCardDetails(card, data){
 
     view.appendChild(details)
     card.classList.add('card--details-overlay')
+    card.hooktvData = data
 
     Peek.init()
 }

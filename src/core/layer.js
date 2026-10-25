@@ -299,7 +299,7 @@ function toggleClasses(){
     $('body').toggleClass('advanced--animation', Storage.field('advanced_animation'))
     $('body').toggleClass('light--version',Storage.field('light_version'))
     $('body').toggleClass('minimal--ui', !!window.lampa_settings.minimal_ui)
-    $('body').toggleClass('system--keyboard',Storage.field('keyboard_type') == 'lampa' ? false : true)
+    $('body').toggleClass('system--keyboard',Platform.systemKeyboard())
     $('body').toggleClass('menu--always', Platform.screen('tv') && Storage.field('menu_always'))
 
     $('body').removeClass('glass--style-opacity--easy glass--style-opacity--medium glass--style-opacity--blacked')

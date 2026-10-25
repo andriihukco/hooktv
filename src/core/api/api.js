@@ -9,6 +9,7 @@ import CUB  from './sources/cub'
 import Manifest from '../manifest'
 import Lang from '../lang'
 import LineModule from '../../interaction/items/line/module/module'
+import LibraryFilter from '../../utils/library_filter'
 
 /**
  * Источники
@@ -195,6 +196,8 @@ function favorite(params = {}, oncomplite, onerror){
             return params.filter == 'tv' ? a.name : !a.name
         })
     }
+
+    data.results = LibraryFilter.apply(data.results, params.library_filter)
 
     data.total_pages = Math.ceil(data.results.length / 20)
     data.page = Math.min(page, Math.max(data.total_pages, 1))

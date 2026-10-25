@@ -260,8 +260,18 @@ function widgetVersion(){
     return window.widget_version || 0
 }
 
+/**
+ * HOOK TV: on-screen keys only make sense with a remote. Web and phones always
+ * type with their own keyboard; TVs follow the keyboard_type setting.
+ * @returns Boolean
+ */
+function systemKeyboard(){
+    return !tv() || Storage.field('keyboard_type') !== 'lampa'
+}
+
 export default {
     init,
+    systemKeyboard,
     get,
     any,
     is,

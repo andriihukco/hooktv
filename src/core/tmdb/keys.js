@@ -128,8 +128,26 @@ let filter = [
     'кремль'
 ]
 
+/**
+ * HOOK TV: Russian-made titles are hidden everywhere. A title counts as Russian
+ * when its original language is Russian or Russia is among its countries,
+ * unless Ukraine is a country too (older Ukrainian productions shot in Russian).
+ * @param {{original_language?:string, origin_country?:string[], production_countries?:{iso_3166_1:string}[]}} item
+ * @returns {boolean}
+ */
+function russian(item){
+    if(!item) return false
+
+    let countries = (item.origin_country || []).concat((item.production_countries || []).map(c=>c.iso_3166_1))
+
+    if(countries.indexOf('UA') >= 0) return false
+
+    return item.original_language == 'ru' || countries.indexOf('RU') >= 0
+}
+
 export default {
     lgbt,
     adult,
-    filter
+    filter,
+    russian
 }

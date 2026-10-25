@@ -18,6 +18,7 @@ import Reactions from './start/reactios'
 import Translations from './start/translations'
 import Bookmarks from './start/bookmarks'
 import Buttons from './start/buttons'
+import Extra from '../../utils/tmdb_extra'
 
 class Start extends Emit {
     constructor(data) {
@@ -92,6 +93,13 @@ class Start extends Emit {
         !this.card.tagline && this.html.find('.full--tagline').remove()
 
         if(!this.card.tagline && this.card.title.length > 25) this.html.find('.full-start-new__title').addClass('twolines')
+
+        // title logo in the interface language when TMDB has one (full card already carries its images)
+        let logo = this.card.images ? Extra.pickLogo(this.card.images.logos, Storage.get('language', 'en')) : ''
+        let showLogo = (src)=>src && this.html.find('.full-start-new__title').removeClass('twolines').addClass('full-start-new__title--logo').empty().append($('<img>').attr({src, alt: this.card.title}))
+
+        if(logo) showLogo(logo)
+        else Extra.get(this.card).then(extra=>extra && this.html && showLogo(extra.logo))
 
         this.card.runtime > 0 && info.push('<span>' + Utils.secondsToTime(this.card.runtime * 60, true)+'</span>')
 

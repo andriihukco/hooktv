@@ -80,6 +80,7 @@ import Theme from './core/theme'
 import AdManager from './interaction/advert/manager'
 import DB from './utils/db'
 import NavigationBar from './interaction/navigation_bar'
+import LibraryFilter from './interaction/library_filter'
 import Endless from './interaction/endless'
 import Color from './utils/color'
 import Cache from './utils/cache'
@@ -616,6 +617,8 @@ function startApp(){
 
     NavigationBar.init()
     LoadingProgress.status('NavigationBar init')
+
+    LibraryFilter.init()
 
     Demo.init()
     LoadingProgress.status('Demo init')

@@ -7,7 +7,7 @@ import Favorite from '../core/favorite'
 import Router from '../core/router'
 import Watch from './watch'
 import Layer from '../core/layer'
-import TMDB from '../core/tmdb/tmdb'
+import Extra from '../utils/tmdb_extra'
 
 /**
  * Apple TV-style hero for the top of Home: full-bleed backdrop, title,
@@ -225,25 +225,10 @@ class Hero extends Emit{
     loadLogo(card){
         if(Lampa.Storage && Lampa.Storage.get('logo_plugin_enabled') == '1') return
 
-        if(!card.id) return
+        Extra.get(card).then(extra=>{
+            if(!extra || !extra.logo || this.card() !== card) return
 
-        let type = card.name ? 'tv' : 'movie'
-        let url = TMDB.api(type + '/' + card.id + '/images?api_key=4ef0d7355d9ffb5151e987764708ce96&language=' + (Lampa.Storage ? Lampa.Storage.get('language') : 'en'))
-
-        $.get(url, (response)=>{
-            if(this.card() !== card) return
-
-            if(response.logos && response.logos[0]){
-                let logo = response.logos[0].file_path
-
-                if(logo){
-                    this.html.find('.hero-tv__title').html(
-                        '<img class="hero-tv__logo" src="' +
-                        Api.img(logo.replace('.svg', '.png'), 'w500') +
-                        '" alt="' + (card.title || card.name) + '"/>'
-                    )
-                }
-            }
+            this.html.find('.hero-tv__title').empty().append($('<img class="hero-tv__logo">').attr({src: extra.logo, alt: card.title || card.name}))
         })
     }
 

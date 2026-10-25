@@ -1,6 +1,6 @@
 import Template from './template'
 import Keybord from './keyboard/keyboard'
-import Storage from '../core/storage/storage'
+import Platform from '../core/platform'
 import Lang from '../core/lang'
 
 /**
@@ -48,7 +48,7 @@ function SearchInput(params = {}){
         }
     }
 
-    if(Storage.field('keyboard_type') !== 'lampa') search.find('.search-box__input').hide()
+    if(Platform.systemKeyboard()) search.find('.search-box__input').hide()
 
     $('body').append(search)
     $('body').toggleClass('ambience--enable',true)

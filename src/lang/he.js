@@ -1065,6 +1065,8 @@ export default {
     ai_subscribe_descr: 'עשו מנוי ל-CUB Premium והגדילו את מספר הבקשות ל-AI. יחד עם AI נמצא עבורכם את הסרטים הטובים ביותר שאפשר.',
 
     dmca_title: 'תוכן חסום',
+
+    empty_forbidden: 'אסור',
     dmca_descr: 'חומר זה אינו זמין לצפייה. הוא נחסם לבקשת בעל זכויות היוצרים בהתאם לחוק זכויות היוצרים.',
 
     loading_progress_step_0: 'הכנה',

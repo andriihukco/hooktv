@@ -1181,6 +1181,8 @@ export default {
     ai_subscribe_descr: 'Předplaťte si CUB Premium a zvyšte počet dotazů na AI. Společně s AI pro vás vybereme ty nejlepší filmy, jaké můžeme najít.',
 
     dmca_title: 'Obsah zablokován',
+
+    empty_forbidden: 'Zakázáno',
     dmca_descr: 'Tento materiál není k nahlédnutí. Byl zablokován na žádost držitele autorských práv v souladu s autorským zákonem.',
 
     loading_progress_step_0: 'Příprava',

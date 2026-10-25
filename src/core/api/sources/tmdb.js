@@ -15,6 +15,7 @@ import Router from '../../router'
 import Permit from '../../account/permit'
 import VPN from '../../../core/vpn'
 import Keys from '../../tmdb/keys'
+import LibraryFilter from '../../../utils/library_filter'
 
 
 let network   = new Reguest()
@@ -625,9 +626,14 @@ function videos(params = {}, oncomplite, onerror){
 }
 
 function list(params = {}, oncomplite, onerror){
-    let u = url(params.url, params)
+    // HOOK TV filter panel: lists become TMDB discover queries; search pages filter what came back
+    let filter = LibraryFilter.count(params.library_filter) ? params.library_filter : null
+    let found  = /^search\//.test(params.url)
+    let u      = url(filter && !found ? LibraryFilter.discover(params.url, filter) : params.url, params)
 
     network.silent(u, (data)=>{
+        if(filter && found && data.results) data.results = LibraryFilter.apply(data.results, filter)
+
         oncomplite(Utils.addSource(data, source))
     }, onerror, false, {
         cache: {life: day * 2}
@@ -635,9 +641,21 @@ function list(params = {}, oncomplite, onerror){
 }
 
 function search(params = {}, oncomplite){
+    let state  = LibraryFilter.search
     let status = new Status(3)
         status.onComplite = (data)=>{
             let items = []
+
+            // the filter panel works on what search found, so remember it before narrowing
+            state.query   = decodeURIComponent(params.query || '')
+            state.results = [].concat(data.movie ? data.movie.results : [], data.tv ? data.tv.results : [])
+
+            if(LibraryFilter.count(state.filter)){
+                if(data.movie) data.movie.results = LibraryFilter.apply(data.movie.results, state.filter)
+                if(data.tv) data.tv.results = LibraryFilter.apply(data.tv.results, state.filter)
+            }
+
+            if(state.onChange) state.onChange()
 
             if(data.movie && data.movie.results.length) items.push(data.movie)
             if(data.tv && data.tv.results.length) items.push(data.tv)
@@ -706,7 +724,8 @@ function discovery(){
                 component: 'category_full',
                 page: 2,
                 query: encodeURIComponent(params.query),
-                source: source
+                source: source,
+                library_filter: LibraryFilter.search.filter
             })
         },
         onCancel: network.clear.bind(network)

@@ -20,6 +20,24 @@ $hk-action-font: 1.3em;
 $hk-action-height: 2.8em;
 $hk-mobile-action-min: 56px;
 
+// one focus look for every action button: fill change + thin ring with a dark gap.
+// No scale, so the ring (4px) always fits in the gap between buttons; box-shadow follows the radius on old TV engines too.
+@mixin hk-button-focus($primary: false){
+    transform: none;
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #000, 0 0 0 4px $hk-lime;
+
+    @if $primary{
+        background: $hk-lime-light;
+        color: $hk-on-lime;
+    }
+    @else{
+        background: #fff;
+        color: #000;
+    }
+}
+
 :root,
 [data-theme='dark']{
     --brand-primary: #{$hk-lime};
@@ -349,8 +367,8 @@ body.minimal--ui .navigation-bar--tabs{
         }
 
         .navigation-bar__icon{
-            width: 1.6em;
-            height: 1.6em;
+            width: 2em;
+            height: 2em;
 
             svg{
                 width: 100%;
@@ -358,9 +376,18 @@ body.minimal--ui .navigation-bar--tabs{
             }
         }
 
+        .navigation-bar__glyph--filled,
+        .navigation-bar__item--current .navigation-bar__glyph--outline{
+            display: none;
+        }
+
+        .navigation-bar__item--current .navigation-bar__glyph--filled{
+            display: inline;
+        }
+
         .navigation-bar__label{
-            font-size: 0.9em;
-            margin-top: 0.5em;
+            font-size: 1em;
+            margin-top: 0.4em;
             font-weight: 500;
         }
     }
@@ -392,7 +419,7 @@ body:not(.true--mobile).minimal--ui{
         }
 
         .navigation-bar__label{
-            font-size: 0.85em;
+            font-size: 0.95em;
         }
     }
 }
@@ -463,10 +490,11 @@ body.minimal--ui.full--page .background{
         }
     }
 
+    // rows start see-through so the hero image melts into black instead of stopping at a line
     .items-line{
         position: relative;
         z-index: 1;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), #000 6.6em);
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.55) 2.6em, rgba(0, 0, 0, 0.9) 5em, #000 6.6em);
     }
 }
 
@@ -485,6 +513,9 @@ body.minimal--ui.full--page .background{
         transform: translateZ(0); // Hardware acceleration
         animation: hero-tv-backdrop-drift 24s ease-in-out infinite alternate;
         background: #000;
+        // the image itself fades out at the bottom, so no edge survives the drift animation
+        mask-image: linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%);
 
         img{
             position: absolute;
@@ -664,15 +695,11 @@ body.minimal--ui.full--page .background{
         }
 
         &.focus{
-            transform: scale(1.06);
-            background: #fff;
-            color: #000;
-            box-shadow: 0 0 0 0.15em #000, 0 0 0 0.3em $hk-lime;
+            @include hk-button-focus;
         }
 
         &--watch.focus{
-            background: #D6FF5C;
-            color: $hk-on-lime;
+            @include hk-button-focus(true);
         }
 
         &:hover:not(.focus){
@@ -857,10 +884,7 @@ body.minimal--ui.full--page .background{
             }
 
             &.focus{
-                border: 2px solid #fff;
-                background: rgba(255, 255, 255, 0.22);
-                color: #fff;
-                box-shadow: none;
+                @include hk-button-focus;
             }
 
             &--watch,
@@ -872,10 +896,7 @@ body.minimal--ui.full--page .background{
             }
 
             &--watch.focus{
-                outline: 3px solid $hk-lime;
-                outline-offset: 3px;
-                background: $hk-lime-light;
-                color: $hk-on-lime;
+                @include hk-button-focus(true);
             }
         }
 
@@ -1209,61 +1230,337 @@ body.minimal--ui.full--page .background{
     }
 }
 
-/* info panel for the focused card, outside the poster (interaction/card/peek.js) */
-.card-peek{
-    position: fixed;
-    z-index: 90;
-    top: 0;
-    left: 0;
-    box-sizing: border-box;
+/* highlighted card grows sideways: poster + info pane in one container (interaction/card/peek.js) */
+.card.card--peek{
     display: flex;
-    flex-direction: column;
-    gap: 0.4em;
-    padding: 1em 1.1em 1.1em;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1em;
-    background: rgba(24, 24, 27, 0.94);
-    box-shadow: 0 1.2em 3em rgba(0, 0, 0, 0.6);
-    color: #fff;
-    pointer-events: none;
+    align-items: flex-start;
+    width: auto !important;
+    z-index: 1;
+
+    // the poster's ratio comes from padding-bottom %, which follows the now wider card; pin its size
+    > .card__view{
+        flex: 0 0 auto;
+        width: var(--card-w);
+        height: var(--view-h);
+        padding-bottom: 0 !important;
+    }
+
+    // the shared container behind poster and pane, ringed like a focused card
+    &::before{
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--view-h);
+        border-radius: var(--view-r);
+        background: #141416;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+
+    &.card--peek-open{
+        &::before{
+            opacity: 1;
+            box-shadow: 0 0 0 0.2em $hk-lime, 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
+        }
+
+        // the container carries the highlight now, not the poster
+        > .card__view{
+            transform: none !important;
+            box-shadow: none !important;
+
+            &::after{
+                border-color: transparent !important;
+            }
+        }
+
+        .card__hover-info{
+            display: none;
+        }
+    }
+}
+
+// soft spring (about 1% overshoot) shared by the pane and the cards it moves, so they travel together
+$hk-spring-soft: linear(0, 0.25 10%, 0.62 22%, 0.86 35%, 0.97 50%, 1.01 65%, 1);
+$hk-spring-time: 0.5s;
+
+// grids (peek.js float/shift): the card keeps its slot, the pane takes whole columns and
+// the rest of its row slides aside; the grid clips cards pushed past its edge, so no
+// other row reflows, no row ends with a hole and nothing is covered
+.mapping--grid{
+    overflow-x: clip;
+    overflow-clip-margin: 0.5em; // room for the focus ring at the edges
+
+    > .card{
+        translate: var(--peek-shift, none);
+        transition: translate $hk-spring-time $hk-spring-soft;
+    }
+}
+
+.card.card--peek.card--peek-float{
+    width: var(--card-w) !important;
+    z-index: 10;
+
+    // the poster fills the card's own box (its padding stays the grid gutter)
+    > .card__view{
+        width: 100%;
+    }
+
+    > .card-peek{
+        position: absolute;
+        top: 0;
+        left: 100%;
+        transition: width $hk-spring-time $hk-spring-soft, opacity 0.2s ease;
+
+        &.card-peek--open{
+            transition: width $hk-spring-time $hk-spring-soft, opacity 0.25s ease 0.1s;
+        }
+
+        &.card-peek--instant{
+            transition: none;
+        }
+    }
+
+    &::before{
+        left: var(--peek-inset-l, 0);
+        right: calc(-1 * var(--peek-w));
+    }
+
+    &.card--peek-left{
+        > .card-peek{
+            left: auto;
+            right: 100%;
+        }
+
+        &::before{
+            left: calc(-1 * var(--peek-w));
+            right: var(--peek-inset-r, 0);
+        }
+    }
+}
+
+.card-peek{
+    --peek-w: clamp(17em, 24vw, 25em);
+
+    flex: 0 0 auto;
+    width: 0;
+    height: var(--view-h);
+    overflow: hidden;
     opacity: 0;
-    visibility: hidden;
-    transform: translate3d(0, -0.5em, 0) scale(0.97);
-    transform-origin: top center;
-    transition: opacity 0.18s ease, transform 0.25s $hk-ease, visibility 0s linear 0.25s;
+    transition: width 0.35s $hk-ease, opacity 0.2s ease;
 
-    &--above{
-        transform-origin: bottom center;
-        transform: translate3d(0, 0.5em, 0) scale(0.97);
-    }
-
-    &--visible{
+    &--open{
+        width: var(--peek-w);
         opacity: 1;
-        visibility: visible;
-        transform: none;
-        transition: opacity 0.18s ease 0.12s, transform 0.3s $hk-ease 0.12s, visibility 0s linear 0.12s;
+        transition: width 0.35s $hk-ease, opacity 0.25s ease 0.1s;
     }
 
-    .card__hover-title{
-        font-size: 1.35em;
+    &--instant{
+        transition: none;
+    }
+
+    // fixed inner width, so text never rewraps while the pane animates open
+    &__body{
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 0.6em;
+        width: var(--peek-w);
+        height: 100%;
+        padding: 0.9em 1.1em 1em 1em;
+        color: #fff;
+        container-type: inline-size;
+    }
+
+    // a narrow pane (small grid columns) stacks Watch over My List at full width
+    @container (max-width: 22em){
+        &__buttons{
+            flex-direction: column;
+        }
+
+        &__button{
+            justify-content: center;
+            width: 100%;
+        }
+    }
+
+    &__info{
+        display: flex;
+        flex-direction: column;
+        gap: 0.4em;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    &__title{
+        font-size: 1.45em;
         font-weight: 800;
-        line-height: 1.15;
-    }
-
-    .card__hover-meta{
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95em;
-    }
-
-    .card__hover-description{
-        color: rgba(255, 255, 255, 0.88);
-        font-size: 0.95em;
-        line-height: 1.4;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
         display: -webkit-box;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
+    &__logo{
+        display: block;
+        max-width: 100%;
+        max-height: 2.6em;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+    &__facts{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.3em 0.75em;
+        font-size: 0.85em;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    &__rating{
+        color: $hk-lime;
+        font-weight: 800;
+    }
+
+    &__badge{
+        padding: 0.05em 0.4em;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 0.3em;
+        font-size: 0.9em;
+        line-height: 1.3;
+    }
+
+    &__genres{
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__descr{
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.82em;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__buttons{
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.5em;
+    }
+
+    // same look as the hero / details actions, sized for the card
+    &__button{
+        display: flex;
+        align-items: center;
+        gap: 0.45em;
+        box-sizing: border-box;
+        height: 2.6em;
+        min-height: 36px;
+        padding: 0 1em;
+        border: 0;
+        border-radius: 3em;
+        font: inherit;
+        font-size: 0.95em;
+        font-weight: 700;
+        white-space: nowrap;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.12);
+        cursor: pointer;
+        transition: transform 0.2s $hk-ease, background-color 0.2s;
+
+        svg{
+            width: 1.05em;
+            height: 1.05em;
+        }
+
+        &:hover{
+            background: #fff;
+            color: #000;
+        }
+
+        &:focus-visible{
+            outline: 2px solid $hk-lime;
+            outline-offset: 3px;
+        }
+
+        // keyboard / remote focus (Lampa's .focus class)
+        &.focus{
+            @include hk-button-focus;
+        }
+    }
+
+    &__play{
+        background: $hk-lime;
+        color: $hk-on-lime;
+
+        &:hover{
+            background: $hk-lime-light;
+            color: $hk-on-lime;
+        }
+
+        &.focus{
+            @include hk-button-focus(true);
+        }
+    }
+
+    &__list.active svg{
+        transform: rotate(45deg);
+    }
+
+    // Russian title: name, logo and description blurred, buttons switched off
+    &--locked{
+        .card-peek__title,
+        .card-peek__descr{
+            filter: blur(0.45em);
+            user-select: none;
+        }
+
+        .card-peek__button{
+            opacity: 0.35;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+    }
+}
+
+// Russian titles in rows and search: poster and name blurred
+.card--russian{
+    // clip-path applies after the filter, so the poster keeps sharp rounded edges
+    .card__img{
+        filter: blur(0.6em) brightness(0.85);
+        clip-path: inset(0 round 0.9em);
+        user-select: none;
+    }
+
+    .card__title,
+    .card__hover-title,
+    .card__hover-description{
+        filter: blur(0.45em);
+        user-select: none;
+    }
+}
+
+// details title as a logo (components/full/start.js)
+// sized by the viewport, not by em: the title's font size is huge on desktop
+.full-start-new__title--logo img{
+    display: block;
+    max-width: min(100%, 34vw, 30rem);
+    max-height: min(18vh, 9rem);
+    object-fit: contain;
+    object-position: left center;
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -1290,8 +1587,8 @@ body.minimal--ui.full--page .background{
     object-fit: cover;
     filter: blur(28px) brightness(0.55);
     transform: scale(1.12);
-    mask-image: none !important;
-    -webkit-mask-image: none !important;
+    mask-image: linear-gradient(to bottom, #000 50%, transparent 92%) !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 92%) !important;
 
     &.loaded{
         opacity: 0.8 !important;
@@ -1364,10 +1661,7 @@ body.minimal--ui.full--page .background{
         transition: transform 0.2s $hk-ease, background-color 0.2s;
 
         &.focus{
-            background: #fff;
-            color: #000;
-            transform: scale(1.06);
-            box-shadow: 0 0 0 0.12em #000, 0 0 0 0.25em $hk-lime;
+            @include hk-button-focus;
         }
     }
 
@@ -1405,10 +1699,12 @@ body.minimal--ui.full--page .background{
     .full-start-new{
         box-sizing: border-box;
         // header (4.6em) + scroll__content top padding (2.5em), so the scroll cue lands in view
-        min-height: calc(100vh - 7.1em);
-        min-height: calc(100svh - 7.1em);
-        justify-content: flex-start;
-        padding: 2em clamp(2em, 5vw, 6em) 3em;
+        // exactly one screen: the whole header and the scroll cue are always in view
+        height: calc(100vh - 7.1em);
+        height: calc(100svh - 7.1em);
+        min-height: 0;
+        justify-content: center;
+        padding: 1em clamp(2em, 5vw, 6em) calc(8vh + 4.5em);
 
         // .scroll--mask fades the bottom 8% of the view; keep the cue above it
         &__scroll{
@@ -1424,7 +1720,7 @@ body.minimal--ui.full--page .background{
         }
 
         &__left{
-            width: clamp(13em, min(21vw, 35vh), 19em);
+            width: clamp(10em, min(21vw, 32vh), 19em);
             margin-right: clamp(2em, 5vw, 5em);
         }
 
@@ -1439,7 +1735,7 @@ body.minimal--ui.full--page .background{
         }
 
         &__title{
-            font-size: clamp(2.5em, 4.5vw, 4.5em);
+            font-size: clamp(2.2em, min(4.5vw, 7vh), 4.5em);
             line-height: 1.08;
         }
 
@@ -1699,53 +1995,6 @@ body.minimal--ui.full--page .background{
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.search-history-empty{
-    display: flex;
-    align-items: center;
-    gap: 1.2em;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 52em;
-    min-height: 7em;
-    margin: 0 auto;
-    padding: 1.5em;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 1.4em;
-    color: rgba(255, 255, 255, 0.72);
-    background:
-        radial-gradient(circle at 90% 15%, rgba(200, 245, 66, 0.12), transparent 34%),
-        linear-gradient(125deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025));
-    box-shadow: 0 1em 3em rgba(0, 0, 0, 0.22);
-
-    &__icon{
-        width: 3.6em;
-        height: 3.6em;
-        flex: 0 0 auto;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        color: $hk-lime;
-        background: rgba(200, 245, 66, 0.12);
-
-        svg{
-            width: 1.8em;
-            height: 1.8em;
-        }
-    }
-
-    &__copy{
-        font-size: 1.05em;
-        line-height: 1.45;
-
-        span{
-            display: block;
-            margin-top: 0.35em;
-            color: rgba(255, 255, 255, 0.48);
-            font-size: 0.9em;
-        }
-    }
-}
-
 .search-looking__text{
     box-sizing: border-box;
     max-width: 52em;
@@ -1797,16 +2046,6 @@ body.minimal--ui.full--page .background{
         height: 2.7em;
     }
 
-    .search-history-empty{
-        min-height: 7.5em;
-        padding: 1em;
-        gap: 0.8em;
-
-        &__icon{
-            width: 3em;
-            height: 3em;
-        }
-    }
 }
 
 .full-descr__text{
@@ -2438,4 +2677,400 @@ body.selectbox--open .selectbox__layer{
 .player-panel__rnext .material-icon{
     width: 2em;
     height: 2em;
+}
+
+/* ---------------------------------------------------------------------
+ * Saved / History filters: bottom pill + right sheet
+ * (interaction/library_filter.js)
+ * ------------------------------------------------------------------- */
+.library-filter-dock{
+    position: fixed;
+    left: 50%;
+    // 16px from the bottom edge; library_filter.js lifts it above the phone tab bar
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 96;
+    transform: translateX(-50%);
+    transition: bottom 0.35s $hk-ease, opacity 0.2s;
+}
+
+// phones: a full-size touch target (48px, above the 44pt minimum) with readable type
+@media (max-width: 767px){
+    .library-filter-pill{
+        box-sizing: border-box;
+        min-height: 48px;
+        padding: 0 1.4em;
+        gap: 0.55em;
+        font-size: max(16px, 1.15em);
+
+        svg{
+            width: 1.35em;
+            height: 1.35em;
+        }
+    }
+}
+
+// over the search overlay while it is open
+body.search--open .library-filter-dock{
+    z-index: 233;
+}
+
+.library-filter-pill{
+    display: none;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.75em 1.3em;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 600;
+    background: linear-gradient(145deg, rgba(55, 55, 60, 0.72), rgba(22, 22, 25, 0.76));
+    backdrop-filter: blur(28px) saturate(1.8);
+    -webkit-backdrop-filter: blur(28px) saturate(1.8);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 28px rgba(0, 0, 0, 0.38);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s $hk-ease, background-color 0.2s;
+
+    &--show{
+        display: flex;
+    }
+
+    svg{
+        width: 1.3em;
+        height: 1.3em;
+    }
+
+    &:active{
+        transform: scale(0.95);
+    }
+
+    &__count:empty{
+        display: none;
+    }
+
+    // flex centring: the font's line box sits the digit low with a plain line-height
+    &__count{
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.6em;
+        height: 1.6em;
+        padding: 0 0.45em;
+        border-radius: 999px;
+        font-size: 0.8em;
+        font-weight: 700;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        // centre the digit itself, not the font's line box (ignored where unsupported)
+        text-box: trim-both cap alphabetic;
+        color: #000;
+        background: $hk-lime;
+    }
+
+    &--active{
+        color: $hk-lime;
+    }
+
+    &.focus{
+        color: #000;
+        background: #fff;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
+    }
+}
+
+body.library-filter--open .library-filter-dock,
+body.selectbox--open .library-filter-dock,
+body.settings--open .library-filter-dock,
+body.full--page .library-filter-dock{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.library-filter{
+    &__layer{
+        position: fixed;
+        inset: 0;
+        z-index: 234;
+        background: rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+    }
+
+    // a floating frosted sheet, inset from the screen edges like tvOS side panels
+    &__content{
+        position: fixed;
+        top: 1em;
+        right: 1em;
+        bottom: 1em;
+        z-index: 235;
+        display: flex;
+        flex-direction: column;
+        width: min(26em, calc(100% - 2em));
+        border-radius: 1.8em;
+        background: rgba(30, 30, 32, 0.82);
+        backdrop-filter: blur(50px) saturate(1.8);
+        -webkit-backdrop-filter: blur(50px) saturate(1.8);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 2em 5em rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+        transform: translate3d(calc(100% + 1.5em), 0, 0);
+        transition: transform 0.4s $hk-ease;
+
+        @media screen and (max-width: 480px){
+            top: auto;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-height: 88vh;
+            border-radius: 1.8em 1.8em 0 0;
+            padding-bottom: env(safe-area-inset-bottom);
+            transform: translate3d(0, 105%, 0);
+        }
+    }
+
+    &__head{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 1.6em 1.5em 0.4em;
+    }
+
+    &__title{
+        font-size: 1.9em;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    // iOS text button
+    &__reset{
+        padding: 0.35em 0.8em;
+        margin-right: -0.8em;
+        border-radius: 999px;
+        font-weight: 600;
+        color: $hk-lime;
+        cursor: pointer;
+        transition: background-color 0.15s, color 0.15s;
+
+        &.hide{
+            visibility: hidden;
+        }
+    }
+
+    // the list fades out under the Show button instead of being cut off
+    &__body{
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 0 1.5em 1.5em;
+        overscroll-behavior: contain;
+        mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5em), transparent);
+        -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5em), transparent);
+    }
+
+    &__section{
+        margin-top: 1.5em;
+    }
+
+    // iOS grouped-list header
+    &__label{
+        margin: 0 0 0.55em 1em;
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: rgba(235, 235, 245, 0.5);
+    }
+
+    // inset grouped rows: label left, value and chevron right, hairline between rows
+    &__group{
+        border-radius: 1em;
+        background: rgba(118, 118, 128, 0.18);
+        overflow: hidden;
+    }
+
+    &__row{
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+        min-height: 3.1em;
+        padding: 0 1em;
+        cursor: pointer;
+        transition: background-color 0.15s, color 0.15s;
+
+        + .library-filter__row::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 1em;
+            right: 0;
+            height: 1px;
+            background: rgba(84, 84, 88, 0.6);
+        }
+
+        span{
+            flex: 1 1 auto;
+            font-weight: 500;
+
+            &::first-letter{
+                text-transform: uppercase;
+            }
+        }
+
+        b{
+            font-weight: 500;
+            color: rgba(235, 235, 245, 0.6);
+            font-variant-numeric: tabular-nums;
+        }
+
+        svg{
+            flex: 0 0 auto;
+            width: 0.75em;
+            height: 0.75em;
+            color: rgba(235, 235, 245, 0.3);
+        }
+
+        &.active b{
+            color: $hk-lime;
+            font-weight: 600;
+        }
+    }
+
+    // iOS segmented control (Home: films or series)
+    &__segmented{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0.2em;
+        border-radius: 0.8em;
+        background: rgba(118, 118, 128, 0.24);
+    }
+
+    &__type{
+        padding: 0.55em;
+        border-radius: 0.65em;
+        text-align: center;
+        font-weight: 600;
+        color: rgba(235, 235, 245, 0.75);
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+
+        &.active{
+            color: #fff;
+            background: rgba(99, 99, 102, 0.9);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+    }
+
+    &__chips{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+    }
+
+    &__chip{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        padding: 0.55em 1em;
+        border-radius: 999px;
+        font-weight: 500;
+        background: rgba(118, 118, 128, 0.18);
+        cursor: pointer;
+        transition: background-color 0.15s, color 0.15s, transform 0.15s $hk-ease;
+
+        // checkmark grows in when picked
+        &::before{
+            content: '';
+            width: 0;
+            height: 0.9em;
+            margin-right: -0.35em;
+            background: currentColor;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+            transition: width 0.15s, margin 0.15s;
+        }
+
+        &.active{
+            color: #000;
+            font-weight: 600;
+            background: $hk-lime;
+
+            &::before{
+                width: 0.9em;
+                margin-right: 0;
+            }
+        }
+    }
+
+    &__foot{
+        padding: 0.8em 1.5em 1.5em;
+    }
+
+    &__apply{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3.2em;
+        border-radius: 1em;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        color: #000;
+        background: $hk-lime;
+        cursor: pointer;
+        transition: transform 0.15s $hk-ease, box-shadow 0.15s;
+    }
+
+    // remote / keyboard focus: the Apple TV white lift
+    &__row.focus,
+    &__type.focus,
+    &__chip.focus,
+    &__reset.focus{
+        color: #000;
+        background: #fff;
+        transform: scale(1.03);
+        box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.35);
+
+        b,
+        svg{
+            color: rgba(0, 0, 0, 0.55);
+        }
+    }
+
+    // rows live inside a clipped group, so they light up without growing
+    &__row.focus{
+        transform: none;
+        box-shadow: none;
+    }
+
+    &__apply.focus{
+        transform: scale(1.03);
+        box-shadow: 0 0 0 3px #fff, 0 0.6em 1.4em rgba(0, 0, 0, 0.35);
+    }
+
+    @media (hover: hover) and (pointer: fine){
+        &__row:not(.focus):hover{
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        &__chip:not(.active):not(.focus):hover,
+        &__reset:not(.focus):hover{
+            background: rgba(118, 118, 128, 0.32);
+        }
+    }
+}
+
+body.library-filter--open .library-filter{
+    &__layer{
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    &__content{
+        transform: none;
+    }
+}
+
+// value pickers open from the filter panel, so they go above it
+body.library-filter--open .selectbox{
+    z-index: 240 !important;
 }

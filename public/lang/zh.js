@@ -1121,6 +1121,8 @@ export default {
     ai_subscribe_descr: '订阅CUB Premium，增加与AI的交互请求次数。与AI一起，我们将为您推荐最佳电影。',
 
     dmca_title: '内容被阻止',
+
+    empty_forbidden: '禁止访问',
     dmca_descr: '该材料无法查看。该视频是根据版权法依据版权所有者的要求而被屏蔽的。',
 
     loading_progress_step_0: '准备',

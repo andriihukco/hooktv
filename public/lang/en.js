@@ -1181,6 +1181,8 @@ export default {
     ai_subscribe_descr: 'Subscribe to CUB Premium and increase the number of requests to AI. Together with AI, we’ll find the best movies for you.',
 
     dmca_title: 'Content blocked',
+
+    empty_forbidden: 'Forbidden',
     dmca_descr: 'This material is not available for viewing. It has been blocked at the request of the copyright holder in accordance with copyright law.',
 
     loading_progress_step_0: 'Preparation',
@@ -1331,6 +1333,9 @@ export default {
     hooktv_watch_now: 'Watch Now',
     hooktv_details: 'Details',
     hooktv_add_list: 'Add to List',
+    hooktv_filters: 'Filters',
+    hooktv_filter_reset: 'Reset',
+    hooktv_filter_show: 'Show',
     hooktv_in_list: 'In List',
     hooktv_scroll_down: 'Scroll to next section',
     hooktv_no_original: 'No original audio track — playing in Ukrainian',

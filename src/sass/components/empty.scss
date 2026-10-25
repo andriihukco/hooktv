@@ -87,6 +87,35 @@
         }
     }
 
+    &--forbidden{
+        min-height: 70vh;
+        align-items: center;
+
+        .empty{
+            &__img,
+            &__descr{
+                display: none;
+            }
+
+            &__icon{
+                line-height: 0;
+                margin-bottom: 1.6em;
+
+                svg.empty-stop{
+                    width: 10em !important;
+                    height: 10em !important;
+                    margin: 0;
+                    font-family: inherit;
+                    filter: drop-shadow(0 0.6em 1.6em rgba(220, 30, 30, 0.35));
+                }
+            }
+
+            &__title{
+                font-weight: 600;
+            }
+        }
+    }
+
     &--custom-icon{
         .empty__img{
             display: none;

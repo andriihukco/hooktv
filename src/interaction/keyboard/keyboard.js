@@ -38,7 +38,7 @@ function Keyboard(params = {}){
     let last
     let ime
     let recognition
-    let simple = Storage.field('keyboard_type') !== 'lampa'
+    let simple = Platform.systemKeyboard()
     let input
     let last_value
     let height = window.innerHeight

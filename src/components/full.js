@@ -57,6 +57,8 @@ function component(object){
             Api.full(object, (data)=>{
                 if(!data.movie) return this.emit('error', {empty: true})
 
+                if(Keys.russian(data.movie)) return this.emit('error', {blocked: true})
+
                 // Добавляем в пропсы данные
                 this.props.set(data)
 
@@ -287,23 +289,17 @@ function component(object){
             let dmca    = Utils.dcma(this.object.method, this.object.id)
             let lgbt    = this.props.get('movie') && this.props.get('movie').lgbt
 
-            if(dmca || status.blocked){
-                params.title  = Lang.translate('dmca_title')
-                params.descr  = Lang.translate('dmca_descr')
-                params.noicon = true
+            // HOOK TV: blocked titles get a bare "forbidden" screen, with no reasons or actions
+            if(dmca || status.blocked || lgbt){
+                params.forbidden = true
+                params.title     = Lang.translate('empty_forbidden')
             }
-
-            params.info_button = [
-                ['Movie id', this.object.id],
-                ['DMCA', dmca ? 'Yes' : 'No'],
-                ['LGBT', lgbt ? 'Yes, ' + lgbt : 'No'],
-            ]
-
-            if(lgbt){
-                params.title = Lang.translate('dmca_title_lgbt')
-                params.descr = Lang.translate('dmca_descr_lgbt')
-
-                params.info_button.push(['Title', this.props.get('movie').title || this.props.get('movie').name || '---'])
+            else{
+                params.info_button = [
+                    ['Movie id', this.object.id],
+                    ['DMCA', 'No'],
+                    ['LGBT', 'No'],
+                ]
             }
 
             // Вызываем пустой экран

@@ -1169,6 +1169,8 @@ export default {
     ai_subscribe_descr: 'Abonează-te la CUB Premium pentru a crește numărul de cereri AI.',
 
     dmca_title: 'Conținut blocat',
+
+    empty_forbidden: 'Interzis',
     dmca_descr: 'Acest material nu este disponibil pentru vizionare la cererea deținătorului drepturilor de autor.',
 
     loading_progress_step_0: 'Inițializare',

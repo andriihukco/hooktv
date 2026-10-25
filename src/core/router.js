@@ -75,6 +75,7 @@ router.add('favorite', (data) => ({
     title: data.title || Lang.translate('title_' + data.type),
     type: data.type,
     filter: data.filter || '',
+    library_filter: data.library_filter,
 }))
 
 router.add('episodes', (data) => ({

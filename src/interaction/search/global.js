@@ -3,7 +3,7 @@ import History from './history'
 import Template from '../template'
 import Controller from '../../core/controller'
 import Keybord from '../keyboard/keyboard'
-import Storage from '../../core/storage/storage'
+import Platform from '../../core/platform'
 import Lang from '../../core/lang'
 import Scroll from '../scroll'
 import Arrays from '../../utils/arrays'
@@ -88,7 +88,7 @@ function create(){
         Layer.visible(scroll.render(true))
     }
 
-    if(Storage.field('keyboard_type') !== 'lampa') search.find('.search__input-shell').hide()
+    if(Platform.systemKeyboard()) search.find('.search__input-shell').hide()
 
     createKeyboard()
     createHistory()

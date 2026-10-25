@@ -1155,6 +1155,8 @@ export default {
     ai_subscribe_descr: 'Assine o CUB Premium e aumente o número de solicitações para a IA. Junto com a IA, encontraremos os melhores filmes para você.',
 
     dmca_title: 'Conteúdo bloqueado',
+
+    empty_forbidden: 'Proibido',
     dmca_descr: 'Este material não está disponível para visualização. Foi bloqueado a pedido do detentor dos direitos autorais, de acordo com a lei de direitos autorais.',
 
     loading_progress_step_0: 'Preparação',

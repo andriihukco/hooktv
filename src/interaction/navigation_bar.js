@@ -44,14 +44,59 @@ function init(){
  * on narrow screens only, where it replaces the top section capsule.
  * Sections run through the menu's own handlers, so both stay in sync.
  */
+// Rounded tab icons: an outline version for idle tabs and a filled one for the current tab.
+// Inner details of filled shapes are cut out with masks so the glass shows through.
+function tabIcon(outline, filled, mask){
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        ${mask ? `<defs>${mask}</defs>` : ''}
+        <g class="navigation-bar__glyph navigation-bar__glyph--outline">${outline}</g>
+        <g class="navigation-bar__glyph navigation-bar__glyph--filled">${filled}</g>
+    </svg>`
+}
+
+const TAB_ICONS = {
+    main: (()=>{
+        let house = 'M4.5 10.2 12 4l7.5 6.2v8.3a2 2 0 0 1-2 2H15v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5H6.5a2 2 0 0 1-2-2z'
+
+        return tabIcon(`<path d="${house}"/>`, `<path d="${house}" fill="currentColor"/>`)
+    })(),
+    movie: (()=>{
+        let cuts = 'M3.5 9.5h17M8.5 5 7 9.5M13.5 5 12 9.5M18.5 5 17 9.5'
+
+        return tabIcon(
+            `<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="${cuts}"/>`,
+            `<rect x="3.5" y="5" width="17" height="14" rx="2.5" fill="currentColor" mask="url(#navigation-bar-mask-movie)"/>`,
+            `<mask id="navigation-bar-mask-movie" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${cuts}" stroke="#000" stroke-width="1.6"/></mask>`
+        )
+    })(),
+    tv: (()=>{
+        let play = 'M10.5 10.6v4.8l4-2.4z'
+
+        return tabIcon(
+            `<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 3.5 12 7l3.5-3.5"/><path d="${play}"/>`,
+            `<rect x="3" y="7" width="18" height="13" rx="2.5" fill="currentColor" mask="url(#navigation-bar-mask-tv)"/><path d="M8.5 3.5 12 7l3.5-3.5"/>`,
+            `<mask id="navigation-bar-mask-tv" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${play}" fill="#000" stroke="#000" stroke-width="1.4"/></mask>`
+        )
+    })(),
+    favorite: (()=>{
+        let bookmark = 'M7 4h10a1.5 1.5 0 0 1 1.5 1.5V20L12 15.8 5.5 20V5.5A1.5 1.5 0 0 1 7 4z'
+
+        return tabIcon(`<path d="${bookmark}"/>`, `<path d="${bookmark}" fill="currentColor"/>`)
+    })(),
+    search: tabIcon(
+        '<circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.6 15.6 4.4 4.4"/>',
+        '<circle cx="10.8" cy="10.8" r="6.3" fill="currentColor"/><path d="m15.6 15.6 4.4 4.4" stroke-width="2.6"/>'
+    )
+}
+
 function tabs(){
     let items = [
-        ['main', 'menu_main', '<svg><use xlink:href="#sprite-home"></use></svg>'],
-        ['movie', 'menu_movies', '<svg><use xlink:href="#sprite-movie"></use></svg>'],
-        ['tv', 'menu_tv', '<svg><use xlink:href="#sprite-live_tv"></use></svg>'],
-        ['favorite', 'settings_input_links', Template.string('icon_bookmark')],
-        ['search', 'search', Template.string('icon_search')]
-    ]
+        ['main', 'menu_main'],
+        ['movie', 'menu_movies'],
+        ['tv', 'menu_tv'],
+        ['favorite', 'settings_input_links'],
+        ['search', 'search']
+    ].map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')
 
@@ -109,34 +154,38 @@ function tabs(){
 
         positions.set(target, position)
 
-        if(position <= 8 || position < previous - 2){
-            updateVisibility(-1)
-        }
-        else if(position > previous + 2){
-            updateVisibility(1)
-        }
+        // any scroll hides the bar; it returns once scrolling settles
+        if(Math.abs(position - previous) > 2) updateVisibility(1)
     }, { capture: true, passive: true })
 
     document.addEventListener('wheel',(event)=>{
         if(horizontalTarget(event.target)) return
-        if(Math.abs(event.deltaY) > 3) updateVisibility(event.deltaY)
+        if(Math.abs(event.deltaY) > 3) updateVisibility(1)
     }, { capture: true, passive: true })
+
+    let touch_x
 
     document.addEventListener('touchstart',(event)=>{
-        touch_y = event.touches[0] && event.touches[0].clientY
+        let touch = event.touches[0]
+
+        touch_x = touch && touch.clientX
+        touch_y = touch && touch.clientY
     }, { capture: true, passive: true })
 
+    // judge by gesture direction, not target: rows are horizontal scrollers but cover most of the screen
     document.addEventListener('touchmove',(event)=>{
-        if(horizontalTarget(event.target)) return
+        let touch = event.touches[0]
 
-        let next_y = event.touches[0] && event.touches[0].clientY
+        if(!touch || typeof touch_y !== 'number') return
 
-        if(typeof next_y === 'number' && typeof touch_y === 'number'){
-            let distance = touch_y - next_y
+        let dx = Math.abs(touch.clientX - touch_x)
+        let dy = Math.abs(touch.clientY - touch_y)
 
-            if(Math.abs(distance) > 8) updateVisibility(distance)
+        if(dy > 8 && dy > dx){
+            updateVisibility(1)
 
-            touch_y = next_y
+            touch_x = touch.clientX
+            touch_y = touch.clientY
         }
     }, { capture: true, passive: true })
 }

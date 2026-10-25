@@ -1157,6 +1157,8 @@ export default {
     ai_subscribe_descr: 'Оформіть підписку CUB Premium та збільшіть кількість запитів до AI. Разом з AI ми підберемо для вас найкращі фільми, які тільки зможемо.',
 
     dmca_title: 'Контент заблоковано',
+
+    empty_forbidden: 'Заборонено',
     dmca_descr: 'Цей матеріал недоступний для перегляду. Він був заблокований на прохання правовласника відповідно до законодавства про авторські права.',
 
     loading_progress_step_0: 'Підготовка',
@@ -1307,6 +1309,9 @@ export default {
     hooktv_watch_now: 'Дивитися',
     hooktv_details: 'Детальніше',
     hooktv_add_list: 'До списку',
+    hooktv_filters: 'Фільтри',
+    hooktv_filter_reset: 'Скинути',
+    hooktv_filter_show: 'Показати',
     hooktv_in_list: 'У списку',
     hooktv_scroll_down: 'Прокрутити до наступного розділу',
     hooktv_no_original: 'Оригінальної доріжки немає — граємо українською',

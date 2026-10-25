@@ -37,6 +37,9 @@ function Scroll(params = {}){
 
     
     if(params.horizontal) html.classList.toggle('scroll--horizontal',true)
+
+    // HOOK TV: lets DOM-level helpers (card peek) move the scroller that owns an element
+    html.hooktvScroll = this
     if(params.mask) html.classList.toggle('scroll--mask',true)
     if(params.over) html.classList.toggle('scroll--over',true)
     if(params.nopadding) html.classList.toggle('scroll--nopadding',true)
@@ -393,6 +396,14 @@ function Scroll(params = {}){
         setTimeout(()=>{
             body.toggleClass('notransition', false)
         },5)
+    }
+
+    /**
+     * HOOK TV: animated scroll by a number of pixels, clamped to the content
+     * @param {number} px - positive scrolls forward
+     */
+    this.by = function(px){
+        startScroll(maxOffset(scroll_position - px))
     }
 
     /**

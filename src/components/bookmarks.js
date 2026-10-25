@@ -12,6 +12,7 @@ import CardModule from '../interaction/card/module/module'
 import Account from '../core/account/account'
 import EmptyRouter from '../interaction/empty/module/router'
 import ContentRows from '../core/content_rows'
+import LibraryFilter from '../utils/library_filter'
 
 /**
  * Компонент "Избранное"
@@ -21,6 +22,17 @@ import ContentRows from '../core/content_rows'
 
 function component(object){
     let all      = Favorites.all()
+    let filter   = object.library_filter
+
+    // HOOK TV: the filter panel narrows every row; folders and "more" pages keep it
+    if(LibraryFilter.count(filter)){
+        all = Object.assign({}, all)
+
+        for(let key in all){
+            if(Arrays.isArray(all[key])) all[key] = LibraryFilter.apply(all[key], filter)
+        }
+    }
+
     let comp     = Utils.createInstance(Main, object, {
         empty: {
             router: 'bookmarks'
@@ -59,7 +71,7 @@ function component(object){
                             module: RegisterModule.only('Line', 'Callback'),
                             createInstance: (item)=> new Register(item),
                             emit: {
-                                onEnter: Router.call.bind(Router, 'favorite', {type: a})
+                                onEnter: Router.call.bind(Router, 'favorite', {type: a, library_filter: filter})
                             }
                         }
                     })
@@ -100,8 +112,9 @@ function component(object){
                                         emit: {
                                             onEnter: Router.call.bind(Router, 'favorite', {
                                                 title : Lang.translate('title_' + a) + ' - ' + Lang.translate('menu_' + m),
-                                                type: a, 
-                                                filter: m
+                                                type: a,
+                                                filter: m,
+                                                library_filter: filter
                                             }),
                                             onFocus: ()=>{
                                                 Background.change(Utils.cardImgBackground(filter[0]))
@@ -123,7 +136,7 @@ function component(object){
                         params: {
                             module: LineModule.toggle(LineModule.MASK.base, 'Event'),
                             emit: {
-                                onMore: Router.call.bind(Router, 'favorite', {type: a, page: 2})
+                                onMore: Router.call.bind(Router, 'favorite', {type: a, page: 2, library_filter: filter})
                             }
                         }
                     })

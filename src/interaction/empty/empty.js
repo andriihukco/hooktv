@@ -43,10 +43,11 @@ class Empty extends Emit{
 
         this.html.addClass('layer--wheight')
 
-        if(params.noicon)    this.noicon()
+        if(params.forbidden) this.forbidden()
+        else if(params.noicon)    this.noicon()
         else if(params.icon) this.html.addClass('empty--custom-icon').find('.empty__icon').append(params.icon)
 
-        params.buttons.push({
+        if(!params.forbidden) params.buttons.push({
             title: Lang.translate('terminal_update'),
             onEnter: ()=>{
                 delete params.buttons
@@ -64,6 +65,20 @@ class Empty extends Emit{
 
     noicon(){
         this.html.addClass('empty--noicon')
+    }
+
+    forbidden(){
+        this.html.addClass('empty--forbidden').find('.empty__icon').html(`<svg class="empty-stop" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="empty-stop-fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ff4b40"/>
+                    <stop offset="1" stop-color="#c8141d"/>
+                </linearGradient>
+            </defs>
+            <polygon points="67.6,7.5 92.5,32.4 92.5,67.6 67.6,92.5 32.4,92.5 7.5,67.6 7.5,32.4 32.4,7.5" fill="#fff" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+            <polygon points="65.1,13.5 86.5,34.9 86.5,65.1 65.1,86.5 34.9,86.5 13.5,65.1 13.5,34.9 34.9,13.5" fill="url(#empty-stop-fill)" stroke="url(#empty-stop-fill)" stroke-width="3" stroke-linejoin="round"/>
+            <text x="50" y="51" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="24" font-weight="800" letter-spacing="0.5">STOP</text>
+        </svg>`)
     }
 
     width(width){

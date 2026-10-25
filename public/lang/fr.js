@@ -1169,6 +1169,8 @@ export default {
     ai_subscribe_descr: 'Abonnez-vous pour profiter pleinement de l\'assistant IA.',
 
     dmca_title: 'Contenu bloqué',
+
+    empty_forbidden: 'Interdit',
     dmca_descr: 'Matériel indisponible suite à une plainte de l\'ayant-droit.',
 
     loading_progress_step_0: 'Préparation',
