@@ -1109,6 +1109,13 @@ function load(src){
         hls_parser = false
     }
 
+    // Internet Archive mirrors send no CORS headers, so an anonymous-CORS
+    // request for them fails as a «format error»
+    if(video.setAttribute && video.removeAttribute){
+        if(/^https?:\/\/([^\/]+\.)?archive\.org\//i.test(src)) video.removeAttribute('crossorigin')
+        else video.setAttribute('crossorigin', 'anonymous')
+    }
+
     video.src = src
 
     console.log('Player','video load url:', src)

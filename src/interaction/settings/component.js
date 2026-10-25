@@ -164,7 +164,7 @@ function Component(name, component_params = {}){
      * HOOK TV: rows and headings the flat page drops, by param name and title
      */
     function hideRows(){
-        let rows   = ['background','player','player_iptv','player_torrent','player_scale_method','player_hls_method','source','protocol','request_caching','pages_save_total','time_offset','navigation_type','keyboard_type','device_name','export','terminal']
+        let rows   = ['background','player','player_iptv','player_torrent','player_scale_method','player_hls_method','source','protocol','request_caching','pages_save_total','time_offset','navigation_type','keyboard_type','device_name','export','terminal','poster_size','proxy_tmdb_auto','proxy_tmdb','tmdb_proxy_api','tmdb_proxy_image']
         let titles = ['settings_interface_background','settings_main_player','more','menu_console']
 
         rows.forEach(name=>comp.find('[data-name="' + name + '"]').remove())
@@ -187,8 +187,6 @@ function Component(name, component_params = {}){
             ['tmdb', 'TMDB']
         ]
 
-        if(window.lampa_settings.torrents_use) sections.push(['parser', 'settings_main_parser'], ['server', 'settings_main_torrserver'])
-
         sections.forEach(([key, title])=>{
             let section = Template.get('settings_' + key)
 
@@ -204,8 +202,11 @@ function Component(name, component_params = {}){
 
         let components = Api.allComponents()
 
+        // sources pick themselves and remote setup is for developers: neither is a choice to offer
+        let hidden = ['hook_online', 'remote_configuration']
+
         for(let key in components){
-            if(key == name) continue
+            if(key == name || hidden.indexOf(key) >= 0) continue
 
             comp.append(`<div class="settings-param-title"><span>${components[key].name}</span></div>`)
 

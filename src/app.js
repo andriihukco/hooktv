@@ -144,15 +144,9 @@ if(typeof window.hook_settings !== 'undefined'){
     Arrays.extend(window.lampa_settings, window.hook_settings)
 }
 
-let torrents_use = true
-let agent        = navigator.userAgent.toLowerCase()
-let conditions   = [
-    agent.indexOf("lampa_client_yasha") > -1,
-    typeof AndroidJS !== 'undefined' && (AndroidJS.appVersion() + '').toLowerCase().indexOf('rustore') > -1 && !localStorage.getItem('parser_use')
-]
-
-// Если есть условия из списка, то отключаем торренты, дабы пройти модерацию в сторе
-if(conditions.indexOf(true) >= 0) torrents_use = false
+// HOOK TV: no torrents. Playback comes from the online sources only, so there
+// is no TorrServer or parser to set up
+let torrents_use = false
 
 Arrays.extend(window.lampa_settings,{
     // Использовать сокеты для синхронизации данных

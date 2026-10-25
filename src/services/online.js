@@ -26,6 +26,7 @@ import Loading from '../interaction/loading'
 import Input from '../interaction/settings/input'
 import Dub from '../utils/dub'
 import Watch from '../interaction/watch'
+import Archive from './archive'
 
 /**
  * HOOK TV Inbuilt Online Balancers Service
@@ -1433,6 +1434,8 @@ function autoPlay(movie, want, done) {
         var probes = keys.map(function(key) {
             return autoProbe(key, movie, want)
         })
+        // public-domain classics play even when no balancer has the title
+        probes.push(Archive.probe(movie))
         var index = 0
 
         function next() {
