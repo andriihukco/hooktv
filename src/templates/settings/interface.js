@@ -1,12 +1,14 @@
 import Material from '../../utils/material'
 
 let html = `<div>
+    <!-- Tastes is paused: restore this row together with TastesSettings.init in app.js
     <div class="settings-folder settings-folder--tastes selector" data-component="tastes">
         <div class="settings-folder__icon">
             ${Material.icon('auto_awesome')}
         </div>
         <div class="settings-folder__name">#{tastes_title}</div>
     </div>
+    -->
 
     <div class="settings-param selector" data-static="true">
         <div class="settings-param__name">#{settings_interface_lang}</div>
