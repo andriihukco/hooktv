@@ -54,7 +54,7 @@ class Descriptiopn extends Emit{
         if(this.card.production_companies.length){
             tags.append(this.tag(Lang.translate('full_production'), this.card.production_companies, (company)=>{
                 Router.call('company', {...company, card: this.card})
-            }))
+            }, true))
         }
 
         let key_tags = this.card.keywords ? (this.card.keywords.results || this.card.keywords.keywords) : []
@@ -140,18 +140,26 @@ class Descriptiopn extends Emit{
         this.emit('create')
     }
 
-    tag(name, items, call){
+    tag(name, items, call, logos){
         let elem = $(`<div class="tag-count selector">
             <div class="tag-count__name">${name}</div>
             <div class="tag-count__count">${items.length}</div>
         </div>`)
-    
+
         elem.on('hover:enter',()=>{
             let select = items.map(a=>{
-                return {
+                let item = {
                     title: Utils.capitalizeFirstLetter(a.name),
                     elem: a
                 }
+
+                // TMDB production companies carry a logo_path; show it when there is one
+                if(logos && a.logo_path){
+                    item.template = 'selectbox_icon'
+                    item.icon     = '<img src="' + TMDB.img(a.logo_path, 'w185') + '" />'
+                }
+
+                return item
             })
     
             Select.show({
