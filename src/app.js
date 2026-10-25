@@ -161,10 +161,17 @@ Arrays.extend(window.lampa_settings,{
     // Обрабатывать сообщения сокетов
     socket_methods: true,
 
-    // Использовать аккаунты CUB
+    // Адрес проекта Supabase и публичный anon-ключ (аккаунты, синхронизация)
+    supabase_url: undefined,
+    supabase_anon_key: undefined,
+
+    // Страница входа с телефона для ТВ (в QR-код добавляется ?ticket=...)
+    supabase_signin_url: undefined,
+
+    // Использовать аккаунты (включается, только если задан проект Supabase)
     account_use: false,
 
-    // Синхронизировать закладки, таймкоды и прочее
+    // Синхронизировать закладки, таймкоды и прочее (включается вместе с аккаунтом)
     account_sync: false,
 
     // Разрешить установку плагинов и расширений
@@ -266,6 +273,12 @@ if(window.localStorage.getItem('remove_white_and_demo')){
     window.lampa_settings.demo         = false
     window.lampa_settings.white_use    = false
 }
+
+// Аккаунт и синхронизация работают только при заданном проекте Supabase
+const supa_ready = Boolean(window.lampa_settings.supabase_url && window.lampa_settings.supabase_anon_key)
+
+window.lampa_settings.account_use  = supa_ready
+window.lampa_settings.account_sync = supa_ready
 
 // Если IPTV, то отключаем все лишнее
 if(window.lampa_settings.iptv){

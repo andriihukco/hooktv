@@ -5,6 +5,7 @@ import Reguest from '../../utils/reguest'
 import Arrays from '../../utils/arrays'
 import Storage from '../storage/storage'
 import Modal from './modal'
+import Auth from '../supa/auth'
 
 let network = new Reguest()
 
@@ -12,27 +13,13 @@ function url(){
     return Utils.protocol() + Manifest.cub_domain + '/api/'
 }
 
+/**
+ * Старые эндпоинты CUB больше не используются. Ответ 404 запускает
+ * пустой путь в вызывающем коде, как и при недоступных данных.
+ * Закладки, просмотр и профили теперь идут через src/core/supa/.
+ */
 function load(path, params = {}, post = false){
-    return new Promise((resolve, reject)=>{
-        if(Permit.token){
-            let account = Permit.account
-
-            Arrays.extend(params, {
-                headers: {
-                    token: account.token,
-                    profile: account.profile.id
-                },
-                timeout: 8000
-            })
-
-            let u = params.url ? params.url : url() + path
-
-            network.silent(u, resolve, reject, post, params)
-        }
-        else{
-            reject({decode_code: 403})
-        }
-    })
+    return Promise.reject({decode_code: Permit.token ? 404 : 403, path: path})
 }
 
 function persons(secuses, error){
@@ -46,13 +33,18 @@ function persons(secuses, error){
     else if(error) error({decode_code: 403})
 }
 
+/**
+ * Данные пользователя из сессии Supabase. Премиум пока не подключен: 0.
+ */
 function user(secuses, error){
-    if(Permit.access){
-        load('users/get?device_name=' + decodeURIComponent(Storage.get('device_name'))).then((data)=>{
-            Storage.set('account_user', JSON.stringify(data.user))
+    let s = Auth.session()
 
-            if(secuses) secuses(data.user)
-        }).catch(error ? error : ()=>{})
+    if(Permit.access && s){
+        let data = {id: s.user_id, email: s.email, premium: 0}
+
+        Storage.set('account_user', JSON.stringify(data))
+
+        if(secuses) secuses(data)
     }
     else if(error) error({decode_code: 403})
 }

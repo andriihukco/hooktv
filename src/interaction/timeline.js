@@ -106,7 +106,7 @@ function update(params){
         data:{ hash: params.hash, road }
     })
 
-    if(!params.received && Account.hasPremium()) Socket.send('timeline',{params})
+    if(!params.received) Account.Timeline.push(params)
 }
 
 /**

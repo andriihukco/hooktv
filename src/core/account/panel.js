@@ -5,8 +5,8 @@ import Select from '../../interaction/select'
 import Lang from '../lang'
 import Settings from '../../interaction/settings/settings'
 import Bookmarks from './bookmarks'
+import SignOut from '../supa/signout'
 import Profile from './profile'
-import Backup from './backup'
 import Utils from '../../utils/utils'
 import Manifest from '../manifest'
 
@@ -25,8 +25,6 @@ function render(body){
         body.find('[data-name="account_use"]').remove()
     }
 
-    Utils.qrcode('https://' + Manifest.cub_site, body.find('.ad-server__qr'))
-
     
     body.find('.settings--account-signin').toggleClass('hide',signed)
     body.find('.settings--account-user').toggleClass('hide',!signed)
@@ -37,13 +35,9 @@ function render(body){
         body.find('.settings--account-user-profile .settings-param__value').text(account.profile.name)
 
         body.find('.settings--account-user-out').on('hover:enter',()=>{
-            Storage.set('account','')
-            Storage.set('account_user','')
-            Storage.set('account_email','')
-
-            Settings.update()
-
-            Bookmarks.update()
+            SignOut.signOutThisDevice().then(()=>{
+                window.location.reload()
+            })
         })
 
         body.find('.settings--account-user-sync').on('hover:enter',(e)=>{
@@ -77,18 +71,6 @@ function render(body){
                 onBack: ()=>{
                     Controller.toggle('settings_component')
                 }
-            })
-        })
-
-        body.find('.settings--account-user-backup').on('hover:enter', (e)=>{
-            let loader = $('<div class="broadcast__scan" style="margin: 1em 0 0 0"><div></div></div>')
-
-            $(e.target).append(loader)
-
-            Backup.select(()=>{
-                loader.remove()
-
-                Controller.toggle('settings_component')
             })
         })
 

@@ -1,7 +1,7 @@
 import Favorite from '../favorite'
 import Permit from './permit'
 import Socket from '../socket'
-import Api from './api'
+import Sync from '../supa/sync'
 import Arrays from '../../utils/arrays'
 import Utils from '../../utils/utils'
 import WebWorker from '../../utils/worker'
@@ -14,19 +14,33 @@ import Timer from '../timer'
 import Lang from '../lang'
 import LoadingProgress from '../../interaction/loading_progress'
 
-let bookmarks     = [] // имеет вид [{id, cid, card_id, type, data, profile, time},...]
+let bookmarks     = [] // имеет вид [{id, card_id, type, data, time, updated_at},...]
 let bookmarks_map = {} // имеет вид {type: {card_id: bookmark, ...}, ...}
-
-let tracker_name  = 'account_bookmarks_sync'
-let tracker_data  = {
-    version: 0,
-    time: 0
-}
 
 let update_timer
 
 let push_queue   = []
 let push_running = false
+
+/**
+ * Строка таблицы bookmarks для отправки в Supabase
+ * @param {String} type - тип закладки
+ * @param {String} card_id - id карточки
+ * @param {Object} card - карточка
+ * @param {Boolean} deleted - true для удаления (tombstone)
+ * @return {Object}
+ */
+function row(type, card_id, card, deleted){
+    return {
+        user_id: Permit.account.user_id,
+        profile_id: Permit.account.profile.id,
+        type: type,
+        card_id: String(card_id),
+        card: Utils.clearCard(Arrays.clone(card)),
+        deleted: !!deleted,
+        updated_at: new Date().toISOString()
+    }
+}
 
 function processQueue(){
     if(push_running || push_queue.length === 0) return
@@ -35,14 +49,12 @@ function processQueue(){
 
     let {method, type, card} = push_queue.shift()
 
-    let find = bookmarks.find((elem)=>elem.card_id == card.id && elem.type == type)
+    Sync.enqueue('bookmarks', {
+        type: 'upsert',
+        row: row(type, card.id, card, method == 'remove')
+    })
 
-    Api.load('bookmarks/' + method, {}, {
-        type: type,
-        data: JSON.stringify(Utils.clearCard(Arrays.clone(card))),
-        card_id: card.id,
-        id: find ? find.id : 0
-    }).then(()=>{
+    Sync.flush().then(()=>{
         clearTimeout(update_timer)
 
         update_timer = setTimeout(()=>{
@@ -93,18 +105,10 @@ function init(){
         bookmarks = []
         bookmarks_map = {}
 
-        // Сбрасываем трекер чтобы при смене профиля сразу получить дамп закладок
-        tracker_data.time = 0
-        tracker_data.version = 0
-
-        Cache.rewriteData('other', tracker_name, tracker_data).catch((e)=>{
-            console.log('Account', 'bookmarks tracker cache not reset', e.message)
-        }).finally(()=>{
-            update(()=>{
-                Lampa.Listener.send('state:changed', {
-                    target: 'favorite',
-                    reason: 'profile'
-                })
+        update(()=>{
+            Lampa.Listener.send('state:changed', {
+                target: 'favorite',
+                reason: 'profile'
             })
         })
     })
@@ -131,16 +135,10 @@ function push(method, type, card){
 
 /**
  * Сохранение закладок в кэш
- * @param {number} version - версия закладок на сервере
  * @return {void}
  */
-function saveToCache(version){
-    Cache.rewriteData('other', 'account_bookmarks_' + Permit.account.profile.id, bookmarks).then(()=>{
-        tracker_data.version = version
-        tracker_data.time    = Date.now()
-
-        Cache.rewriteData('other', tracker_name, tracker_data).catch((e)=>{})
-    }).catch((e)=>{
+function saveToCache(){
+    Cache.rewriteData('other', 'account_bookmarks_' + Permit.account.profile.id, bookmarks).catch((e)=>{
         console.log('Account', 'bookmarks cache not saved', e.message)
     })
 }
@@ -168,16 +166,29 @@ function loadFromCache(call){
     })
 }
 
-function loadTrackerData(call){
-    Cache.getDataAnyCase('other', tracker_name).then((data)=>{
-        if(data){
-            tracker_data.version = data.version || 0
-            tracker_data.time    = data.time || 0
-        }
+/**
+ * Применить строку закладки из Supabase к локальному списку.
+ * Побеждает более новая версия (Sync.mergeRow).
+ * @param {Object} remote - строка таблицы bookmarks
+ * @return {void}
+ */
+function applyRow(remote){
+    let local = bookmarks.find((b)=> b.type == remote.type && b.card_id == remote.card_id)
+    let won   = Sync.mergeRow(local ? {updated_at: local.updated_at} : null, remote)
 
-        if(call) call()
-    }).catch(()=>{
-        if(call) call()
+    if(won !== remote) return
+
+    if(local) Arrays.remove(bookmarks, local)
+
+    if(remote.deleted) return
+
+    Arrays.insert(bookmarks, 0, {
+        id: remote.id,
+        card_id: remote.card_id,
+        type: remote.type,
+        data: remote.card,
+        time: Date.parse(remote.updated_at),
+        updated_at: remote.updated_at
     })
 }
 
@@ -192,126 +203,26 @@ function update(call){
 
         LoadingProgress.status('Bookmarks start sync')
 
-        loadTrackerData(()=>{
-            // Если с момента последнего обновления прошло больше 15 дней, то загружаем дамп
-            if(tracker_data.time < Date.now() - 1000 * 60 * 60 * 24 * 15){
-                console.log('Account', 'bookmarks start full update', tracker_data.version)
+        loadFromCache(()=>{
+            Sync.pull(Permit.account.profile.id, 'bookmarks', (rows)=>{
+                rows.forEach(applyRow)
+            }).then(()=>{
+                LoadingProgress.status('Bookmarks applied')
 
-                LoadingProgress.status('Bookmarks loading full dump')
+                saveToCache()
 
-                Api.load('bookmarks/dump', {dataType: 'text'}).then((result)=>{
-                    LoadingProgress.status('Bookmarks parsing dump')
+                createMap()
 
-                    // !!! WebWorker почему-то зависает на телевизорах и вылетает, пока без него
-                    // Парсим текст в массив закладок
-                    // WebWorker.json({
-                    //     type: 'parse',
-                    //     data: result
-                    // },(e)=>{
-                        console.log('Account', 'bookmarks dump load complete, size:', result.length)
+                updateChannels()
 
-                        let e = {data:Arrays.decodeJson(result, {})}
+                console.log('Account', 'bookmarks update complete, total:', bookmarks.length)
 
-                        if(!e.data.bookmarks){
-                            console.error('Account', 'bookmarks wrong dump format', Utils.shortText(result, 300))
+                if(call && typeof call == 'function') call()
+            }).catch(()=>{
+                console.warn('Account', 'bookmarks update fail')
 
-                            if(call && typeof call == 'function') call()
-
-                            return
-                        }
-
-                        console.log('Account', 'bookmarks full update complete, total:', e.data.bookmarks.length)
-
-                        // Переводим строки с .data в объект, обновляем локальный кэш и карту
-                        rawToCard(e.data.bookmarks,()=>{
-                            saveToCache(e.data.version)
-
-                            if(call && typeof call == 'function') call()
-                        })
-                    //})
-                }).catch((e)=>{
-                    LoadingProgress.status('Bookmarks no dump load, trying cache')
-
-                    console.error('Account', 'bookmarks full update fail, trying load from cache:', 'message', e.message)
-
-                    loadFromCache(()=>{
-                        if(call && typeof call == 'function') call()
-                    })
-                })
-            }
-            // Иначе получаем только изменения с последней версии
-            else{
-                console.log('Account', 'bookmarks start update since', tracker_data.version)
-
-                LoadingProgress.status('Bookmarks load from cache')
-                
-                loadFromCache(()=>{
-                    LoadingProgress.status('Bookmarks loading changelog')
-
-                    Api.load('bookmarks/changelog?since=' + tracker_data.version).then((result)=>{
-                        LoadingProgress.status('Bookmarks applying changelog')
-
-                        result.changelog.forEach((change)=>{
-                            if(change.action == 'remove'){
-                                let find = bookmarks.find((book)=>book.id == change.entity_id)
-
-                                if(find) Arrays.remove(bookmarks, find)
-                            }
-                            else if(change.action == 'update'){
-                                let find = bookmarks.find((book)=>book.id == change.entity_id)
-
-                                if(find){
-                                    find.time = change.updated_at
-
-                                    Arrays.remove(bookmarks, find)
-                                    Arrays.insert(bookmarks, 0, find)
-                                }
-                            }
-                            else if(change.action == 'add'){
-                                if(change.data){
-                                    change.data = Utils.clearCard(Arrays.decodeJson(change.data, {}))
-
-                                    // Если закладка уже есть, то обновляем время и двигаем ее в начало, иначе просто добавляем
-                                    // !!! Надеюсь это избавит от бага с дублированием закладок при обновлении
-                                    let find = bookmarks.find((book)=>book.id == change.entity_id)
-
-                                    if(find){
-                                        find.time = change.updated_at
-
-                                        Arrays.remove(bookmarks, find)
-                                        Arrays.insert(bookmarks, 0, find)
-                                    }
-                                    else{
-                                        Arrays.insert(bookmarks, 0, change)
-                                    }
-                                }
-                            }
-                            else if(change.action == 'clear'){
-                                let filter = bookmarks.filter((book)=>book.type == change.entity_id)
-
-                                filter.forEach((book)=>Arrays.remove(bookmarks, book))
-                            }
-                        })
-
-                        // Сохраняем обновленные закладки в кэш
-                        saveToCache(result.version)
-
-                        // Обновляем карту
-                        createMap()
-
-                        // Обновляем каналы на андроид тв
-                        updateChannels()
-
-                        console.log('Account', 'bookmarks update complete to version', result.version, 'changes:', result.changelog.length, 'total:', bookmarks.length)
-
-                        if(call && typeof call == 'function') call()
-                    }).catch(()=>{
-                        console.warn('Account', 'bookmarks update since fail')
-
-                        if(call && typeof call == 'function') call()
-                    })
-                })
-            }
+                if(call && typeof call == 'function') call()
+            })
         })
     }
     else{
@@ -324,19 +235,23 @@ function update(call){
 }
 
 /**
- * Очистка закладок
+ * Очистка закладок. Каждая закладка группы помечается удаленной.
  * @param {string} where - группа закладок для очистки
  * @return {void}
  */
 function clear(where){
     if(Permit.sync){
-        Api.load('bookmarks/clear', {}, {
-            type: 'group',
-            group: where
-        }).then(()=>{
+        bookmarks.filter((b)=> b.type == where).forEach((b)=>{
+            Sync.enqueue('bookmarks', {
+                type: 'upsert',
+                row: row(b.type, b.card_id, b.data, true)
+            })
+        })
+
+        Sync.flush().then(()=>{
             update(()=>{
                 // Оповещаем другие устройства о изменении закладок
-                Socket.send('bookmarks',{}) 
+                Socket.send('bookmarks',{})
 
                 // Глобальное оповещение об изменении закладок для обновления карточек
                 Lampa.Listener.send('state:changed', {
@@ -407,10 +322,10 @@ function rawToCard(rows, call){
         type: 'account_bookmarks_parse',
         data: rows
     },(e)=>{
-        bookmarks = Arrays.isArray(e.data) ? e.data : [] 
+        bookmarks = Arrays.isArray(e.data) ? e.data : []
 
         console.log('Account', 'bookmarks rawToCard complete, total:', bookmarks.length)
-        
+
         createMap()
 
         updateChannels()
@@ -436,77 +351,33 @@ function createMap(){
 }
 
 /**
- * Синхронизация закладок из локальных на сервер
+ * Отправить текущие закладки в Supabase (первичная загрузка локального списка)
  * @param {function} callback - вызов по окончании
  * @return {void}
  */
 function sync(callback){
-    let file
-    
-    try{
-        file = new File([localStorage.getItem('favorite') || '{}'], "bookmarks.json", {
-            type: "text/plain",
-        })
-    }
-    catch(e){
-        console.warn('Account', 'bookmarks file create error', e.message)
-    }
-
-    if(!file){
-        try{
-            file = new Blob([localStorage.getItem('favorite') || '{}'], {type: 'text/plain'})
-            file.lastModifiedDate = new Date()
-        }
-        catch(e){
-            Noty.show(Lang.translate('account_export_fail'))
-
-            console.warn('Account', 'bookmarks blob create error', e.message)
-        }
-    }
-
-    if(file){
-        let formData = new FormData($('<form></form>')[0])
-            formData.append("file", file, "bookmarks.json")
-        
-        $.ajax({
-            url: Api.url() + 'bookmarks/sync',
-            type: 'POST',
-            data: formData,
-            async: true,
-            cache: false,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            processData: false,
-            headers: {
-                token: Permit.token,
-                profile: Permit.account.profile.id
-            },
-            success: function (j) {
-                if(j.secuses){
-                    Noty.show(Lang.translate('account_sync_secuses'))
-
-                    update()
-                }
-                else{
-                    console.error('Account', 'bookmarks sync fail response')
-                }
-
-                callback && callback()
-            },
-            error: function(){
-                console.error('Account', 'bookmarks sync fail')
-
-                Noty.show(Lang.translate('account_export_fail'))
-
-                callback && callback()
-            }
-        })
-    }
-    else{
+    if(!Permit.sync){
         callback && callback()
 
-        console.error('Account', 'bookmarks no create file for sync')
+        return
     }
+
+    bookmarks.forEach((elem)=>{
+        Sync.enqueue('bookmarks', {
+            type: 'upsert',
+            row: row(elem.type, elem.card_id, elem.data, false)
+        })
+    })
+
+    Sync.flush().then(()=>{
+        Noty.show(Lang.translate('account_sync_secuses'))
+
+        update()
+    }).catch(()=>{
+        Noty.show(Lang.translate('account_export_fail'))
+    }).finally(()=>{
+        callback && callback()
+    })
 }
 
 export default {
