@@ -19753,3 +19753,13 @@ body.minimal--ui .head__logo-icon {
 body.minimal--ui .head__logo-icon.focus {
   outline-color: var(--focus-ring-color, var(--focus-fill));
 }
+
+/* Sideways moves on the hero change slides (hero.js swipe); vertical ones still scroll the page */
+.hero-tv {
+  -ms-touch-action: pan-y;
+      touch-action: pan-y;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
+  -webkit-user-select: none;
+}

@@ -92,6 +92,8 @@ class Hero extends Emit{
             }
         })
 
+        this.swipe()
+
         this.show(0)
 
         this.timer = setInterval(()=>{
@@ -113,6 +115,87 @@ class Hero extends Emit{
 
     card(){
         return this.cards[this.index]
+    }
+
+    step(by){
+        if(this.cards.length < 2) return
+
+        this.show((this.index + by + this.cards.length) % this.cards.length)
+    }
+
+    /**
+     * Swipe or drag sideways to change slides. Touch and mouse events, not
+     * pointer events, so older TV browsers get it too. A vertical move is left
+     * to the page scroll, and the click that ends a drag never reaches a button.
+     */
+    swipe(){
+        let root  = this.html[0]
+        let image = this.html.find('.hero-tv__backdrop--current')
+        let start = null
+        let dragged = false
+
+        let point = (e)=>e.touches ? e.touches[0] || e.changedTouches[0] : e
+
+        let begin = (e)=>{
+            if(this.cards.length < 2 || (e.button !== undefined && e.button !== 0)) return
+
+            let p = point(e)
+
+            start   = {x: p.clientX, y: p.clientY, axis: ''}
+            dragged = false
+        }
+
+        let move = (e)=>{
+            if(!start) return
+
+            let p  = point(e)
+            let dx = p.clientX - start.x
+            let dy = p.clientY - start.y
+
+            // decide once, after a few pixels, whether this is a swipe or a scroll
+            if(!start.axis && Math.abs(dx) + Math.abs(dy) > 10) start.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+
+            if(start.axis != 'x') return
+
+            dragged = true
+
+            if(e.cancelable && !e.touches) e.preventDefault()
+
+            image.css({transition: 'none', transform: `translate3d(${dx * 0.25}px, 0, 0) scale(1.02)`})
+        }
+
+        let end = (e)=>{
+            if(!start) return
+
+            let p  = point(e)
+            let dx = p ? p.clientX - start.x : 0
+
+            image.css({transition: '', transform: ''})
+
+            if(start.axis == 'x' && Math.abs(dx) > Math.min(60, root.offsetWidth * 0.08)) this.step(dx < 0 ? 1 : -1)
+
+            start = null
+        }
+
+        root.addEventListener('touchstart', begin, {passive: true})
+        root.addEventListener('touchmove', move, {passive: true})
+        root.addEventListener('touchend', end)
+        root.addEventListener('touchcancel', ()=>{ start = null; image.css({transition: '', transform: ''}) })
+
+        root.addEventListener('mousedown', begin)
+        window.addEventListener('mousemove', this.mousemove = move)
+        window.addEventListener('mouseup', this.mouseup = end)
+
+        // a drag that ends over a button is not a press
+        root.addEventListener('click', (e)=>{
+            if(dragged){
+                dragged = false
+                e.stopPropagation()
+                e.preventDefault()
+            }
+        }, true)
+
+        this.html.find('img').attr('draggable', 'false')
     }
 
     show(index){
@@ -249,11 +332,13 @@ class Hero extends Emit{
             },
             left: ()=>{
                 if(Navigator.canmove('left')) Navigator.move('left')
+                // the side menu is hidden in the minimal layout: step back a slide instead
+                else if(window.lampa_settings.minimal_ui) this.step(-1)
                 else Controller.toggle('menu')
             },
             right: ()=>{
                 if(Navigator.canmove('right')) Navigator.move('right')
-                else this.show((this.index + 1) % this.cards.length)
+                else this.step(1)
             },
             down: this.emit.bind(this, 'down'),
             up: this.emit.bind(this, 'up'),
@@ -269,6 +354,8 @@ class Hero extends Emit{
 
     destroy(){
         clearInterval(this.timer)
+        window.removeEventListener('mousemove', this.mousemove)
+        window.removeEventListener('mouseup', this.mouseup)
         this.transitionId++
 
         this.html.remove()
