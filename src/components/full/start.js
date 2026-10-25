@@ -105,22 +105,19 @@ class Start extends Emit {
         
         this.card.number_of_seasons && this.html.find('.is--serial').removeClass('hide')
 
-        this.card.vote_average == 0 && this.html.find('.rate--tmdb').addClass('hide')
+        // one rating chip: IMDb when there is one, otherwise TMDB. The colour follows that score: strong, fair, weak
+        let imdb  = parseFloat(this.card.imdb_rating || 0)
+        let score = imdb > 0 ? imdb : parseFloat(this.card.vote_average || 0)
+        let tone  = score >= 7 ? 'rate--good' : score >= 5 ? 'rate--mid' : 'rate--bad'
 
-        // the rating colour follows the score: strong, fair, weak
-        let score = parseFloat(this.card.vote_average || 0)
-
-        this.html.find('.rate--tmdb').addClass(score >= 7 ? 'rate--good' : score >= 5 ? 'rate--mid' : 'rate--bad')
+        if(imdb > 0){
+            this.html.find('.rate--tmdb').addClass('hide')
+            this.html.find('.rate--imdb').removeClass('hide').addClass(tone).find('> div').eq(0).text(Math.min(imdb, 10).toFixed(1))
+        }
+        else if(this.card.vote_average == 0) this.html.find('.rate--tmdb').addClass('hide')
+        else this.html.find('.rate--tmdb').addClass(tone)
 
         this.card.status && this.html.find('.full-start__status').removeClass('hide').text(Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')))
-
-        if(this.card.imdb_rating && parseFloat(this.card.imdb_rating) > 0){
-            this.html.find('.rate--imdb').removeClass('hide').find('> div').eq(0).text(parseFloat(this.card.imdb_rating) >= 10 ? 10 : this.card.imdb_rating)
-        }
-
-        if(this.card.kp_rating && parseFloat(this.card.kp_rating) > 0){
-            this.html.find('.rate--kp').removeClass('hide').find('> div').eq(0).text(parseFloat(this.card.kp_rating) >= 10 ? 10 : this.card.kp_rating)
-        }
 
         // duration and genres share one chip row under the details line
         let chips = []

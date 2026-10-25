@@ -4257,6 +4257,11 @@ body.minimal--ui{
         padding-right: 0.8em;
     }
 
+    // IMDb chip: star, number and label sit closer together
+    > .full-start__rate.rate--imdb{
+        gap: 0.25em;
+    }
+
     // the star leads the number and is a size bigger than the label it replaces
     > .full-start__rate > .source--name{
         display: flex;
