@@ -62,4 +62,24 @@ function match(card){
     return R.match(get(), card)
 }
 
-export default {get, set, verdict, reset, apply, discoverParams, match}
+/**
+ * Wrap a result callback so any list of titles it receives is filtered and ranked first
+ */
+function filtered(cb){
+    if(typeof cb != 'function') return cb
+
+    return (data)=>{
+        if(data && Array.isArray(data.results)) data = Object.assign({}, data, {results: apply(data.results)})
+
+        cb(data)
+    }
+}
+
+/**
+ * One search result: kept when it matches the profile, undefined otherwise
+ */
+function keep(card){
+    return card && match(card) ? card : undefined
+}
+
+export default {get, set, verdict, reset, apply, discoverParams, match, filtered, keep}
