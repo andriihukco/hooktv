@@ -19026,7 +19026,7 @@ body.true--mobile .card.card--details-overlay.focus .card__hover-info, body.true
   .full-start-new__tagline {
     font-size: 1.1em;
   }
-  .full-start-new__rate-line, .full-start-new__details, .full-start-new__reactions {
+  .full-start-new__rate-line, .full-start-new__details, .full-start-new__genres, .full-start-new__reactions {
     -webkit-box-pack: center;
     -webkit-justify-content: center;
         -ms-flex-pack: center;
@@ -21685,10 +21685,14 @@ body.minimal--ui .menu__item {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-box-ordinal-group: 0;
+  -webkit-order: -1;
+      -ms-flex-order: -1;
+          order: -1;
 }
 .full-start-new__rate-line > .full-start__rate > .source--name svg {
-  width: 1.25em;
-  height: 1.25em;
+  width: 1.5em;
+  height: 1.5em;
 }
 
 .full-start-new__genres {
