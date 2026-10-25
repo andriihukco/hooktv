@@ -32,13 +32,15 @@ suite('link previews', ()=>{
         expect(res.body).not.toContain('http-equiv="refresh"')
     })
 
-    test('movie page uses TMDB title, year and backdrop, and escapes text', async ()=>{
-        vi.stubGlobal('fetch', async ()=>({ok: true, json: async ()=>({title: 'Надія <b>', release_date: '2026-01-02', overview: 'Опис', backdrop_path: '/b.jpg'})}))
+    test('movie page uses TMDB title, year, rating and genres, the card image, and escapes text', async ()=>{
+        vi.stubGlobal('fetch', async ()=>({ok: true, json: async ()=>({title: 'Надія <b>', release_date: '2026-01-02', overview: 'Опис', backdrop_path: '/b.jpg', vote_average: 6.84, genres: [{name: 'фантастика'}, {name: 'Детектив'}]})}))
 
         let res = await run('/api/title?card=42&media=movie&source=tmdb')
 
         expect(res.body).toContain('content="Надія &lt;b&gt; (2026)"')
-        expect(res.body).toContain('https://image.tmdb.org/t/p/w1280/b.jpg')
+        expect(res.body).toContain('<meta property="og:description" content="★ 6.8 · Фантастика · Детектив. Опис">')
+        expect(res.body).toContain('<meta property="og:image" content="https://hook.tv/api/og?card=42&amp;media=movie">')
+        expect(res.body).toContain('<meta property="og:image:width" content="1200">')
         expect(res.body).toContain('<meta property="og:type" content="video.movie">')
         expect(res.body).toContain('http-equiv="refresh" content="0; url=/?card=42&amp;media=movie&amp;source=tmdb"')
     })
