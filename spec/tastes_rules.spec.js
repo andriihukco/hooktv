@@ -47,3 +47,8 @@ test('discoverParams omits unset fields', () => {
     expect(R.discoverParams({...empty, genres: [28, 35], min_rating: 7}, 'movie'))
         .toEqual({with_genres: '28|35', 'vote_average.gte': 7})
 })
+
+test('queryString skips taken keys and encodes values', () => {
+    expect(R.queryString({with_genres: '28|35', 'vote_average.gte': 7, with_cast: '1|2'}, ['with_genres', 'vote_average.gte']))
+        .toBe('&with_cast=1%7C2')
+})

@@ -113,6 +113,16 @@ function discoverParams(profile, media){
     return params
 }
 
-export {defaults, normalize, mediaOf, verdictKey, match, score, apply, discoverParams}
+/**
+ * Append the params as '&key=value' pairs, skipping keys the caller already sets
+ */
+function queryString(params, taken = []){
+    return Object.keys(params)
+        .filter(key=>taken.indexOf(key) < 0)
+        .map(key=>'&' + key + '=' + encodeURIComponent(params[key]))
+        .join('')
+}
 
-export default {defaults, normalize, mediaOf, verdictKey, match, score, apply, discoverParams}
+export {defaults, normalize, mediaOf, verdictKey, match, score, apply, discoverParams, queryString}
+
+export default {defaults, normalize, mediaOf, verdictKey, match, score, apply, discoverParams, queryString}
