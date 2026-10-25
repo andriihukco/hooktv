@@ -46,8 +46,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"></noscript>
     <!-- not render-blocking: the scripts at the end of <body> start once it is in -->
-    <link rel="preload" href="css/app.css?v=2.87" as="style">
-    <link rel="stylesheet" href="css/app.css?v=2.87" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
+    <link rel="preload" href="css/app.css?v=2.88" as="style">
+    <link rel="stylesheet" href="css/app.css?v=2.88" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
 </head>
 <body>
     <!-- painted before app.js arrives, so the first paint does not wait for it; loading_progress.js
@@ -108,7 +108,7 @@
 
                 started = true
 
-                var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.87']
+                var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.88']
 
                 scripts.forEach(function(src){
                     var script = document.createElement('script')

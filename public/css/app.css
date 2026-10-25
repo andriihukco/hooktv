@@ -912,7 +912,7 @@ body.no--animation *::after {
           align-items: flex-start;
 }
 .lang__body {
-  padding-bottom: 6.5em;
+  padding-bottom: 9em;
 }
 .lang__subtitle:empty {
   display: none;
@@ -931,45 +931,12 @@ body.no--animation *::after {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 2.4em 1.2em max(1.4em, env(safe-area-inset-bottom, 0px) + 1em);
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), color-stop(45%, #000));
-  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, #000 45%);
-  background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, #000 45%);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 45%);
+  padding: 6em 1.2em max(1.6em, env(safe-area-inset-bottom, 0px) + 1em);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), color-stop(50%, rgba(0, 0, 0, 0.85)), color-stop(75%, #000));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 50%, #000 75%);
   pointer-events: none;
-}
-.lang__save {
-  pointer-events: auto;
-  width: 100%;
-  max-width: 26em;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 0.95em 1.5em;
-  -webkit-border-radius: 999px;
-          border-radius: 999px;
-  text-align: center;
-  font-size: 1.2em;
-  font-weight: 700;
-  color: var(--brand-on-primary, #000);
-  background: var(--brand-primary, #C8F542);
-  cursor: pointer;
-  -webkit-transition: -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
-  transition: -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
-  -o-transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s;
-  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s;
-  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s, -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
-}
-.lang__save.focus, .lang__save.hover {
-  -webkit-transform: scale(1.03);
-      -ms-transform: scale(1.03);
-          transform: scale(1.03);
-  -webkit-box-shadow: 0 0 0 0.2em #000, 0 0 0 0.4em var(--focus-ring-color, #fff);
-          box-shadow: 0 0 0 0.2em #000, 0 0 0 0.4em var(--focus-ring-color, #fff);
-}
-.lang__save:active {
-  -webkit-transform: scale(0.98);
-      -ms-transform: scale(0.98);
-          transform: scale(0.98);
 }
 
 @-webkit-keyframes lang-in {
@@ -20059,4 +20026,53 @@ body.minimal--ui .head__logo-icon.focus {
     width: 6em;
     height: 6em;
   }
+}
+.lang__save {
+  pointer-events: auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  min-width: 12em;
+  height: 2.8em;
+  min-height: 44px;
+  padding: 0 1.6em;
+  -webkit-border-radius: 3em;
+          border-radius: 3em;
+  font-size: 1.3em;
+  font-weight: 700;
+  background: #C8F542;
+  color: #0B0F00;
+  cursor: pointer;
+  -webkit-transition: background-color 0.2s, -webkit-transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.2s;
+  transition: background-color 0.2s, -webkit-transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.2s;
+  -o-transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s, box-shadow 0.2s, -webkit-transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.2s;
+}
+.lang__save.focus, .lang__save.hover {
+  -webkit-transform: none;
+      -ms-transform: none;
+          transform: none;
+  outline: none;
+  border-color: transparent;
+  -webkit-box-shadow: 0 0 0 2px #000, 0 0 0 4px #C8F542;
+          box-shadow: 0 0 0 2px #000, 0 0 0 4px #C8F542;
+  background: #D6FF5C;
+  color: #0B0F00;
+}
+.lang__save:active {
+  -webkit-transform: scale(0.97);
+      -ms-transform: scale(0.97);
+          transform: scale(0.97);
 }

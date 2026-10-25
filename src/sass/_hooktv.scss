@@ -3408,3 +3408,32 @@ body.minimal--ui .head__logo-icon{
         }
     }
 }
+
+// language screen Save: the primary action button, pinned to the bottom
+.lang__save{
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 12em;
+    height: $hk-action-height;
+    min-height: $hk-min-touch-target;
+    padding: 0 1.6em;
+    border-radius: 3em;
+    font-size: $hk-action-font;
+    font-weight: 700;
+    background: $hk-lime;
+    color: $hk-on-lime;
+    cursor: pointer;
+    transition: transform 0.2s $hk-ease, background-color 0.2s, box-shadow 0.2s;
+
+    &.focus,
+    &.hover{
+        @include hk-button-focus(true);
+    }
+
+    &:active{
+        transform: scale(0.97);
+    }
+}
