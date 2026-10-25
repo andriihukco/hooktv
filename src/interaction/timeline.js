@@ -2,6 +2,7 @@ import Template from './template'
 import Storage from '../core/storage/storage'
 import Utils from '../utils/utils'
 import Account from '../core/account/account'
+import Lang from '../core/lang'
 import Subscribe from '../utils/subscribe'
 import Activity from './activity/activity'
 
@@ -161,6 +162,26 @@ function render(params){
 }
 
 /**
+ * Создать пилюлю прогресса просмотра: полоса и подпись с процентом и остатком времени
+ * @param {object} params - параметры прогресса от функции view
+ * @param {string} [prefix] - текст перед процентом, например номер серии
+ * @return {HTMLElement} - элемент пилюли
+ */
+function pill(params, prefix = ''){
+    let left = params.duration && params.time < params.duration ? Utils.secondsToTimeHuman(params.duration - params.time) : ''
+
+    let text = [prefix, params.percent + '%', left ? left + ' ' + Lang.translate('time_pill_left') : ''].filter(Boolean).join(' · ')
+
+    let line = document.createElement('div')
+        line.className = 'time-pill'
+        line.innerHTML = '<div class="time-pill__track"><i style="width: ' + params.percent + '%"></i></div><span class="time-pill__text"></span>'
+
+    line.querySelector('.time-pill__text').innerText = text
+
+    return line
+}
+
+/**
  * Создать детальную информацию о прогрессе просмотра
  * @param {object} params - параметры прогресса от функции view
  * @param {string} [str] - строка для добавления перед прогрессом
@@ -230,6 +251,7 @@ export default {
     read,
     listener,
     render,
+    pill,
     update,
     view,
     details,
