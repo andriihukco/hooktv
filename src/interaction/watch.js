@@ -3,7 +3,7 @@ import Controller from '../core/controller'
 import Storage from '../core/storage/storage'
 import Lang from '../core/lang'
 import LoadingProgress from './loading_progress'
-import Noty from './noty'
+import WhereToWatch from './where_to_watch'
 
 // services/online registers itself here on init; importing it directly would
 // pull it into the full-card import cycle before Storage is ready
@@ -33,7 +33,7 @@ function start(movie, back = 'content'){
 
             Storage.set('hooktv_dub', a.lang)
 
-            play(movie, a.lang)
+            play(movie, a.lang, back)
         },
         onBack: ()=>{
             Controller.toggle(back)
@@ -41,7 +41,7 @@ function start(movie, back = 'content'){
     })
 }
 
-function play(movie, want){
+function play(movie, want, back = 'content'){
     LoadingProgress.watch()
 
     Online.autoPlay(movie, want, (ok)=>{
@@ -49,9 +49,7 @@ function play(movie, want){
 
         LoadingProgress.destroy()
 
-        Noty.show(Lang.translate('hooktv_not_found'))
-
-        Online.openList(movie)
+        WhereToWatch.show(movie, Online.openList, back)
     })
 }
 
