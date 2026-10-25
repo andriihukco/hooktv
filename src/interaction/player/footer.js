@@ -119,7 +119,7 @@ function appendClass(classElement){
         onUp: up,
         onDown: down,
         onToggle: function(){
-            scroll.render(true).style.height = this.render(true).offsetHeight
+            scroll.render(true).style.height = this.render(true).offsetHeight + 'px'
         },
         onEnter: ()=>{
             close()

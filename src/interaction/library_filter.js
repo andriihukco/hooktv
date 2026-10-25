@@ -538,10 +538,10 @@ function init(){
     })
 
     // TV remote: the pill is always on screen, but a remote can only reach it by stepping
-    // ↓ from the last row (or from the buttons of an expanded card, see peek.js)
+    // ↓ from the last row (the buttons of an expanded card hand over in peek.js)
     window.addEventListener('keydown', (e)=>{
         if(e.keyCode !== 40 || e.defaultPrevented || !pill.classList.contains('library-filter-pill--show')) return
-        if(['content', 'card_peek'].indexOf(Controller.enabled().name) < 0 || Navigator.canmove('down')) return
+        if(Controller.enabled().name !== 'content' || Navigator.canmove('down')) return
 
         e.stopPropagation()
         e.preventDefault()

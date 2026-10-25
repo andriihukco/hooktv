@@ -192,7 +192,8 @@ function frameUpdate(render){
             read = parseFloat(elem.style.width),
 			widh = window.innerWidth - (Platform.screen('light') && menu_left == 0 ? menu_width : menu_offset) - navi_width
 
-        if(read !== widh) layer_width[i].style.width = widh
+        // px: a bare number only works in quirks mode, and index.html has a doctype
+        if(read !== widh) layer_width[i].style.width = widh + 'px'
     }
 
     for(let i = 0; i < layer_wheight.length; i++){
@@ -208,7 +209,7 @@ function frameUpdate(render){
             heig -= attr.getBoundingClientRect().height
         }
 
-        if(read !== heig) elem.style.height = heig
+        if(read !== heig) elem.style.height = heig + 'px'
     }
 
     for(let i = 0; i < layer_height.length; i++){
@@ -221,7 +222,7 @@ function frameUpdate(render){
             heig -= attr.getBoundingClientRect().height
         }
 
-        if(read !== heig) elem.style.height = heig
+        if(read !== heig) elem.style.height = heig + 'px'
     }
 }
 

@@ -300,7 +300,10 @@ function init(){
         up: ()=>leave(),
         down: ()=>{
             leave()
-            Controller.move('down')
+
+            // next row; from the last row on to the Filters pill (library_filter.js)
+            if(Navigator.canmove('down')) Controller.move('down')
+            else if(document.querySelector('.library-filter-pill--show')) Controller.toggle('library_filter_pill')
         },
         back: ()=>leave()
     })

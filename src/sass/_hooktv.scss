@@ -260,17 +260,6 @@ body.minimal--ui .navigation-bar--tabs{
             margin-left: 0.65em;
         }
 
-        .head .head__menu-icon{
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .head .head__menu-icon svg{
-            width: 3em !important;
-            height: 3em !important;
-        }
-
         .head__logo-icon{
             margin-right: 0;
         }
@@ -295,8 +284,9 @@ body.minimal--ui .navigation-bar--tabs{
             }
         }
 
+        // the side menu is hidden on phones; the settings button (menu icon) replaces it
         .head .head__menu-icon{
-            display: flex !important;
+            display: none !important;
         }
 
         .navigation-bar--tabs{
