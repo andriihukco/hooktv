@@ -836,9 +836,6 @@ body.no--animation *::after {
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
 }
-.lang__selector-item.last-focus .lang__item-check {
-  opacity: 1;
-}
 .lang__selector-item.lang__selector-item--selected .lang__item-check {
   opacity: 1;
 }
@@ -855,7 +852,6 @@ body.no--animation *::after {
   color: rgba(0, 0, 0, 0.5);
 }
 .lang__selector-item.focus .lang__item-check, .lang__selector-item.hover .lang__item-check {
-  opacity: 1;
   color: #000;
 }
 .lang__item-flag {
@@ -902,12 +898,78 @@ body.no--animation *::after {
   .lang__title {
     font-size: 2.2em;
   }
-  .lang .lang__selector > .scroll {
-    max-height: 13em !important;
-  }
   .lang .lang__selector-item {
     padding: 0.65em 0.8em;
   }
+}
+
+/* The whole list shows at once; Save stays pinned to the bottom over a fade,
+   and the page leaves room under the last language so nothing hides behind it */
+.lang {
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+.lang__body {
+  padding-bottom: 6.5em;
+}
+.lang__subtitle:empty {
+  display: none;
+}
+.lang__footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 2.4em 1.2em max(1.4em, env(safe-area-inset-bottom, 0px) + 1em);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), color-stop(45%, #000));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, #000 45%);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, #000 45%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 45%);
+  pointer-events: none;
+}
+.lang__save {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 26em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 0.95em 1.5em;
+  -webkit-border-radius: 999px;
+          border-radius: 999px;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: var(--brand-on-primary, #000);
+  background: var(--brand-primary, #C8F542);
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
+  transition: -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
+  -o-transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s, -webkit-transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), -webkit-box-shadow 0.15s;
+}
+.lang__save.focus, .lang__save.hover {
+  -webkit-transform: scale(1.03);
+      -ms-transform: scale(1.03);
+          transform: scale(1.03);
+  -webkit-box-shadow: 0 0 0 0.2em #000, 0 0 0 0.4em var(--focus-ring-color, #fff);
+          box-shadow: 0 0 0 0.2em #000, 0 0 0 0.4em var(--focus-ring-color, #fff);
+}
+.lang__save:active {
+  -webkit-transform: scale(0.98);
+      -ms-transform: scale(0.98);
+          transform: scale(0.98);
 }
 
 @-webkit-keyframes lang-in {
@@ -19780,4 +19842,221 @@ body.minimal--ui .head__logo-icon.focus {
    -ms-user-select: none;
        user-select: none;
   -webkit-user-select: none;
+}
+
+/* People: every portrait is a circle, wherever a person appears */
+.full-person__photo {
+  -webkit-border-radius: 50% !important;
+          border-radius: 50% !important;
+  background-color: var(--surface-media, #1c1c1e);
+}
+.full-person__photo > img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 20%;
+     object-position: 50% 20%;
+}
+
+/* Cast and crew rows: Apple TV style, a round portrait with the name and role under it.
+   Focus rings the portrait instead of turning the whole tile white */
+.items-line__body .full-person {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  width: 9.5em;
+  padding: 0.4em 0.3em 0.6em;
+  margin-right: 0.8em;
+  -webkit-border-radius: 1em;
+          border-radius: 1em;
+  background: none !important;
+  color: inherit !important;
+}
+.items-line__body .full-person .full-person__photo {
+  width: 7.4em;
+  height: 7.4em;
+  margin: 0 0 0.8em;
+  -webkit-box-shadow: 0 0 0 0 transparent;
+          box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: -webkit-transform 0.2s ease, -webkit-box-shadow 0.2s ease;
+  transition: -webkit-transform 0.2s ease, -webkit-box-shadow 0.2s ease;
+  -o-transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, -webkit-transform 0.2s ease, -webkit-box-shadow 0.2s ease;
+}
+.items-line__body .full-person .full-person__body {
+  width: 100%;
+}
+.items-line__body .full-person .full-person__name {
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.items-line__body .full-person .full-person__role {
+  font-size: 0.9em;
+  margin-top: 0.3em;
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
+}
+.items-line__body .full-person.focus .full-person__photo, .items-line__body .full-person.hover .full-person__photo {
+  -webkit-transform: scale(1.06);
+      -ms-transform: scale(1.06);
+          transform: scale(1.06);
+  -webkit-box-shadow: 0 0 0 0.2em #000, 0 0 0 0.42em var(--focus-ring-color, var(--focus-fill));
+          box-shadow: 0 0 0 0.2em #000, 0 0 0 0.42em var(--focus-ring-color, var(--focus-fill));
+}
+.items-line__body .full-person.focus .full-person__name {
+  color: var(--focus-ring-color, var(--focus-fill));
+}
+
+/* Profile header: round portrait, who they are, the facts, the start of the biography */
+.person-start__body {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.person-start__img {
+  width: 15em !important;
+  height: 15em !important;
+  -webkit-border-radius: 50% !important;
+          border-radius: 50% !important;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 20%;
+     object-position: 50% 20%;
+  background-color: var(--surface-media, #1c1c1e);
+}
+.person-start__left {
+  min-width: 0;
+}
+.person-start__eyebrow {
+  font-size: 1.15em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--accent, #c8f542);
+  margin-bottom: 0.45em;
+}
+.person-start__eyebrow:empty {
+  display: none;
+}
+.person-start__name {
+  margin: 0 0 0.45em;
+  line-height: 1.05;
+}
+.person-start__facts {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  gap: 0.4em 2.2em;
+  margin-bottom: 1em;
+  font-size: 1.15em;
+}
+.person-start__facts:empty {
+  display: none;
+}
+.person-start__fact {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 0.2em;
+}
+.person-start__fact-label {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+}
+.person-start__bio {
+  max-width: 46em;
+  font-size: 1.1em;
+  line-height: 1.5;
+  opacity: 0.8;
+  margin-bottom: 1.2em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.person-start__bottom .button--info {
+  width: auto;
+  padding-left: 1.1em;
+  padding-right: 1.3em;
+  gap: 0.5em;
+}
+.person-start__bottom .button--info span {
+  display: inline !important;
+}
+
+/* Phones: the portrait sits above the text, everything centred */
+@media screen and (max-width: 580px) {
+  .person-start__body {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    text-align: center;
+  }
+  .person-start__img {
+    width: 10em !important;
+    height: 10em !important;
+  }
+  .person-start__left {
+    padding-left: 0 !important;
+    padding-top: 1.2em;
+    width: 100%;
+  }
+  .person-start__name {
+    max-width: 100% !important;
+  }
+  .person-start__facts {
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  .person-start__bio {
+    -webkit-line-clamp: 4;
+  }
+  .person-start__bottom {
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  .items-line__body .full-person {
+    width: 7.6em;
+  }
+  .items-line__body .full-person .full-person__photo {
+    width: 6em;
+    height: 6em;
+  }
 }

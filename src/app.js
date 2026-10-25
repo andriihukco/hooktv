@@ -853,6 +853,12 @@ function loadTask(){
 function loadLang(){
     let code = window.localStorage.getItem('language') || 'en'
 
+    // HOOK TV: TMDB speaks the interface language; there is no separate setting for it
+    if(Storage.get('tmdb_lang', '') !== code) Storage.set('tmdb_lang', code, true)
+
+    // the torrents start page is gone with the torrents
+    if(Storage.get('start_page', 'main') == 'mytorrents') Storage.set('start_page', 'main', true)
+
     LoadingProgress.setTotalSteps(6)
     LoadingProgress.step(1)
     

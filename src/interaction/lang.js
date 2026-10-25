@@ -2,7 +2,6 @@ import Storage from '../core/storage/storage'
 import Controller from '../core/controller'
 import Template from './template'
 import Lang from '../core/lang'
-import Scroll from './scroll'
 import VPN from '../core/vpn'
 import en from '../lang/en'
 
@@ -39,6 +38,12 @@ const FLAG = {
     bg: '🇧🇬', he: '🇮🇱', cs: '🇨🇿', ro: '🇷🇴', fr: '🇫🇷'
 }
 
+// the Save button, in the language being chosen
+const SAVE = {
+    en: 'Save', uk: 'Зберегти', ru: 'Сохранить', be: 'Захаваць', zh: '保存', pt: 'Guardar',
+    bg: 'Запази', he: 'שמירה', cs: 'Uložit', ro: 'Salvează', fr: 'Enregistrer'
+}
+
 const CHECK ='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"></polyline></svg>'
 
 /**
@@ -49,7 +54,6 @@ const CHECK ='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke
  */
 function open(callSelected, callCancel){
     let html   = Template.get('lang_choice',{})
-    let scroll = new Scroll({over:true})
     let codes  = Lang.codes()
     let browserLocale = navigator.language || 'en'
     let browser = browserLocale.toLowerCase().split('-')[0]
@@ -65,11 +69,9 @@ function open(callSelected, callCancel){
     let openingCountry = false
 
     function cleanup(){
-        scroll.destroy()
         html.remove()
 
-        scroll = null
-        html   = null
+        html = null
     }
 
     function dismiss(){
@@ -92,6 +94,29 @@ function open(callSelected, callCancel){
         html.find('.lang__location-label').text(text[4] || GREETING.en[4])
         html.find('.lang__language-label').text(text[5] || GREETING.en[5])
         html.find('.lang__country-select').attr('aria-label', text[4] || GREETING.en[4])
+        html.find('.lang__save span').text(SAVE[code] || SAVE.en)
+    }
+
+    // ticks a language; nothing is applied until Save
+    function choose(code){
+        initial = code
+
+        $('.lang__selector-item',html).removeClass('lang__selector-item--selected')
+        html.find('[data-code="' + code + '"]').addClass('lang__selector-item--selected')
+
+        greet(code)
+    }
+
+    function save(){
+        if(!html || closing) return
+
+        closing = true
+
+        if(callSelected) callSelected(initial, selectedCountry)
+
+        html.addClass('lang--out')
+
+        setTimeout(cleanup,400)
     }
 
     function selectSuggestedLanguage(country){
@@ -122,27 +147,23 @@ function open(callSelected, callCancel){
             <div class="lang__item-check">${CHECK}</div>
         </div>`)
 
-        item.on('hover:enter click',(e)=>{
-            // a mouse click fires both events
+        item.on('hover:enter',()=>{
             if(!html || closing) return
 
-            closing = true
-            if(callSelected) callSelected(code, selectedCountry)
+            // on a remote, Enter on the ticked language is the same as Save
+            if(initial == code && item.hasClass('lang__selector-item--selected')) return save()
 
-            html.addClass('lang--out')
-
-            setTimeout(cleanup,400)
+            choose(code)
         }).on('hover:focus',(e)=>{
-            scroll.update($(e.target), true)
-
             $('.lang__selector-item',html).removeClass('last-focus')
 
             $(e.target).addClass('last-focus')
 
-            greet(code)
+            // keep the focused row clear of the pinned Save bar
+            if(e.target.scrollIntoView) e.target.scrollIntoView({block: 'nearest'})
         })
 
-        scroll.append(item)
+        html.find('.lang__list').append(item)
     }
 
     countries.forEach(country=>{
@@ -153,6 +174,8 @@ function open(callSelected, callCancel){
     })
 
     for(let code in codes) selector(code)
+
+    choose(initial)
 
     if(!countries.includes(selectedCountry)) selectedCountry = 'us'
     html.find('.lang__country-select').val(selectedCountry)
@@ -177,10 +200,8 @@ function open(callSelected, callCancel){
         setCountry(this.value, true)
     })
 
-    greet(initial)
-
-    html.find('.lang__selector').append(scroll.render())
     html.find('.lang__close').on('click hover:enter', dismiss)
+    html.find('.lang__save').on('hover:enter', save)
 
     $('body').append(html)
 
@@ -202,7 +223,9 @@ function open(callSelected, callCancel){
             Navigator.move('up')
         },
         down: ()=>{
-            Navigator.move('down')
+            // past the last language is the pinned Save button
+            if(Navigator.canmove('down')) Navigator.move('down')
+            else Controller.collectionFocus(html.find('.lang__save')[0], html)
         },
         back: ()=>{
             dismiss()

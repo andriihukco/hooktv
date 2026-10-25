@@ -6,7 +6,11 @@ let html = `<div class="lang">
         <div class="lang__logo">
             <img src="./img/logo.svg" alt="HOOK TV" />
         </div>
-        <div class="lang__selector"></div>
+        <div class="lang__subtitle"></div>
+        <div class="lang__selector"><div class="lang__list"></div></div>
+    </div>
+    <div class="lang__footer">
+        <div class="lang__save selector"><span>Save</span></div>
     </div>
 </div>`
 

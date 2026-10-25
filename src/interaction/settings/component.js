@@ -183,8 +183,7 @@ function Component(name, component_params = {}){
     function addSections(){
         let sections = [
             ['player', 'settings_main_player'],
-            ['more', 'settings_main_rest'],
-            ['tmdb', 'TMDB']
+            ['more', 'settings_main_rest']
         ]
 
         sections.forEach(([key, title])=>{
