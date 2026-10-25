@@ -38,16 +38,18 @@ async function fetchTitle(media, id){
 
     if(!name) return null
 
-    // a wide backdrop fills the large preview card; posters only as a fallback
-    let wide = Boolean(data.backdrop_path)
-    let image = data.backdrop_path || data.poster_path
+    // "★ 8.5 · Пригоди · Фентезі" ahead of the overview, for previews that show text only
+    let vote   = data.vote_average ? data.vote_average.toFixed(1) : ''
+    let genres = (data.genres || []).slice(0, 3).map(g=>g.name.charAt(0).toUpperCase() + g.name.slice(1))
+    let facts  = [vote && vote != '0.0' ? '★ ' + vote : ''].concat(genres).filter(Boolean).join(' · ')
 
     return {
         title: year ? name + ' (' + year + ')' : name,
-        description: (data.overview || FALLBACK.description).slice(0, 200),
-        image: image ? 'https://image.tmdb.org/t/p/' + (wide ? 'w1280' : 'w780') + image : FALLBACK.image,
-        width: image ? (wide ? 1280 : 780) : FALLBACK.width,
-        height: image ? (wide ? 720 : 1170) : FALLBACK.height,
+        description: ((facts ? facts + '. ' : '') + (data.overview || FALLBACK.description)).slice(0, 220),
+        // branded card with the poster, rating, genres and overview (api/og.js)
+        image: '/api/og?' + new URLSearchParams({card: id, media}).toString(),
+        width: 1200,
+        height: 630,
         type: media == 'tv' ? 'video.tv_show' : 'video.movie'
     }
 }
