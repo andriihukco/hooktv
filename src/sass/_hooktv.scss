@@ -2774,7 +2774,8 @@ body.search--open .library-filter-dock{
 body.library-filter--open .library-filter-dock,
 body.selectbox--open .library-filter-dock,
 body.settings--open .library-filter-dock,
-body.full--page .library-filter-dock{
+body.full--page .library-filter-dock,
+body.player--viewing .library-filter-dock{
     opacity: 0;
     pointer-events: none;
 }
