@@ -25,6 +25,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Validate Vercel credentials
+        shell: bash
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Add the VERCEL_TOKEN repository secret in GitHub Settings."
+            exit 1
+          fi
+          if [ -z "$VERCEL_ORG_ID" ]; then
+            echo "::error::Add the VERCEL_ORG_ID repository secret in GitHub Settings."
+            exit 1
+          fi
+          if [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::error::Add the VERCEL_PROJECT_ID repository secret in GitHub Settings."
+            exit 1
+          fi
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel project settings
