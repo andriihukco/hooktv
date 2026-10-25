@@ -10,6 +10,7 @@ import Manifest from '../manifest'
 import Lang from '../lang'
 import LineModule from '../../interaction/items/line/module/module'
 import LibraryFilter from '../../utils/library_filter'
+import Tastes from '../tastes'
 
 /**
  * Источники
@@ -59,7 +60,7 @@ function availableDiscovery(){
  * @param {function} onerror 
  */
 function main(params = {}, oncomplite, onerror){
-    return source(params).main(params, oncomplite, onerror)
+    return source(params).main(params, Tastes.filtered(oncomplite), onerror)
 }
 
 /**
@@ -69,7 +70,7 @@ function main(params = {}, oncomplite, onerror){
  * @param {function} onerror 
  */
 function category(params = {}, oncomplite, onerror){
-    return source(params).category(params, oncomplite, onerror)
+    return source(params).category(params, Tastes.filtered(oncomplite), onerror)
 }
 
 /**
@@ -90,8 +91,8 @@ function full(params = {}, oncomplite, onerror){
 function search(params = {}, oncomplite){
     TMDB.search(params, (json)=>{
         let result = {
-            movie: json.find(a=>a.type == 'movie'),
-            tv: json.find(a=>a.type == 'tv')
+            movie: Tastes.keep(json.find(a=>a.type == 'movie')),
+            tv: Tastes.keep(json.find(a=>a.type == 'tv'))
         }
 
         oncomplite(result)
@@ -136,7 +137,7 @@ function genres(params = {}, oncomplite, onerror){
  * @param {function} onerror 
  */
 function company(params = {}, oncomplite, onerror){
-    TMDB.company(params, oncomplite, onerror)
+    TMDB.company(params, Tastes.filtered(oncomplite), onerror)
 }
 
 /**
@@ -146,7 +147,7 @@ function company(params = {}, oncomplite, onerror){
  * @param {function} onerror 
  */
 function list(params = {}, oncomplite, onerror){
-    source(params).list(params, oncomplite, onerror)
+    source(params).list(params, Tastes.filtered(oncomplite), onerror)
 }
 
 /**
@@ -175,7 +176,7 @@ function seasons(tv, from, oncomplite){
  * @param {function} onerror 
  */
 function collections(params, oncomplite, onerror){
-    source(params).collections(params, oncomplite, onerror)
+    source(params).collections(params, Tastes.filtered(oncomplite), onerror)
 }
 
 /**
@@ -334,7 +335,10 @@ function partNext(parts, parts_limit, partLoaded, partEmpty){
         progress.append(pieces)
 
         progress.start((result)=>{
-            let data = result.filter(r=>r && r.results && r.results.length)
+            let data = result
+                .filter(r=>r && r.results && r.results.length)
+                .map(row=>Object.assign({}, row, {results: Tastes.apply(row.results)}))
+                .filter(row=>row.results.length)
 
             for(let i = 0; i < pieces.length; i++){
                 parts[parts.indexOf(pieces[i])] = false

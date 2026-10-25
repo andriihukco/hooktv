@@ -1,0 +1,155 @@
+// Tastes: the Settings cell and the wizard inside the modal
+
+// Settings cell: its own rounded card, separated from the Interface group below
+.settings-folder--tastes{
+    border-radius: 0.9em;
+    margin-bottom: 1.2em;
+    background: rgba(255, 255, 255, 0.08);
+
+    .settings-folder__icon{
+        color: var(--accent-text);
+    }
+}
+
+// the first row of the Interface group loses its :first-child corners after the cell
+.settings-folder--tastes + .settings-param{
+    border-top: none;
+    border-top-left-radius: 0.9em;
+    border-top-right-radius: 0.9em;
+}
+
+// wizard body
+.tastes-pick{
+    display: flex;
+    flex-direction: column;
+    gap: 1.6em;
+    padding: 1em 1.2em;
+}
+
+.tastes-pick__section{
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+}
+
+.tastes-pick__title{
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tastes-pick__chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+}
+
+.tastes-pick__input{
+    width: 100%;
+    padding: 0.8em 1em;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    font-size: 1.05em;
+    outline: none;
+}
+
+.tastes-pick__next{
+    align-self: flex-end;
+    padding: 0.8em 1.6em;
+    border-radius: 10em;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-weight: 600;
+    cursor: pointer;
+
+    &.focus{
+        background: #fff;
+        color: #000;
+    }
+}
+
+.tastes-chip{
+    padding: 0.6em 1.1em;
+    border-radius: 10em;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-size: 1.05em;
+    cursor: pointer;
+
+    &--active{
+        background: var(--accent);
+        color: var(--accent-contrast);
+    }
+
+    &.focus{
+        background: #fff;
+        color: #000;
+    }
+}
+
+.tastes-deck{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 1em;
+
+    &__progress{
+        color: var(--text-muted);
+    }
+
+    &__card{
+        width: min(18em, 70vw);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.06);
+        touch-action: none;
+        user-select: none;
+        cursor: grab;
+    }
+
+    &__poster{
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    &__name{
+        padding: 0.8em 1em;
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    &__actions{
+        display: flex;
+        gap: 0.8em;
+    }
+
+    &__btn{
+        padding: 0.7em 1.3em;
+        border-radius: 10em;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+        cursor: pointer;
+
+        &.focus{
+            background: #fff;
+            color: #000;
+        }
+    }
+}
+
+.tastes-message{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 2em 1em;
+    font-size: 1.2em;
+    text-align: center;
+}

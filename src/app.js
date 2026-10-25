@@ -110,6 +110,7 @@ import DataBase from './interaction/database'
 import Maker from './interaction/maker'
 import MaskHelper from './utils/mask'
 import ContentRows from './core/content_rows'
+import TastesSettings from './interaction/tastes/settings'
 import Emit from './utils/emit'
 import Router from './core/router'
 import Timer from './core/timer'
@@ -649,6 +650,8 @@ function startApp(){
 
     ContentRows.init()
     LoadingProgress.status('ContentRows init')
+
+    TastesSettings.init()
     
     // Добавляем источники поиска
 
