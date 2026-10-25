@@ -41,6 +41,18 @@ let html = `<div class="full-start-new">
                     <span>#{title_reactions}</span>
                 </div>
 
+                <div class="full-start__button selector button--like" title="#{reactions_nice}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+
+                    <span class="button--like-count">0</span>
+                </div>
+
+                <div class="full-start__button selector button--dislike" title="#{reactions_shit}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+
+                    <span class="button--dislike-count">0</span>
+                </div>
+
                 <div class="full-start__button selector button--subscribe hide">
                     <svg viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6.01892 24C6.27423 27.3562 9.07836 30 12.5 30C15.9216 30 18.7257 27.3562 18.981 24H15.9645C15.7219 25.6961 14.2632 27 12.5 27C10.7367 27 9.27804 25.6961 9.03542 24H6.01892Z" fill="currentColor"></path>

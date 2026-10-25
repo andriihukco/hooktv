@@ -66,3 +66,63 @@ describe('Profile.rows', () => {
         expect(row('production').title).toBe('hooktv_person_production (1)')
     })
 })
+
+describe('Profile.awards', () => {
+    let statement = (award, year, work) => ({
+        mainsnak: {snaktype: 'value', datavalue: {value: {id: award}}},
+        qualifiers: {
+            P585: [{snaktype: 'value', datavalue: {value: {time: '+' + year + '-00-00T00:00:00Z'}}}],
+            ...(work ? {P1686: [{snaktype: 'value', datavalue: {value: {id: work}}}]} : {})
+        }
+    })
+
+    let claims = {P166: [
+        statement('Q1', 2020, 'Q9'),
+        statement('Q2', 1995),
+        statement('Q1', 2020, 'Q9'),
+        {mainsnak: {snaktype: 'novalue'}}
+    ]}
+
+    it('asks for the award and work names, once each', () => {
+        expect(Profile.awardIds(claims)).toEqual(['Q1', 'Q9', 'Q2'])
+        expect(Profile.awardIds({})).toEqual([])
+    })
+
+    it('lists each award with its year and work, newest first, without duplicates', () => {
+        let names = {Q1: 'Academy Award for Best Actor', Q2: 'Golden Globe', Q9: 'Joker'}
+
+        expect(Profile.awards(claims, names)).toEqual([
+            {year: 2020, award: 'Academy Award for Best Actor', work: 'Joker'},
+            {year: 1995, award: 'Golden Globe', work: ''}
+        ])
+    })
+
+    it('leaves out awards with no name to show', () => {
+        expect(Profile.awards(claims, {Q2: 'Golden Globe'})).toEqual([{year: 1995, award: 'Golden Globe', work: ''}])
+    })
+})
+
+describe('Profile.genres', () => {
+    it('counts each title once, by its genre, most common first', () => {
+        let credits = {
+            cast: [
+                {id: 1, media_type: 'movie', genre_ids: [18, 53]},
+                {id: 2, media_type: 'tv', genre_ids: [18]},
+                {id: 3, media_type: 'tv', genre_ids: [10763], character: 'Himself'}
+            ],
+            crew: [
+                {id: 1, media_type: 'movie', genre_ids: [18, 53], job: 'Director'},
+                {id: 4, media_type: 'movie', genre_ids: [878]}
+            ]
+        }
+
+        // the movie in cast and crew is one title, its genres count once
+        expect(Profile.genres(credits)).toEqual([
+            {media: 'movie', id: 18, count: 1},
+            {media: 'movie', id: 53, count: 1},
+            {media: 'tv', id: 18, count: 1},
+            {media: 'movie', id: 878, count: 1}
+        ])
+        expect(Profile.genres(null)).toEqual([])
+    })
+})

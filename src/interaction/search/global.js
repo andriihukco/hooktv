@@ -11,6 +11,7 @@ import Layer from '../../core/layer'
 import HeadBackward from '../head/backward'
 import Head from '../head/head'
 import Subscribe from '../../utils/subscribe'
+import DeviceInput from '../device_input'
 
 
 
@@ -86,7 +87,14 @@ function create(){
 
     scroll.onScroll = (step)=>{
         Layer.visible(scroll.render(true))
+
+        // phones: once the results are scrolled, the keypad steps aside (the toggle brings it back)
+        if(input) search.addClass('search__body--keys-collapsed')
     }
+
+    search.find('.search__keys-toggle').on('click hover:enter', (e)=>{
+        if(DeviceInput.noDubleClick(e)) search.toggleClass('search__body--keys-collapsed')
+    })
 
     if(Platform.systemKeyboard()) search.find('.search__input-shell').hide()
 

@@ -21,3 +21,18 @@
         background-color: var(--surface-media);
     }
 }
+
+// like and dislike on the details page: the icon with its count, lit once the vote is in
+.button--like, .button--dislike{
+    gap: 0.4em;
+
+    svg{
+        width: 1.4em;
+        height: 1.4em;
+    }
+
+    &.voted{
+        color: #fff;
+        background-color: var(--surface-media);
+    }
+}

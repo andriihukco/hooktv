@@ -7,7 +7,7 @@ import TMDB from '../../core/api/sources/tmdb'
 let html
 let filterState = {
     genres: [],
-    rating: { min: 0, max: 10 },
+    rating: { min: 0, max: 8 },
     countries: [],
     years: { min: 1900, max: new Date().getFullYear() }
 }
@@ -169,9 +169,9 @@ function renderRating(){
         <div class="filter__range">
             <div class="filter__range-label">${Lang.translate('filter_rating')}</div>
             <div class="filter__range-inputs">
-                <input type="number" class="filter__range-min" value="${filterState.rating.min}" min="0" max="10" step="0.1" />
+                <input type="number" class="filter__range-min" value="${filterState.rating.min}" min="0" max="8" step="0.1" />
                 <span>-</span>
-                <input type="number" class="filter__range-max" value="${filterState.rating.max}" min="0" max="10" step="0.1" />
+                <input type="number" class="filter__range-max" value="${filterState.rating.max}" min="0" max="8" step="0.1" />
             </div>
         </div>
     `)
@@ -181,7 +181,7 @@ function renderRating(){
     })
 
     container.find('.filter__range-max').on('change', (e)=>{
-        filterState.rating.max = parseFloat(e.target.value) || 10
+        filterState.rating.max = Math.min(parseFloat(e.target.value) || 8, 8)
     })
 }
 
@@ -215,7 +215,7 @@ function apply(){
 function reset(){
     filterState = {
         genres: [],
-        rating: { min: 0, max: 10 },
+        rating: { min: 0, max: 8 },
         countries: [],
         years: { min: 1900, max: new Date().getFullYear() }
     }

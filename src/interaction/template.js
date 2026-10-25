@@ -48,6 +48,7 @@ import modal_loading from '../templates/modal_loading'
 import modal_pending from '../templates/modal_pending'
 import modal_qr from '../templates/modal_qr'
 import person_start from '../templates/person/start'
+import person_bio from '../templates/person/bio'
 import empty from '../templates/empty/simple'
 import empty_filter from '../templates/empty/filter'
 import notice from '../templates/notice'
@@ -185,6 +186,7 @@ let templates = {
     modal_pending,
     modal_qr,
     person_start,
+    person_bio,
     empty,
     empty_filter,
     notice,

@@ -25,6 +25,7 @@ import Preroll from './advert/preroll'
 import Footer from './player/footer'
 import Segments from './player/segments'
 import ExternalPlayer from '../core/externalPlayer.js'
+import Favorite from '../core/favorite'
 
 let html
 let listener = Subscribe()
@@ -133,6 +134,13 @@ function init(){
         Panel.update('play')
 
         Panel.rewind()
+
+        // history: the title goes in as soon as it starts playing, once per play
+        if(work && work.card && work.card.id && !work.card_saved){
+            work.card_saved = true
+
+            Favorite.add('history', work.card, 100)
+        }
     })
 
     /** Пауза видео */

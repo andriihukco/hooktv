@@ -292,7 +292,7 @@ class Hero extends Emit{
                 })
 
                 this.html.removeClass('hero-tv--swapping').addClass('hero-tv--loaded')
-            }, 460)
+            }, 650)
         }, ()=>{
             if(transitionId !== this.transitionId) return
 

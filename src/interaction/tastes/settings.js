@@ -23,6 +23,16 @@ function init(){
         before: 'interface'
     })
 
+    // the wizard's own page in the same panel: opened by Wizard.open, never listed itself
+    Settings.addComponent({
+        component: 'tastes_wizard',
+        icon,
+        name: Lang.translate('tastes_title'),
+        essential: true
+    })
+
+    Wizard.init()
+
     Settings.addParam({
         component,
         param: {

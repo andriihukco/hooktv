@@ -17,6 +17,8 @@ $hk-min-touch-target: 44px;
 $hk-mobile-control-gap: 16px;
 // one action-button size for the hero banner and the details page
 $hk-action-font: 1.3em;
+// the icon in every action button (hero, details, card peek), so one size everywhere
+$hk-action-icon: 1.35em;
 $hk-action-height: 2.8em;
 $hk-mobile-action-min: 56px;
 
@@ -184,6 +186,11 @@ body.minimal--ui{
             background-color: #fff !important;
             color: #000 !important;
         }
+
+        // already a white pill, so focus adds the ring to stay visible
+        &.focus{
+            box-shadow: 0 0 0 2px #000, 0 0 0 4px $hk-lime;
+        }
     }
 
     .head__action--current{
@@ -213,6 +220,10 @@ body.minimal--ui{
         &:hover{
             background: #fff;
             color: #000;
+        }
+
+        &.focus{
+            @include hk-button-focus;
         }
 
         &:active{
@@ -522,13 +533,14 @@ body.minimal--ui.full--page .background{
         &--current{
             opacity: 1;
             transform: scale(1.01) translateZ(0);
-            transition: opacity 0.45s $hk-ease, transform 7s linear;
+            transition: opacity 0.58s $hk-ease, transform 0.64s $hk-ease;
         }
 
         &--next{
             opacity: 0;
-            transform: scale(1.035) translateZ(0);
-            transition: opacity 0.45s $hk-ease, transform 7s linear;
+            transform: translate3d(3%, 1.5%, 0) scale(0.9) rotate(0.8deg);
+            border-radius: 1.4em;
+            transition: opacity 0.58s $hk-ease, transform 0.64s $hk-ease, border-radius 0.64s $hk-ease;
         }
     }
 
@@ -537,9 +549,15 @@ body.minimal--ui.full--page .background{
         transform: scale(1) translateZ(0);
     }
 
+    &--swapping &__backdrop--current{
+        opacity: 0;
+        transform: translate3d(-2%, 0, 0) scale(1.04) rotate(-0.4deg);
+    }
+
     &--swapping &__backdrop--next{
         opacity: 1;
-        transform: scale(1) translateZ(0);
+        transform: translate3d(0, 0, 0) scale(1) rotate(0);
+        border-radius: 0;
     }
 
     &__shade{
@@ -671,8 +689,8 @@ body.minimal--ui.full--page .background{
         transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
         svg{
-            width: 1.1em;
-            height: 1.1em;
+            width: $hk-action-icon;
+            height: $hk-action-icon;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -1089,11 +1107,13 @@ body.minimal--ui.full--page .background{
 .card{
     .card__view{
         border-radius: 0.9em;
-        transition: transform 0.3s $hk-ease, box-shadow 0.3s $hk-ease;
+        transition: transform 0.24s $hk-ease;
     }
 
     .card__img{
         border-radius: 0.9em;
+        transition: transform 0.42s $hk-ease;
+        transform: translate3d(0, 0, 0) scale(1);
     }
 
     .card__title{
@@ -1114,7 +1134,8 @@ body.minimal--ui.full--page .background{
             margin: 0;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s $hk-ease;
+            transform: translate3d(-0.4em, 0, 0);
+            transition: opacity 0.22s $hk-ease, transform 0.28s $hk-ease;
         }
 
         .card__title{
@@ -1144,6 +1165,15 @@ body.minimal--ui.full--page .background{
             .card__age,
             .card__view::before{
                 opacity: 1;
+            }
+
+            .card__title,
+            .card__age{
+                transform: translate3d(0, 0, 0);
+            }
+
+            .card__img{
+                transform: translate3d(1%, 0, 0) scale(1.025);
             }
         }
     }
@@ -1211,7 +1241,7 @@ body.minimal--ui.full--page .background{
 
     &.focus .card__view,
     &.hover .card__view{
-        transform: translateY(-0.15em) scale(1.04);
+        transform: translate3d(0, -0.15em, 0) scale(1.04);
         box-shadow: 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
 
         &::after{
@@ -1442,31 +1472,34 @@ $hk-spring-time: 0.5s;
         gap: 0.5em;
     }
 
-    // same look as the hero / details actions, sized for the card
+    // the same pill as the hero and details actions
     &__button{
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: 0;
-        gap: 0.45em;
+        gap: 0.5em;
         box-sizing: border-box;
-        height: 2.6em;
-        min-height: 36px;
-        padding: 0 1em;
+        height: $hk-action-height;
+        min-height: $hk-min-touch-target;
+        padding: 0 1.25em;
         border: 0;
         border-radius: 3em;
         font: inherit;
-        font-size: 0.95em;
+        font-size: $hk-action-font;
         font-weight: 700;
         white-space: nowrap;
         color: #fff;
-        background: rgba(255, 255, 255, 0.12);
+        background: $hk-glass;
+        backdrop-filter: blur(30px) saturate(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(1.4);
         cursor: pointer;
-        transition: transform 0.2s $hk-ease, background-color 0.2s;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s;
 
         svg{
-            width: 1.05em;
-            height: 1.05em;
+            flex-shrink: 0;
+            width: $hk-action-icon;
+            height: $hk-action-icon;
         }
 
         &:hover{
@@ -1558,6 +1591,18 @@ $hk-spring-time: 0.5s;
 @media (prefers-reduced-motion: reduce){
     .card-peek{
         transition: none;
+    }
+
+    .card .card__view,
+    .card .card__img,
+    .card .card__title,
+    .card .card__age{
+        transition: none !important;
+    }
+
+    .card .card__view,
+    .card .card__img{
+        transform: none !important;
     }
 }
 
@@ -3190,15 +3235,111 @@ body.library-filter--open .selectbox{
     z-index: 240 !important;
 }
 
-/* The logo is the Home button: on a remote it needs the same visible focus as the other head controls */
-body.minimal--ui .head__logo-icon{
-    border-radius: 0.6em;
-    outline: 0.18em solid transparent;
-    outline-offset: 0.35em;
-    transition: outline-color 0.15s ease;
+/* Every sheet has the same round iOS close button at the right of its head */
+.selectbox__head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.library-filter__head{
+    align-items: center;
+    gap: 0.6em;
+}
+
+.library-filter__title{
+    flex: 1 1 auto;
+}
+
+.library-filter__reset{
+    margin-right: 0;
+}
+
+.settings__close,
+.selectbox__close,
+.library-filter__close{
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4em;
+    height: 2.4em;
+    border-radius: 50%;
+    color: rgba(235, 235, 245, 0.7);
+    background: rgba(118, 118, 128, 0.24);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.15s, color 0.15s, transform 0.15s $hk-ease;
+
+    svg{
+        width: 1.1em;
+        height: 1.1em;
+        color: inherit;
+    }
+
+    &:active{
+        transform: scale(0.92);
+    }
 
     &.focus{
-        outline-color: var(--focus-ring-color, var(--focus-fill));
+        color: #000;
+        background: #fff;
+        transform: scale(1.08);
+
+        svg{
+            color: #000;
+        }
+    }
+}
+
+/* Phones: the body scale bottoms out at 10.6px (core/layer.js), too small for
+   sheets you read and tap. Give them iOS-size type so rows clear 44pt */
+@media screen and (max-width: 767px){
+    .library-filter__content{
+        font-size: 15px;
+    }
+
+    .selectbox__content,
+    .settings__content{
+        font-size: 13px;
+    }
+
+    // an invisible ring widens the touch target to 44px+ on a phone
+    .settings__close,
+    .selectbox__close,
+    .library-filter__close{
+        position: relative;
+
+        &::after{
+            content: '';
+            position: absolute;
+            inset: -6px;
+        }
+    }
+}
+
+/* The logo is the Home button: on a remote it needs the same visible focus as the other head controls */
+// a pill ring with more room at the sides than above and below; outline cannot pad unevenly
+body.minimal--ui .head__logo-icon{
+    position: relative;
+    outline: none;
+    // keeps the ring clear of the back button and the page title
+    margin-left: 0.7em;
+    margin-right: 0.7em;
+
+    &::after{
+        content: '';
+        position: absolute;
+        inset: -0.4em -0.9em;
+        border: 0.18em solid transparent;
+        border-radius: 999px;
+        pointer-events: none;
+        transition: border-color 0.15s ease;
+    }
+
+    &.focus::after{
+        border-color: var(--focus-ring-color, var(--focus-fill));
     }
 }
 
@@ -3409,35 +3550,6 @@ body.minimal--ui .head__logo-icon{
     }
 }
 
-// language screen Save: the primary action button, pinned to the bottom
-.lang__save{
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-width: 12em;
-    height: $hk-action-height;
-    min-height: $hk-min-touch-target;
-    padding: 0 1.6em;
-    border-radius: 3em;
-    font-size: $hk-action-font;
-    font-weight: 700;
-    background: $hk-lime;
-    color: $hk-on-lime;
-    cursor: pointer;
-    transition: transform 0.2s $hk-ease, background-color 0.2s, box-shadow 0.2s;
-
-    &.focus,
-    &.hover{
-        @include hk-button-focus(true);
-    }
-
-    &:active{
-        transform: scale(0.97);
-    }
-}
-
 /* Settings → Storage: one bar like macOS shows a disk, and a legend that says what each part is */
 .settings-param.storage-view{
     display: block;
@@ -3457,9 +3569,38 @@ body.minimal--ui .head__logo-icon{
     }
 
     .storage-view__free{
+        margin-left: auto;
         font-size: 0.95em;
         opacity: 0.6;
         white-space: nowrap;
+    }
+
+    .storage-view__chevron{
+        flex: none;
+        align-self: center;
+        width: 1.3em;
+        height: 1.3em;
+        opacity: 0.6;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    // collapsed: the total and the bar only
+    .storage-view__details{
+        display: none;
+    }
+
+    &:not(.storage-view--open) .storage-view__bar{
+        margin-bottom: 0;
+    }
+
+    &.storage-view--open{
+        .storage-view__details{
+            display: block;
+        }
+
+        .storage-view__chevron{
+            transform: rotate(180deg);
+        }
     }
 
     .storage-view__bar{
@@ -3547,6 +3688,35 @@ body.minimal--ui .head__logo-icon{
     }
 }
 
+// language screen Save: the primary action button, pinned to the bottom
+.lang__save{
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 12em;
+    height: $hk-action-height;
+    min-height: $hk-min-touch-target;
+    padding: 0 1.6em;
+    border-radius: 3em;
+    font-size: $hk-action-font;
+    font-weight: 700;
+    background: $hk-lime;
+    color: $hk-on-lime;
+    cursor: pointer;
+    transition: transform 0.2s $hk-ease, background-color 0.2s, box-shadow 0.2s;
+
+    &.focus,
+    &.hover{
+        @include hk-button-focus(true);
+    }
+
+    &:active{
+        transform: scale(0.97);
+    }
+}
+
 /* The tab pill and the round buttons beside it share one height, and every tab
    fills the pill top to bottom, so tabs and buttons are the same touch target */
 $hk-control: 2.85em;
@@ -3591,5 +3761,214 @@ body.minimal--ui{
         .menu__list{
             height: 48px !important;
         }
+    }
+}
+
+/**
+ * Install suggestion (interaction/install_app.js): platform tabs and the steps for each.
+ */
+.install-app{
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+
+    &__lead{
+        margin: 0;
+        font-size: 1.05em;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    &__tabs{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+    }
+
+    &__tab{
+        display: flex;
+        align-items: center;
+        min-height: $hk-min-touch-target;
+        padding: 0 1.1em;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s $hk-ease, color 0.2s $hk-ease;
+
+        &--active{
+            background: #fff;
+            color: #000;
+        }
+
+        &.focus{
+            @include hk-button-focus;
+        }
+    }
+
+    &__steps{
+        margin: 0;
+        padding-left: 1.4em;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7em;
+        line-height: 1.4;
+    }
+}
+
+/**
+ * Library pages, Saved and History (interaction/library_header.js): one template for both.
+ * A row of chips on top (shelves or media filters, each with its count), then the posters.
+ * Titles stay visible under every poster, so a touch screen does not need focus to read them.
+ */
+.library-head{
+    padding: 0.2em 0 1.2em;
+
+    &__chips{
+        display: flex;
+        gap: 0.6em;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar{
+            display: none;
+        }
+    }
+
+    &__chip{
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.55em;
+        min-height: $hk-min-touch-target;
+        padding: 0 1.1em;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1em;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: background 0.2s $hk-ease, color 0.2s $hk-ease;
+
+        &--active{
+            background: #fff;
+            color: #000;
+
+            .library-head__count{
+                color: rgba(0, 0, 0, 0.55);
+            }
+        }
+
+        &.focus{
+            @include hk-button-focus;
+        }
+    }
+
+    &__count{
+        font-size: 0.85em;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: rgba(255, 255, 255, 0.55);
+    }
+}
+
+.library-page{
+    .card.card--details-overlay{
+        .card__title,
+        .card__age{
+            display: block;
+            position: static;
+            opacity: 1;
+            transform: none;
+            margin: 0;
+            pointer-events: auto;
+        }
+
+        .card__title{
+            margin-top: 0.6em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 0.95em;
+        }
+
+        .card__age{
+            margin-top: 0.1em;
+            font-size: 0.8em;
+        }
+    }
+
+    .card.focus .card__title{
+        color: #fff;
+    }
+
+    // the peek pane shows the title and year itself; the grid's own labels would sit over the widened card
+    .card.card--peek .card__title,
+    .card.card--peek .card__age,
+    .card.card--peek-open .card__title,
+    .card.card--peek-open .card__age{
+        display: none;
+    }
+}
+
+/**
+ * Search (interaction/search/global.js). Phones: the bar sits on top with the close button beside it,
+ * the results come straight under it, and the keypad folds away once the results are scrolled
+ * (the keys button brings it back). Desktop and TV keep the full keypad.
+ */
+.search__keys-toggle{
+    display: none;
+}
+
+@media (max-width: 580px){
+    .search__keys-toggle{
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        width: 2.3em;
+        height: 2.3em;
+        margin-left: 0.5em;
+        border-radius: 50%;
+        color: rgba(255, 255, 255, 0.82);
+        background: rgba(255, 255, 255, 0.09);
+        transition: background 0.2s $hk-ease, transform 0.2s $hk-ease;
+
+        svg{
+            width: 1.05em;
+            height: 1.05em;
+        }
+
+        &.focus{
+            @include hk-button-focus;
+        }
+    }
+
+    .search__input-shell{
+        width: auto;
+        margin: 0 3.4em 0.9em 0;
+        min-height: 3.2em;
+    }
+
+    .search__input{
+        font-size: 1.2em;
+    }
+
+    .search__body--query-active.search__body--keys-collapsed{
+        .search__keypad{
+            display: none;
+        }
+
+    }
+
+    .search__history{
+        margin-bottom: 0.4em;
+    }
+
+    .search__results .items-line__title{
+        font-size: 1.25em;
+        font-weight: 700;
     }
 }

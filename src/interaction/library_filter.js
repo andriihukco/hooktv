@@ -211,7 +211,7 @@ function pickBound(group, i){
     let values = []
 
     // whole steps up to 5, then half steps where most titles sit
-    if(group == 'rating') for(let r = 1; r <= 10; r += r < 5 ? 1 : 0.5) values.push(r)
+    if(group == 'rating') for(let r = 1; r <= 8; r += r < 5 ? 1 : 0.5) values.push(r)
     else for(let y = span[1]; y >= span[0]; y--) values.push(y)
 
     let back = ()=>Controller.toggle('library_filter')
@@ -492,6 +492,7 @@ function init(){
             <div class="library-filter__head">
                 <div class="library-filter__title">${Lang.translate('hooktv_filters')}</div>
                 <div class="library-filter__reset selector">${Lang.translate('hooktv_filter_reset')}</div>
+                <div class="library-filter__close selector" role="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
             </div>
             <div class="library-filter__body"></div>
             <div class="library-filter__foot">
@@ -500,6 +501,8 @@ function init(){
         </div>`)
 
     panel.querySelector('.library-filter__layer').addEventListener('click', close)
+
+    action(panel.querySelector('.library-filter__close'), close)
 
     action(panel.querySelector('.library-filter__reset'), ()=>{
         draft = Filter.empty()

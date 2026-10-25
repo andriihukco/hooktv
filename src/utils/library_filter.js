@@ -70,6 +70,37 @@ function apply(list, f){
     return count(f) ? list.filter(card=>match(card, f)) : list
 }
 
+// origins whose high-rating lists are mostly films and shows with a handful of votes
+const FLOOD_LANGUAGES = ['hi', 'ta', 'te', 'ml', 'kn', 'bn', 'mr', 'pa', 'gu', 'ur', 'tr', 'ar']
+const FLOOD_COUNTRIES = ['IN', 'PK', 'TR', 'EG']
+
+// a title this well voted is a gem even from a flood origin
+const GEM_VOTES = 1000
+
+function flood(card, f){
+    let codes = (card.origin_country || []).concat(card.production_countries ? card.production_countries.map(c=>c.iso_3166_1) : [])
+    let asked = (f.countries || []).some(code=>codes.indexOf(code) >= 0)
+
+    if(asked) return false
+
+    return FLOOD_LANGUAGES.indexOf(card.original_language) >= 0 || codes.some(code=>FLOOD_COUNTRIES.indexOf(code) >= 0)
+}
+
+/**
+ * Drops the junk a rating bound lets through: untitled or poster-less titles, and titles
+ * from flood origins (India, Turkey, Pakistan, Egypt...) unless they have real votes or the
+ * filter asks for that country. Only applies when a rating bound is set.
+ */
+function clean(list, f){
+    if(!f || !f.rating || (f.rating[0] == null && f.rating[1] == null)) return list
+
+    return list.filter(card=>{
+        if(!card.poster_path || !(card.title || card.name)) return false
+
+        return (card.vote_count || 0) >= GEM_VOTES || !flood(card, f)
+    })
+}
+
 /** genres, countries and year span found in the cards, to build the panel from */
 function options(list){
     let g = {}
@@ -152,7 +183,8 @@ function discover(path, f){
     if(f.rating && f.rating[1] != null) put('vote_average.lte', f.rating[1])
 
     // a rating bound means little on titles with a handful of votes
-    if(f.rating && (f.rating[0] != null || f.rating[1] != null) && !query.some(q=>q.indexOf('vote_count.gte=') == 0)) put('vote_count.gte', 50)
+    // a high rating bound on a handful of votes is how obscure titles reach the top: demand more votes there
+    if(f.rating && (f.rating[0] != null || f.rating[1] != null) && !query.some(q=>q.indexOf('vote_count.gte=') == 0)) put('vote_count.gte', f.rating[0] >= 8 ? 300 : 50)
 
     if(f.year && f.year[0] != null) put(date + '.gte', f.year[0] + '-01-01')
     if(f.year && f.year[1] != null) put(date + '.lte', f.year[1] + '-12-31')
@@ -172,6 +204,7 @@ export default {
     count,
     match,
     apply,
+    clean,
     options,
     type,
     discover,

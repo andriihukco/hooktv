@@ -5,14 +5,16 @@
  * tokens in `theme/tokens.scss` so the dark and light themes stay in sync.
  */
 
+// the app is dark only: the canvas is set at once, never faded in from white on load
 html {
     background-color: var(--surface-canvas);
+    color-scheme: dark;
 }
 
 body {
     color: var(--text-primary);
     background-color: var(--surface-canvas);
-    transition: background-color var(--transition-base) ease, color var(--transition-base) ease;
+    transition: color var(--transition-base) ease;
 }
 
 ::selection {

@@ -1,0 +1,75 @@
+// the biography sidebar: docked to the right edge, the same surface as the app's other panels
+.person-bio{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 230;
+    display: flex;
+    flex-direction: column;
+    width: 34em;
+    max-width: 100%;
+    padding: $offset;
+    background-color: var(--surface-overlay);
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    box-shadow: -1em 0 3em rgba(0, 0, 0, 0.3);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+
+    &--open{
+        transform: translateX(0);
+    }
+
+    &__head{
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1.5em;
+    }
+
+    &__title{
+        font-size: 2em;
+        font-weight: 300;
+        line-height: 1.2;
+        padding-right: 1em;
+    }
+
+    // the same round icon as the header's: white when it has focus or hover
+    &__close{
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.8em;
+        height: 2.8em;
+        border-radius: 100%;
+        cursor: pointer;
+
+        > svg{
+            width: 1.4em;
+            height: 1.4em;
+        }
+
+        &.focus,
+        &.hover{
+            background: var(--focus-fill);
+            color: var(--focus-fill-text);
+        }
+    }
+
+    &__body{
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        font-size: 1.3em;
+        font-weight: 300;
+        line-height: 1.5;
+        white-space: pre-line;
+    }
+
+    @media screen and (max-width: $media_xm) {
+        width: 100%;
+        border-radius: 0;
+    }
+}

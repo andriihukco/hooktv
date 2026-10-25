@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
     <title>HOOK TV — дивитися фільми та серіали онлайн українською</title>
     <meta name="description" content="HOOK TV: дивитися фільми, серіали та ТБ онлайн українською мовою. Новинки, популярні та найкращі фільми й серіали з рейтингами, жанрами та озвученням.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -26,10 +27,17 @@
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" href="img/logo-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="img/icons/ios/180.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="HOOK TV">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Chrome and Edge hand over the install prompt once; install_app.js shows it when the app is ready -->
+    <script>window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); window.hooktv_install = e })</script>
 
 
     <!-- just the splash, so it paints before the stylesheets arrive (full rules: src/sass/components/welcome.scss) -->
     <style>
+        html{background: #000; color-scheme: dark;}
         body{margin: 0; background: #000; line-height: 1; font-family: "Google Sans", "SegoeUI", sans-serif;}
         .welcome{position: fixed; inset: 0; z-index: 100; background: radial-gradient(ellipse at 50% 45%, #0d1100 0%, #000 60%); display: flex; flex-direction: column; align-items: center; justify-content: center;}
         .welcome__logo{width: 22em; max-width: 72vw;}
@@ -46,8 +54,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"></noscript>
     <!-- not render-blocking: the scripts at the end of <body> start once it is in -->
-    <link rel="preload" href="css/app.css?v=2.88" as="style">
-    <link rel="stylesheet" href="css/app.css?v=2.88" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
+    <link rel="preload" href="css/app.css?v=3.05" as="style">
+    <link rel="stylesheet" href="css/app.css?v=3.05" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
 </head>
 <body>
     <!-- painted before app.js arrives, so the first paint does not wait for it; loading_progress.js
@@ -55,7 +63,7 @@
 
     <div class="welcome">
         <div class="welcome__logo">
-            <img src="img/splash.svg" width="508" height="116" alt="HOOK TV" fetchpriority="high" onload="window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_boot && hooktv_boot()">
+            <img src="img/splash.svg?v=2.97" width="508" height="93" alt="HOOK TV" fetchpriority="high" onload="window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_boot && hooktv_boot()">
         </div>
         <div class="welcome__loading">
             <div class="welcome__status welcome__status--in">Warming up the projector…</div>
@@ -68,7 +76,7 @@
             if(first) document.querySelector('.welcome__status').textContent = first
 
             // the image animates with SMIL, which ignores this setting
-            if(matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector('.welcome__logo img').src = 'img/logo.svg'
+            if(matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector('.welcome__logo img').src = 'img/logo.svg?v=2.97'
         }catch(e){}
     </script>
 
@@ -84,12 +92,11 @@
     
 
     <script>
+        // makes the app installable (sw.js caches nothing)
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for (var i = 0; i < registrations.length; i++) {
-                    registrations[i].unregister();
-                }
-            });
+            window.addEventListener('load', function(){
+                navigator.serviceWorker.register('sw.js').catch(function(){})
+            })
         }
     </script>
     <script>
@@ -108,7 +115,7 @@
 
                 started = true
 
-                var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.88']
+                var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.97']
 
                 scripts.forEach(function(src){
                     var script = document.createElement('script')

@@ -106,16 +106,23 @@ function init(){
                 <div class="storage-view__head">
                     <div class="storage-view__total"></div>
                     <div class="storage-view__free"></div>
+                    <svg class="storage-view__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="storage-view__bar"></div>
-                <div class="storage-view__legend"></div>
-                <div class="storage-view__limit"></div>
+                <div class="storage-view__details">
+                    <div class="storage-view__legend"></div>
+                    <div class="storage-view__limit"></div>
+                </div>
             `)
 
             view = item
 
-            // Enter measures again
-            item.on('hover:enter', draw)
+            // just the total and the bar; Enter (or a click) opens the breakdown and measures again
+            item.on('hover:enter', ()=>{
+                item.toggleClass('storage-view--open')
+
+                draw()
+            })
 
             draw()
         }

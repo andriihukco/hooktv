@@ -259,29 +259,8 @@ function main(params = {}, oncomplite, onerror){
             },call, {life: day * 2})
         },
         (call)=>{
-            get('trending/movie/day',params,(json)=>{
-                json.title = Lang.translate('title_trend_day')
-
-                call(json)
-            },call, {life: day * 2})
-        },
-        (call)=>{
             get('trending/movie/week',params,(json)=>{
                 json.title = Lang.translate('title_trend_week')
-
-                call(json)
-            },call, {life: day * 3})
-        },
-        (call)=>{
-            get('movie/upcoming',params,(json)=>{
-                json.title = Lang.translate('title_upcoming')
-
-                call(json)
-            },call, {life: day * 7})
-        },
-        (call)=>{
-            get('movie/popular',params,(json)=>{
-                json.title        = Lang.translate('title_popular_movie')
 
                 call(json)
             },call, {life: day * 3})
@@ -632,6 +611,8 @@ function list(params = {}, oncomplite, onerror){
     let u      = url(filter && !found ? LibraryFilter.discover(params.url, filter) : params.url, params)
 
     network.silent(u, (data)=>{
+        // a high rating bound lets through untitled, poster-less and Indian titles: drop them
+        if(filter && data.results) data.results = LibraryFilter.clean(data.results, filter)
         if(filter && found && data.results) data.results = LibraryFilter.apply(data.results, filter)
 
         oncomplite(Utils.addSource(data, source))

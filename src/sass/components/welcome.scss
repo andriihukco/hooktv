@@ -1,7 +1,7 @@
 /**
  * HOOK TV splash: the infinity loop draws itself, H and K slide in from
  * either side, TV rises, then a lime light keeps running round the loop
- * until the app is ready. Paths come from loading_progress.js (img/logo.svg).
+ * until the app is ready. The animated and static marks share the OO artwork.
  */
 
 $welcome-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -55,17 +55,6 @@ $welcome-lime: #D6FF5C;
     animation: welcome-fade 0.4s ease 0.7s forwards;
 }
 
-// a short lime comet: bright head, glow, loops forever
-.welcome__chase{
-    stroke-dasharray: 14 86;
-    stroke-dashoffset: 0;
-    opacity: 0;
-    filter: drop-shadow(0 0 4px rgba(214, 255, 92, 0.8));
-    animation:
-        welcome-fade 0.4s ease 0.9s forwards,
-        welcome-chase 1.6s linear 0.9s infinite;
-}
-
 .welcome__h,
 .welcome__k,
 .welcome__t,
@@ -96,6 +85,11 @@ $welcome-lime: #D6FF5C;
 
 .welcome__loading{
     margin-top: 2.2em;
+}
+
+#app.app--enter{
+    transform-origin: center bottom;
+    animation: app-enter 0.8s $welcome-ease both;
 }
 
 // cinema-style status line, crossfades as loading moves on
@@ -150,6 +144,17 @@ $welcome-lime: #D6FF5C;
     to{ opacity: 1; }
 }
 
+@keyframes app-enter{
+    from{
+        opacity: 0;
+        transform: translate3d(0, 2rem, 0) scale(0.8);
+    }
+    to{
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
 @media (prefers-reduced-motion: reduce){
     .welcome__loop,
     .welcome__tails,
@@ -169,5 +174,13 @@ $welcome-lime: #D6FF5C;
 
     .welcome__chase{
         display: none;
+    }
+}
+
+
+// the app entrance (#app.app--enter, added by showApp) stays still for reduced motion
+@media (prefers-reduced-motion: reduce){
+    #app.app--enter{
+        animation: none;
     }
 }

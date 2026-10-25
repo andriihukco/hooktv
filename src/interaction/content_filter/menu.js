@@ -70,6 +70,11 @@ function queryForTMDB(){
         }
     })
 
+    let rated = data.rating.items.find(a=>a.selected && (a.voite || a.start))
+
+    // a rating bound on a handful of votes is how obscure titles reach the top
+    if(rated) query.push('vote_count.gte='+(parseFloat(rated.start || rated.voite.split('-')[0]) >= 8 ? 300 : 50))
+
     data.language.items.forEach(a=>{
         if(a.checked) languages.push(a.code)
     })

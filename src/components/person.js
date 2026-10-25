@@ -18,6 +18,9 @@ function component(object){
                 if(data.person){
                     let lines = []
 
+                    // the genres of their work, shown as tags on the profile like a movie's genres
+                    data.person.work_genres = Profile.genres(data.credits && data.credits.raw)
+
                     lines.push({
                         results: [],
                         params: {

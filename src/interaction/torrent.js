@@ -411,8 +411,6 @@ function list(items, params){
             //если это андроид, но не андроид, то нефиг смотреть
             if(navigator.userAgent.toLowerCase().indexOf('android') >= 0 && !Platform.is('android')) return Platform.install('apk')
 
-            if(params.movie.id) Favorite.add('history', params.movie, 100)
-
             if ((Platform.is('android') || Platform.is('apple_tv') || Platform.is('apple') || Platform.macOS()) && playlist.length > 1){
                 let trim_playlist = []
 
@@ -427,6 +425,8 @@ function list(items, params){
 
                 element.playlist = trim_playlist
             }
+
+            element.card = params.movie
 
             preload(element, ()=>{
                 Player.play(element)

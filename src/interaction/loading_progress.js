@@ -56,20 +56,9 @@ function phrase(index){
 function init(sound = true){
     window.hooktv_splash_start = Date.now()
 
-    // Inline copy of img/logo.svg split into parts that move on their own;
-    // inline rather than fetched so it also plays from file:// on TVs
-    let loop = 'M82.93 23C82.93 13.61 90.55 6 99.93 6C109.32 6 116.94 13.61 116.94 23C116.94 32.39 109.32 40 99.93 40C90.55 40 82.93 32.39 82.93 23C82.93 13.61 75.32 6 65.93 6C56.55 6 48.93 13.61 48.93 23C48.93 32.39 56.55 40 65.93 40C75.32 40 82.93 32.39 82.93 23Z'
-
     let content = `
         <div class="welcome__logo">
-            <svg viewBox="-1.6 -6 254.1 58" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HOOK TV">
-                <path class="welcome__h" fill="white" d="M31.34 44.184V1.224H43.4V44.184H31.34ZM4.4 44.184V1.224H16.49V44.184H4.4ZM11.57 27.834V16.824H36.71V27.834H11.57Z"/>
-                <path class="welcome__loop" d="${loop}" pathLength="100" stroke-width="12" stroke-linejoin="round" stroke="white"/>
-                <path class="welcome__chase" d="${loop}" pathLength="100" stroke-width="12" stroke-linejoin="round" stroke="#D6FF5C"/>
-                <path class="welcome__k" fill="white" d="M130.25 36.654L130.16 21.744L146.57 1.224H160.55L141.23 23.724L130.25 36.654ZM122.42 44.184V1.224H134.51V44.184H122.42ZM147.59 44.184L135.2 24.984L142.94 15.984L161.72 44.184H147.59Z"/>
-                <path class="welcome__t" fill="#D6FF5C" d="M175.684 44.184V7.074H187.744V44.184H175.684ZM163.444 12.234V1.224H199.954V12.234H163.444Z"/>
-                <path class="welcome__v" fill="#D6FF5C" d="M218.977 44.184L202.477 1.224H215.257L222.727 22.494L224.707 28.824H224.977L226.927 22.524L233.947 1.224H246.487L229.867 44.184H218.977Z"/>
-            </svg>
+            <img src="./img/splash.svg?v=2.97" alt="HOOK TV"/>
         </div>
         <div class="welcome__loading">
             <div class="welcome__status"></div>

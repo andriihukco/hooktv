@@ -4,7 +4,7 @@ let html = `<div class="lang">
     </button>
     <div class="lang__body">
         <div class="lang__logo">
-            <img src="./img/logo.svg" alt="HOOK TV" />
+            <img src="./img/logo.svg?v=2.97" alt="HOOK TV" />
         </div>
         <div class="lang__subtitle"></div>
         <div class="lang__selector"><div class="lang__list"></div></div>

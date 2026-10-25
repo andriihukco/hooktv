@@ -1,13 +1,21 @@
 // Tastes: the Settings cell and the wizard inside the modal
 
-// Settings cell: its own rounded card, separated from the Interface group below
-.settings-folder--tastes{
+// Settings cell: its own rounded card, same size and type as the rows around it.
+// Selectors are doubled so they beat the global .settings-folder rules.
+.settings-folder.settings-folder--tastes{
+    margin: 0 1.2em 1.2em;
     border-radius: 0.9em;
-    margin-bottom: 1.2em;
-    background: rgba(255, 255, 255, 0.08);
 
-    .settings-folder__icon{
+    .settings-folder__icon,
+    .settings-folder__icon > *{
+        width: 1.5em;
+        height: 1.5em;
+        margin-right: 1em;
         color: var(--accent-text);
+    }
+
+    .settings-folder__name{
+        font-size: 1.15em !important;
     }
 }
 
@@ -18,12 +26,37 @@
     border-top-right-radius: 0.9em;
 }
 
-// wizard body
+// wizard body: sits in the Settings panel, so it uses the panel's own spacing
 .tastes-pick{
     display: flex;
     flex-direction: column;
-    gap: 1.6em;
-    padding: 1em 1.2em;
+    gap: 0.4em;
+    padding: 0.4em 0;
+}
+
+// a Settings-style group card, the same as the rows of the Interface page
+.tastes-group{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    margin: 0 1.2em 1.2em;
+    padding: 1em 1.1em;
+    border-radius: 0.9em;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tastes-pick__found{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    width: 100%;
+}
+
+// action rows: a Settings row with centred text
+.settings-param.tastes-action{
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
 }
 
 .tastes-pick__section{
@@ -33,7 +66,7 @@
 }
 
 .tastes-pick__title{
-    font-size: 1.05em;
+    font-size: 1.2em;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -73,12 +106,13 @@
 }
 
 .tastes-chip{
-    padding: 0.6em 1.1em;
+    padding: 0.7em 1.3em;
     border-radius: 10em;
     background: rgba(255, 255, 255, 0.08);
     color: var(--text-primary);
-    font-size: 1.05em;
+    font-size: 1.2em;
     cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s;
 
     &--active{
         background: var(--accent);

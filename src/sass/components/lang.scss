@@ -72,13 +72,19 @@
 
     // the title block is gone, so the logo needs its own room above the list
     &__logo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-bottom: 2.4em;
+        transform-origin: center;
+        animation: lang-logo-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
 
     &__logo img{
         width: 13em;
         max-width: 80%;
         height: auto;
+        transform: translateX(-0.05em);
     }
 
     &__title{
@@ -173,10 +179,6 @@
 
     &__selector{
         margin-top: 0.6em;
-        padding: 0.35em;
-        border-radius: 1.2em;
-        background: rgba(255, 255, 255, 0.07);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         text-align: left;
 
         > .scroll{
@@ -274,13 +276,63 @@
     }
 }
 
-/* The whole list shows at once; Save stays pinned to the bottom over a fade,
-   and the page leaves room under the last language so nothing hides behind it */
+/* Logo and Save stay put; only the list scrolls between them. The list ends
+   with room for the fade, so the last language can scroll clear of Save */
+$lang-footer-room: 9em;
+$lang-top-fade: 1.6em;
+
 .lang{
-    align-items: flex-start;
+    align-items: stretch;
+    overflow: hidden;
+    padding-bottom: 0;
 
     &__body{
-        padding-bottom: 9em;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+    }
+
+    &__logo,
+    &__subtitle{
+        flex: none;
+    }
+
+    // the label sits closer to the logo, a little higher than before
+    &__logo{
+        margin-bottom: 1.4em;
+    }
+
+    &__subtitle{
+        margin-top: 0;
+    }
+
+    &__selector{
+        flex: 0 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        // rows scrolled up melt into the black under the label; at rest the
+        // list starts below the fade, so the first row is never dimmed
+        margin-top: 0;
+        padding-top: $lang-top-fade;
+        padding-bottom: $lang-footer-room;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 $lang-top-fade);
+        mask-image: linear-gradient(to bottom, transparent 0, #000 $lang-top-fade);
+        // keyboard focus (scrollIntoView) stops above the fade too
+        scroll-padding-bottom: $lang-footer-room;
+
+        &::-webkit-scrollbar{
+            display: none;
+        }
+    }
+
+    &__list{
+        padding: 0.35em;
+        border-radius: 1.2em;
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
     &__subtitle:empty{
@@ -305,7 +357,18 @@
 @keyframes lang-in{
     from{
         opacity: 0;
-        transform: translateY(1.5em);
+        transform: translateX(2.2em) scale(0.98);
+    }
+    to{
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes lang-logo-in{
+    from{
+        opacity: 0;
+        transform: translateX(-1.4em) scale(0.86);
     }
     to{
         opacity: 1;

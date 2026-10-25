@@ -1,4 +1,4 @@
-// HOOK TV profile header: round portrait, then who they are, the facts, a taste of the biography
+// HOOK TV profile header: round portrait, then who they are, the facts, a taste of the biography and the tags
 let html = `<div class="person-start">
     <div class="person-start__body">
         <div class="person-start__right">
@@ -15,12 +15,11 @@ let html = `<div class="person-start">
 
             <div class="person-start__bio hide"></div>
 
-            <div class="person-start__bottom">
-                <div class="full-start__button selector button--info">
-                    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
-                    <span>#{hooktv_person_bio}</span>
-                </div>
+            <div class="person-start__more selector hide"><span>#{hooktv_person_read_more}</span></div>
 
+            <div class="person-start__tags"></div>
+
+            <div class="person-start__bottom">
                 <div class="full-start__button selector button--subscribe">
                     <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6.01892 24C6.27423 27.3562 9.07836 30 12.5 30C15.9216 30 18.7257 27.3562 18.981 24H15.9645C15.7219 25.6961 14.2632 27 12.5 27C10.7367 27 9.27804 25.6961 9.03542 24H6.01892Z" fill="currentColor"/>

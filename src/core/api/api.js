@@ -326,7 +326,7 @@ function partPersons(parts, parts_limit, type, shift = 0){
  * @param {function} partEmpty
  * @return {void}
  */
-function partNext(parts, parts_limit, partLoaded, partEmpty){
+function partNext(parts, parts_limit, partLoaded, partEmpty, seen = {}){
     let pieces = parts.filter(p=>typeof p == 'function').slice(0,0 + parts_limit)
 
     if(pieces.length){
@@ -335,10 +335,20 @@ function partNext(parts, parts_limit, partLoaded, partEmpty){
         progress.append(pieces)
 
         progress.start((result)=>{
-            let data = result
-                .filter(r=>r && r.results && r.results.length)
-                .map(row=>Object.assign({}, row, {results: Tastes.apply(row.results)}))
-                .filter(row=>row.results.length)
+            // a title shows once per screen: a row keeps only the titles no earlier row showed
+            let data = result.filter(r=>r && r.results && r.results.length).map(row=>{
+                let results = Tastes.apply(row.results).filter(card=>{
+                    let key = (card.name && !card.title ? 'tv' : 'movie') + card.id
+
+                    if(seen[key]) return false
+
+                    seen[key] = true
+
+                    return true
+                })
+
+                return Object.assign({}, row, {results})
+            }).filter(row=>row.results.length)
 
             for(let i = 0; i < pieces.length; i++){
                 parts[parts.indexOf(pieces[i])] = false
@@ -352,11 +362,11 @@ function partNext(parts, parts_limit, partLoaded, partEmpty){
                         partLoaded(data)
                     }, ()=>{
                         partLoaded(data)
-                    })
+                    }, seen)
                 }
                 else partLoaded(data)
             }
-            else partNext(parts, parts_limit, partLoaded, partEmpty)
+            else partNext(parts, parts_limit, partLoaded, partEmpty, seen)
         })
     }
     else partEmpty()

@@ -1,4 +1,4 @@
-import Modal from '../modal'
+import Settings from '../settings/settings'
 import Controller from '../../core/controller'
 import Noty from '../noty'
 import Lang from '../../core/lang'
@@ -10,22 +10,39 @@ import Pick from './pick'
 import Deck from './deck'
 
 /**
- * HOOK TV: the Tastes wizard. Pick the basics, swipe popular titles, save. Rerun opens
- * the saved profile. Verdicts are written as each card is swiped.
+ * HOOK TV: the Tastes wizard, drawn inside the Settings panel so it matches the rest of it.
+ * Pick the basics, swipe popular titles, save. Rerun opens the saved profile. Verdicts are
+ * written as each card is swiped.
  */
 
 const POPULAR = '?sort_by=popularity.desc&vote_count.gte=300&vote_average.gte=7'
+const PAGE    = 'tastes_wizard'
 
-let controll
+let host
 let state
 let picked
 let deck = []
+
+/**
+ * Replace the panel body with one step and focus its first control
+ */
+function show(el){
+    if(!host) return
+
+    host.empty().append(el)
+
+    Controller.collectionSet(host)
+
+    let first = el.find('.selector')[0]
+
+    if(first) Controller.collectionFocus(first, host)
+}
 
 function message(text, retry){
     let box = $('<div class="tastes-message"></div>').text(text)
 
     if(retry){
-        let button = $('<div class="selector tastes-pick__next"></div>').text(Lang.translate('tastes_retry'))
+        let button = $('<div class="selector settings-param tastes-action"></div>').text(Lang.translate('tastes_retry'))
 
         button.on('hover:enter', retry)
         box.append(button)
@@ -48,7 +65,7 @@ function interleave(movies, shows){
 }
 
 function loadDeck(){
-    Modal.update(message(Lang.translate('tastes_loading')))
+    show(message(Lang.translate('tastes_loading')))
 
     let movies, shows
     let pending = 2
@@ -70,7 +87,7 @@ function loadDeck(){
 
         failed = true
 
-        Modal.update(message(Lang.translate('tastes_deck_failed'), loadDeck))
+        show(message(Lang.translate('tastes_deck_failed'), loadDeck))
     }
 
     TMDB.get('discover/movie' + POPULAR, {}, (json)=>{
@@ -87,7 +104,7 @@ function loadDeck(){
 function showCard(){
     if(state.index >= deck.length) return showSummary()
 
-    Modal.update(Deck.render(deck[state.index], (state.index + 1) + ' / ' + deck.length, onVerdict))
+    show(Deck.render(deck[state.index], (state.index + 1) + ' / ' + deck.length, onVerdict))
 }
 
 function onVerdict(value){
@@ -114,7 +131,7 @@ function showSummary(){
         .replace('{skip}', count('skip'))
 
     let box = message(text)
-    let save = $('<div class="selector tastes-pick__next"></div>').text(Lang.translate('tastes_save'))
+    let save = $('<div class="selector settings-param tastes-action"></div>').text(Lang.translate('tastes_save'))
 
     save.on('hover:enter', ()=>{
         let ok = Tastes.set({
@@ -138,7 +155,7 @@ function showSummary(){
 
     box.append(save)
 
-    Modal.update(box)
+    show(box)
 }
 
 function onPicked(sel){
@@ -149,28 +166,36 @@ function onPicked(sel){
 }
 
 /**
- * Open the wizard. A saved profile pre-fills step one.
+ * Settings renders this page into the panel; the wizard takes over that body
  */
-function open(){
-    controll = Controller.enabled().name
-    picked   = Tastes.get()
-    state    = {step: 'pick', index: 0}
-    deck     = []
+function init(){
+    Settings.listener.follow('open', (e)=>{
+        if(e.name != PAGE) return
 
-    Modal.open({
-        title: Lang.translate('tastes_title'),
-        size: 'large',
-        html: Pick.render(picked, onPicked),
-        onBack: close
+        host = $(e.body)
+
+        show(Pick.render(picked, onPicked))
     })
 }
 
-function close(){
-    Modal.close()
+/**
+ * Open the wizard in the Settings panel. A saved profile pre-fills step one.
+ */
+function open(){
+    picked = Tastes.get()
+    state  = {step: 'pick', index: 0}
+    deck   = []
 
-    if(controll) Controller.toggle(controll)
-
-    controll = null
+    Settings.create(PAGE, {onBack: close})
 }
 
-export default {open, close}
+/**
+ * Back to the Tastes page
+ */
+function close(){
+    host = null
+
+    Settings.create('tastes')
+}
+
+export default {init, open, close}

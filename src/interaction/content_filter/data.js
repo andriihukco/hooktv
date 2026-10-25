@@ -60,10 +60,6 @@ data.rating = {
         {
             title: '#{filter_rating_from} 6 #{filter_rating_to} 8',
             voite: '6-8'
-        },
-        {
-            title: '#{filter_rating_from} 8 #{filter_rating_to} 9',
-            voite: '8-9'
         }
     ]
 }

@@ -8,7 +8,7 @@ import Manifest from '../../../core/manifest'
 
 export default {
     onCreate: function(){
-        if(!Storage.field('card_interfice_reactions') || window.lampa_settings.disable_features.reactions) return this.html.find('.full-start-new__reactions, .button--reaction').remove()
+        if(!Storage.field('card_interfice_reactions') || window.lampa_settings.disable_features.reactions) return this.html.find('.full-start-new__reactions, .button--reaction, .button--like, .button--dislike').remove()
 
         let reactions_data = this.data.reactions
 
@@ -125,6 +125,53 @@ export default {
                 }
             })
         })
+
+        // like = fire + nice, dislike = bore + shit: the five server reactions folded into two votes
+        let thumbs = {
+            like:    {groups: ['fire', 'nice'], send: 'nice'},
+            dislike: {groups: ['bore', 'shit'], send: 'bore'}
+        }
+
+        let count = (types)=>types.reduce((sum, type)=>{
+            let find = reactions_data && reactions_data.result && reactions_data.result.find(r=>r.type == type)
+
+            return sum + (find ? find.counter : 0)
+        }, 0)
+
+        let voted = (types)=>types.some(type=>vote(type))
+
+        let paint = ()=>{
+            Object.keys(thumbs).forEach(key=>{
+                let el = this.html.find('.button--' + key)
+
+                el.find('span').text(Utils.bigNumberToShort(count(thumbs[key].groups) + (thumbs[key].added || 0)))
+                el.toggleClass('voted', voted(thumbs[key].groups))
+            })
+        }
+
+        Object.keys(thumbs).forEach(key=>{
+            let thumb = thumbs[key]
+
+            this.html.find('.button--' + key).on('hover:enter', ()=>{
+                if(voted(thumb.groups)) return Lampa.Noty.show(Lang.translate('reactions_ready'))
+
+                Api.sources.cub.reactionsAdd({
+                    method: this.card.name ? 'tv' : 'movie',
+                    id: this.card.id,
+                    type: thumb.send
+                },()=>{
+                    vote(thumb.send, true)
+
+                    thumb.added = (thumb.added || 0) + 1
+
+                    paint()
+                },()=>{
+                    Lampa.Noty.show(Lang.translate('reactions_ready'))
+                })
+            })
+        })
+
+        paint()
 
         draw()
     }

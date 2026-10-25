@@ -187,9 +187,108 @@ function role(person, t){
     return female && female != key + '_f' ? female : t(key)
 }
 
+// Wikidata: «award received», and its qualifiers «for work», «point in time», «start time»
+const AWARD = 'P166'
+const FOR_WORK = 'P1686'
+const WHEN = ['P585', 'P580']
+
+const MAX_AWARDS = 40
+
+function awardStatements(claims){
+    return claims && claims[AWARD] || []
+}
+
+function qualifier(statement, prop){
+    return statement.qualifiers && statement.qualifiers[prop] && statement.qualifiers[prop][0] || null
+}
+
+function snakId(snak){
+    let value = snak && snak.snaktype == 'value' && snak.datavalue && snak.datavalue.value
+
+    return value && value.id || ''
+}
+
+/**
+ * Wikidata ids to look up the names of: each award and the work it was for
+ * @param {object} claims Wikidata claims of the person
+ * @returns {string[]}
+ */
+function awardIds(claims){
+    let ids = []
+
+    awardStatements(claims).forEach(statement=>{
+        [snakId(statement.mainsnak), snakId(qualifier(statement, FOR_WORK))].forEach(id=>{
+            if(id && ids.indexOf(id) == -1) ids.push(id)
+        })
+    })
+
+    return ids
+}
+
+/**
+ * The awards a person received, newest first; names come from the labels looked up for awardIds
+ * @param {object} claims Wikidata claims of the person
+ * @param {Object<string,string>} names Wikidata id → name in the interface language
+ * @returns {{year:number|null, award:string, work:string}[]}
+ */
+function awards(claims, names){
+    let list = awardStatements(claims).map(statement=>{
+        let award = names[snakId(statement.mainsnak)]
+
+        if(!award) return null
+
+        let when = WHEN.map(prop=>qualifier(statement, prop)).find(Boolean)
+        let year = when && when.datavalue ? parseInt(when.datavalue.value.time, 10) : NaN
+
+        return {
+            year: isNaN(year) ? null : year,
+            award,
+            work: names[snakId(qualifier(statement, FOR_WORK))] || ''
+        }
+    }).filter(Boolean)
+
+    // the same award, year and work can come twice in Wikidata
+    list = list.filter((item, i)=>list.findIndex(other=>other.year == item.year && other.award == item.award && other.work == item.work) == i)
+
+    list.sort((a, b)=>(b.year == null) - (a.year == null) || (b.year || 0) - (a.year || 0))
+
+    return list.slice(0, MAX_AWARDS)
+}
+
+/**
+ * The genres of the work a person is in: each title counts once, the most common first
+ * @param {{cast:object[], crew:object[]}} credits TMDB combined_credits
+ * @param {number} [limit]
+ * @returns {{media:string, id:number, count:number}[]} media is TMDB's «movie» or «tv», the genre list to name it from
+ */
+function genres(credits, limit = 12){
+    let cast  = (credits && credits.cast || []).filter(c=>c && c.id && !isSelf(c))
+    let crew  = (credits && credits.crew || []).filter(c=>c && c.id)
+    let count = {}
+
+    unique(cast.concat(crew)).forEach(credit=>{
+        let media = credit.media_type == 'tv' ? 'tv' : 'movie'
+
+        ;(credit.genre_ids || []).forEach(id=>{
+            let key = media + ':' + id
+
+            count[key] = (count[key] || 0) + 1
+        })
+    })
+
+    return Object.keys(count).map(key=>{
+        let [media, id] = key.split(':')
+
+        return {media, id: parseInt(id, 10), count: count[key]}
+    }).sort((a, b)=>b.count - a.count).slice(0, limit)
+}
+
 export default {
     age,
     ageText,
+    awardIds,
+    awards,
+    genres,
     isSelf,
     rows,
     role

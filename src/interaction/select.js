@@ -25,6 +25,10 @@ function init(){
         if(DeviceInput.canClick(e.originalEvent)) Controller.back()
     })
 
+    html.find('.selectbox__close').on('hover:enter click',(e)=>{
+        if(DeviceInput.canClick(e.originalEvent)) Controller.back()
+    })
+
     scroll.addSwipeDown(()=>{
         html.addClass('animate-down')
 

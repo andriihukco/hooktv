@@ -54,6 +54,7 @@ import Account from './core/account/account'
 import Plugins from './core/plugins'
 import Socket from './core/socket'
 import Recomends from './core/recomend'
+import PersonalRows from './core/personal_rows'
 import TimeTable from './core/timetable'
 import Broadcast from './interaction/broadcast'
 import Helper from './interaction/helper'
@@ -110,7 +111,8 @@ import DataBase from './interaction/database'
 import Maker from './interaction/maker'
 import MaskHelper from './utils/mask'
 import ContentRows from './core/content_rows'
-import TastesSettings from './interaction/tastes/settings'
+// Tastes is paused for now; restore this import together with the init call below
+// import TastesSettings from './interaction/tastes/settings'
 import Emit from './utils/emit'
 import Router from './core/router'
 import Timer from './core/timer'
@@ -583,6 +585,9 @@ function startApp(){
     Recomends.init()
     LoadingProgress.status('Recomends init')
 
+    PersonalRows.init()
+    LoadingProgress.status('PersonalRows init')
+
     TimeTable.init()
     LoadingProgress.status('Timetable init')
 
@@ -651,7 +656,7 @@ function startApp(){
     ContentRows.init()
     LoadingProgress.status('ContentRows init')
 
-    TastesSettings.init()
+    // TastesSettings.init()
     
     // Добавляем источники поиска
 
@@ -757,7 +762,7 @@ function startApp(){
 function showApp(){
     LoadingProgress.status('Show app')
     
-    // Скрытие логотипа: not before the HOOK TV logo finished assembling
+    // Скрытие логотипа: not before the logo has filled left to right (2.2s) and the OO spark has run a lap
     let shown = Date.now() - (window.hooktv_splash_start || 0)
 
     setTimeout(()=>{
@@ -774,7 +779,19 @@ function showApp(){
         $('.welcome').fadeOut(500,function(){
             $(this).remove()
         })
-    },Math.max(500, 1500 - shown))
+
+        // the app rises into view as the splash fades (welcome.scss); the class goes once it ends,
+        // so the transform does not stay on #app and break position: fixed children
+        // (a timer too: animationend never comes when the animation does not run, e.g. reduced motion)
+        let app = $('#app').addClass('app--enter')
+        let entered = ()=>app.removeClass('app--enter')
+
+        app.one('animationend', function(e){
+            if(e.target === this) entered()
+        })
+
+        setTimeout(entered, 1000)
+    },Math.max(500, 3200 - shown))
 
     // Старт приложения
     startApp()

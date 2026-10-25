@@ -2,8 +2,8 @@ import Lang from '../../core/lang'
 import TMDB from '../../core/api/sources/tmdb'
 
 /**
- * HOOK TV: the first Tastes step. Chips for genres, countries and minimum rating,
- * and a person search for actors. Everything is a .selector so remotes can reach it.
+ * HOOK TV: the first Tastes step, drawn in the Settings panel. Each section is a Settings
+ * title over a rounded group of chips. Everything is a .selector so remotes can reach it.
  */
 
 const COUNTRIES = ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'JP', 'KR', 'UA', 'CN', 'IN', 'RU']
@@ -31,12 +31,17 @@ function chip(label, active, onToggle){
     return node
 }
 
-function section(title){
-    let box = $('<div class="tastes-pick__section"></div>')
+/**
+ * A Settings-style section: the title row, then a rounded group. Returns the group.
+ */
+function section(html, title){
+    html.append($('<div class="settings-param-title"></div>').append($('<span></span>').text(Lang.translate(title))))
 
-    box.append($('<div class="tastes-pick__title"></div>').text(Lang.translate(title)))
+    let group = $('<div class="tastes-group"></div>')
 
-    return box
+    html.append(group)
+
+    return group
 }
 
 /**
@@ -55,8 +60,7 @@ function render(profile, onNext){
     let html = $('<div class="tastes-pick"></div>')
 
     // genres: movie and tv lists merged, one chip per id
-    let genres = section('tastes_genres')
-    let genre_row = $('<div class="tastes-pick__chips"></div>').appendTo(genres)
+    let genre_row = section(html, 'tastes_genres')
 
     TMDB.get('genre/movie/list', {}, (movie)=>{
         TMDB.get('genre/tv/list', {}, (tv)=>{
@@ -75,11 +79,8 @@ function render(profile, onNext){
         }, ()=>{})
     }, ()=>{})
 
-    html.append(genres)
-
     // countries: names come from the browser, so they match the interface language
-    let countries = section('tastes_countries')
-    let country_row = $('<div class="tastes-pick__chips"></div>').appendTo(countries)
+    let country_row = section(html, 'tastes_countries')
 
     COUNTRIES.forEach(code=>{
         country_row.append(chip(countryName(code), sel.countries.indexOf(code) >= 0, (on)=>{
@@ -87,11 +88,8 @@ function render(profile, onNext){
         }))
     })
 
-    html.append(countries)
-
     // minimum rating: one choice, 0 means off
-    let rating = section('tastes_min_rating')
-    let rating_row = $('<div class="tastes-pick__chips"></div>').appendTo(rating)
+    let rating_row = section(html, 'tastes_min_rating')
 
     RATINGS.forEach(value=>{
         let node = $('<div class="selector tastes-chip"></div>')
@@ -108,12 +106,10 @@ function render(profile, onNext){
         rating_row.append(node)
     })
 
-    html.append(rating)
-
     // actors: search by name, toggle the people you want
-    let actors = section('tastes_actors')
+    let actors = section(html, 'tastes_actors')
     let search = $('<input class="tastes-pick__input" type="text" />').attr('placeholder', Lang.translate('tastes_actor_search'))
-    let found  = $('<div class="tastes-pick__chips"></div>')
+    let found  = $('<div class="tastes-pick__found"></div>')
 
     actors.append(search, found)
 
@@ -142,9 +138,8 @@ function render(profile, onNext){
         }, 400)
     })
 
-    html.append(actors)
-
-    let next = $('<div class="selector tastes-pick__next"></div>').text(Lang.translate('tastes_next'))
+    // the action row is a Settings row, so it reads like the rest of the panel
+    let next = $('<div class="selector settings-param tastes-action"></div>').text(Lang.translate('tastes_next'))
 
     next.on('hover:enter', ()=>onNext(sel))
 

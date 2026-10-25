@@ -53,11 +53,17 @@ function init(){
     let touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
     if(Platform.mouse() || (window.lampa_settings.minimal_ui && touch)){
-        let back = Template.elem('div', {class: 'head__backward', children: [
+        // a selector, so the remote can reach it and it shows focus like the other head buttons
+        let back = $(Template.elem('div', {class: 'head__backward selector', children: [
             Template.js('icon_back')
-        ]})
+        ]}))
 
-        back.on('click', Controller.back.bind(Controller))
+        back.on('hover:enter', ()=>Controller.back())
+
+        // Controller only turns clicks into hover:enter once the head collection is set
+        back.on('click', ()=>{
+            if(!back[0].trigger_click) Controller.back()
+        })
 
         html.find('.head__body').prepend(back)
     }

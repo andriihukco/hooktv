@@ -13,7 +13,6 @@ import Filter from '../interaction/filter'
 import Player from '../interaction/player'
 import Background from '../interaction/background'
 import Timeline from '../interaction/timeline'
-import Favorite from '../core/favorite'
 import Bell from '../interaction/bell'
 import Select from '../interaction/select'
 import Noty from '../interaction/noty'
@@ -920,6 +919,7 @@ function createV2(sourceKey) {
                         function startPlayback() {
                             Player.play({
                                 url: play_url,
+                                card: object.movie,
                                 timeline: item.timeline,
                                 quality: qualitys,
                                 title: item.title,
@@ -1013,6 +1013,7 @@ function createV2(sourceKey) {
                         }
                         Player.play({
                             url: play_url,
+                            card: object.movie,
                             timeline: movie.timeline,
                             quality: qualitys,
                             title: movie.player_title || movie.title,
@@ -2179,7 +2180,6 @@ function component(object) {
                 }
 
                 html.on('hover:enter', function() {
-                    if (object.movie.id) Favorite.add('history', object.movie, 100)
                     if (params.onEnter) params.onEnter(element, html, data)
                 }).on('hover:focus', function(e) {
                     last = e.target
