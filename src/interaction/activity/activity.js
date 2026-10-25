@@ -296,7 +296,44 @@ function mixState(mix){
  * @param {{component:string}} object - параметры активности
  * @returns {void}
  */
+// HOOK TV: the manual source list is never shown. Watch Now picks the source,
+// and the Where to watch sheet covers titles no source has
+let source_lists = ['hook_online', 'online', 'online_mod']
+
+/**
+ * A saved link, history entry or old menu that still points at the source
+ * list opens the title's details page instead, or Home without a title
+ * @param {object} object
+ * @returns {object}
+ */
+function redirect(object){
+    if(!object || source_lists.indexOf(object.component) == -1) return object
+
+    let movie = object.movie
+
+    if(movie && movie.id){
+        return {
+            url: '',
+            component: 'full',
+            id: movie.id,
+            method: movie.name ? 'tv' : 'movie',
+            card: movie,
+            source: movie.source || 'tmdb'
+        }
+    }
+
+    return {
+        url: '',
+        title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
+        component: 'main',
+        source: Storage.field('source'),
+        page: 1
+    }
+}
+
 function push(object){
+    object = redirect(object)
+
     limit()
 
     create(object)

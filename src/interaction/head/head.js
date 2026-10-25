@@ -65,7 +65,8 @@ function init(){
     Utils.time(html)
 
     // HOOK TV: the logo is the home button; the menu icon is the only thing that opens the menu
-    html.find('.head__logo-icon').addClass('selector').on('hover:enter click',()=>{
+    // Controller turns a click on a selector into hover:enter, so one event covers mouse, touch and remote
+    html.find('.head__logo-icon').addClass('selector').on('hover:enter',()=>{
         Activity.push({
             url: '',
             title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),
@@ -106,7 +107,8 @@ function init(){
         },
         left: ()=>{
             if(Navigator.canmove('left')) Navigator.move('left')
-            else Controller.toggle('menu')
+            // the side menu is hidden in the minimal layout: stay on the logo
+            else if(!window.lampa_settings.minimal_ui) Controller.toggle('menu')
         },
         down: ()=>{
             Controller.toggle('content')

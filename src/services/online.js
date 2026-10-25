@@ -1466,20 +1466,6 @@ function autoPlay(movie, want, done) {
     }
 }
 
-function openList(movie) {
-    registerTemplates()
-    Activity.push({
-        url: '',
-        title: movie.title || movie.name,
-        component: 'hook_online',
-        search: movie.title || movie.name,
-        search_one: movie.title || movie.name,
-        search_two: movie.original_title || movie.original_name,
-        movie: movie,
-        page: 1
-    })
-}
-
 function escapeHtml(text) {
     if (!text) return ''
     return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
@@ -3327,7 +3313,7 @@ function init() {
 
     window.hook_online = true
 
-    Watch.register({ autoPlay: autoPlay, openList: openList })
+    Watch.register({ autoPlay: autoPlay })
 
     // Register components
     Component.add('hook_online', component)
@@ -3346,72 +3332,17 @@ function init() {
         component: 'hook_online',
         onContextMenu: function(object) {
             return {
-                name: Lang.translate('online_watch'),
-                description: 'HOOK TV Balancers'
+                name: Lang.translate('online_watch')
             }
         },
         onContextLauch: function(object) {
-            registerTemplates()
-            Activity.push({
-                url: '',
-                title: 'HOOK TV - ' + (object.title || object.name),
-                component: 'hook_online',
-                search: object.title || object.name,
-                search_one: object.title || object.name,
-                search_two: object.original_title || object.original_name,
-                movie: object,
-                page: 1
-            })
+            Watch.start(object)
         }
-    }
-
-    // Follow 'full' card open event to add the Online watch button
-    var followListener = window.Lampa ? window.Lampa.Listener : null
-    if (followListener && followListener.follow) {
-        followListener.follow('full', function(e) {
-            if (e.type === 'complite') {
-                var render = e.object.activity.render()
-                if (!render || render.find('.view--hook-online').length) return
-
-                var buttonHtml = `
-                    <div class="full-start__button selector view--online view--hook-online" data-subtitle="HOOK TV Online">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-                        </svg>
-                        <span>#{online_watch}</span>
-                    </div>
-                `
-                var btn = $(Lang.translate(buttonHtml))
-                btn.on('hover:enter', function() {
-                    registerTemplates()
-                    Activity.push({
-                        url: '',
-                        title: 'HOOK TV - ' + (e.data.movie.title || e.data.movie.name),
-                        component: 'hook_online',
-                        search: e.data.movie.title,
-                        search_one: e.data.movie.title,
-                        search_two: e.data.movie.original_title,
-                        movie: e.data.movie,
-                        page: 1
-                    })
-                })
-
-                var torrentBtn = render.find('.view--torrent')
-                if (torrentBtn.length) {
-                    torrentBtn.after(btn)
-                } else {
-                    var container = render.find('.buttons--container')
-                    if (container.length) container.append(btn)
-                    else render.find('.full-start-new__buttons').append(btn)
-                }
-            }
-        })
     }
 }
 
 export default {
     init: init,
     component: component,
-    autoPlay: autoPlay,
-    openList: openList
+    autoPlay: autoPlay
 }

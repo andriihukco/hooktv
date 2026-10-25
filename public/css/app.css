@@ -19739,3 +19739,17 @@ body.library-filter--open .library-filter__content {
 body.library-filter--open .selectbox {
   z-index: 240 !important;
 }
+
+/* The logo is the Home button: on a remote it needs the same visible focus as the other head controls */
+body.minimal--ui .head__logo-icon {
+  -webkit-border-radius: 0.6em;
+          border-radius: 0.6em;
+  outline: 0.18em solid transparent;
+  outline-offset: 0.35em;
+  -webkit-transition: outline-color 0.15s ease;
+  -o-transition: outline-color 0.15s ease;
+  transition: outline-color 0.15s ease;
+}
+body.minimal--ui .head__logo-icon.focus {
+  outline-color: var(--focus-ring-color, var(--focus-fill));
+}
