@@ -77,7 +77,11 @@ function init(sound = true){
     `
 
     let existing = $('.welcome')
-    if(existing.length){
+    if(existing.find('.welcome__logo').length){
+        // index.html already painted the splash with the first line; keep it running
+        html = existing.eq(0)
+        shown = 0
+    } else if(existing.length){
         html = existing.eq(0)
         html.html(content)
     } else {

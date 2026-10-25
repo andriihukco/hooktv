@@ -240,6 +240,20 @@ function sync_task(path){
 function sync_web(){
     return sync_task('web/');
 }
+
+/** Release: minify the vendor scripts and stylesheets the web page loads **/
+function minify_web_js(done){
+    if(!isReleaseEnabled) return done()
+
+    return src(bulFolder + 'web/vender/**/*.js', {base: bulFolder + 'web/'}).pipe(uglify()).pipe(dest(bulFolder + 'web/'))
+}
+
+function minify_web_css(done){
+    if(!isReleaseEnabled) return done()
+
+    return src([bulFolder + 'web/css/*.css', bulFolder + 'web/vender/**/*.css'], {base: bulFolder + 'web/'}).pipe(uglifycss()).pipe(dest(bulFolder + 'web/'))
+}
+
 function sync_webos(){
     return sync_task('webos/');
 }
@@ -414,7 +428,7 @@ function buildDoc(done){
 exports.pack_webos   = series(sync_webos, uglify_task, public_webos, index_webos);
 exports.pack_tizen   = series(sync_tizen, uglify_task, public_tizen, index_tizen);
 exports.pack_github  = series(sync_github, uglify_task, public_github, write_manifest, index_github);
-exports.pack_web     = series(merge, sass_task, lang_task, sync_web, build_web);
+exports.pack_web     = series(merge, sass_task, lang_task, sync_web, parallel(minify_web_js, minify_web_css), build_web);
 exports.pack_plugins = series(plugins);
 exports.test         = series(test);
 // Updated default task to build the app before starting watch and browser sync

@@ -29,7 +29,9 @@ $welcome-lime: #D6FF5C;
     width: 22em;
     max-width: 72vw;
 
-    svg{
+    // index.html paints img/splash.svg (same animation) before app.js arrives
+    svg,
+    img{
         display: block;
         width: 100%;
         height: auto;

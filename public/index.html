@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="uk" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -27,19 +28,53 @@
     <link rel="apple-touch-icon" href="img/icons/ios/180.png">
 
 
-    <link rel="stylesheet" href="./vender/scrollbar/jquery.scrollbar.css">
-    <link rel="stylesheet" href="./vender/keypad/style.css">
+    <!-- just the splash, so it paints before the stylesheets arrive (full rules: src/sass/components/welcome.scss) -->
+    <style>
+        body{margin: 0; background: #000; line-height: 1; font-family: "Google Sans", "SegoeUI", sans-serif;}
+        .welcome{position: fixed; inset: 0; z-index: 100; background: radial-gradient(ellipse at 50% 45%, #0d1100 0%, #000 60%); display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .welcome__logo{width: 22em; max-width: 72vw;}
+        .welcome__logo img{display: block; width: 100%; height: auto;}
+        .welcome__loading{margin-top: 2.2em;}
+        .welcome__status{min-height: 1.3em; font-size: 0.95em; font-weight: 500; letter-spacing: 0.01em; color: rgba(255, 255, 255, 0.55);}
+    </style>
+
+    <link rel="stylesheet" href="./vender/scrollbar/jquery.scrollbar.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="./vender/keypad/style.css" media="print" onload="this.media='all'">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="css/app.css?v=2.84">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"></noscript>
+    <!-- not render-blocking: the scripts at the end of <body> start once it is in -->
+    <link rel="preload" href="css/app.css?v=2.84" as="style">
+    <link rel="stylesheet" href="css/app.css?v=2.84" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
 </head>
 <body>
-    <div class="welcome"></div>
+    <!-- painted before app.js arrives, so the first paint does not wait for it; loading_progress.js
+         keeps it running. The logo is an image (img/splash.svg) so it counts as the page's main content -->
+
+    <div class="welcome">
+        <div class="welcome__logo">
+            <img src="img/splash.svg" width="508" height="116" alt="HOOK TV" fetchpriority="high" onload="window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_boot && hooktv_boot()">
+        </div>
+        <div class="welcome__loading">
+            <div class="welcome__status welcome__status--in">Warming up the projector…</div>
+        </div>
+    </div>
+    <script>
+        // first status line in the saved language; the rest come from loading_progress.js
+        try{
+            var first = {uk: 'Вмикаємо проектор…', ru: 'Включаем проектор…'}[localStorage.getItem('language')]
+            if(first) document.querySelector('.welcome__status').textContent = first
+
+            // the image animates with SMIL, which ignores this setting
+            if(matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector('.welcome__logo img').src = 'img/logo.svg'
+        }catch(e){}
+    </script>
 
     <div id="app">
         <noscript>
+            <style>.welcome{display: none}</style>
             <main>
                 <h1>HOOK TV: фільми та серіали онлайн українською</h1>
                 <p>Фільми, серіали та ТБ — усе в одному місці. Українською озвучкою. Увімкніть JavaScript, щоб переглядати каталог.</p>
@@ -47,13 +82,6 @@
         </noscript>
     </div>
     
-
-    <script src="./vender/jquery/jquery.js"></script>
-    <script src="./vender/notify/notify.js"></script>
-    <script src="./vender/scrollbar/jquery.scrollbar.js"></script>
-    <script src="./vender/navigator/navigator.js"></script>
-    <script src="./vender/keypad/keypad.js"></script>
-    <script src="http://www.youtube.com/iframe_api" async></script>
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -64,6 +92,39 @@
             });
         }
     </script>
-    <script src="app.js?v=2.84"></script>
+    <script>
+        // loads the app in order once css/app.css is in (so it never lays out unstyled)
+        // and the splash has painted (so the first paint never waits for app.js)
+        window.hooktv_boot = function(){
+            var logo = document.querySelector('.welcome__logo img')
+
+            if(window.hooktv_booted || !window.hooktv_css || (logo && !logo.complete)) return
+
+            window.hooktv_booted = true
+
+            var started = false
+            var start = function(){
+                if(started) return
+
+                started = true
+
+                var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.84']
+
+                scripts.forEach(function(src){
+                    var script = document.createElement('script')
+                    script.src = src
+                    script.async = false
+                    document.body.appendChild(script)
+                })
+            }
+
+            requestAnimationFrame(function(){ setTimeout(start, 0) })
+
+            // no frames in a background tab
+            setTimeout(start, 100)
+        }
+
+        hooktv_boot()
+    </script>
 </body>
 </html>

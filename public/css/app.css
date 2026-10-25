@@ -395,7 +395,8 @@ body.no--animation *::after {
   width: 22em;
   max-width: 72vw;
 }
-.welcome__logo svg {
+.welcome__logo svg,
+.welcome__logo img {
   display: block;
   width: 100%;
   height: auto;
@@ -937,28 +938,28 @@ body.no--animation *::after {
 @font-face {
   font-family: "SegoeUI";
   font-display: swap;
-  src: url("../fonts/SegoeUI/SegoeUI-Light.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-Light.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-Light.ttf") format("truetype");
+  src: url("../fonts/SegoeUI/SegoeUI-Light.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-Light.woff2") format("woff2"), url("../fonts/SegoeUI/SegoeUI-Light.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
   font-family: "SegoeUI";
   font-display: swap;
-  src: url("../fonts/SegoeUI/SegoeUI.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI.ttf") format("truetype");
+  src: url("../fonts/SegoeUI/SegoeUI.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI.woff2") format("woff2"), url("../fonts/SegoeUI/SegoeUI.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: "SegoeUI";
   font-display: swap;
-  src: url("../fonts/SegoeUI/SegoeUI-SemiBold.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-SemiBold.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-SemiBold.ttf") format("truetype");
+  src: url("../fonts/SegoeUI/SegoeUI-SemiBold.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-SemiBold.woff2") format("woff2"), url("../fonts/SegoeUI/SegoeUI-SemiBold.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
 }
 @font-face {
   font-family: "SegoeUI";
   font-display: swap;
-  src: url("../fonts/SegoeUI/SegoeUI-Bold.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-Bold.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-Bold.ttf") format("truetype");
+  src: url("../fonts/SegoeUI/SegoeUI-Bold.eot") format("embedded-opentype"), url("../fonts/SegoeUI/SegoeUI-Bold.woff2") format("woff2"), url("../fonts/SegoeUI/SegoeUI-Bold.woff") format("woff"), url("../fonts/SegoeUI/SegoeUI-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
@@ -6731,10 +6732,6 @@ body.true--mobile.orientation--portrait .player-video__paused {
 }
 @media screen and (max-width: 580px) {
   .player-panel__playpause {
-    -webkit-box-ordinal-group: 0;
-    -webkit-order: -1;
-        -ms-flex-order: -1;
-            order: -1;
     margin-left: 0;
   }
 }
@@ -6814,9 +6811,10 @@ body.true--mobile.orientation--portrait .player-video__paused {
           backdrop-filter: blur(1em);
 }
 .player-panel__volume-range {
-  -webkit-appearance: slider-vertical;
-     -moz-appearance: slider-vertical;
-          appearance: slider-vertical;
+  -webkit-writing-mode: vertical-lr;
+      -ms-writing-mode: bt-lr;
+          writing-mode: vertical-lr;
+  direction: rtl;
   width: 0.5em;
   height: 8em;
 }
@@ -19313,7 +19311,8 @@ body.search--open .library-filter-dock {
 body.library-filter--open .library-filter-dock,
 body.selectbox--open .library-filter-dock,
 body.settings--open .library-filter-dock,
-body.full--page .library-filter-dock {
+body.full--page .library-filter-dock,
+body.player--viewing .library-filter-dock {
   opacity: 0;
   pointer-events: none;
 }

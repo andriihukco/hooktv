@@ -275,7 +275,8 @@
         }
 
         &-range{
-            appearance: slider-vertical;
+            writing-mode: vertical-lr;
+            direction: rtl;
             width: 0.5em;
             height: 8em;
         }
