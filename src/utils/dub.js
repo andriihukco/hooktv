@@ -36,6 +36,21 @@ function score(name){
     return 0
 }
 
+const ENGLISH = /\beng|english|англ/i
+
+/**
+ * Only English and Ukrainian tracks may reach the player. Russian and every
+ * other language are dropped, and so is a track that cannot be named.
+ * @param {string} name track label, language code or both
+ */
+function allowedTrack(name){
+    let text = (name || '') + ''
+
+    if(RU.test(text)) return false
+
+    return UK.test(text) || ENGLISH.test(text)
+}
+
 /**
  * Voices that fit the wanted language, best first. Russian never passes.
  * For "original" the Ukrainian voices are kept as a fallback, because the
@@ -138,6 +153,7 @@ function contentMatches(json, movie){
 
 export default {
     classify,
+    allowedTrack,
     pickVoices,
     pickTrack,
     rankSimilar,

@@ -17,6 +17,13 @@ let _blacklist = []
 let _awaits = []
 let _noload = []
 
+// HOOK TV sources, loaded even when user plugins are off.
+// Audited: the other scripts were dropped (see the blacklist in task()).
+const BUILTIN_SOURCES = [
+    'https://app.bwa.ad/online.js',
+    'https://lampame.github.io/main/bo.js'
+]
+
 /**
  * Запуск
  */
@@ -180,6 +187,8 @@ function task(call){
         ((plugins)=>{
             let puts = window.lampa_settings.plugins_use ? plugins.filter(plugin=>plugin.status).map(plugin=>plugin.url).concat(Storage.get('plugins','[]').filter(plugin=>plugin.status).map(plugin=>plugin.url)) : []
 
+            puts = puts.concat(BUILTIN_SOURCES)
+
             if(!window.lampa_settings.minimal_ui){
                 puts.push('./plugins/rando_dice.js')
                 puts.push('./plugins/swipe_match.js')
@@ -203,6 +212,14 @@ function task(call){
             black_list.push('4pda.')
             black_list.push('teletype.in')
             black_list.push('yotube.com')
+
+            // Removed sources: their scripts run code sent by the server (RCH eval) and send account ids to it
+            black_list.push('z01.online')
+            black_list.push('wtch.ch')
+            black_list.push('showy.online')
+            black_list.push('showy.pro')
+            black_list.push('showypro.com')
+            black_list.push('87.120.126.125')
             
             _blacklist = black_list
 
