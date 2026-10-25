@@ -18,7 +18,9 @@ function init(){
         component,
         icon,
         name: Lang.translate('tastes_title'),
-        after: 'interface'
+        // essential puts it on the main list; before makes it the first item there
+        essential: true,
+        before: 'interface'
     })
 
     Settings.addParam({
