@@ -16381,6 +16381,10 @@ body.minimal--ui.full--page .background {
 .scroll--hero .items-line {
   position: relative;
   z-index: 1;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.72)), color-stop(6.6em, #000));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.72), #000 6.6em);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0.72), #000 6.6em);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), #000 6.6em);
 }
 
 .hero-tv {

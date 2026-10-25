@@ -22,6 +22,7 @@ class Hero extends Emit{
         this.cards = cards.filter(c=>c.backdrop_path).slice(0, 5)
         this.index = 0
         this.firstLoaded = false
+        this.transitionId = 0
     }
 
     create(){
@@ -108,6 +109,7 @@ class Hero extends Emit{
         if(!card) return
 
         this.index = index
+        let transitionId = ++this.transitionId
 
         let year  = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
         let meta  = [year, card.name ? Lang.translate('menu_tv') : Lang.translate('menu_movies')]
@@ -135,6 +137,8 @@ class Hero extends Emit{
             this.loadLogo(card)
 
             Utils.imgLoad(currentImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
+                if(transitionId !== this.transitionId) return
+
                 this.html.addClass('hero-tv--loaded')
             })
 
@@ -145,6 +149,8 @@ class Hero extends Emit{
         this.html.removeClass('hero-tv--loaded').addClass('hero-tv--swapping')
 
         setTimeout(()=>{
+            if(transitionId !== this.transitionId) return
+
             this.html.find('.hero-tv__title').text(card.title || card.name)
             this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
             this.html.find('.hero-tv__descr').text(card.overview || '')
@@ -158,9 +164,13 @@ class Hero extends Emit{
         })
 
         Utils.imgLoad(nextImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
+            if(transitionId !== this.transitionId) return
+
             this.html.addClass('hero-tv--swapping')
 
             setTimeout(()=>{
+                if(transitionId !== this.transitionId) return
+
                 currentImg.attr('src', nextImg.attr('src'))
                 currentImg.css('transform', '')
                 nextImg.css({
@@ -237,6 +247,7 @@ class Hero extends Emit{
 
     destroy(){
         clearInterval(this.timer)
+        this.transitionId++
 
         this.html.remove()
     }
