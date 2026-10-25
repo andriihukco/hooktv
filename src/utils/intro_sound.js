@@ -6,16 +6,18 @@
 
 let cancel = ()=>{}
 
-const LENGTH = 2.6 // seconds of sound before it stops
-const FADE   = 0.7 // seconds at the end spent fading to silence
+const LENGTH = 4.6 // seconds of sound before it stops: the logo intro and a little after
+const FADE   = 2.2 // seconds at the end spent fading to silence
 
 function fade(audio){
     let started = Date.now()
 
     let timer = setInterval(()=>{
         let left = LENGTH - (Date.now() - started) / 1000
+        let gain = Math.max(0, Math.min(1, left / FADE))
 
-        audio.volume = Math.max(0, Math.min(1, left / FADE))
+        // equal-power curve: the sound eases away instead of dropping off
+        audio.volume = Math.sin(gain * Math.PI / 2)
 
         if(left <= 0){
             clearInterval(timer)

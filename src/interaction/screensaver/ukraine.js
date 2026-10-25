@@ -5,7 +5,7 @@ import photos from './ukraine_photos'
 
 /**
  * HOOK TV screensaver: Ukrainian landscapes only. Slow Ken Burns slides with
- * the place and the photo's credit on the left, the clock on the right.
+ * the place and the photographer on the left, the clock on the right.
  */
 
 let order = []
@@ -81,7 +81,7 @@ class Ukraine{
                 $(to).addClass('visible').addClass('animate')
 
                 title.find('.screensaver__title-name').text(uk ? photo.uk : photo.en)
-                title.find('.screensaver__title-tagline').text((uk ? 'Фото: ' : 'Photo: ') + photo.author + ' · ' + photo.license + ' · Wikimedia Commons')
+                title.find('.screensaver__title-tagline').text((uk ? 'Фото: ' : 'Photo: ') + photo.author)
                 title.addClass('visible')
             }, 100)
         }
