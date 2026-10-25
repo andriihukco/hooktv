@@ -662,7 +662,8 @@ function loaded(){
             subsview(true)
         }
         else if(Storage.field('subtitles_start')){
-            let full = subs.find(s=>(s.label || '').indexOf('олные') >= 0)
+            let uk   = Dub.pickTrack(subs, 'uk')
+            let full = uk >= 0 ? subs[uk] : subs.find(s=>(s.label || '').indexOf('олные') >= 0)
              
             if(full){
                 full.mode     = 'showing'

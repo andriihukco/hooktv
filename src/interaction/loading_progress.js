@@ -132,6 +132,7 @@ function destroy(){
     destroyed = true
 
     clearInterval(ticker)
+    IntroSound.stop()
     
     // Fade out animation
     if(html) html.addClass('welcome--fade-out')

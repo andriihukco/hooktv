@@ -70,6 +70,10 @@ let html = `<div class="full-start-new">
             <span>#{full_torrents}</span>
         </div>
     </div>
+
+    <button class="full-start-new__scroll selector" type="button" aria-label="#{hooktv_scroll_down}">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 8 7 7 7-7m-14 4 7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 </div>`
 
 export default html

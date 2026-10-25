@@ -1,4 +1,5 @@
 import Api from '../../core/api/api'
+import Peek from './peek'
 
 export default function addCardDetails(card, data){
     let view = card.querySelector('.card__view')
@@ -50,4 +51,6 @@ export default function addCardDetails(card, data){
 
     view.appendChild(details)
     card.classList.add('card--details-overlay')
+
+    Peek.init()
 }

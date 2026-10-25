@@ -1,8 +1,10 @@
 /**
  * Launch sound: audio/hooktv.mp3, cut to a short sting that fades out.
  * Browsers hold audio until a click or key press, so a blocked start waits
- * for the next one.
+ * for the next one, but only while the intro is on screen (see stop()).
  */
+
+let cancel = ()=>{}
 
 const LENGTH = 2.6 // seconds of sound before it stops
 const FADE   = 0.7 // seconds at the end spent fading to silence
@@ -29,11 +31,14 @@ function play(){
         // retries on the next click or key press when the browser blocked the start
         let retry = ()=>{
             audio.play().then(()=>{
-                window.removeEventListener('pointerdown', retry)
-                window.removeEventListener('keydown', retry)
-
+                cancel()
                 fade(audio)
             }).catch(()=>{})
+        }
+
+        cancel = ()=>{
+            window.removeEventListener('pointerdown', retry)
+            window.removeEventListener('keydown', retry)
         }
 
         audio.play().then(()=>fade(audio)).catch(()=>{
@@ -46,6 +51,12 @@ function play(){
     }
 }
 
+// the chime belongs to the logo intro; never play it late on the first click in the app
+function stop(){
+    cancel()
+}
+
 export default {
-    play
+    play,
+    stop
 }

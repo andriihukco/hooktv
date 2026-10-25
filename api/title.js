@@ -34,22 +34,26 @@ async function fetchTitle(media, id){
     }
 }
 
-function page(meta, target){
+function page(meta, target, shareUrl){
     return `<!doctype html>
 <html lang="uk">
 <head>
 <meta charset="utf-8">
 <title>${esc(meta.title)} · ${APP_NAME}</title>
+<link rel="canonical" href="${esc(shareUrl)}">
 <meta name="description" content="${esc(meta.description)}">
 <meta property="og:site_name" content="${APP_NAME}">
 <meta property="og:type" content="video.other">
+<meta property="og:url" content="${esc(shareUrl)}">
 <meta property="og:title" content="${esc(meta.title)}">
 <meta property="og:description" content="${esc(meta.description)}">
 <meta property="og:image" content="${esc(meta.image)}">
+<meta property="og:image:alt" content="${esc(meta.title)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(meta.title)}">
 <meta name="twitter:description" content="${esc(meta.description)}">
 <meta name="twitter:image" content="${esc(meta.image)}">
+<meta name="twitter:image:alt" content="${esc(meta.title)}">
 <meta http-equiv="refresh" content="0; url=${esc(target)}">
 </head>
 <body><a href="${esc(target)}">${esc(meta.title)}</a></body>
@@ -81,5 +85,5 @@ module.exports = async (req, res) => {
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
-    res.status(200).send(page(meta, target))
+    res.status(200).send(page(meta, target, url.href))
 }

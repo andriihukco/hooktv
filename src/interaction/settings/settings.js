@@ -167,5 +167,6 @@ export default {
     render,
     update,
     create,
+    close,
     main:()=>main
 }

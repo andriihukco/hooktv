@@ -95,6 +95,7 @@ function create(){
     createSources()
 
     keyboard.value(input)
+    search.toggleClass('search__body--query-active', Boolean(input))
 }
 
 function createSources(){
@@ -159,6 +160,7 @@ function createKeyboard(){
     
     keyboard.listener.follow('change',(event)=>{
         input = event.value
+        search.toggleClass('search__body--query-active', Boolean(input))
 
         if(input){
             search.find('.search__input').toggleClass('filled', true).html(input.replace(/\s/g,'&nbsp;'))

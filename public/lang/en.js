@@ -1332,6 +1332,7 @@ export default {
     hooktv_details: 'Details',
     hooktv_add_list: 'Add to List',
     hooktv_in_list: 'In List',
+    hooktv_scroll_down: 'Scroll to next section',
     hooktv_no_original: 'No original audio track — playing in Ukrainian',
     hooktv_section_dub: 'Audio & dub',
     hooktv_dub_default: 'Default language',

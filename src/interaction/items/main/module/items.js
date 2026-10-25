@@ -12,14 +12,18 @@ export default {
     },
 
     onDown: function(){
+        if(!this.items.length) return
+
         this.active++
 
         this.active = Math.min(this.active, this.items.length - 1)
 
-        this.items[this.active].toggle()
+        if(this.items[this.active]) this.items[this.active].toggle()
     },
 
     onUp: function(){
+        if(!this.items.length) return
+
         this.active--
         
         if(this.active < 0){
@@ -28,7 +32,7 @@ export default {
             Controller.toggle('head')
         }
         else{
-            this.items[this.active].toggle()
+            if(this.items[this.active]) this.items[this.active].toggle()
         }
     },
 

@@ -62,6 +62,8 @@ function tabs(){
         </div>`)
 
         item.on('click',()=>{
+            updateVisibility(-1)
+
             if(action == 'search') Lampa.Search.open()
             else if(action == 'favorite') $('.head .open--favorite').trigger('hover:enter')
             else $('.menu .menu__item[data-action="' + action + '"]').trigger('hover:enter')
@@ -71,6 +73,72 @@ function tabs(){
     })
 
     $('body').append(bar)
+
+    let positions = new WeakMap()
+    let touch_y
+
+    function horizontalTarget(target){
+        return target && target.closest && target.closest('.scroll--horizontal')
+    }
+
+    let hidden = false
+    let idle
+
+    // scroll/touch events fire every frame; only touch the DOM when the state flips
+    function updateVisibility(direction){
+        if(!direction) return
+
+        // bring the bar back once scrolling settles
+        clearTimeout(idle)
+        if(direction > 0) idle = setTimeout(()=>updateVisibility(-1), 450)
+
+        if((direction > 0) === hidden) return
+
+        hidden = direction > 0
+        bar[0].classList.toggle('navigation-bar--hidden', hidden)
+    }
+
+    document.addEventListener('scroll',(event)=>{
+        let target = event.target === document ? document.scrollingElement : event.target
+
+        if(!target || typeof target.scrollTop !== 'number') return
+        if(horizontalTarget(target)) return
+
+        let position = target.scrollTop
+        let previous = positions.has(target) ? positions.get(target) : 0
+
+        positions.set(target, position)
+
+        if(position <= 8 || position < previous - 2){
+            updateVisibility(-1)
+        }
+        else if(position > previous + 2){
+            updateVisibility(1)
+        }
+    }, { capture: true, passive: true })
+
+    document.addEventListener('wheel',(event)=>{
+        if(horizontalTarget(event.target)) return
+        if(Math.abs(event.deltaY) > 3) updateVisibility(event.deltaY)
+    }, { capture: true, passive: true })
+
+    document.addEventListener('touchstart',(event)=>{
+        touch_y = event.touches[0] && event.touches[0].clientY
+    }, { capture: true, passive: true })
+
+    document.addEventListener('touchmove',(event)=>{
+        if(horizontalTarget(event.target)) return
+
+        let next_y = event.touches[0] && event.touches[0].clientY
+
+        if(typeof next_y === 'number' && typeof touch_y === 'number'){
+            let distance = touch_y - next_y
+
+            if(Math.abs(distance) > 8) updateVisibility(distance)
+
+            touch_y = next_y
+        }
+    }, { capture: true, passive: true })
 }
 
 export default {

@@ -42,14 +42,14 @@ class Hero extends Emit{
                         <button class="hero-tv__button hero-tv__button--list selector" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span></span></button>
                         <button class="hero-tv__button hero-tv__button--info selector" type="button"><span>${Lang.translate('hooktv_details')}</span></button>
                     </div>
+                    <div class="hero-tv__dots"></div>
                 </div>
             </div>
-            <div class="hero-tv__dots"></div>
         </div>`)
 
         this.cards.forEach((c, i)=>{
             $(`<button class="hero-tv__dot" type="button" aria-label="Go to slide ${i + 1}" aria-current="false"></button>`)
-                .on('click', ()=>this.show(i))
+                .on('click', ()=>i !== this.index && this.show(i))
                 .appendTo(this.html.find('.hero-tv__dots'))
         })
 
@@ -95,8 +95,20 @@ class Hero extends Emit{
         this.show(0)
 
         this.timer = setInterval(()=>{
-            if(!Controller.own(this)) this.show((this.index + 1) % this.cards.length)
-        }, 9000)
+            let paused = Controller.own(this)
+            let now = Date.now()
+
+            // freeze the slide clock while paused, in step with the dot's paused animation
+            if(paused && this.shownAt) this.shownAt += now - (this.tickAt || now)
+
+            this.tickAt = now
+
+            this.html.toggleClass('hero-tv--paused', paused)
+
+            if(!paused && !this.loading && this.cards.length > 1 && this.shownAt && Date.now() - this.shownAt >= 6000){
+                this.show((this.index + 1) % this.cards.length)
+            }
+        }, 200)
     }
 
     card(){
@@ -108,7 +120,7 @@ class Hero extends Emit{
 
         if(!card) return
 
-        this.index = index
+        this.loading = true
         let transitionId = ++this.transitionId
 
         let year  = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
@@ -120,15 +132,20 @@ class Hero extends Emit{
         let currentImg = this.html.find('.hero-tv__backdrop--current')
         let nextImg = this.html.find('.hero-tv__backdrop--next')
 
-        this.html.find('.hero-tv__dot')
-            .removeClass('active')
-            .attr('aria-current', 'false')
-            .eq(index)
-            .addClass('active')
-            .attr('aria-current', 'true')
+        let activateDot = (i = index)=>{
+            this.html.find('.hero-tv__dot')
+                .removeClass('active')
+                .attr('aria-current', 'false')
+                .eq(i)
+                .addClass('active')
+                .attr('aria-current', 'true')
+        }
 
         if(!this.firstLoaded){
             this.firstLoaded = true
+            this.index = index
+            activateDot()
+            this.shownAt = Date.now()
 
             this.html.find('.hero-tv__title').text(card.title || card.name)
             this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
@@ -139,6 +156,13 @@ class Hero extends Emit{
             Utils.imgLoad(currentImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
                 if(transitionId !== this.transitionId) return
 
+                this.loading = false
+                this.html.addClass('hero-tv--loaded')
+            }, ()=>{
+                if(transitionId !== this.transitionId) return
+
+                this.loading = false
+                currentImg.removeAttr('src')
                 this.html.addClass('hero-tv--loaded')
             })
 
@@ -146,27 +170,33 @@ class Hero extends Emit{
             return
         }
 
-        this.html.removeClass('hero-tv--loaded').addClass('hero-tv--swapping')
-
-        setTimeout(()=>{
-            if(transitionId !== this.transitionId) return
-
-            this.html.find('.hero-tv__title').text(card.title || card.name)
-            this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
-            this.html.find('.hero-tv__descr').text(card.overview || '')
-
-            this.loadLogo(card)
-        }, 150)
-
         nextImg.css({
             opacity: '',
             transform: ''
         })
 
+        // switch the indicator on tap, not after the backdrop downloads
+        activateDot()
+        this.shownAt = Date.now()
+
         Utils.imgLoad(nextImg, Api.img(card.backdrop_path, 'w1280'), ()=>{
             if(transitionId !== this.transitionId) return
 
-            this.html.addClass('hero-tv--swapping')
+            this.index = index
+            this.loading = false
+            this.html.removeClass('hero-tv--loaded').addClass('hero-tv--swapping')
+
+            setTimeout(()=>{
+                if(transitionId !== this.transitionId) return
+
+                this.html.find('.hero-tv__title').text(card.title || card.name)
+                this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+                this.html.find('.hero-tv__descr').text(card.overview || '')
+
+                this.loadLogo(card)
+            }, 150)
+
+            this.listState()
 
             setTimeout(()=>{
                 if(transitionId !== this.transitionId) return
@@ -180,9 +210,16 @@ class Hero extends Emit{
 
                 this.html.removeClass('hero-tv--swapping').addClass('hero-tv--loaded')
             }, 460)
-        })
+        }, ()=>{
+            if(transitionId !== this.transitionId) return
 
-        this.listState()
+            this.loading = false
+            activateDot(this.index)
+            nextImg.css({
+                opacity: '',
+                transform: ''
+            })
+        })
     }
 
     loadLogo(card){

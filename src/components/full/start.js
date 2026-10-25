@@ -145,12 +145,19 @@ class Start extends Emit {
             } 
         }
 
-        $('.full-start-new__buttons', this.html).find('.selector').on('hover:focus hover:enter hover:hover hover:touch', (e)=>{
+        this.html.find('.full-start-new__buttons .selector, .full-start-new__scroll').on('hover:focus hover:enter hover:hover hover:touch', (e)=>{
             this.last = e.target
         })
         
         this.html.find('.full-start-new__head').toggleClass('hide',!head.length).html(head.join(', '))
         this.html.find('.full-start-new__details').html(info.join('<span class="full-start-new__split">●</span>'))
+
+        this.html.find('.full-start-new__scroll').on('hover:enter click', ()=>{
+            let next = this.html[0].nextElementSibling
+            let scroll = this.html.closest('.scroll')[0]
+
+            if(next && scroll && scroll.Scroll) scroll.Scroll.update(next)
+        })
 
         if(window.lampa_settings.read_only) this.html.find('.button--play').remove()
 

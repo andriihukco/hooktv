@@ -167,7 +167,8 @@ function frameUpdate(render){
 
     let wrap = document.querySelector('.wrap__left')
     let head = document.querySelector('.head')
-    let navi = document.querySelector('.navigation-bar')
+    // the HOOK TV tab bar floats over content, so it must not shrink the layers
+    let navi = document.querySelector('.navigation-bar:not(.navigation-bar--tabs)')
 
     let menu_left   = wrap ? wrap.getBoundingClientRect().left : 0
     let menu_width  = wrap ? wrap.getBoundingClientRect().width : 0

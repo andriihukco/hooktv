@@ -36,6 +36,7 @@ import Empty from './interaction/empty/empty'
 import Arrays from './utils/arrays'
 import Noty from './interaction/noty'
 import Player from './interaction/player'
+import Sources from './core/sources'
 import PlayerVideo from './interaction/player/video'
 import PlayerPanel from './interaction/player/panel'
 import PlayerFooter from './interaction/player/footer'
@@ -312,6 +313,7 @@ function initClass(){
         Arrays,
         Noty,
         Player,
+        Sources,
         PlayerVideo,
         PlayerInfo,
         PlayerPanel,
@@ -895,9 +897,10 @@ function loadApp(){
     }
     else{
         // Иначе предлагаем выбрать язык
-        let selectLanguage = (code)=>{
+        let selectLanguage = (code, country)=>{
             Storage.set('language', code, true)
             Storage.set('tmdb_lang',code, true)
+            if(country) Storage.set('setup_country', country, true)
 
             Keypad.disable()
 

@@ -1308,6 +1308,7 @@ export default {
     hooktv_details: 'Детальніше',
     hooktv_add_list: 'До списку',
     hooktv_in_list: 'У списку',
+    hooktv_scroll_down: 'Прокрутити до наступного розділу',
     hooktv_no_original: 'Оригінальної доріжки немає — граємо українською',
     hooktv_section_dub: 'Звук і озвучення',
     hooktv_dub_default: 'Мова за замовчуванням',
