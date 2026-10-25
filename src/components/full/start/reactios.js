@@ -138,14 +138,30 @@ export default {
             return sum + (find ? find.counter : 0)
         }, 0)
 
-        let voted = (types)=>types.some(type=>vote(type))
+        // my thumb for this card: which one is active, and which votes the server already has.
+        // The server only adds votes, so a sent vote is never sent again and never removed.
+        let card_id = (this.card.name ? 'tv' : 'movie') + '_' + this.card.id
+
+        let mine = ()=>{
+            let all = Storage.get('mine_thumbs', {})
+
+            return all[card_id] || {active: null, sent: []}
+        }
+
+        let keep = (state)=>{
+            let all = Storage.get('mine_thumbs', {})
+
+            all[card_id] = state
+
+            Storage.set('mine_thumbs', all)
+        }
 
         let paint = ()=>{
             Object.keys(thumbs).forEach(key=>{
                 let el = this.html.find('.button--' + key)
 
                 el.find('span').text(Utils.bigNumberToShort(count(thumbs[key].groups) + (thumbs[key].added || 0)))
-                el.toggleClass('voted', voted(thumbs[key].groups))
+                el.toggleClass('voted', mine().active === key)
             })
         }
 
@@ -153,21 +169,40 @@ export default {
             let thumb = thumbs[key]
 
             this.html.find('.button--' + key).on('hover:enter', ()=>{
-                if(voted(thumb.groups)) return Lampa.Noty.show(Lang.translate('reactions_ready'))
+                let state = mine()
+
+                // tap the active thumb again: undo on this screen only
+                if(state.active === key){
+                    state.active = null
+
+                    keep(state)
+
+                    return paint()
+                }
+
+                // the vote was already counted on the server: just make it active again
+                if(state.sent.indexOf(thumb.send) >= 0){
+                    state.active = key
+
+                    keep(state)
+
+                    return paint()
+                }
 
                 Reactions.add({
                     method: this.card.name ? 'tv' : 'movie',
                     id: this.card.id,
                     type: thumb.send
                 },()=>{
-                    vote(thumb.send, true)
+                    state.sent.push(thumb.send)
+                    state.active = key
+
+                    keep(state)
 
                     thumb.added = (thumb.added || 0) + 1
 
                     paint()
-                },()=>{
-                    Lampa.Noty.show(Lang.translate('reactions_ready'))
-                })
+                }, ()=>{})
             })
         })
 
