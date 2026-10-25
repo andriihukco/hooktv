@@ -1982,6 +1982,7 @@ $hk-spring-time: 0.5s;
 
         &__rate-line,
         &__details,
+        &__genres,
         &__reactions{
             justify-content: center;
         }
@@ -4244,15 +4245,16 @@ body.minimal--ui{
         padding-right: 0.8em;
     }
 
-    // the star sits on the number's line, a size bigger than the label it replaces
+    // the star leads the number and is a size bigger than the label it replaces
     > .full-start__rate > .source--name{
         display: flex;
         align-items: center;
+        order: -1;
     }
 
     > .full-start__rate > .source--name svg{
-        width: 1.25em;
-        height: 1.25em;
+        width: 1.5em;
+        height: 1.5em;
     }
 }
 
