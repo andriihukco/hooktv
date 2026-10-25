@@ -102,12 +102,15 @@ function init(){
             Controller.collectionSet(html, false, true)
             Controller.collectionFocus(last, html, true)
         },
+        // minimal layout reads logo · Home Movies Series · icons, and Left / Right walk it in that order
         right: ()=>{
-            Navigator.move('right')
+            if(window.lampa_settings.minimal_ui && focused() == logo()) Menu.focusEdge('first')
+            else Navigator.move('right')
         },
         left: ()=>{
-            if(Navigator.canmove('left')) Navigator.move('left')
-            // the side menu is hidden in the minimal layout: stay on the logo
+            if(window.lampa_settings.minimal_ui && focused() == actions()[0]) Menu.focusEdge('last')
+            else if(Navigator.canmove('left')) Navigator.move('left')
+            // the logo is the left edge of the minimal layout
             else if(!window.lampa_settings.minimal_ui) Controller.toggle('menu')
         },
         down: ()=>{
@@ -117,6 +120,34 @@ function init(){
             Activity.backward()
         }
     })
+}
+
+function visible(el){
+    return el && el.getClientRects().length > 0
+}
+
+function focused(){
+    return html.find('.selector.focus')[0]
+}
+
+function logo(){
+    return html.find('.head__logo-icon')[0]
+}
+
+function actions(){
+    return html.find('.head__actions .selector').toArray().filter(visible)
+}
+
+/**
+ * Focus the head from the centre tabs: the logo on their left, the first icon on their right
+ * @param {'logo'|'actions'} side
+ */
+function focusEdge(side){
+    let target = side == 'logo' ? logo() : actions()[0]
+
+    if(visible(target)) last = target
+
+    Controller.toggle('head')
 }
 
 /**
@@ -164,6 +195,7 @@ function render(js){
 export default {
     init,
     render,
+    focusEdge,
     title,
     addElement,
     addIcon

@@ -100,12 +100,15 @@ function init(){
         right: ()=>{
             if(window.lampa_settings.minimal_ui){
                 if(Navigator.canmove('right')) Navigator.move('right')
-                else Controller.toggle('head')
+                else Head.focusEdge('actions')
             }
             else Controller.toggle('content')
         },
         left: ()=>{
-            if(window.lampa_settings.minimal_ui && Navigator.canmove('left')) Navigator.move('left')
+            if(!window.lampa_settings.minimal_ui) return
+
+            if(Navigator.canmove('left')) Navigator.move('left')
+            else Head.focusEdge('logo')
         },
         up: ()=>{
             if(window.lampa_settings.minimal_ui) return Controller.toggle('head')
@@ -454,6 +457,18 @@ function addButton(svg_icon, title, action){
  * Переключает меню
  * @returns {void}
  */
+/**
+ * Focus the first or last visible tab, coming from the head beside them
+ * @param {'first'|'last'} which
+ */
+function focusEdge(which){
+    let tabs = html.find('.selector').toArray().filter(el=>el.getClientRects().length > 0)
+
+    if(tabs.length) last = which == 'first' ? tabs[0] : tabs[tabs.length - 1]
+
+    Controller.toggle('menu')
+}
+
 function toggle(){
     if($('body').hasClass('menu--open')) Controller.toggle('content')
     else Controller.toggle('menu')
@@ -497,6 +512,7 @@ export default {
     init: Utils.onceInit(init),
     render,
     ready,
+    focusEdge,
     toggle,
     opened,
     addElement,
