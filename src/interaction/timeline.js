@@ -226,6 +226,24 @@ function watched(card, return_time = false){
     }
 }
 
+/**
+ * Последний прогресс карточки: для фильма свой, для сериала последняя серия первого сезона
+ * @param {object} card - карточка
+ * @return {{view: object, prefix: string}|null} - прогресс и текст перед процентом или null
+ */
+function lastProgress(card){
+    let last = watched(card, true)
+    let progress = card.original_name ? last.pop() : last
+    let view = card.original_name ? (progress && progress.view) : progress
+
+    if(!view || !view.percent) return null
+
+    return {
+        view,
+        prefix: card.original_name ? Lang.translate('full_episode') + ' ' + progress.ep : ''
+    }
+}
+
 function watchedEpisode(card, season, episode, return_time = false){
     let time = view(Utils.hash([season, season > 10 ? ':' : '',episode,card.original_name || card.original_title].join('')))
     return return_time ? time : time.percent
@@ -258,5 +276,6 @@ export default {
     format,
     watched,
     watchedEpisode,
+    lastProgress,
     filename
 }

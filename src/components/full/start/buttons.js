@@ -11,15 +11,9 @@ import Reactions from '../../../core/supa/reactions'
 export default {
     onCreate: function(){
         // Movie: its own progress. Show: the last watched episode (season 1 scan, as in the card hover)
-        let last = Timeline.watched(this.card, true)
-        let progress = this.card.original_name ? last.pop() : last
-        let view = this.card.original_name ? (progress && progress.view) : progress
+        let last = Timeline.lastProgress(this.card)
 
-        if(view && view.percent){
-            let prefix = this.card.original_name ? Lang.translate('full_episode') + ' ' + progress.ep : ''
-
-            this.html.find('.full-start-new__rate-line').append(Timeline.pill(view, prefix))
-        }
+        if(last) this.html.find('.full-start-new__rate-line').append(Timeline.pill(last.view, last.prefix))
 
         // shared through api/title.js, which serves link-preview tags and then opens the app at ?card=&media=&source=
         this.html.find('.button--share').on('hover:enter', ()=>{

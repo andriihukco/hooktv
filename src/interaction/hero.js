@@ -6,6 +6,7 @@ import Utils from '../utils/utils'
 import Favorite from '../core/favorite'
 import Router from '../core/router'
 import Watch from './watch'
+import Timeline from './timeline'
 import Layer from '../core/layer'
 import Extra from '../utils/tmdb_extra'
 
@@ -36,6 +37,7 @@ class Hero extends Emit{
                 <div class="hero-tv__title"></div>
                 <div class="hero-tv__meta"></div>
                 <div class="hero-tv__descr"></div>
+                <div class="hero-tv__progress"></div>
                 <div class="hero-tv__controls">
                     <div class="hero-tv__buttons">
                         <button class="hero-tv__button hero-tv__button--watch selector" type="button"><svg aria-hidden="true"><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></button>
@@ -115,6 +117,16 @@ class Hero extends Emit{
 
     card(){
         return this.cards[this.index]
+    }
+
+    /**
+     * Watched progress of the slide, the same pill as on the details page
+     */
+    renderProgress(card){
+        let progress = this.html.find('.hero-tv__progress').empty()
+        let last = Timeline.lastProgress(card)
+
+        if(last) progress.append(Timeline.pill(last.view, last.prefix))
     }
 
     step(by){
@@ -233,6 +245,7 @@ class Hero extends Emit{
             this.html.find('.hero-tv__title').text(card.title || card.name)
             this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
             this.html.find('.hero-tv__descr').text(card.overview || '')
+            this.renderProgress(card)
 
             this.loadLogo(card)
 
@@ -275,6 +288,7 @@ class Hero extends Emit{
                 this.html.find('.hero-tv__title').text(card.title || card.name)
                 this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
                 this.html.find('.hero-tv__descr').text(card.overview || '')
+                this.renderProgress(card)
 
                 this.loadLogo(card)
             }, 150)
