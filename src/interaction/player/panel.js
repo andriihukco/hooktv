@@ -32,6 +32,7 @@ let subs      = []
 let flows     = false
 let qualitys  = false
 let translates = {}
+let balanser   = false
 let last_settings_action
 let last_panel_focus
 
@@ -537,7 +538,28 @@ function settings(){
             title: Lang.translate('player_video_speed'),
             subtitle: speed == 'default' ? Lang.translate('player_speed_default_title') : speed,
             method: 'speed'
-        },
+        }
+    ]
+
+    if(tracks.length){
+        let current = tracks.find(a=>a.selected || a.enabled)
+
+        items.push({
+            title: Lang.translate('player_tracks'),
+            subtitle: current ? normalName(current.language || current.name || current.label || '') : '',
+            method: 'tracks'
+        })
+    }
+
+    if(balanser){
+        items.push({
+            title: Lang.translate('online_balanser'),
+            subtitle: Utils.capitalizeFirstLetter(balanser.current),
+            method: 'balanser'
+        })
+    }
+
+    items.push(
         {
             title: Lang.translate('player_share_title'),
             subtitle: Lang.translate('player_share_descr'),
@@ -552,7 +574,7 @@ function settings(){
             title: Lang.translate('settings_player_subs'),
             method: 'subs'
         }
-    ]
+    )
 
     if(Storage.field('player_normalization')){
         items.push({
@@ -597,6 +619,8 @@ function settings(){
             if(a.method == 'normalization_type') selectNormalizationType()
             if(a.method == 'segments') selectSegments()
             if(a.method == 'subs') selectSubs()
+            if(a.method == 'tracks') elems.tracks.trigger('hover:enter')
+            if(a.method == 'balanser') selectBalanser()
             if(a.method == 'share'){
                 Controller.toggle(Platform.screen('mobile') ? 'player' : 'player_panel')
 
@@ -606,6 +630,33 @@ function settings(){
         onBack: ()=>{
             Controller.toggle(Platform.screen('mobile') ? 'player' : 'player_panel')
         }
+    })
+}
+
+/**
+ * Выбор балансера (источника), с которого запущено видео
+ */
+function selectBalanser(){
+    let enabled = Controller.enabled().name
+
+    Select.show({
+        title: Lang.translate('online_balanser'),
+        items: balanser.list.map(name=>({
+            title: Utils.capitalizeFirstLetter(name),
+            value: name,
+            selected: name == balanser.current
+        })),
+        nohide: true,
+        onSelect: (a)=>{
+            if(a.value == balanser.current){
+                Controller.toggle(enabled)
+
+                return
+            }
+
+            listener.send('balanser',{name: a.value})
+        },
+        onBack: settings
     })
 }
 
@@ -1219,6 +1270,14 @@ function setTracks(tr){
 }
 
 /**
+ * Установить список балансеров, из которого запущено видео
+ * @param {{current:string, list:[string]}} data
+ */
+function setBalanser(data){
+    balanser = data && data.list && data.list.length ? data : false
+}
+
+/**
  * Устанавливает качество из M3U8
  * @param {[{title:string, url:string}]} levels 
  * @param {string} current 
@@ -1292,6 +1351,7 @@ function destroy(){
     condition = {}
     tracks    = []
     subs      = []
+    balanser  = false
     qualitys  = false
     flows     = false
     translates = {}
@@ -1344,6 +1404,7 @@ export default {
     rewind,
     setTracks,
     setSubs,
+    setBalanser,
     setLevels,
     mousemove,
     quality,

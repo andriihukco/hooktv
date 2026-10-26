@@ -235,6 +235,15 @@ function init(){
         if(Platform.screen('mobile')) Panel.rewind()
     })
 
+    /** Сменили балансер из настроек: закрываем плеер и передаем выбор источнику */
+    Panel.listener.follow('balanser',(e)=>{
+        let change = work && work.balanser && work.balanser.change
+
+        destroy()
+
+        if(change) change(e.name)
+    })
+
     /** Нажали на плейлист */
     Panel.listener.follow('playlist',(e)=>{
         Playlist.show()
@@ -1074,6 +1083,8 @@ function play(data){
 
                 if(data.subtitles) Video.customSubs(data.subtitles)
                 if(data.voiceovers) Panel.setTracks(data.voiceovers)
+
+                Panel.setBalanser(data.balanser)
 
                 Info.set('name',data.title)
 

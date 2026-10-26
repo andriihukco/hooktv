@@ -70,6 +70,8 @@ function component(object){
             }
         }
 
+        Lampa.Player.listener.follow('create', attachBalanser)
+
         if(filter.addButtonBack) filter.addButtonBack()
 
         filter.render().find('.filter--sort span').text(Lampa.Lang.translate('online_balanser'))
@@ -82,6 +84,17 @@ function component(object){
         scroll.minus(files.render().find('.explorer__files-head'))
 
         this.search()
+    }
+
+    /**
+     * Передать плееру список балансеров, чтобы его можно было сменить из настроек плеера
+     */
+    let attachBalanser = (e)=>{
+        e.data.balanser = {
+            current: balanser,
+            list: filter_sources,
+            change: (name)=>this.changeBalanser(name)
+        }
     }
 
     this.changeBalanser = function(balanser_name){
@@ -1097,6 +1110,8 @@ function component(object){
         scroll.destroy()
 
         clearInterval(balanser_timer)
+
+        Lampa.Player.listener.remove('create', attachBalanser)
 
         if(source) source.destroy()
     }
