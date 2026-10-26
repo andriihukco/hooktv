@@ -1032,6 +1032,8 @@ export default {
     reactions_bore: 'Нудно',
     reactions_shit: 'Погано',
     reactions_ready: 'Ви вже залишили реакцію',
+    reactions_signin: 'Увійдіть, щоб оцінити',
+    reactions_failed: 'Не вдалося зберегти голос',
     settings_player_launch_trailers: 'Плеєр для трейлерів',
     title_continued: 'Далі буде',
     title_language_short: 'Мова',

@@ -78,7 +78,7 @@ class Start extends Emit {
         if(year) this.html.find('.full-start__year').removeClass('hide').text(year)
 
         // each country is its own chip in the rate line
-        countries.slice(0,5).forEach(c=>this.html.find('.full-start-new__rate-line').append($('<div class="full-start__country"></div>').text(c)))
+        countries.slice(0,5).forEach(c=>this.html.find('.full-start-new__rate-line').append($('<div class="full-start__country hk-chip"></div>').text(c)))
 
 
         !this.card.tagline && this.html.find('.full--tagline').remove()

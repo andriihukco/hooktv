@@ -1066,6 +1066,8 @@ export default {
     reactions_bore: 'Boring',
     reactions_shit: 'Bad',
     reactions_ready: 'You have already left a reaction',
+    reactions_signin: 'Sign in to vote',
+    reactions_failed: 'Could not save your vote',
     settings_player_launch_trailers: 'Trailer Player',
     title_continued: 'To be continued',
     title_language_short: 'Language',
