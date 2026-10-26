@@ -11,13 +11,13 @@ let html = `<div class="full-start-new">
             <div class="full-start-new__title">{title}</div>
             <div class="full-start-new__tagline full--tagline">{tagline}</div>
             <div class="full-start-new__rate-line">
-                <div class="full-start__rate rate--tmdb"><div>{rating}</div><div class="source--name"><svg viewBox="0 0 24 24" aria-label="TMDB"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></div>
-                <div class="full-start__rate rate--imdb hide"><div></div><div>IMDB</div></div>
-                <div class="full-start__rate rate--kp hide"><div></div><div>KP</div></div>
+                <div class="full-start__rate hk-chip rate--tmdb"><div>{rating}</div><div class="source--name"><svg viewBox="0 0 24 24" aria-label="TMDB"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></div>
+                <div class="full-start__rate hk-chip rate--imdb hide"><div></div><div>IMDB</div></div>
+                <div class="full-start__rate hk-chip rate--kp hide"><div></div><div>KP</div></div>
 
-                <div class="full-start__pg hide"></div>
-                <div class="full-start__status hide"></div>
-                <div class="full-start__year hide"></div>            </div>
+                <div class="full-start__pg hk-chip hide"></div>
+                <div class="full-start__status hk-chip hide"></div>
+                <div class="full-start__year hk-chip hide"></div>            </div>
             <div class="full-start-new__details"></div>
             <div class="full-start-new__genres"></div>
 
