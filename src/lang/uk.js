@@ -311,7 +311,7 @@ export default {
     title_choice: 'Вибрати',
     title_main: 'Головна',
     title_book: 'Закладки',
-    title_like: 'Подобається',
+    title_like: 'Вподобане',
     title_wath: 'Пізніше',
     title_history: 'Історія переглядів',
     title_mytorrents: 'Мої торенти',

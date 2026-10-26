@@ -333,7 +333,7 @@ export default {
     title_choice: 'Choose',
     title_main: 'Home',
     title_book: 'Bookmarks',
-    title_like: 'Like',
+    title_like: 'Liked',
     title_wath: 'Later',
     title_history: 'Browsing history',
     title_mytorrents: 'My torrents',
