@@ -12718,56 +12718,74 @@ body.system--keyboard .search-box .simple-keyboard-input {
 }
 
 .time-pill {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 0.45em;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0.6em;
+}
+.time-pill__track {
+  height: 3px;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+.time-pill__track > i {
+  display: block;
+  height: 100%;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  background-color: #fff;
+}
+.time-pill__text {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.full-start-new__rate-line .time-pill {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  gap: 0.7em;
-  max-width: 100%;
-  margin-top: 0.5em;
-  padding: 0.4em 1em 0.4em 0.4em;
-  -webkit-border-radius: 3em;
-          border-radius: 3em;
-  background-color: var(--surface-media);
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  vertical-align: middle;
+  gap: 0.8em;
+  margin-top: 0;
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+          align-self: center;
 }
-.time-pill__track {
-  position: relative;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 1 6em;
-      -ms-flex: 1 1 6em;
-          flex: 1 1 6em;
-  min-width: 4em;
-  height: 0.5em;
-  -webkit-border-radius: 3em;
-          border-radius: 3em;
-  background-color: rgba(255, 255, 255, 0.22);
-  overflow: hidden;
-}
-.time-pill__track > i {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  -webkit-border-radius: 3em;
-          border-radius: 3em;
-  background-color: #fff;
-}
-.time-pill__text {
+.full-start-new__rate-line .time-pill__track {
+  width: 8em;
   -webkit-box-flex: 0;
-  -webkit-flex: 0 0 auto;
-      -ms-flex: 0 0 auto;
-          flex: 0 0 auto;
+  -webkit-flex: 0 0 8em;
+      -ms-flex: 0 0 8em;
+          flex: 0 0 8em;
+}
+.full-start-new__rate-line .time-pill__text {
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
   font-size: 0.9em;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
 }
 
 .noty {

@@ -11,41 +11,52 @@
 }
 
 .time-pill{
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+    min-width: 0;
     max-width: 100%;
-    margin-top: 0.5em;
-    padding: 0.4em 1em 0.4em 0.4em;
-    border-radius: 3em;
-    background-color: var(--surface-media);
-    box-sizing: border-box;
-    vertical-align: middle;
+    margin-top: 0.6em;
 
     &__track{
-        position: relative;
-        flex: 1 1 6em;
-        min-width: 4em;
-        height: 0.5em;
-        border-radius: 3em;
-        background-color: rgba(255,255,255,0.22);
+        height: 3px;
+        border-radius: 3px;
+        background-color: rgba(255,255,255,0.2);
         overflow: hidden;
 
         > i{
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            border-radius: 3em;
+            display: block;
+            height: 100%;
+            border-radius: 3px;
             background-color: #fff;
         }
     }
 
     &__text{
-        flex: 0 0 auto;
-        font-size: 0.9em;
-        font-weight: 600;
-        color: #fff;
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
+        font-size: 0.85em;
+        color: rgba(255,255,255,0.7);
+    }
+}
+
+.full-start-new__rate-line .time-pill{
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8em;
+    margin-top: 0;
+    align-self: center;
+
+    &__track{
+        width: 8em;
+        flex: 0 0 8em;
+    }
+
+    &__text{
+        flex: 0 1 auto;
+        font-size: 0.9em;
     }
 }
