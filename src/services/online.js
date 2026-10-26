@@ -1498,6 +1498,16 @@ function component(object) {
     var images = []
     var disabled_sources = {}
     var filter_sources = buildFilterSources(object && object.movie)
+    var self = this
+
+    // the player settings menu lists the balancers and switches source through this
+    function attachBalanser(e) {
+        e.data.balanser = {
+            current: balanser,
+            list: filter_sources.filter(function(name) { return !isSourceDisabled(name) }),
+            change: function(name) { self.changeBalanser(name) }
+        }
+    }
     var available_sources = sourcesStore.available_sources
     var tmdb_season_cache = {}
 
@@ -1672,6 +1682,9 @@ function component(object) {
 
     this.initialize = function() {
         var _this = this
+
+        Player.listener.follow('create', attachBalanser)
+
         loadAvailableSources(function() {
             filter_sources = buildFilterSources(object && object.movie)
             source = _this.createSource()
@@ -2481,6 +2494,7 @@ function component(object) {
         files.destroy()
         scroll.destroy()
         clearInterval(balanser_timer)
+        Player.listener.remove('create', attachBalanser)
         if (source) source.destroy()
     }
 }

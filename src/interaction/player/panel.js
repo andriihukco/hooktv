@@ -541,15 +541,13 @@ function settings(){
         }
     ]
 
-    if(tracks.length){
-        let current = tracks.find(a=>a.selected || a.enabled)
+    let current = tracks.find(a=>a.selected || a.enabled)
 
-        items.push({
-            title: Lang.translate('player_tracks'),
-            subtitle: current ? normalName(current.language || current.name || current.label || '') : '',
-            method: 'tracks'
-        })
-    }
+    items.push({
+        title: Lang.translate('player_tracks'),
+        subtitle: current ? normalName(current.language || current.name || current.label || '') : '',
+        method: 'tracks'
+    })
 
     if(balanser){
         items.push({
