@@ -746,6 +746,7 @@ export default {
     player_quality: 'Якість',
     player_flow: 'Потік',
     player_tracks: 'Аудіодоріжки',
+    player_balancer: 'Джерело',
     player_disabled: 'Вимкнено',
     player_unknown: 'Невідомо',
     player_subs: 'Субтитри',

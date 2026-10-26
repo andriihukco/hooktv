@@ -781,6 +781,7 @@ export default {
     player_quality: 'Quality',
     player_flow: 'Flow',
     player_tracks: 'Audio tracks',
+    player_balancer: 'Source',
     player_disabled: 'Disabled',
     player_unknown: 'Unknown',
     player_subs: 'Subtitles',

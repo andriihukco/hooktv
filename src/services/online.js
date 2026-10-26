@@ -1436,15 +1436,15 @@ function autoProbe(key, movie, want) {
  * @param {function(boolean)} done true once the player has started
  * @returns {function} cancel
  */
-function autoPlay(movie, want, done) {
+function autoPlay(movie, want, done, only) {
     var cancelled = false
 
-    autoSources(movie, function(keys) {
+    function start(keys) {
         var probes = keys.map(function(key) {
             return autoProbe(key, movie, want)
         })
         // public-domain classics play even when no balancer has the title
-        probes.push(Archive.probe(movie))
+        if (!only) probes.push(Archive.probe(movie))
         var index = 0
 
         function next() {
@@ -1453,14 +1453,19 @@ function autoPlay(movie, want, done) {
             probes[index++].then(function(found) {
                 if (cancelled) return
                 if (!found) return next()
+                var key = keys[index - 1]
                 found.play(function() {
-                    done(true)
+                    done(true, key)
                 }, next)
             })
         }
 
         next()
-    })
+    }
+
+    // only: play through these balancers alone (switch from the player menu)
+    if (only) start(only)
+    else autoSources(movie, start)
 
     return function() {
         cancelled = true
@@ -3341,8 +3346,21 @@ function init() {
     }
 }
 
+/**
+ * Balancers that can play this title, in the user's order, for the player menu
+ * @param {function({key:string, title:string}[])} call
+ */
+function balancers(movie, call) {
+    autoSources(movie, function(keys) {
+        call(keys.map(function(key) {
+            return { key: key, title: sourcesStore.getTitle(key) }
+        }))
+    })
+}
+
 export default {
     init: init,
     component: component,
-    autoPlay: autoPlay
+    autoPlay: autoPlay,
+    balancers: balancers
 }

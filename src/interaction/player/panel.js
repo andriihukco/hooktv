@@ -28,6 +28,8 @@ let timeline_last = {
 let condition = {}
 let timer     = {}
 let tracks    = []
+let balancers = []
+let balancer_handler = null
 let subs      = []
 let flows     = false
 let qualitys  = false
@@ -340,51 +342,9 @@ function init(){
 
 
     /**
-     * Выбор аудиодорожки
+     * Выбор аудиодорожки (основной вход — меню настроек плеера)
      */
-    elems.tracks.on('hover:enter',(e)=>{
-        if(tracks.length){
-            tracks.forEach((element, p) => {
-                let name = []
-                let from = translates.tracks && Arrays.isArray(translates.tracks) && translates.tracks[p] ? translates.tracks[p] : element
-
-                name.push(p + 1)
-                name.push(normalName(from.language || from.name || Lang.translate('player_unknown')))
-
-                if(from.label) name.push(normalName(from.label))
-
-                if(from.extra){
-                    if(from.extra.channels) name.push(from.extra.channels + ' Ch')
-                    if(from.extra.fourCC) name.push(from.extra.fourCC)
-                }
-                
-                element.title = name.join(' / ')
-            })
-
-            let enabled = Controller.enabled().name
-
-            Select.show({
-                title: Lang.translate('player_tracks'),
-                items: tracks,
-                onSelect: (a)=>{
-                    tracks.forEach(element => {
-                        element.enabled  = false
-                        element.selected = false
-                    })
-
-                    a.enabled  = true
-                    a.selected = true
-
-                    Controller.toggle(enabled)
-
-                    if(a.onSelect) a.onSelect(a)
-                },
-                onBack: ()=>{
-                    Controller.toggle(enabled)
-                }
-            })
-        }
-    })
+    elems.tracks.on('hover:enter',()=>selectTracks())
 
     /**
      * Выбор субтитров
@@ -525,6 +485,96 @@ function showParams(){
     })
 }
 
+/**
+ * Подпись аудиодорожки: номер, язык, название, каналы
+ */
+function trackName(element, p){
+    let name = []
+    let from = translates.tracks && Arrays.isArray(translates.tracks) && translates.tracks[p] ? translates.tracks[p] : element
+
+    name.push(p + 1)
+    name.push(normalName(from.language || from.name || Lang.translate('player_unknown')))
+
+    if(from.label) name.push(normalName(from.label))
+
+    if(from.extra){
+        if(from.extra.channels) name.push(from.extra.channels + ' Ch')
+        if(from.extra.fourCC) name.push(from.extra.fourCC)
+    }
+
+    return name.join(' / ')
+}
+
+function currentTrackTitle(){
+    let index = tracks.findIndex(t=>t.selected || t.enabled)
+
+    return index >= 0 ? trackName(tracks[index], index) : ''
+}
+
+/**
+ * Выбор аудиодорожки. back — вернуться в меню настроек
+ */
+function selectTracks(back){
+    if(!tracks.length) return
+
+    tracks.forEach((element, p)=>{
+        element.title = trackName(element, p)
+    })
+
+    let enabled = Controller.enabled().name
+
+    Select.show({
+        title: Lang.translate('player_tracks'),
+        items: tracks,
+        onSelect: (a)=>{
+            tracks.forEach(element => {
+                element.enabled  = false
+                element.selected = false
+            })
+
+            a.enabled  = true
+            a.selected = true
+
+            if(back) back()
+            else Controller.toggle(enabled)
+
+            if(a.onSelect) a.onSelect(a)
+        },
+        onBack: ()=>{
+            if(back) back()
+            else Controller.toggle(enabled)
+        }
+    })
+}
+
+/**
+ * Выбор балансера (источника). Смена перезапускает воспроизведение,
+ * поэтому после выбора сразу возвращаемся к плееру.
+ */
+function selectBalancer(back){
+    if(!balancers.length) return
+
+    let return_to = Platform.screen('mobile') ? 'player' : 'player_panel'
+
+    Select.show({
+        title: Lang.translate('player_balancer'),
+        items: balancers,
+        onSelect: (a)=>{
+            Controller.toggle(return_to)
+
+            if(a.selected) return
+
+            balancers.forEach(b=>{b.selected = b === a})
+
+            if(balancer_handler) balancer_handler(a.value)
+        },
+        onBack: ()=>{
+            if(back) back()
+            else Controller.toggle(return_to)
+        }
+    })
+}
+
 function settings(){
     let speed = Storage.get('player_speed','default')
     let items = [
@@ -579,6 +629,22 @@ function settings(){
         })
     }
 
+    if(balancers.length){
+        items.unshift({
+            title: Lang.translate('player_balancer'),
+            subtitle: (balancers.find(b=>b.selected) || {}).title || '',
+            method: 'balancer'
+        })
+    }
+
+    if(tracks.length){
+        items.unshift({
+            title: Lang.translate('player_tracks'),
+            subtitle: currentTrackTitle(),
+            method: 'tracks'
+        })
+    }
+
     if(last_settings_action){
         items.find(a=>a.method == last_settings_action).selected = true
     }
@@ -590,6 +656,8 @@ function settings(){
         onSelect: (a)=>{
             last_settings_action = a.method
 
+            if(a.method == 'tracks') selectTracks(settings)
+            if(a.method == 'balancer') selectBalancer(settings)
             if(a.method == 'size') selectSize()
             if(a.method == 'speed') selectSpeed()
             if(a.method == 'normalization_power') selectNormalizationStep('power','hight')
@@ -1219,6 +1287,16 @@ function setTracks(tr){
 }
 
 /**
+ * Балансеры (источники) для смены из меню настроек
+ * @param {{title:string, key:string, selected?:boolean}[]} list
+ * @param {function(string)} handler вызывается с key выбранного балансера
+ */
+function setBalancers(list, handler){
+    balancers = list.map(item=>({title: item.title, value: item.key, selected: !!item.selected}))
+    balancer_handler = handler
+}
+
+/**
  * Устанавливает качество из M3U8
  * @param {[{title:string, url:string}]} levels 
  * @param {string} current 
@@ -1291,6 +1369,8 @@ function destroy(){
 
     condition = {}
     tracks    = []
+    balancers = []
+    balancer_handler = null
     subs      = []
     qualitys  = false
     flows     = false
@@ -1343,6 +1423,7 @@ export default {
     update,
     rewind,
     setTracks,
+    setBalancers,
     setSubs,
     setLevels,
     mousemove,

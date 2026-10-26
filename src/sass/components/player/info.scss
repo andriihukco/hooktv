@@ -1,12 +1,13 @@
 .player-info{
     position: fixed;
-    top: $offset;
-    left: $offset;
-    right: $offset;
-    background-color: var(--surface-media);
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
     transform: translateY(-150%);
     transition: transform 0.3s, opacity 0.3s;
-    border-radius: 0.5em;
+    border-radius: 0;
+
 
     @media screen and (max-width: $media_xm) {
         left: 0;
@@ -14,8 +15,16 @@
         top: 0;
     }
 
+    // title reads as a logo-style line at the top left, like the native player
+    text-align: left;
+
     &__body{
-        padding: $offset;
+        padding: 1.2em 4% 2em;
+        text-align: left;
+    }
+
+    &__name{
+        text-align: left;
     }
 
     &.info--visible{
@@ -23,19 +32,23 @@
     }
 
     &__name{
-        font-size: 1.5em;
+        font-size: 1.4em;
+        font-weight: 600;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
         word-break: break-all;
     }
 
     &__line{
         display: flex;
+        justify-content: space-between;
     }
 
     &__time{
         margin-left: auto;
         flex-shrink: 0;
-        font-size: 1.5em;
+        font-size: 1.2em;
         padding-left: 1em;
+        color: rgba(255, 255, 255, 0.85);
     }
 
     &__error{
