@@ -1,6 +1,15 @@
 import Material from '../../utils/material'
 
 let html = `<div>
+    <!-- Login is paused: restore this row to show the sign-in / sign-up entry again (hidden when accounts are off)
+    <div class="settings-folder selector" data-component="account">
+        <div class="settings-folder__icon">
+            ${Material.icon('person')}
+        </div>
+        <div class="settings-folder__name">#{settings_login}</div>
+    </div>
+    -->
+
     <!-- Tastes is paused: restore this row together with TastesSettings.init in app.js
     <div class="settings-folder settings-folder--tastes selector" data-component="tastes">
         <div class="settings-folder__icon">

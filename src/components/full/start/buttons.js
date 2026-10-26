@@ -3,12 +3,24 @@ import Lang from '../../../core/lang'
 import Watch from '../../../interaction/watch'
 import Bell from '../../../interaction/bell'
 import Template from '../../../interaction/template'
+import Timeline from '../../../interaction/timeline'
 import Utils from '../../../utils/utils'
 import Auth from '../../../core/supa/auth'
 import Reactions from '../../../core/supa/reactions'
 
 export default {
     onCreate: function(){
+        // Movie: its own progress. Show: the last watched episode (season 1 scan, as in the card hover)
+        let last = Timeline.watched(this.card, true)
+        let progress = this.card.original_name ? last.pop() : last
+        let view = this.card.original_name ? (progress && progress.view) : progress
+
+        if(view && view.percent){
+            let prefix = this.card.original_name ? Lang.translate('full_episode') + ' ' + progress.ep : ''
+
+            this.html.find('.full-start-new__rate-line').append(Timeline.pill(view, prefix))
+        }
+
         // shared through api/title.js, which serves link-preview tags and then opens the app at ?card=&media=&source=
         this.html.find('.button--share').on('hover:enter', ()=>{
             let media = this.card.name ? 'tv' : 'movie'

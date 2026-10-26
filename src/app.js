@@ -141,6 +141,9 @@ Arrays.extend(window.lampa_settings,{
     // Обрабатывать сообщения сокетов
     socket_methods: true,
 
+    // Сервер CUB, только для оценок IMDb и Кинопоиска. В интерфейсе не показывается
+    cub_server: 'cub.red',
+
     // Адрес проекта Supabase и публичный anon-ключ (аккаунты, синхронизация)
     supabase_url: undefined,
     supabase_anon_key: undefined,

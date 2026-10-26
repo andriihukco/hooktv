@@ -15,6 +15,8 @@ import Router from '../../router'
 import Permit from '../../account/permit'
 import VPN from '../../../core/vpn'
 import Keys from '../../tmdb/keys'
+import Ratings from './ratings'
+import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
 
 
@@ -494,10 +496,14 @@ function category(params = {}, oncomplite, onerror){
 }
 
 function full(params = {}, oncomplite, onerror){
-    // 8 pieces: movie, credits, recommendations, similar, videos, plus the three that resolve early
-    // (overview fallback, tv season, collection). The CUB reactions request was removed with its append.
-    let status = new Status(8)
-        status.onComplite = oncomplite
+    // main counts twice (append + need--), every other request once, plus the ratings and reactions lookups
+    let status = new Status(10)
+        status.onComplite = (data)=>{
+            // ratings arrive from a separate lookup; merge them before the page reads the movie
+            if(data.ratings && data.movie) Object.assign(data.movie, data.ratings)
+
+            oncomplite(data)
+        }
 
     if(Utils.dcma(params.method, params.id)) return onerror()
 
@@ -569,6 +575,14 @@ function full(params = {}, oncomplite, onerror){
     else{
         status.need -= 4
     }
+
+    Reactions.get(params, (json)=>{
+        status.append('reactions', json)
+    })
+
+    Ratings.get(params, (ratings)=>{
+        status.append('ratings', ratings)
+    }, status.error.bind(status))
 }
 
 function videos(params = {}, oncomplite, onerror){

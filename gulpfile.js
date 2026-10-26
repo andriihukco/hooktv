@@ -33,7 +33,7 @@ var babel = require('@rollup/plugin-babel').babel;
 // Add support for require() syntax
 var commonjs = require('@rollup/plugin-commonjs');
 // Add support for importing from node_modules folder like import x from 'module-name'
-var nodeResolve = require('@rollup/plugin-node-resolve');
+var nodeResolve = require("@rollup/plugin-node-resolve").default;
 var regenerator = require('rollup-plugin-regenerator');
 
 
@@ -54,7 +54,7 @@ function merge() {
     let plugins = [babel({
         babelHelpers: 'bundled',
         presets: ['@babel/preset-env']
-    }), commonjs, nodeResolve, worker()]
+    }), commonjs, nodeResolve(), worker()]
 
     return rollup({
         // Point to the entry file
@@ -97,7 +97,7 @@ function bubbleFile(name){
     let plug = [babel({
         babelHelpers: 'bundled',
         presets: ['@babel/preset-env']
-    }), commonjs, nodeResolve]
+    }), commonjs, nodeResolve()]
 
     rollup({
         input: plgFolder+name,

@@ -4853,7 +4853,7 @@ body.platform--netcast .card__title {
 .card-watched__item:nth-child(5) {
   color: rgba(255, 255, 255, 0.35);
 }
-.card-watched__item .time-line {
+.card-watched__item .time-pill {
   margin-top: 0.5em;
 }
 
@@ -12717,6 +12717,59 @@ body.system--keyboard .search-box .simple-keyboard-input {
   background-color: #fff;
 }
 
+.time-pill {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 0.7em;
+  max-width: 100%;
+  margin-top: 0.5em;
+  padding: 0.4em 1em 0.4em 0.4em;
+  -webkit-border-radius: 3em;
+          border-radius: 3em;
+  background-color: var(--surface-media);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  vertical-align: middle;
+}
+.time-pill__track {
+  position: relative;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 6em;
+      -ms-flex: 1 1 6em;
+          flex: 1 1 6em;
+  min-width: 4em;
+  height: 0.5em;
+  -webkit-border-radius: 3em;
+          border-radius: 3em;
+  background-color: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+.time-pill__track > i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  -webkit-border-radius: 3em;
+          border-radius: 3em;
+  background-color: #fff;
+}
+.time-pill__text {
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
 .noty {
   position: fixed;
   left: 0;
@@ -18520,6 +18573,15 @@ body.true--mobile .card.card--details-overlay.focus .card__hover-info, body.true
       -ms-transform: rotate(45deg);
           transform: rotate(45deg);
 }
+.card-peek__button {
+  font-size: 1em;
+  padding: 0 0.9em;
+}
+@media (max-width: 900px) {
+  .card-peek__buttons {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .card-peek--locked .card-peek__title,
 .card-peek--locked .card-peek__descr {
   -webkit-filter: blur(0.45em);
@@ -21582,6 +21644,9 @@ body.minimal--ui .menu__item {
 .full-start-new__rate-line > .full-start__rate > div:first-child {
   font-size: 1.25em;
   font-weight: 700;
+}
+.full-start-new__rate-line > .full-start__rate.rate--imdb {
+  gap: 0.25em;
 }
 .full-start-new__rate-line > .full-start__rate > .source--name {
   display: -webkit-box;

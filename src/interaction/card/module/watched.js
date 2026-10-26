@@ -33,8 +33,8 @@ export default {
     },
 
     onWatched: function(){
-        if(!Storage.field('card_episodes')) return
-        
+        if(!Storage.field('card_episodes') && this.data.original_name) return
+
         if(!this.watched_checked){
             let data = this.data
 
@@ -128,7 +128,7 @@ export default {
 
                             span.innerText = (ep.episode_number ?  ep.episode_number + ' - ' : '') + (days > 0 ? Lang.translate('full_episode_days_left') + ': ' + days : (ep.name || Lang.translate('noname')))
 
-                            if(ep == viewed.ep) div.append(Timeline.render(viewed.view)[0])
+                            if(ep == viewed.ep) div.append(Timeline.pill(viewed.view))
 
                             wrap.find('.card-watched__body').append(div)
                         })

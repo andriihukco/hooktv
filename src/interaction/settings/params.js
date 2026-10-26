@@ -551,7 +551,7 @@ select('player_timecode',{
     'again': '#{settings_param_player_timecode_again}',
     'continue': '#{settings_param_player_timecode_continue}',
     'ask': '#{settings_param_player_timecode_ask}',
-},'continue')
+},'ask')
 
 select('player_scale_method',{
     'transform': 'Transform',

@@ -1554,6 +1554,18 @@ $hk-spring-time: 0.5s;
         transform: rotate(45deg);
     }
 
+    // the pane is narrow: smaller labels, and on tablets and phones the two actions stack
+    &__button{
+        font-size: 1em;
+        padding: 0 0.9em;
+    }
+
+    @media (max-width: 900px){
+        &__buttons{
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
     // Russian title: name, logo and description blurred, buttons switched off
     &--locked{
         .card-peek__title,
@@ -4169,6 +4181,12 @@ body.minimal--ui{
         font-weight: 700;
     }
 
+    // IMDb chip: star, number and label sit closer together
+    > .full-start__rate.rate--imdb{
+        gap: 0.25em;
+    }
+
+    // the star leads the number and is a size bigger than the label it replaces
     > .full-start__rate > .source--name{
         display: flex;
         align-items: center;
