@@ -124,7 +124,7 @@ class Start extends Emit {
 
         if(this.card.runtime > 0) chips.push('<span class="full-start-new__runtime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' + Utils.secondsToTime(this.card.runtime * 60, true) + '</span>')
 
-        if(this.card.genres) this.card.genres.slice(0,5).forEach(a=>chips.push('<span class="full-start-new__genre">' + Utils.capitalizeFirstLetter(a.name) + '</span>'))
+        if(this.card.genres) this.card.genres.slice(0,5).forEach(a=>chips.push('<span class="hk-chip">' + Utils.capitalizeFirstLetter(a.name) + '</span>'))
 
         this.html.find('.full-start-new__genres').html(chips.join(''))
 

@@ -1488,15 +1488,17 @@ $hk-spring-time: 0.5s;
         align-items: center;
         justify-content: center;
         min-width: 0;
-        gap: 0.5em;
+        gap: 0.35em;
         box-sizing: border-box;
         height: $hk-action-height;
         min-height: $hk-min-touch-target;
-        padding: 0 1.25em;
+        padding: 0 0.6em;
         border: 0;
         border-radius: 3em;
         font: inherit;
-        font-size: $hk-action-font;
+        // two halves of a ~272px pane: the label stays small enough for "Дивитися" and "До списку"
+        // to fit whole, and longer translations truncate instead of overflowing the pill
+        font-size: 0.9em;
         font-weight: 700;
         white-space: nowrap;
         color: #fff;
@@ -1508,8 +1510,14 @@ $hk-spring-time: 0.5s;
 
         svg{
             flex-shrink: 0;
-            width: $hk-action-icon;
-            height: $hk-action-icon;
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        span{
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         &:hover{
@@ -1601,111 +1609,6 @@ $hk-spring-time: 0.5s;
     object-position: left center;
 }
 
-// runtime: a clock icon before the time
-.full-start-new__runtime{
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35em;
-
-    svg{
-        width: 1em;
-        height: 1em;
-        flex: 0 0 auto;
-    }
-}
-
-// genres: Apple TV style chips, one per genre, under the details line
-.full-start-new__genres{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-    margin-top: 0.9em;
-
-    &:empty{
-        display: none;
-    }
-}
-
-.full-start-new__genre{
-    display: inline-flex;
-    align-items: center;
-    padding: 0.4em 1em;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    font-size: 0.9em;
-    font-weight: 500;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-
-// details chips: rating, age, status and year share one height, radius, border and gap
-.full-start-new__rate-line{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6em;
-
-    > .full-start__rate,
-    > .full-start__pg,
-    > .full-start__status,
-    > .full-start__year,
-    > .full-start__country{
-        box-sizing: border-box;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5em;
-        height: 2.2em;
-        min-width: 2.2em;
-        margin: 0 !important;
-        padding: 0 0.7em;
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        border-radius: 0.5em;
-        background: rgba(0, 0, 0, 0.35);
-        color: #fff;
-        font-size: 1em;
-        font-weight: 500;
-        line-height: 1;
-        white-space: nowrap;
-
-        &.hide{
-            display: none !important;
-        }
-    }
-
-    // the rating colour follows the score (set in components/full/start.js)
-    > .full-start__rate.rate--good{
-        color: $hk-lime;
-    }
-
-    > .full-start__rate.rate--mid{
-        color: #FFC93C;
-    }
-
-    > .full-start__rate.rate--bad{
-        color: #FF6B6B;
-    }
-
-    // the star stands in for the TMDB name
-    > .full-start__rate > .source--name svg{
-        display: block;
-        width: 0.9em;
-        height: 0.9em;
-    }
-
-    // the rating keeps its big number, the source name stays small
-    > .full-start__rate > div:first-child{
-        font-size: 1.25em;
-        font-weight: 700;
-    }
-
-    > .full-start__rate > .source--name{
-        font-size: 0.8em;
-        opacity: 0.75;
-    }
-}
-
 // the chosen vote (Like or Dislike): a lime icon, count and ring; the fill stays glass
 .full-start-new .button--like.voted,
 .full-start-new .button--dislike.voted{
@@ -1765,13 +1668,13 @@ $hk-spring-time: 0.5s;
     height: 100vh !important;
     width: 100% !important;
     object-fit: cover;
-    filter: blur(28px) brightness(0.55);
-    transform: scale(1.12);
-    mask-image: linear-gradient(to bottom, #000 50%, transparent 92%) !important;
-    -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 92%) !important;
+    object-position: 50% 20%;
+    // sharp scene, faded to black at the bottom like the homepage hero
+    mask-image: linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%) !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%) !important;
 
     &.loaded{
-        opacity: 0.8 !important;
+        opacity: 1 !important;
     }
 
     &.dim{
@@ -1795,8 +1698,8 @@ $hk-spring-time: 0.5s;
     z-index: -1;
     pointer-events: none;
     background:
-        linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.1) 75%),
-        linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0) 45%);
+        linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 38%, rgba(0, 0, 0, 0) 65%),
+        linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.6) 22%, rgba(0, 0, 0, 0) 50%);
 }
 
 .full-page--scrolled::before{
@@ -4234,27 +4137,48 @@ body.minimal--ui{
 }
 
 /* ---------------------------------------------------------------------
- * Details rows: the rating row and the duration + genre row share one rhythm.
- * Chips are pills of one height with even gaps; the duration is plain text.
+ * Chips: one shape for every label on the details page and the hover peek
+ * (rating, age, status, year, country, genre). Runtime stays plain text.
  * ------------------------------------------------------------------- */
-.full-start-new__rate-line{
-    margin-bottom: 0.9em;
-    gap: 0.6em;
+.hk-chip{
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    height: 2.2em;
+    min-width: 2.2em;
+    margin: 0;
+    padding: 0 0.9em;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 0.9em;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
 
-    > .full-start__rate,
-    > .full-start__pg,
-    > .full-start__status,
-    > .full-start__year,
-    > .full-start__country{
-        height: 2.2em;
+    &.hide{
+        display: none !important;
+    }
+}
+
+.full-start-new__rate-line{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin-bottom: 0.9em;
+
+    > .hk-chip{
         margin: 0 !important;
-        border-radius: 999px;
-        padding: 0 0.9em;
     }
 
-    > .full-start__rate{
-        gap: 0.5em;
-        padding-right: 0.8em;
+    // the rating keeps its big number, the source stays small; the star leads
+    > .full-start__rate > div:first-child{
+        font-size: 1.25em;
+        font-weight: 700;
     }
 
     // IMDb chip: star, number and label sit closer together
@@ -4267,18 +4191,44 @@ body.minimal--ui{
         display: flex;
         align-items: center;
         order: -1;
+        font-size: 0.8em;
+        opacity: 0.75;
     }
 
     > .full-start__rate > .source--name svg{
+        display: block;
         width: 1.5em;
         height: 1.5em;
+    }
+
+    // the rating colour follows the score (set in components/full/start.js)
+    > .full-start__rate.rate--good{
+        color: $hk-lime;
+    }
+
+    > .full-start__rate.rate--mid{
+        color: #FFC93C;
+    }
+
+    > .full-start__rate.rate--bad{
+        color: #FF6B6B;
+    }
+
+    @media screen and (max-width: $media_sm) {
+        font-size: 0.9em;
     }
 }
 
 .full-start-new__genres{
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.6em;
     margin: 0 0 1.6em;
+
+    &:empty{
+        display: none;
+    }
 }
 
 // duration: plain text with its clock, no chip around it
@@ -4300,17 +4250,12 @@ body.minimal--ui{
     }
 }
 
-// genres: pills that match the rating chips
-.full-start-new__genre{
-    display: inline-flex;
+// the hover peek uses the same chips for its facts and genres
+.card-peek__facts,
+.card-peek__genres{
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    height: 2.2em;
-    padding: 0 1em;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    font-size: 0.9em;
-    font-weight: 500;
-    white-space: nowrap;
+    gap: 0.5em;
+    margin: 0.6em 0;
 }

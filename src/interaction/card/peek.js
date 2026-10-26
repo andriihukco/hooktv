@@ -48,16 +48,24 @@ function facts(data, extra){
     let vote = parseFloat(data.vote_average || 0)
     let year = ((data.release_date || data.first_air_date || '') + '').slice(0, 4)
 
-    if(vote) box.appendChild(el('span', 'card-peek__rating', '★ ' + vote.toFixed(1)))
-    if(year) box.appendChild(el('span', '', year))
+    if(vote) box.appendChild(el('span', 'hk-chip card-peek__rating', '★ ' + vote.toFixed(1)))
+    if(year) box.appendChild(el('span', 'hk-chip', year))
 
     if(extra){
-        if(extra.pg) box.appendChild(el('span', 'card-peek__badge', extra.pg))
+        if(extra.pg) box.appendChild(el('span', 'hk-chip card-peek__badge', extra.pg))
         if(extra.runtime) box.appendChild(el('span', '', Utils.secondsToTimeHuman(extra.runtime * 60).trim()))
-        if(extra.status) box.appendChild(el('span', '', Lang.translate('tv_status_' + extra.status.toLowerCase().replace(/ /g, '_'))))
+        if(extra.status) box.appendChild(el('span', 'hk-chip', Lang.translate('tv_status_' + extra.status.toLowerCase().replace(/ /g, '_'))))
     }
 
     return box
+}
+
+function chips(list){
+    let row = el('div', 'card-peek__genres')
+
+    list.forEach(name=>row.appendChild(el('span', 'hk-chip', name)))
+
+    return row
 }
 
 function fill(card){
@@ -79,13 +87,13 @@ function fill(card){
             title.appendChild(logo)
         }
 
-        let genres = extra && extra.genres.length ? extra.genres.join(' · ') : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '') : '')
+        let genres = extra && extra.genres.length ? extra.genres : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '').split(' · ').filter(Boolean) : [])
 
         info.innerHTML = ''
         info.appendChild(title)
         info.appendChild(facts(data, extra))
 
-        if(genres) info.appendChild(el('div', 'card-peek__genres', genres))
+        if(genres.length) info.appendChild(chips(genres))
         if(text) info.appendChild(el('div', 'card-peek__descr', text.textContent))
     }
 
