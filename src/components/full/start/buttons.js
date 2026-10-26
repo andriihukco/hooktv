@@ -4,6 +4,8 @@ import Watch from '../../../interaction/watch'
 import Bell from '../../../interaction/bell'
 import Template from '../../../interaction/template'
 import Utils from '../../../utils/utils'
+import Auth from '../../../core/supa/auth'
+import Reactions from '../../../core/supa/reactions'
 
 export default {
     onCreate: function(){
@@ -16,6 +18,40 @@ export default {
                 Bell.push({text: Lang.translate('copy_secuses'), icon: Template.string('icon_check')})
             })
         })
+
+        // Like / dislike: counts and your own vote come from Supabase. The same button again removes the vote, the other one switches it.
+        let media = ()=> this.card.name ? 'tv' : 'movie'
+        let busy  = false
+
+        let paintReactions = (state)=>{
+            this.html.find('.button--like').toggleClass('voted', state.mine == 'like')
+            this.html.find('.button--dislike').toggleClass('voted', state.mine == 'dislike')
+            this.html.find('.button--like-count').text(Utils.bigNumberToShort(state.likes))
+            this.html.find('.button--dislike-count').text(Utils.bigNumberToShort(state.dislikes))
+        }
+
+        let castReaction = (type)=>{
+            if(busy) return
+
+            if(!Auth.session()) return Bell.push({text: Lang.translate('reactions_signin')})
+
+            busy = true
+
+            Reactions.vote(media(), this.card.id, type).then((state)=>{
+                busy = false
+
+                paintReactions(state)
+            }).catch(()=>{
+                busy = false
+
+                Bell.push({text: Lang.translate('reactions_failed')})
+            })
+        }
+
+        this.html.find('.button--like').on('hover:enter', ()=>castReaction('like'))
+        this.html.find('.button--dislike').on('hover:enter', ()=>castReaction('dislike'))
+
+        Reactions.counts(media(), this.card.id).then(paintReactions).catch(()=>{})
 
         // Torrents (when enabled) live in the ⋯ menu instead of the action row
         this.torrent_option = (e)=>{
