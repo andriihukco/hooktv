@@ -1,7 +1,8 @@
 /**
  * HOOK TV splash: the infinity loop draws itself, H and K slide in from
- * either side, TV rises, then a lime light keeps running round the loop
- * until the app is ready. The animated and static marks share the OO artwork.
+ * either side, TV rises, then the logo holds still until the app is ready
+ * and scales out over the interface, Netflix style. The animated and static
+ * marks share the OO artwork.
  */
 
 $welcome-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -17,12 +18,6 @@ $welcome-lime: #D6FF5C;
     align-items: center;
     justify-content: center;
     transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s $welcome-ease;
-}
-
-.welcome--fade-out{
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1.06);
 }
 
 .welcome__logo{
@@ -109,24 +104,30 @@ $welcome-lime: #D6FF5C;
     }
 }
 
-// movie started: the logo grows past the screen while the splash fades out
+// the logo scales out past the screen, then the backdrop fades to reveal the interface.
+// Used when the app is ready (LoadingProgress.destroy) and when a movie starts (zoom)
 .welcome--zoom{
     opacity: 0;
     transform: scale(1.1);
     pointer-events: none;
+    transition: opacity 0.6s ease 0.35s, visibility 0.6s ease 0.35s, transform 0.9s $welcome-ease;
 
     .welcome__logo{
+        opacity: 0;
         transform: scale(2.6);
-        transition: transform 0.9s $welcome-ease;
+        transition: transform 0.9s $welcome-ease, opacity 0.45s ease 0.3s;
+    }
+
+    // the status line goes at the moment the logo starts to scale
+    .welcome__status{
+        opacity: 0;
+        transform: none;
+        transition: opacity 0.15s ease;
     }
 }
 
 @keyframes welcome-draw{
     to{ stroke-dashoffset: 0; }
-}
-
-@keyframes welcome-chase{
-    to{ stroke-dashoffset: -100; }
 }
 
 @keyframes welcome-in{
@@ -172,8 +173,10 @@ $welcome-lime: #D6FF5C;
         transform: none;
     }
 
-    .welcome__chase{
-        display: none;
+    .welcome--zoom,
+    .welcome--zoom .welcome__logo{
+        transform: none;
+        transition: opacity 0.3s ease;
     }
 }
 

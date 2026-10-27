@@ -58,7 +58,7 @@ function init(sound = true){
 
     let content = `
         <div class="welcome__logo">
-            <img src="./img/splash.svg?v=2.97" alt="HOOK TV"/>
+            <img src="./img/splash.svg?v=2.98" alt="HOOK TV"/>
         </div>
         <div class="welcome__loading">
             <div class="welcome__status"></div>
@@ -127,15 +127,15 @@ function destroy(){
     clearInterval(ticker)
     IntroSound.stop()
     
-    // Fade out animation
-    if(html) html.addClass('welcome--fade-out')
-    $('.welcome').addClass('welcome--fade-out')
-    
+    // the logo scales out over the interface (welcome.scss)
+    if(html) html.addClass('welcome--zoom')
+    $('.welcome').addClass('welcome--zoom')
+
     // Remove after animation completes
     setTimeout(() => {
         if(html) html.remove()
         $('.welcome').remove()
-    }, 500)
+    }, 1000)
 }
 
 /**

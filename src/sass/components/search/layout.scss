@@ -1,0 +1,320 @@
+/**
+ * Search screen layout, one design for every device.
+ *
+ * Phones follow iOS: a large title with the back arrow above it, a rounded
+ * search field, recent searches as pills, the sources as a segmented control
+ * and Cancel as a text button in the title row.
+ *
+ * Web and TV put the query and keyboard in a left column and the recent
+ * searches, sources and results in a wider right column. The DOM order stays
+ * the same, so focus order on the remote is unchanged.
+ */
+
+$search-fill: rgba(118, 118, 128, 0.24); // iOS system fill, on a dark background
+$search-accent: #D6FF5C;
+$search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+.search{
+    &__body{
+        box-sizing: border-box;
+        width: min(100%, 90em);
+        margin: 0 auto;
+        padding: 1.5em $offset 6em;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+        column-gap: 3em;
+        align-items: start;
+    }
+
+    &__input-shell{
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 3.2em;
+        margin: 0 0 1.2em;
+        padding: 0 1em;
+        border: 0;
+        border-radius: 0.9em;
+        background: $search-fill;
+    }
+
+    // typeahead rows sit right under the field; the keypad moves below them
+    &__suggest{
+        grid-column: 1;
+        grid-row: 2;
+        min-width: 0;
+        margin: -0.4em 0 1.2em;
+        overflow: hidden;
+        border-radius: 0.9em;
+        background: rgba(28, 28, 30, 0.96);
+
+        &:empty{
+            display: none;
+        }
+
+        &-item{
+            display: flex;
+            align-items: baseline;
+            gap: 0.6em;
+            min-height: 2.9em;
+            padding: 0.5em 1em;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.92);
+
+            + .search__suggest-item{
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            &.focus{
+                background: rgba(255, 255, 255, 0.14);
+            }
+        }
+
+        &-title{
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        &-year{
+            flex: 0 0 auto;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    }
+
+    &__keypad{
+        grid-column: 1;
+        grid-row: 3;
+        min-width: 0;
+    }
+
+    &__history{
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0 0 1.2em;
+        min-width: 0;
+    }
+
+    &__sources{
+        grid-column: 2;
+        grid-row: 2;
+        margin: 0 0 1.2em;
+        min-width: 0;
+
+        // the segmented track is the scroll itself, so it disappears with the single-source hide
+        > .scroll{
+            width: max-content;
+            max-width: 100%;
+            padding: 3px;
+            box-sizing: border-box;
+            border-radius: 0.8em;
+            background: $search-fill;
+        }
+    }
+
+    // the poster rows span the whole width, under the keypad and the side column
+    &__results{
+        grid-column: 1 / -1;
+        grid-row: 4;
+        min-width: 0;
+    }
+
+    &__close{
+        position: absolute;
+        z-index: 2;
+        top: 1.25em;
+        right: 1.25em;
+        width: 3em;
+        height: 3em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: rgba(255, 255, 255, 0.82);
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: background-color 0.2s, transform 0.2s $search-ease, color 0.2s;
+
+        svg{
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        &.focus,
+        &.hover{
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.06);
+        }
+    }
+
+    &__keys-toggle{
+        display: none;
+    }
+
+    .simple-keyboard-buttons{
+        display: none;
+    }
+}
+
+.search-looking{
+    padding: 0;
+
+    &__text{
+        box-sizing: border-box;
+        max-width: 28em;
+        margin: 2em auto 0;
+        text-align: center;
+        font-size: 1.2em;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+.search__body:not(.search__body--query-active) .search-looking{
+    display: none;
+}
+
+// recent searches: pills with the clock icon
+.search-history-key{
+    height: 2.2em;
+    border: 0;
+    border-radius: 2em;
+    background: $search-fill;
+    color: rgba(255, 255, 255, 0.92);
+
+    > div{
+        font-size: 1.3em;
+        padding: 0 0.2em;
+    }
+
+    &.focus{
+        background: rgba(255, 255, 255, 0.24);
+    }
+}
+
+// sources: the active segment is white, the rest read as muted labels
+.search-source{
+    font-size: 1.25em;
+    padding: 0.2em 0.9em;
+    border-radius: 0.6em;
+    background: transparent;
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.6);
+
+    &__tab{
+        padding: 0.35em 0;
+    }
+
+    &.active{
+        color: #000;
+        background: #fff;
+    }
+
+    &.focus{
+        color: #fff;
+        background: rgba(255, 255, 255, 0.24);
+    }
+
+    &.active.focus{
+        color: #000;
+        background: #fff;
+    }
+
+    + .search-source{
+        margin-left: 2px;
+    }
+}
+
+// phones: one column, iOS title and field, Cancel in the title row
+@media (max-width: $media_md){
+    .search{
+        &__body{
+            display: block;
+            width: 100%;
+            padding: 0 1em 6em;
+        }
+
+        &__input-shell{
+            margin-bottom: 0.9em;
+            min-height: 2.8em;
+            border-radius: 0.75em;
+            padding: 0 0.9em;
+        }
+
+        &__input{
+            font-size: 1.2em;
+        }
+
+        &__keypad,
+        &__history,
+        &__sources,
+        &__results{
+            margin-bottom: 0.7em;
+        }
+
+        // the title row: back arrow on the left, Cancel on the right
+        .head-backward{
+            margin: 0 0 0.9em;
+            padding: 2.8em 0 0;
+            text-align: left;
+        }
+
+        .head-backward__button{
+            top: 0.5em;
+            left: -0.4em;
+            padding: 1em;
+        }
+
+        .head-backward__title{
+            padding: 0;
+            font-size: 2.1em;
+            font-weight: 700;
+            line-height: 1.15;
+            text-align: left;
+        }
+
+        // the same close circle as on the web, kept clear of the notch
+        &__close{
+            top: max(0.65em, env(safe-area-inset-top));
+            right: 0.65em;
+            width: 2.7em;
+            height: 2.7em;
+        }
+
+        &__keys-toggle{
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            width: 2.1em;
+            height: 2.1em;
+            margin-left: 0.5em;
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.12);
+
+            svg{
+                width: 1em;
+                height: 1em;
+            }
+        }
+
+        &__body--query-active.search__body--keys-collapsed{
+            .search__keypad{
+                display: none;
+            }
+        }
+
+        &__results .items-line__title{
+            font-size: 1.25em;
+            font-weight: 700;
+        }
+    }
+}

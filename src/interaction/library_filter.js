@@ -9,6 +9,7 @@ import Select from './select'
 import Search from './search/global'
 import Filter from '../utils/library_filter'
 import Extra from '../utils/tmdb_extra'
+import Platform from '../core/platform'
 
 /**
  * HOOK TV: a "Filters" pill stays at the bottom of the top-level pages (Home,
@@ -561,6 +562,19 @@ function init(){
         e.preventDefault()
 
         Controller.toggle('library_filter_pill')
+    }, true)
+
+    // TV remote: the number 5 opens the filters from anywhere on the page, so the pill
+    // does not have to be reached by stepping down past the last row
+    window.addEventListener('keydown', (e)=>{
+        if((e.keyCode !== 53 && e.keyCode !== 101) || e.defaultPrevented || !Platform.tv()) return
+        if(!pill.classList.contains('library-filter-pill--show') || document.body.classList.contains('library-filter--open')) return
+        if(!['content', 'library_filter_pill'].includes(Controller.enabled().name)) return
+
+        e.stopPropagation()
+        e.preventDefault()
+
+        open()
     }, true)
 
     Lampa.Listener.follow('activity', (e)=>{

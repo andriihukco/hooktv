@@ -64,18 +64,3 @@ body.system--keyboard .search-box{
         border-bottom: 2px solid rgb(255,255,255,0.15);
     }
 }
-.search__close{
-    position: absolute;
-    top: 1em;
-    right: 1.5em;
-    z-index: 2;
-    width: 2.4em;
-    height: 2.4em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: none;
-    color: #fff;
-    cursor: pointer;
-}

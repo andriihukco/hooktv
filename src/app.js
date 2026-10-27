@@ -722,10 +722,6 @@ function showApp(){
 
         Screensaver.enable()
 
-        $('.welcome').fadeOut(500,function(){
-            $(this).remove()
-        })
-
         // the app rises into view as the splash fades (welcome.scss); the class goes once it ends,
         // so the transform does not stay on #app and break position: fixed children
         // (a timer too: animationend never comes when the animation does not run, e.g. reduced motion)

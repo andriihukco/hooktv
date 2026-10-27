@@ -1,5 +1,6 @@
 import Sources from './sources'
 import History from './history'
+import Suggest from './suggest'
 import Template from '../template'
 import Controller from '../../core/controller'
 import Keybord from '../keyboard/keyboard'
@@ -18,6 +19,7 @@ import DeviceInput from '../device_input'
 let html = Template.elem('div', {class: 'main-search'}),
     search,
     history,
+    suggest,
     sources,
     keyboard,
     scroll,
@@ -99,6 +101,7 @@ function create(){
     if(Platform.systemKeyboard()) search.find('.search__input-shell').hide()
 
     createKeyboard()
+    createSuggest()
     createHistory()
     createSources()
 
@@ -134,6 +137,30 @@ function createSources(){
 
     // no TMDB / CUB switch: results come from the first source only
     search.find('.search__results').append(sources.render())
+}
+
+// typeahead rows under the field: after three characters, picking one searches its title
+function createSuggest(){
+    suggest = new Suggest()
+
+    search.find('.search__input-shell').after(suggest.render())
+
+    suggest.listener.follow('pick',(event)=>{
+        suggest.clear()
+
+        keyboard.value(event.value)
+
+        sources.search(event.value, true)
+    })
+
+    suggest.listener.follow('up',()=>keyboard.toggle())
+
+    suggest.listener.follow('down',()=>{
+        if(history.any()) history.toggle()
+        else sources.toggle()
+    })
+
+    suggest.listener.follow('back',destroy)
 }
 
 function createHistory(){
@@ -174,16 +201,19 @@ function createKeyboard(){
             search.find('.search__input').toggleClass('filled', true).html(input.replace(/\s/g,'&nbsp;'))
 
             sources.search(input)
+            suggest.update(input)
         }
         else{
             search.find('.search__input').toggleClass('filled', false).text(Lang.translate('search_input') + '...')
 
             sources.search('')
+            suggest.clear()
         }
     })
 
     keyboard.listener.follow('down',()=>{
-        if(history.any()) history.toggle()
+        if(suggest.any()) suggest.toggle()
+        else if(history.any()) history.toggle()
         else sources.toggle()
     })
 
@@ -208,6 +238,7 @@ function render(js){
 
 function destroy(){
     keyboard.destroy()
+    suggest.destroy()
     history.destroy()
     sources.destroy()
 
