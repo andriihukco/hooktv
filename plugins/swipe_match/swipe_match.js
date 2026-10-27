@@ -170,31 +170,6 @@ function startPlugin(){
         return Lampa.Api.sources.tmdb.getGenresNameFromIds(method || 'movie', ids).filter((name)=>name)
     }
 
-    function topGenreName(items){
-        let genres = scoreGenres(items)
-
-        if(!genres.length) return 'your favorite genres'
-
-        let liked = items.find((item)=>{
-            return item.genre_ids && item.genre_ids.indexOf(parseInt(genres[0])) >= 0
-        })
-
-        return genreNames(liked && liked.swipe_method || 'movie', [genres[0]])[0] || 'this genre'
-    }
-
-    function suggestionsFilter(){
-        let liked = getList(storage.liked)
-        let disliked = getList(storage.disliked)
-        let filter = baseFilter('vote_average.desc')
-        let good = scoreGenres(liked).slice(0, 3)
-        let bad = scoreGenres(disliked).slice(0, 2)
-
-        if(good.length) filter.with_genres = good.join(',')
-        if(bad.length) filter.without_genres = bad.join(',')
-
-        return filter
-    }
-
     function displayTitle(card){
         return card.title || card.name || 'Untitled'
     }

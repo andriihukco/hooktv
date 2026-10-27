@@ -202,7 +202,6 @@ const mulTable = [
     const pixels = imageData ? imageData.data : [];
   
     const div = 2 * radius + 1;
-    // const w4 = width << 2;
     const widthMinus1 = width - 1;
     const heightMinus1 = height - 1;
     const radiusPlus1 = radius + 1;

@@ -1,6 +1,5 @@
 import Recorder from '../components/recorder.js'
 import Upload from '../components/upload.js'
-import Api from '../utils/api.js'
 import Defined from '../defined.js'
 import Utils from '../utils/utils.js'
 import View from '../utils/view.js'

@@ -1,4 +1,3 @@
-import Api from '../../core/api/api'
 import Lang from '../../core/lang'
 import Favorite from '../../core/favorite'
 import Watch from '../watch'

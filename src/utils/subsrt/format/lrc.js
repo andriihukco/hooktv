@@ -117,7 +117,6 @@ function detect(content) {
       /*
       [04:48.28]Sister, perfume?
       */
-      //return "lrc";
       return true;
     }
   }

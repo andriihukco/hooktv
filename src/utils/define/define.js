@@ -839,7 +839,6 @@ if (!window.MutationObserver) {
                 var klen = $kids.length;
                 // $oldkids will be undefined for text and comment nodes
                 var olen = $oldkids ? $oldkids.length : 0;
-                // if (!olen && !klen) return; // both empty; clearly no changes
 
                 // we delay the intialization of these for marginal performance in the expected case (actually quite signficant on large subtrees when these would be otherwise unused)
                 // map of checked element of ids to prevent registering the same conflict twice

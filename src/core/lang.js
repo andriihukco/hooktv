@@ -1,6 +1,5 @@
 import Storage from './storage/storage'
 import Arrays from '../utils/arrays'
-import Utils from '../utils/utils'
 
 import meta from '../lang/meta'
 import en from '../lang/en'

@@ -1,7 +1,4 @@
-import Storage from '../../../core/storage/storage'
-import Activity from '../../activity/activity'
 import Empty from '../empty'
-import Lang from '../../../core/lang'
 
 export default {
     onEmpty: function(){

@@ -5,9 +5,7 @@ import Bell from '../interaction/bell'
 import DeviceInput from '../interaction/device_input'
 import Storage from '../core/storage/storage'
 import Settings from '../interaction/settings/api'
-import Account from '../core/account/account'
 import Arrays from '../utils/arrays'
-import Manifest from '../core/manifest'
 
 let open_about   = false
 let press_button = 0

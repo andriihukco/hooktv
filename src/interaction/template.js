@@ -387,18 +387,6 @@ function replaceVars(root, vars) {
             }
         }
 
-        // Если есть атрибуты — заменим только строки
-        // Не работает на старых браузерах, и не помню что оно делает
-        // if (node.attributes) {
-        //     for (let attr of node.attributes) {
-        //         attr.value = attr.value.replace(varRegex, (_, nested, flat) => {
-        //             const key = nested || flat;
-        //             const value = getValueFromPath(vars, key);
-        //             return value instanceof Node ? '' : String(value);
-        //         });
-        //     }
-        // }
-
         // Рекурсивно обрабатываем детей
         for (let child of Array.from(node.childNodes)) {
             processNode(child);

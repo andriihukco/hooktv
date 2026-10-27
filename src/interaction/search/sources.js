@@ -4,7 +4,6 @@ import Controller from '../../core/controller'
 import Api from '../../core/api/api'
 import Result from './results'
 import Layer from '../../core/layer'
-import Permit from '../../core/account/permit'
 
 let stop_keys = [
     'пор',

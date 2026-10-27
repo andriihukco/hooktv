@@ -6,7 +6,6 @@ import Select from '../select'
 import Controller from '../../core/controller'
 import Subscribe from '../../utils/subscribe'
 import Lang from '../../core/lang'
-import Manifest from '../../core/manifest'
 
 let values   = {}
 let defaults = {}
@@ -178,13 +177,6 @@ function init(){
     select('parse_lang',selector,'df')
 
     select('tmdb_lang',Lang.codes(),'en')
-
-    // баг со старыми телеками, неправильно работает Utils.protocol()
-    // let agent = navigator.userAgent.toLowerCase()
-    // let versi = agent.match(/chrome\/(\d+)/)
-
-    // versi = versi ? parseInt(versi[1]) : 60
-    // versi = isNaN(versi) ? 60 : versi
 
     select('protocol', {
         'http': '#{settings_param_no}',

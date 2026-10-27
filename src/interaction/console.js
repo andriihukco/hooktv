@@ -8,7 +8,6 @@ import Noty from './noty'
 import Iframe from './iframe'
 import HeadBackward from './head/backward'
 import Lang from '../core/lang'
-import Storage from '../core/storage/storage'
 import Timer from '../core/timer'
 
 let items = {

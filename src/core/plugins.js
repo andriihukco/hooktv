@@ -1,14 +1,11 @@
 import Utils from '../utils/utils'
 import Storage from './storage/storage'
-import Settings from '../interaction/settings/settings'
 import Arrays from '../utils/arrays'
 import Lang from './lang'
 import Noty from '../interaction/noty'
 import Base64 from '../utils/base64'
 import Request from '../utils/reguest'
-import Cache from '../utils/cache'
 import Status from '../utils/status'
-import ParentalControl from '../interaction/parental_control'
 
 let _created = []
 let _loaded  = []

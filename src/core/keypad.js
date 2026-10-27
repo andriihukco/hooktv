@@ -113,13 +113,6 @@ function keydownTrigger(e){
 		Controller.move('todown')
 	}
 
-	//Абсолютный Enter
-	//29443 - Samsung orsay
-	//65385 - Samsung tizen
-	if (keycode == 13 || keycode == 29443 || keycode == 65385) { 
-		//if(!App.Keybord.opened) Controller.finish();
-	}
-
 	//Space
 	//10252 - Samsung tizen
 	if(keycode == 32 || keycode == 179 || keycode == 10252 || keycode == philipse.play_pause){

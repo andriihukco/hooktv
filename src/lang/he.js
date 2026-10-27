@@ -804,7 +804,6 @@ export default {
     account_imported: 'מיובא',
     account_reload_after: 'אתחל אחרי 5 שניות.',
     account_create: '',
-    account_premium: 'פתחו אופקים חדשים עם חשבון CUB Premium! תיהנו ממגבלות מוגדלות ופונקציונליות שירות משופרת. בקרו באתר <span class="account-modal__site">{site}/premium</span> ולמדו עוד על היתרונות של חשבון פרימיום.',
     account_premium_more: 'למד עוד על CUB Premium',
     account_limited: '',
     account_code_enter: 'הזן קוד בעל שש ספרות',

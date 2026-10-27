@@ -8,7 +8,6 @@ import Activity from '../../activity/activity'
 import Arrays from '../../../utils/arrays'
 import Empty from '../../empty/empty'
 import Utils from '../../../utils/utils'
-import Storage from '../../../core/storage/storage'
 import Lang from '../../../core/lang'
 import Layer from '../../../core/layer'
 

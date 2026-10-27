@@ -281,7 +281,6 @@ function stopTimecodePolling() {
  * Получение аргументов командной строки для разных плееров
  */
 function getPlayerArgs(config, url, data) {
-    // const startTime = (data.timeline?.time ?? 0) * 1000
     const startTimeSec = (data.timeline?.time ?? 0)
 
     if (config.type === PLAYER_TYPES.VLC) {

@@ -5,8 +5,6 @@ import Account from './account/account'
 import ContentRows from './content_rows'
 import Lang from './lang'
 import Utils from '../utils/utils'
-import Timeline from '../interaction/timeline'
-import CardModule from '../interaction/card/module/module'
 
 let data = {}
 let listener = Subscribe()

@@ -13,7 +13,6 @@ import Template from '../../../interaction/template'
 import LineModule from '../../../interaction/items/line/module/module'
 import Router from '../../router'
 import Permit from '../../account/permit'
-import VPN from '../../../core/vpn'
 import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
 import Reactions from './reactions'
@@ -1283,8 +1282,6 @@ function parseCountries(movie){
     }
 
     return movie.production_countries ? movie.production_countries.map(a => {
-        //let cc = 'country_' + a.iso_3166_1.toLowerCase()
-        //return Lang.translate(cc) // FIXME! return a.name as fallback
         if (iso_countries.hasOwnProperty(a.iso_3166_1)) {
           return iso_countries[a.iso_3166_1]
         } else {

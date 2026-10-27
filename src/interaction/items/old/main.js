@@ -4,8 +4,6 @@ import Scroll from '../../scroll'
 import Activity from '../../activity/activity'
 import Empty from '../../empty/empty'
 import Arrays from '../../../utils/arrays'
-import Storage from '../../../core/storage/storage'
-import Lang from '../../../core/lang'
 import Layer from '../../../core/layer'
 
 function component(object){

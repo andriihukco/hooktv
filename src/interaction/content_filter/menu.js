@@ -3,7 +3,6 @@ import Controller from '../../core/controller'
 import Activity from '../activity/activity'
 import Lang from '../../core/lang'
 import Storage from '../../core/storage/storage'
-import Permit from '../../core/account/permit'
 import data from './data'
 
 /**

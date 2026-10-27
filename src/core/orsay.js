@@ -1,6 +1,5 @@
 import Utils from '../utils/utils'
 import Platform from './platform'
-import Noty from '../interaction/noty'
 
 var widgetAPI,
     tvKey,

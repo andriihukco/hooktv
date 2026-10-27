@@ -7,7 +7,6 @@ import Android from '../core/android'
 import Lang from '../core/lang'
 import Platform from '../core/platform'
 import Cache from './cache'
-import Utils from './utils'
 
 
 /**

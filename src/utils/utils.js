@@ -1,7 +1,6 @@
 import Storage from '../core/storage/storage'
 import Api from '../core/api/api'
 import Lang from '../core/lang'
-import Manifest from '../core/manifest'
 import Arrays from './arrays'
 import Timer from '../core/timer'
 
@@ -100,15 +99,6 @@ function substr(txt,len){
 
 function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
-
-function declOfNum(n, text_forms) {  
-    n = Math.abs(n) % 100; 
-    var n1 = n % 10;
-    if (n > 10 && n < 20) { return text_forms[2]; }
-    if (n1 > 1 && n1 < 5) { return text_forms[1]; }
-    if (n1 == 1) { return text_forms[0]; }
-    return text_forms[2];
 }
 
 function bytesToSize(bytes, speed) {
@@ -252,13 +242,6 @@ function parseTime(str){
         briefly: current_day + ' ' + months_end[date.getMonth()] + ' ' + current_time
     }
 }
-
-// function secondsToTimeHuman(sec_num) {
-//     let hours   = Math.trunc(sec_num / 3600)
-//     let minutes = Math.floor((sec_num - hours * 3600) / 60)
-
-//     return (hours ? hours + ' '+Lang.translate('time_h')+' ' : '') + (minutes ? minutes + ' '+Lang.translate('time_m')+' ' : Math.round(sec_num) + ' '+Lang.translate('time_s'))
-// }
 
 function secondsToTimeHuman(sec_num) {
     let hours = Math.trunc(sec_num / 3600);

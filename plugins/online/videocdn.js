@@ -128,29 +128,6 @@ function videocdn(component, _object){
      * @param {Int} max_quality 
      * @returns string
      */
-    function extractFile(str, max_quality){
-        let url = ''
-
-        try{
-            let items = str.split(',').map(item=>{
-                return {
-                    quality: parseInt(item.match(/\[(\d+)p\]/)[1]),
-                    file: item.replace(/\[\d+p\]/,'').split(' or ')[0]
-                }
-            })
-
-            items.sort((a,b)=>{
-                return b.quality - a.quality
-            })
-
-            url = items[0].file
-            url = 'http:' + url.slice(0, url.lastIndexOf('/')) + '/' + (max_quality || items[0].quality) + '.mp4'
-        }
-        catch(e){}
-
-        return url
-    }
-
     function extractItems(str, max_quality){
         try{
             let items = str.split(',').map(item=>{
@@ -215,7 +192,6 @@ function videocdn(component, _object){
 
                         extract[i] = {
                             json: Lampa.Arrays.decodeJson(text.value,{}),
-                            //file: extractFile(json[i], max_quality)
                             items: extractItems(json[i], max_quality)
                         }
 
@@ -226,11 +202,9 @@ function videocdn(component, _object){
                                 for(let f in elem.folder){
                                     let folder = elem.folder[f]
                                     
-                                    //folder.file = extractFile(folder.file, max_quality)
                                     folder.items = extractItems(folder.file, max_quality)
                                 }
                             }
-                            //else elem.file = extractFile(elem.file, max_quality)
                             else elem.items = extractItems(elem.file, max_quality)
                         }
                     }

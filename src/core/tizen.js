@@ -1,4 +1,3 @@
-import Account from './account/account'
 import TMDB from './api/sources/tmdb'
 import Status from '../utils/status'
 import Favorite from './favorite'

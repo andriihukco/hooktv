@@ -1,6 +1,5 @@
 import Settings from '../interaction/settings/settings'
 import Storage from '../core/storage/storage'
-import Modal from '../interaction/modal'
 import Platform from '../core/platform'
 import Lang from '../core/lang'
 import Controller from '../core/controller'

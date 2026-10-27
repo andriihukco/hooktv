@@ -15,7 +15,6 @@ import Manifest from '../core/manifest'
 import Search from './search/global'
 import Loading from './loading'
 import TmdbApi from '../core/api/sources/tmdb'
-import Account from '../core/account/account'
 
 /**
  * Карточка

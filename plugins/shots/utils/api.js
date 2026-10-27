@@ -1,5 +1,4 @@
 function url(u){
-    //return 'http://localhost:3100/api/shots/' + u
     return Lampa.Utils.protocol() + Lampa.Manifest.cub_domain + '/api/shots/' + u
 }
 
@@ -13,13 +12,6 @@ function params(timeout = 15000) {
         },
         timeout: timeout
     }
-}
-
-function cache(toparams, life = 60){
-    toparams.cache = {
-        life: life
-    }
-    return toparams
 }
 
 function uploadRequest(data, onsuccess, onerror) {

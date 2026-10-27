@@ -704,17 +704,6 @@ function saveTimeLoop(){
     }
 }
 
-function locked(data, call){
-    let name = Controller.enabled().name
-
-    if(data.locked){
-        ParentalControl.query(call, ()=>{
-            Controller.toggle(name)
-        })
-    }
-    else call()
-}
-
 function externalPlayer(player_need, data, players, infuseCallbacks){
     let player   = Storage.field(player_need)
     let url      = encodeURIComponent(data.url.replace('&preload','&play'))

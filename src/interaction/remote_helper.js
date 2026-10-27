@@ -1,5 +1,4 @@
 import Template from './template'
-import Cache from '../utils/cache'
 import Arrays from '../utils/arrays'
 import Platform from '../core/platform'
 import Lang from '../core/lang'
