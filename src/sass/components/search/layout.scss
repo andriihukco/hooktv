@@ -152,8 +152,8 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         z-index: 2;
         top: 1.25em;
         right: 1.25em;
-        width: 3em;
-        height: 3em;
+        width: 3.2em;
+        height: 3.2em;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -165,8 +165,8 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         transition: background-color 0.2s, transform 0.2s $search-ease, color 0.2s;
 
         svg{
-            width: 1.2em;
-            height: 1.2em;
+            width: 1.5em;
+            height: 1.5em;
         }
 
         &.focus,
@@ -295,7 +295,7 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
         // the close circle sits in the same row, so the field stops short of it
         &__body--native .simple-keyboard-input{
-            margin-right: 3.4em;
+            margin-right: 3.8em;
         }
 
         &__input-shell{
@@ -337,12 +337,12 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
             text-align: left;
         }
 
-        // the same close circle as on the web, kept clear of the notch
+        // the same close circle as on the web, level with the field and clear of the notch
         &__close{
-            top: max(0.65em, env(safe-area-inset-top));
-            right: 0.65em;
-            width: 2.7em;
-            height: 2.7em;
+            top: max(0.2em, env(safe-area-inset-top));
+            right: 0.6em;
+            width: 3.2em;
+            height: 3.2em;
         }
 
         &__keys-toggle{

@@ -5,6 +5,8 @@ import Storage from '../../core/storage/storage'
 import Arrays from '../../utils/arrays'
 import Favorite from '../../core/favorite'
 
+const RECENT = 5 // recent searches shown and kept
+
 function History(){
     let scroll,
         last,
@@ -29,7 +31,7 @@ function History(){
 
         keys = Storage.get('search_history','[]')
 
-        keys.map(v=>v).reverse().slice(0,15).forEach(key => {
+        keys.map(v=>v).reverse().slice(0,RECENT).forEach(key => {
             this.append(key)
         })
 
@@ -103,6 +105,9 @@ function History(){
 
             keys.push(value)
         }
+
+        // only the last five searches are kept
+        keys.splice(0, Math.max(0, keys.length - RECENT))
 
         Storage.set('search_history',keys)
     }
