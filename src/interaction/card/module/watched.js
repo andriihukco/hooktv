@@ -84,7 +84,8 @@ export default {
                         if(time.percent) {
                             viewed = {
                                 ep: {
-                                    name: Lang.translate('title_viewed') + ' ' + (time.time ? Utils.secondsToTimeHuman(time.time) : time.percent + '%'),
+                                    // the progress line already says Переглянуто X/Y, so a movie needs no name of its own
+                                    name: '',
                                 },
                                 view: time
                             }
@@ -124,9 +125,13 @@ export default {
                             let days = Math.ceil((date.getTime() - now)/(24*60*60*1000))
 
                             div.addClass('card-watched__item')
-                            div.append(span)
 
-                            span.innerText = (ep.episode_number ?  ep.episode_number + ' - ' : '') + (days > 0 ? Lang.translate('full_episode_days_left') + ': ' + days : (ep.name || Lang.translate('noname')))
+                            // a movie has no episode line: only its progress line shows
+                            if(ep.episode_number || ep.name || days > 0){
+                                div.append(span)
+
+                                span.innerText = (ep.episode_number ?  ep.episode_number + ' - ' : '') + (days > 0 ? Lang.translate('full_episode_days_left') + ': ' + days : (ep.name || Lang.translate('noname')))
+                            }
 
                             if(ep == viewed.ep) div.append(Timeline.pill(viewed.view))
 

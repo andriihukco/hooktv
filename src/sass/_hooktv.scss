@@ -4243,16 +4243,24 @@ body.minimal--ui{
     opacity: 0.55;
 }
 
-// progress: a short bar and one line of text, inside the same chip shape
+// progress: a thin bar and one line of text, no box around it
 .hk-progress{
+    display: inline-flex;
+    align-items: center;
     gap: 0.6em;
-    padding: 0 0.9em 0 0.75em;
+    max-width: 100%;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9em;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
 
     &__bar{
         position: relative;
         flex: 0 0 auto;
         width: 3.4em;
-        height: 0.28em;
+        height: 0.22em;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.25);
         overflow: hidden;
@@ -4265,6 +4273,12 @@ body.minimal--ui{
             border-radius: inherit;
             background: #fff;
         }
+    }
+
+    &__text{
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

@@ -168,12 +168,15 @@ function render(params){
  * @return {HTMLElement} - элемент пилюли
  */
 function pill(params, prefix = ''){
-    let left = params.duration && params.time < params.duration ? Utils.secondsToTimeHuman(params.duration - params.time) : ''
+    let watched = params.time ? Utils.secondsToTimeHuman(params.time) : ''
+    let total   = params.duration ? Utils.secondsToTimeHuman(params.duration) : ''
 
-    let text = [prefix, params.percent + '%', left ? left + ' ' + Lang.translate('time_pill_left') : ''].filter(Boolean).join(' · ')
+    // Переглянуто X/Y (Z%): watched time, total time and percent, in one line
+    let label = Lang.translate('time_viewed') + (watched && total ? ' ' + watched + '/' + total : '') + ' (' + params.percent + '%)'
+    let text  = [prefix, label].filter(Boolean).join(' · ')
 
     let line = document.createElement('div')
-        line.className = 'hk-chip hk-progress'
+        line.className = 'hk-progress'
         line.innerHTML = '<span class="hk-progress__bar"><b style="width: ' + params.percent + '%"></b></span><span class="hk-progress__text"></span>'
 
     line.querySelector('.hk-progress__text').innerText = text

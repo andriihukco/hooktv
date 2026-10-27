@@ -5,7 +5,7 @@
     right: 1em;
     bottom: 3em;
     z-index: 1;
-    background-color: var(--surface-media-strong);
+    background-color: transparent;
     display: none;
     pointer-events: none;
     border-radius: 1em;
@@ -49,7 +49,7 @@
         }
 
         .hk-progress{
-            margin-top: 0.5em;
+            margin-top: 0.4em;
         }
     }
 }
