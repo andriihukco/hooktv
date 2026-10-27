@@ -126,6 +126,16 @@ $welcome-lime: #D6FF5C;
     }
 }
 
+// phones: the logo grows to the screen edges with 10px to spare and fades there, never past the screen
+@media (max-width: 767px){
+    .welcome--zoom .welcome__logo{
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        transform: none;
+        transition: width 0.9s $welcome-ease, opacity 0.45s ease 0.3s;
+    }
+}
+
 @keyframes welcome-draw{
     to{ stroke-dashoffset: 0; }
 }

@@ -20,6 +20,7 @@ let html = Template.elem('div', {class: 'main-search'}),
     search,
     history,
     suggest,
+    native = false,
     sources,
     keyboard,
     scroll,
@@ -68,6 +69,10 @@ function scrollTo(element){
 function create(){
     search = Template.get('search')
 
+    // phones and computers type into the native field; the on-screen keypad is for TV only
+    native = !Platform.tv()
+    search.toggleClass('search__body--native', native)
+
     // mouse and touch close; the remote closes with Back
     let close = $('<div class="search__close selector"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>')
 
@@ -91,7 +96,7 @@ function create(){
         Layer.visible(scroll.render(true))
 
         // phones: once the results are scrolled, the keypad steps aside (the toggle brings it back)
-        if(input) search.addClass('search__body--keys-collapsed')
+        if(input && !native) search.addClass('search__body--keys-collapsed')
     }
 
     search.find('.search__keys-toggle').on('click hover:enter', (e)=>{
@@ -143,7 +148,8 @@ function createSources(){
 function createSuggest(){
     suggest = new Suggest()
 
-    search.find('.search__input-shell').after(suggest.render())
+    // the suggestions sit under whichever field is in use
+    search.find(native ? '.search__keypad' : '.search__input-shell').after(suggest.render())
 
     suggest.listener.follow('pick',(event)=>{
         suggest.clear()
