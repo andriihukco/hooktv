@@ -101,6 +101,10 @@ function create(){
         if(DeviceInput.noDubleClick(e)) search.toggleClass('search__body--keys-collapsed')
     })
 
+    // the start screen: the same empty state as the Saved page, until a query is typed
+    search.find('.search__empty .empty__icon').append('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>')
+    search.find('.search__empty .empty__descr').text(Lang.translate('search_start_typing'))
+
     if(Platform.systemKeyboard()) search.find('.search__input-shell').hide()
 
     createKeyboard()
@@ -146,7 +150,7 @@ function createHistory(){
     history.create()
 
     history.listener.follow('down',()=>{
-        sources.toggle(true)
+        if(input) sources.toggle(true)
     })
 
     history.listener.follow('up',()=>{
@@ -188,8 +192,8 @@ function createKeyboard(){
     })
 
     keyboard.listener.follow('down',()=>{
-        if(history.any()) history.toggle()
-        else sources.toggle()
+        if(input && !history.any()) sources.toggle()
+        else if(history.any()) history.toggle()
     })
 
     keyboard.listener.follow('hover',()=>{

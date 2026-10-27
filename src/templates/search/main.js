@@ -6,6 +6,7 @@ let html = `<div class="search__body">
     </div>
     <div class="search__keypad"><div class="simple-keyboard"></div></div>
     <div class="search__history" data-area="history"></div>
+    <div class="search__empty empty empty--custom-icon"><div class="empty__icon"></div><div class="empty__title"></div><div class="empty__descr"></div></div>
     <div class="search__sources" data-area="sources"></div>
     <div class="search__results"></div>
 </div>`

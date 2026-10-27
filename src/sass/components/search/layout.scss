@@ -135,6 +135,43 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         display: none;
     }
 
+    // the start screen: recent queries and the call to action only, no results yet
+    &__body:not(&__body--query-active) &__sources,
+    &__body:not(&__body--query-active) &__results{
+        display: none;
+    }
+
+    // the start screen: the Saved page's empty state, until a query is typed
+    &__empty{
+        margin: 2em 0 0;
+
+        // a plain grey search glyph, in place of the film illustration
+        .empty__icon{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            height: auto;
+            margin: 0 auto 1em;
+            color: #8E8E93;
+
+            svg{
+                position: static;
+                width: 3em;
+                height: 3em;
+                margin: 0;
+            }
+        }
+
+        .empty__title{
+            display: none;
+        }
+    }
+
+    &__body--query-active &__empty{
+        display: none;
+    }
+
     // phones and computers: one column. The native field runs the full width with the close
     // circle level with it on the right, and the rows below it share the same left edge and gap
     &__body--native{

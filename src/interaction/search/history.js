@@ -3,7 +3,6 @@ import Scroll from '../../interaction/scroll'
 import Controller from '../../core/controller'
 import Storage from '../../core/storage/storage'
 import Arrays from '../../utils/arrays'
-import Favorite from '../../core/favorite'
 
 const RECENT = 5 // recent searches shown and kept
 
@@ -33,29 +32,6 @@ function History(){
 
         keys.map(v=>v).reverse().slice(0,RECENT).forEach(key => {
             this.append(key)
-        })
-
-        if(!keys.length) this.suggest()
-    }
-
-    // no recent searches: offer titles from what the user watched, liked or saved
-    this.suggest = function(){
-        let seen = []
-
-        ;['history','viewed','like','book','wath'].forEach(type => {
-            let cards = Favorite.get({type})
-
-            if(!Array.isArray(cards)) return
-
-            cards.forEach(card => {
-                let title = card.title || card.name
-
-                if(title && seen.indexOf(title) == -1 && seen.length < 10){
-                    seen.push(title)
-
-                    this.append(title)
-                }
-            })
         })
     }
 
