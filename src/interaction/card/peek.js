@@ -42,30 +42,33 @@ function listLabel(data){
     pane.querySelector('.card-peek__list span').textContent = Lang.translate(added ? 'hooktv_in_list' : 'hooktv_add_list')
 }
 
-// rating · year · age · runtime in one meta row, the same chips as the title page (status lives there)
-function facts(data, extra){
+// rating • year as plain text; the rest of the facts stay on the title page
+function facts(data){
     let box  = el('div', 'hk-meta card-peek__facts')
     let vote = parseFloat(data.vote_average || 0)
     let year = ((data.release_date || data.first_air_date || '') + '').slice(0, 4)
+    let text = []
 
-    if(vote) box.appendChild(rateChip(vote))
-    if(year) box.appendChild(el('span', 'hk-chip', year))
+    if(vote) text.push(rateText(vote))
+    if(year) text.push(year)
 
-    if(extra){
-        if(extra.pg) box.appendChild(el('span', 'hk-chip', extra.pg))
-        if(extra.runtime) box.appendChild(el('span', 'hk-chip', Utils.secondsToTimeHuman(extra.runtime * 60).trim()))
-    }
+    text.forEach((part, i)=>{
+        if(i) box.appendChild(el('span', 'card-peek__split', '•'))
+
+        if(typeof part == 'string') box.appendChild(el('span', '', part))
+        else box.appendChild(part)
+    })
 
     return box
 }
 
-function rateChip(vote){
+function rateText(vote){
     let tone = vote >= 7 ? 'good' : vote >= 5 ? 'mid' : 'bad'
-    let chip = el('span', 'hk-chip hk-rate rate--' + tone)
+    let rate = el('span', 'hk-rate rate--' + tone)
 
-    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value">' + vote.toFixed(1) + '</span>'
+    rate.innerHTML = '★ <span class="hk-rate__value">' + vote.toFixed(1) + '</span>'
 
-    return chip
+    return rate
 }
 
 function chips(list){
@@ -100,7 +103,7 @@ function fill(card){
 
         info.innerHTML = ''
         info.appendChild(title)
-        info.appendChild(facts(data, extra))
+        info.appendChild(facts(data))
 
         if(genres.length) info.appendChild(chips(genres))
         if(text) info.appendChild(el('div', 'card-peek__descr', text.textContent))

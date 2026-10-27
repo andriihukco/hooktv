@@ -4237,6 +4237,11 @@ body.minimal--ui{
     }
 }
 
+// the dot between values in a plain-text meta line
+.card-peek__split{
+    opacity: 0.55;
+}
+
 // progress: a short bar and one line of text, inside the same chip shape
 .hk-progress{
     gap: 0.6em;

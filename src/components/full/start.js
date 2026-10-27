@@ -52,7 +52,6 @@ class Start extends Emit {
         let relise  = (this.card.release_date || this.card.first_air_date || '') + ''
         let year    = relise ? relise.slice(0,4) : ''
         let quality = !this.card.first_air_date ? this.card.release_quality || this.card.quality : false
-        let pg      = TMDB.parsePG(this.card)
         let head    = []
         let info    = []
 
@@ -76,11 +75,6 @@ class Start extends Emit {
         this.card.name && this.html.find('.full-start-new__poster').addClass('card--tv').append('<div class="card__type">TV</div>')
         this.card.adult && this.html.find('.full-start-new__poster').addClass('card--adult').append('<div class="card__type">ADULT</div>')
 
-        // year, status, age and countries sit in the rate line, each in its own chip
-        if(year) this.html.find('.full-start__year').removeClass('hide').text(year)
-
-        // each country is its own chip in the rate line
-        countries.slice(0,5).forEach(c=>this.html.find('.full-start-new__rate-line').append($('<div class="full-start__country hk-chip"></div>').text(c)))
 
 
         !this.card.tagline && this.html.find('.full--tagline').remove()
@@ -97,32 +91,31 @@ class Start extends Emit {
 
         seasons && info.push('<span>' + Lang.translate('title_seasons') + ': ' + seasons + '</span>')
 
-        pg && this.html.find('.full-start__pg').removeClass('hide').text(pg)
-
         this.card.number_of_episodes && info.push('<span>'+Lang.translate('title_episodes') + ': ' + this.card.number_of_episodes + '</span>')
 
         !this.card.runtime && $('.tag--time', this.html).remove()
         
         this.card.number_of_seasons && this.html.find('.is--serial').removeClass('hide')
 
-        // one rating chip: IMDb when there is one, otherwise TMDB. The colour follows that score: strong, fair, weak
+        // one line of text: rating • year • countries. The rating is IMDb when there is one, otherwise TMDB
         let imdb  = parseFloat(this.card.imdb_rating || 0)
         let score = imdb > 0 ? imdb : parseFloat(this.card.vote_average || 0)
         let tone  = score >= 7 ? 'rate--good' : score >= 5 ? 'rate--mid' : 'rate--bad'
+        let split = '<span class="full-start-new__split">•</span>'
+        let rate  = ''
 
-        if(imdb > 0){
-            this.html.find('.rate--tmdb').addClass('hide')
-            this.html.find('.rate--imdb').removeClass('hide').addClass(tone).find('.hk-rate__value').text(Math.min(imdb, 10).toFixed(1))
-        }
-        else if(this.card.vote_average == 0) this.html.find('.rate--tmdb').addClass('hide')
-        else this.html.find('.rate--tmdb').addClass(tone)
+        if(imdb > 0) rate = '<span class="hk-rate ' + tone + '">★ <span class="hk-rate__value">' + Math.min(imdb, 10).toFixed(1) + '</span> <span class="hk-rate__source">IMDb</span></span>'
+        else if(this.card.vote_average > 0) rate = '<span class="hk-rate ' + tone + '">★ <span class="hk-rate__value">' + parseFloat(this.card.vote_average).toFixed(1) + '</span> <span class="hk-rate__source">TMDB</span></span>'
 
-        this.card.status && this.html.find('.full-start__status').removeClass('hide').text(Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')))
+        this.html.find('.full-start-new__rate-line').html([rate, year, countries.slice(0,5).join(', ')].filter(Boolean).join(split))
 
-        // duration and genres share one chip row under the details line
+        // second line of text: status • duration, then the genre chips
+        let status = this.card.status ? Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')) : ''
+        let time   = this.card.runtime > 0 ? Utils.secondsToTime(this.card.runtime * 60, true) : ''
+
+        this.html.find('.full-start-new__facts').toggleClass('hide', !(status || time)).html([status, time].filter(Boolean).join(split))
+
         let chips = []
-
-        if(this.card.runtime > 0) chips.push('<span class="hk-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' + Utils.secondsToTime(this.card.runtime * 60, true) + '</span>')
 
         if(this.card.genres) this.card.genres.slice(0,5).forEach(a=>chips.push('<span class="hk-chip">' + Utils.capitalizeFirstLetter(a.name) + '</span>'))
 
