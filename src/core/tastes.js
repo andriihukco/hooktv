@@ -69,7 +69,12 @@ function filtered(cb){
     if(typeof cb != 'function') return cb
 
     return (data)=>{
-        if(data && Array.isArray(data.results)) data = Object.assign({}, data, {results: apply(data.results)})
+        // taste only ranks and trims a list: when it would leave nothing, the list stays as TMDB sent it
+        if(data && Array.isArray(data.results) && data.results.length){
+            let kept = apply(data.results)
+
+            data = Object.assign({}, data, {results: kept.length ? kept : data.results})
+        }
 
         cb(data)
     }
