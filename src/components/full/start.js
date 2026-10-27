@@ -111,7 +111,8 @@ class Start extends Emit {
 
         // second line of text: status • duration, then the genre chips
         let status = this.card.status ? Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')) : ''
-        let time   = this.card.runtime > 0 ? Utils.secondsToTime(this.card.runtime * 60, true) : ''
+        let clock  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+        let time   = this.card.runtime > 0 ? '<span class="full-start-new__time">' + clock + Utils.secondsToTimeHuman(this.card.runtime * 60) + '</span>' : ''
 
         this.html.find('.full-start-new__facts').toggleClass('hide', !(status || time)).html([status, time].filter(Boolean).join(split))
 

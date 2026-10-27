@@ -190,12 +190,27 @@
     }
 
     // rate line and genre line share the .hk-meta row (see _hooktv.scss)
-    &__rate-line{
-        margin-bottom: 1.2em;
+    // the three rows under the title share one gap, so their spacing is even
+    &__rate-line,
+    &__facts{
+        margin-bottom: 0.8em;
     }
 
     &__genres{
         margin-bottom: 1.6em;
+    }
+
+    // duration: a clock icon, then the full hours and minutes
+    &__time{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+
+        svg{
+            width: 1.1em;
+            height: 1.1em;
+            flex: 0 0 auto;
+        }
     }
 
     &__split {

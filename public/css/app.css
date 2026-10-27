@@ -6046,11 +6046,30 @@ body.touch-device.orientation--landscape .full-start__background {
 .full-start-new__reactions > div {
   padding: 0.5em;
 }
-.full-start-new__rate-line {
-  margin-bottom: 1.2em;
+.full-start-new__rate-line, .full-start-new__facts {
+  margin-bottom: 0.8em;
 }
 .full-start-new__genres {
   margin-bottom: 1.6em;
+}
+.full-start-new__time {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 0.35em;
+}
+.full-start-new__time svg {
+  width: 1.1em;
+  height: 1.1em;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
 }
 .full-start-new__split {
   font-size: 0.7em;
@@ -21715,7 +21734,7 @@ body.minimal--ui .menu__item {
   gap: 0.5em;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  width: 15em;
+  width: 22em;
   max-width: 100%;
   padding: 0.6em 0.9em 0.7em;
   -webkit-border-radius: 1.2em;
