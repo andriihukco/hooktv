@@ -46,6 +46,11 @@ class Empty extends Emit{
         if(params.forbidden) this.forbidden()
         else if(params.noicon)    this.noicon()
         else if(params.icon) this.html.addClass('empty--custom-icon').find('.empty__icon').append(params.icon)
+        // every empty page shows the same Material icon, in the same place as the Favorites empty state
+        else this.html.addClass('empty--custom-icon').find('.empty__icon').append(Template.string('icon_empty_content'))
+
+        // an empty page has nothing to filter, so the Filters pill steps aside
+        document.body.classList.add('page--empty')
 
         if(!params.forbidden) params.buttons.push({
             title: Lang.translate('terminal_update'),
@@ -209,6 +214,8 @@ class Empty extends Emit{
 
     destroy(){
         this.html.remove()
+
+        document.body.classList.remove('page--empty')
 
         this.emit('destroy')
     }

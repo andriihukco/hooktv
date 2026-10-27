@@ -90,6 +90,7 @@ import icon_broadcast from '../templates/icons/broadcast'
 import icon_create_account from '../templates/icons/create_account'
 import icon_empty_subscribe from '../templates/icons/empty_subscribe'
 import icon_empty_bookmarks from '../templates/icons/empty_bookmarks'
+import icon_empty_content from '../templates/icons/empty_content'
 import icon_empty_history from '../templates/icons/empty_history'
 import icon_empty_torrents from '../templates/icons/empty_torrents'
 import icon_profile from '../templates/icons/profile'
@@ -223,6 +224,7 @@ let templates = {
     icon_create_account,
     icon_empty_subscribe,
     icon_empty_bookmarks,
+    icon_empty_content,
     icon_empty_history,
     icon_empty_torrents,
     icon_profile,

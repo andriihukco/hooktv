@@ -359,7 +359,8 @@ body.minimal--ui .navigation-bar--tabs{
             flex-direction: column;
             align-items: center;
             padding: 0.6em 0;
-            color: rgba(255, 255, 255, 0.5);
+            // solid grey: the same tone the translucent white gave over the glass, with no see-through strokes
+            color: #8e8e93;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
             transition: color 0.2s, transform 0.15s $hk-ease;
@@ -4265,4 +4266,9 @@ body.minimal--ui{
             background: #fff;
         }
     }
+}
+
+/* an empty page has nothing to filter: the Filters pill stays away */
+body.page--empty .library-filter-pill{
+    display: none !important;
 }
