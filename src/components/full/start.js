@@ -8,6 +8,7 @@ import Lang from '../../core/lang'
 import Emit from '../../utils/emit'
 import TMDB from '../../core/api/sources/tmdb'
 import Permit from '../../core/account/permit'
+import {rateHTML, metaRow, metaYear} from '../../utils/meta'
 
 import Options from './start/options'
 import Torrents from './start/torrents'
@@ -97,24 +98,18 @@ class Start extends Emit {
         
         this.card.number_of_seasons && this.html.find('.is--serial').removeClass('hide')
 
-        // one line of text: rating • year • countries. The rating is IMDb when there is one, otherwise TMDB
+        // one line of text: rating • year • countries, the same line as the hero and the hover preview
         let imdb  = parseFloat(this.card.imdb_rating || 0)
         let score = imdb > 0 ? imdb : parseFloat(this.card.vote_average || 0)
-        let tone  = score >= 7 ? 'rate--good' : score >= 5 ? 'rate--mid' : 'rate--bad'
-        let split = '<span class="full-start-new__split">•</span>'
-        let rate  = ''
 
-        if(imdb > 0) rate = '<span class="hk-rate ' + tone + '">★ <span class="hk-rate__value">' + Math.min(imdb, 10).toFixed(1) + '</span> <span class="hk-rate__source">IMDb</span></span>'
-        else if(this.card.vote_average > 0) rate = '<span class="hk-rate ' + tone + '">★ <span class="hk-rate__value">' + parseFloat(this.card.vote_average).toFixed(1) + '</span> <span class="hk-rate__source">TMDB</span></span>'
-
-        this.html.find('.full-start-new__rate-line').html([rate, year, countries.slice(0,5).join(', ')].filter(Boolean).join(split))
+        this.html.find('.full-start-new__rate-line').html(metaRow([rateHTML(score), metaYear(this.card), countries.slice(0,5).join(', ')]))
 
         // second line of text: status • duration, then the genre chips
         let status = this.card.status ? Lang.translate('tv_status_' + this.card.status.toLowerCase().replace(/ /g,'_')) : ''
         let clock  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
         let time   = this.card.runtime > 0 ? '<span class="full-start-new__time">' + clock + Utils.secondsToTimeHuman(this.card.runtime * 60) + '</span>' : ''
 
-        this.html.find('.full-start-new__facts').toggleClass('hide', !(status || time)).html([status, time].filter(Boolean).join(split))
+        this.html.find('.full-start-new__facts').toggleClass('hide', !(status || time)).html(metaRow([status, time]))
 
         let chips = []
 

@@ -9,22 +9,13 @@ import Watch from './watch'
 import Timeline from './timeline'
 import Layer from '../core/layer'
 import Extra from '../utils/tmdb_extra'
+import {rateHTML, metaRow, metaYear} from '../utils/meta'
 
 /**
- * The meta row under the title, the same chips as the title page: year, type, rating
+ * The meta row under the title: rating • year, the same line as the hover preview and the title page
  */
 function metaChips(card){
-    let year = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
-    let vote = parseFloat(card.vote_average || 0)
-    let list = []
-
-    if(year) list.push('<span class="hk-chip">' + year + '</span>')
-
-    list.push('<span class="hk-chip">' + (card.name ? Lang.translate('menu_tv') : Lang.translate('menu_movies')) + '</span>')
-
-    if(vote) list.push('<span class="hk-chip hk-rate rate--' + (vote >= 7 ? 'good' : vote >= 5 ? 'mid' : 'bad') + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value">' + vote.toFixed(1) + '</span></span>')
-
-    return list.join('')
+    return metaRow([rateHTML(parseFloat(card.vote_average || 0)), metaYear(card)])
 }
 
 /**

@@ -5,6 +5,7 @@ import Watch from '../watch'
 import Utils from '../../utils/utils'
 import Extra from '../../utils/tmdb_extra'
 import Controller from '../../core/controller'
+import {rateHTML, metaRow, metaYear} from '../../utils/meta'
 
 /**
  * HOOK TV: the highlighted card grows sideways. One info pane (logo, facts,
@@ -42,33 +43,13 @@ function listLabel(data){
     pane.querySelector('.card-peek__list span').textContent = Lang.translate(added ? 'hooktv_in_list' : 'hooktv_add_list')
 }
 
-// rating • year as plain text; the rest of the facts stay on the title page
+// rating • year: the same line as the hero and the title page
 function facts(data){
-    let box  = el('div', 'hk-meta card-peek__facts')
-    let vote = parseFloat(data.vote_average || 0)
-    let year = ((data.release_date || data.first_air_date || '') + '').slice(0, 4)
-    let text = []
+    let box = el('div', 'hk-meta card-peek__facts')
 
-    if(vote) text.push(rateText(vote))
-    if(year) text.push(year)
-
-    text.forEach((part, i)=>{
-        if(i) box.appendChild(el('span', 'card-peek__split', '•'))
-
-        if(typeof part == 'string') box.appendChild(el('span', '', part))
-        else box.appendChild(part)
-    })
+    box.innerHTML = metaRow([rateHTML(parseFloat(data.vote_average || 0)), metaYear(data)])
 
     return box
-}
-
-function rateText(vote){
-    let tone = vote >= 7 ? 'good' : vote >= 5 ? 'mid' : 'bad'
-    let rate = el('span', 'hk-rate rate--' + tone)
-
-    rate.innerHTML = '★ <span class="hk-rate__value">' + vote.toFixed(1) + '</span>'
-
-    return rate
 }
 
 function chips(list){

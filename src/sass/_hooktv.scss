@@ -4239,8 +4239,10 @@ body.minimal--ui{
 }
 
 // the dot between values in a plain-text meta line
-.card-peek__split{
+.meta-split{
+    margin: 0 0.45em;
     opacity: 0.55;
+    font-size: 0.8em;
 }
 
 // progress: a pill with one line of text and the bar full width underneath

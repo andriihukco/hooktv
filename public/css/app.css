@@ -21717,8 +21717,10 @@ body.minimal--ui .menu__item {
   color: #FF6B6B;
 }
 
-.card-peek__split {
+.meta-split {
+  margin: 0 0.45em;
   opacity: 0.55;
+  font-size: 0.8em;
 }
 
 .hk-progress {
