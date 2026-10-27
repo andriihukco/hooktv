@@ -1082,7 +1082,8 @@ function play(data){
                 Video.speed(Storage.get('player_speed','default'))
 
                 if(data.subtitles) Video.customSubs(data.subtitles)
-                if(data.voiceovers) Panel.setTracks(data.voiceovers)
+                // always show the audio button, an empty list opens the "no tracks" info
+                Panel.setTracks(data.voiceovers || [])
 
                 Panel.setBalanser(data.balanser)
 

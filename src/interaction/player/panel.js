@@ -9,6 +9,7 @@ import Platform from '../../core/platform'
 import Lang from '../../core/lang'
 import Utils from '../../utils/utils'
 import DeviceInput from '../device_input'
+import Modal from '../modal'
 import Video from './video'
 import Footer from './footer'
 import Playlist from './playlist'
@@ -385,6 +386,7 @@ function init(){
                 }
             })
         }
+        else showInfo('player_no_tracks_title','player_no_tracks_descr')
     })
 
     /**
@@ -549,13 +551,11 @@ function settings(){
         method: 'tracks'
     })
 
-    if(balanser){
-        items.push({
-            title: Lang.translate('online_balanser'),
-            subtitle: Utils.capitalizeFirstLetter(balanser.current),
-            method: 'balanser'
-        })
-    }
+    items.push({
+        title: Lang.translate('player_change_source'),
+        subtitle: balanser ? Utils.capitalizeFirstLetter(balanser.current) : '',
+        method: 'balanser'
+    })
 
     items.push(
         {
@@ -632,10 +632,44 @@ function settings(){
 }
 
 /**
+ * Окно с информацией, когда переключать нечего
+ * @param {string} title - ключ заголовка
+ * @param {string} descr - ключ текста
+ */
+function showInfo(title, descr){
+    let enabled = Controller.enabled().name
+
+    Modal.open({
+        title: Lang.translate(title),
+        size: 'small',
+        html: $('<div class="about">' + Lang.translate(descr) + '</div>'),
+        buttons: [
+            {
+                name: Lang.translate('confirm'),
+                onSelect: ()=>{
+                    Modal.close()
+                    Controller.toggle(enabled)
+                }
+            }
+        ],
+        onBack: ()=>{
+            Modal.close()
+            Controller.toggle(enabled)
+        }
+    })
+}
+
+/**
  * Выбор балансера (источника), с которого запущено видео
  */
 function selectBalanser(){
     let enabled = Controller.enabled().name
+
+    if(!balanser || balanser.list.length < 2){
+        showInfo('player_no_sources_title','player_no_sources_descr')
+
+        return
+    }
 
     Select.show({
         title: Lang.translate('online_balanser'),

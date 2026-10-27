@@ -3970,6 +3970,10 @@ body.minimal--ui{
 
         &.focus{
             @include hk-button-focus;
+
+            .library-head__count{
+                color: rgba(0, 0, 0, 0.55);
+            }
         }
     }
 

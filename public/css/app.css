@@ -12761,13 +12761,14 @@ body.system--keyboard .search-box .simple-keyboard-input {
 }
 .time-pill__text {
   -webkit-box-flex: 0;
-  -webkit-flex: 0 0 auto;
-      -ms-flex: 0 0 auto;
-          flex: 0 0 auto;
+  -webkit-flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
+  min-width: 0;
   font-size: 0.9em;
   font-weight: 600;
   color: #fff;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .noty {
@@ -17469,6 +17470,27 @@ body.minimal--ui.full--page .background {
       -ms-transform: translateY(0);
           transform: translateY(0);
 }
+.hero-tv__progress {
+  max-width: min(42em, 52vw);
+  opacity: 0;
+  -webkit-transform: translateY(15px);
+      -ms-transform: translateY(15px);
+          transform: translateY(15px);
+  -webkit-transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, -webkit-transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+  transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, -webkit-transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+  -o-transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+  transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+  transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, -webkit-transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+}
+.hero-tv__progress:empty {
+  display: none;
+}
+.hero-tv--loaded .hero-tv__progress {
+  opacity: 1;
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+}
 .hero-tv__buttons {
   display: -webkit-box;
   display: -webkit-flex;
@@ -21378,11 +21400,42 @@ body.minimal--ui .menu__item {
   background: #fff;
   color: #000;
 }
+.library-head__chip.focus .library-head__count {
+  color: rgba(0, 0, 0, 0.55);
+}
 .library-head__count {
   font-size: 0.85em;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: rgba(255, 255, 255, 0.55);
+}
+
+.providers-page {
+  background: #000;
+}
+.providers-page .items-line__body,
+.providers-page .scroll--horizontal,
+.providers-page .scroll__content {
+  width: 100%;
+  overflow: visible;
+}
+.providers-page .mapping--line {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
+  gap: 1.2em;
+  padding: 2em 1.5em;
+}
+.providers-page .mapping--line .card {
+  width: 100%;
+}
+.providers-page .card-peek {
+  display: none;
+}
+.providers-page .card__title {
+  display: block;
+  position: static;
+  opacity: 1;
 }
 
 .library-page .card.card--details-overlay .card__title,
