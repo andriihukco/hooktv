@@ -136,7 +136,7 @@ class Hero extends Emit{
 
         let last = Timeline.lastProgress(card)
 
-        if(last) meta.append(Timeline.pill(last.view, last.prefix))
+        if(last) meta.append(Timeline.pill(last.view, last.prefix, 'compact'))
     }
 
     step(by){

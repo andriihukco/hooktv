@@ -4268,6 +4268,13 @@ body.minimal--ui{
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    // the hero and the title page: the same pill, smaller
+    &--compact{
+        width: 17em;
+        gap: 0.4em;
+        padding: 0.45em 0.8em 0.55em;
+        font-size: 0.8em;
+    }
 
     &__bar{
         position: relative;

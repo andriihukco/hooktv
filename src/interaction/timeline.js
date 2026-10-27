@@ -167,7 +167,8 @@ function render(params){
  * @param {string} [prefix] - текст перед процентом, например номер серии
  * @return {HTMLElement} - элемент пилюли
  */
-function pill(params, prefix = ''){
+// variant 'compact' is the smaller pill on the hero and the title page; the card preview uses the default
+function pill(params, prefix = '', variant = ''){
     let watched = params.time ? Utils.secondsToTimeHuman(params.time) : ''
     let total   = params.duration ? Utils.secondsToTimeHuman(params.duration) : ''
 
@@ -176,7 +177,7 @@ function pill(params, prefix = ''){
     let text  = [prefix, label].filter(Boolean).join(' · ')
 
     let line = document.createElement('div')
-        line.className = 'hk-progress'
+        line.className = 'hk-progress' + (variant ? ' hk-progress--' + variant : '')
         line.innerHTML = '<span class="hk-progress__text"></span><span class="hk-progress__bar"><b style="width: ' + params.percent + '%"></b></span>'
 
     line.querySelector('.hk-progress__text').innerText = text

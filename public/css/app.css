@@ -21755,6 +21755,12 @@ body.minimal--ui .menu__item {
      text-overflow: ellipsis;
   white-space: nowrap;
 }
+.hk-progress--compact {
+  width: 17em;
+  gap: 0.4em;
+  padding: 0.45em 0.8em 0.55em;
+  font-size: 0.8em;
+}
 .hk-progress__bar {
   position: relative;
   display: block;
