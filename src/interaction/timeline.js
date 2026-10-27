@@ -171,13 +171,13 @@ function pill(params, prefix = ''){
     let watched = params.time ? Utils.secondsToTimeHuman(params.time) : ''
     let total   = params.duration ? Utils.secondsToTimeHuman(params.duration) : ''
 
-    // Переглянуто X/Y (Z%): watched time, total time and percent, in one line
-    let label = Lang.translate('time_viewed') + (watched && total ? ' ' + watched + '/' + total : '') + ' (' + params.percent + '%)'
+    // Переглянуто X/Y • Z%, with the bar full width underneath
+    let label = Lang.translate('time_viewed') + (watched && total ? ' ' + watched + '/' + total : '') + ' • ' + params.percent + '%'
     let text  = [prefix, label].filter(Boolean).join(' · ')
 
     let line = document.createElement('div')
         line.className = 'hk-progress'
-        line.innerHTML = '<span class="hk-progress__bar"><b style="width: ' + params.percent + '%"></b></span><span class="hk-progress__text"></span>'
+        line.innerHTML = '<span class="hk-progress__text"></span><span class="hk-progress__bar"><b style="width: ' + params.percent + '%"></b></span>'
 
     line.querySelector('.hk-progress__text').innerText = text
 
