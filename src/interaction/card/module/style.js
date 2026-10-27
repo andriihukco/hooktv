@@ -14,6 +14,8 @@ export default {
             else badge.append(Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''}))
 
             this.html.find('.card__view').append(badge)
+            // the service's brand colour is the round background behind its logo
+            if(this.data.brand) this.html.style.setProperty('--brand-bg', this.data.brand)
         }
 
         if(this.params.style.name == 'collection'){

@@ -251,16 +251,16 @@ function find(find, params = {}){
 }
 
 // Streaming services on the home page, read from the US catalogue. logo is a file in
-// public/img/providers: real brand SVGs, so they stay sharp at any size.
+// public/img/providers (real brand SVGs); brand is the service's own colour, the round background.
 let providers = [
-    {id: 8,    name: 'Netflix',            logo: 'netflix'},
-    {id: 9,    name: 'Amazon Prime Video', logo: 'prime-video'},
-    {id: 337,  name: 'Disney+',            logo: 'disney-plus'},
-    {id: 1899, name: 'HBO Max',            logo: 'hbo-max'},
-    {id: 350,  name: 'Apple TV+',          logo: 'apple-tv'},
-    {id: 2303, name: 'Paramount+',         logo: 'paramount-plus'},
-    {id: 15,   name: 'Hulu',               logo: 'hulu'},
-    {id: 43,   name: 'Starz',              logo: 'starz'}
+    {id: 8,    name: 'Netflix',            logo: 'netflix',        brand: '#000000'},
+    {id: 9,    name: 'Amazon Prime Video', logo: 'prime-video',    brand: '#00A8E1'},
+    {id: 337,  name: 'Disney+',            logo: 'disney-plus',    brand: '#113CCF'},
+    {id: 1899, name: 'HBO Max',            logo: 'hbo-max',        brand: '#000000'},
+    {id: 350,  name: 'Apple TV+',          logo: 'apple-tv',       brand: '#000000'},
+    {id: 2303, name: 'Paramount+',         logo: 'paramount-plus', brand: '#0064FF'},
+    {id: 15,   name: 'Hulu',               logo: 'hulu',           brand: '#1CE783'},
+    {id: 43,   name: 'Starz',              logo: 'starz',          brand: '#000000'}
 ]
 
 function providerUrl(provider){
@@ -285,6 +285,7 @@ function partProviders(params, call){
                 id: -(i + 1),
                 title: provider.name,
                 logo: './img/providers/' + provider.logo + '.svg',
+                brand: provider.brand,
                 params: {
                     style: {name: 'provider'},
                     module: CardModule.only('Card', 'Style', 'Callback')
