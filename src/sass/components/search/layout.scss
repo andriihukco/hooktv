@@ -64,52 +64,6 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         background: transparent;
     }
 
-    // typeahead rows sit right under the field; the keypad moves below them
-    &__suggest{
-        grid-column: 1;
-        grid-row: 2;
-        min-width: 0;
-        margin: -0.4em 0 1.2em;
-        overflow: hidden;
-        border-radius: 0.9em;
-        background: rgba(28, 28, 30, 0.96);
-
-        &:empty{
-            display: none;
-        }
-
-        &-item{
-            display: flex;
-            align-items: baseline;
-            gap: 0.6em;
-            min-height: 2.9em;
-            padding: 0.5em 1em;
-            font-size: 1.2em;
-            color: rgba(255, 255, 255, 0.92);
-
-            + .search__suggest-item{
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-            }
-
-            &.focus{
-                background: rgba(255, 255, 255, 0.14);
-            }
-        }
-
-        &-title{
-            flex: 1 1 auto;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        &-year{
-            flex: 0 0 auto;
-            color: rgba(255, 255, 255, 0.5);
-        }
-    }
-
     &__keypad{
         grid-column: 1;
         grid-row: 3;
@@ -181,14 +135,25 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         display: none;
     }
 
-    // phones and computers: the native field replaces the custom bar and the on-screen rows
+    // phones and computers: one column. The native field runs the full width with the close
+    // circle level with it on the right, and the rows below it share the same left edge and gap
     &__body--native{
+        display: block;
+        position: relative;
+        padding-top: 1em;
+
         .search__input-shell{
             display: none;
         }
 
         .search__keypad{
-            grid-row: 1;
+            padding: 0;
+            margin: 0;
+        }
+
+        .search__close{
+            top: 1em;
+            right: 1em;
         }
 
         .simple-keyboard-mic,
@@ -198,15 +163,28 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
         .simple-keyboard-input{
             box-sizing: border-box;
-            width: 100%;
-            min-height: 3.2em;
-            margin: 0 0 1.2em;
+            // the field stops short of the close circle: a width of 100% plus a margin overflows on phones
+            width: calc(100% - 3.1em);
+            height: 2.37em; // 3.2em of the page size, the same height as the close circle
+            margin: 0 0 1em;
             padding: 0 1em;
             border: 0;
             border-radius: 0.9em;
             background: $search-fill;
             color: #fff;
             font-size: 1.35em;
+        }
+
+        .search__history,
+        .search__sources{
+            grid-column: auto;
+            grid-row: auto;
+            margin: 0 0 1em;
+        }
+
+        .search__results{
+            grid-column: auto;
+            grid-row: auto;
         }
     }
 
@@ -235,14 +213,16 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
 // recent searches: pills with the clock icon
 .search-history-key{
-    height: 2.2em;
+    height: 3em;
+    padding: 0 1.1em;
+    font-size: 1em;
     border: 0;
     border-radius: 2em;
     background: $search-fill;
     color: rgba(255, 255, 255, 0.92);
 
     > div{
-        font-size: 1.3em;
+        font-size: 1.7em;
         padding: 0 0.2em;
     }
 
@@ -293,9 +273,14 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
             padding: 0 1em 6em;
         }
 
-        // the close circle sits in the same row, so the field stops short of it
-        &__body--native .simple-keyboard-input{
-            margin-right: 3.8em;
+        // phones: the native field starts at the screen edge gutter, with the close circle level with it
+        &__body--native{
+            padding: max(0.5em, env(safe-area-inset-top)) 1em 6em;
+
+            .search__close{
+                top: max(0.5em, env(safe-area-inset-top));
+                right: 0.6em;
+            }
         }
 
         &__input-shell{
