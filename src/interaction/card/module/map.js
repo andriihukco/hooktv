@@ -1,7 +1,6 @@
 import Card from './card'
 import Folder from './folder'
 import Icons from './icons'
-import Ratting from './ratting'
 import Release from './release'
 import Favorite from './favorite'
 import Watched from './watched'
@@ -16,7 +15,6 @@ export default {
     Card,
     Folder,
     Icons,
-    Ratting,
     Release,
     Plugins,
     Favorite,
