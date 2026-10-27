@@ -253,14 +253,14 @@ function find(find, params = {}){
 // Streaming services on the home page, read from the US catalogue. logo is a file in
 // public/img/providers (real brand SVGs); brand is the service's own colour, the round background.
 let providers = [
-    {id: 8,    name: 'Netflix',            logo: 'netflix',        brand: '#000000'},
+    {id: 8,    name: 'Netflix',            logo: 'netflix',        brand: '#141414'},
     {id: 9,    name: 'Amazon Prime Video', logo: 'prime-video',    brand: '#00A8E1'},
     {id: 337,  name: 'Disney+',            logo: 'disney-plus',    brand: '#113CCF'},
-    {id: 1899, name: 'HBO Max',            logo: 'hbo-max',        brand: '#000000'},
-    {id: 350,  name: 'Apple TV+',          logo: 'apple-tv',       brand: '#000000'},
+    {id: 1899, name: 'HBO Max',            logo: 'hbo-max',        brand: '#1c1c1c'},
+    {id: 350,  name: 'Apple TV+',          logo: 'apple-tv',       brand: '#222222'},
     {id: 2303, name: 'Paramount+',         logo: 'paramount-plus', brand: '#0064FF'},
     {id: 15,   name: 'Hulu',               logo: 'hulu',           brand: '#1CE783'},
-    {id: 43,   name: 'Starz',              logo: 'starz',          brand: '#000000'}
+    {id: 43,   name: 'Starz',              logo: 'starz',          brand: '#1a1a1a'}
 ]
 
 function providerUrl(provider){
