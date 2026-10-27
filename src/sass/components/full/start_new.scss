@@ -189,31 +189,13 @@
         }
     }
 
+    // rate line and genre line share the .hk-meta row (see _hooktv.scss)
     &__rate-line{
-        display: flex;
-        margin-bottom: 2.2em;
-        align-items: center;
+        margin-bottom: 1.2em;
+    }
 
-        .full-start__rate{
-            margin: 0
-        }
-
-        > * {
-            margin-left: 0 !important;
-            margin-right: 1em !important;
-        }
-
-        .full-start__pg{
-            font-size: 1.12em;
-        }
-
-        @media screen and (max-width: $media_sm) {
-            font-size: 0.9em;
-        }
-
-        @media screen and (max-width: $media_xm) {
-            padding-top: 1.3em;
-        }
+    &__genres{
+        margin-bottom: 1.6em;
     }
 
     &__split {

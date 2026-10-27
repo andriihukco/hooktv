@@ -162,7 +162,7 @@ function render(params){
 }
 
 /**
- * Создать пилюлю прогресса просмотра: полоса и подпись с процентом и остатком времени
+ * Создать прогресс просмотра в форме чипа: полоса и подпись с процентом и остатком времени
  * @param {object} params - параметры прогресса от функции view
  * @param {string} [prefix] - текст перед процентом, например номер серии
  * @return {HTMLElement} - элемент пилюли
@@ -173,10 +173,10 @@ function pill(params, prefix = ''){
     let text = [prefix, params.percent + '%', left ? left + ' ' + Lang.translate('time_pill_left') : ''].filter(Boolean).join(' · ')
 
     let line = document.createElement('div')
-        line.className = 'time-pill'
-        line.innerHTML = '<div class="time-pill__track"><i style="width: ' + params.percent + '%"></i></div><span class="time-pill__text"></span>'
+        line.className = 'hk-chip hk-progress'
+        line.innerHTML = '<span class="hk-progress__bar"><b style="width: ' + params.percent + '%"></b></span><span class="hk-progress__text"></span>'
 
-    line.querySelector('.time-pill__text').innerText = text
+    line.querySelector('.hk-progress__text').innerText = text
 
     return line
 }

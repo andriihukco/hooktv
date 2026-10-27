@@ -250,6 +250,65 @@ function find(find, params = {}){
     return finded
 }
 
+// Streaming services on the home page, read from the US catalogue. logo is a file in
+// public/img/providers: real brand SVGs, so they stay sharp at any size.
+let providers = [
+    {id: 8,    name: 'Netflix',            logo: 'netflix'},
+    {id: 9,    name: 'Amazon Prime Video', logo: 'prime-video'},
+    {id: 337,  name: 'Disney+',            logo: 'disney-plus'},
+    {id: 1899, name: 'HBO Max',            logo: 'hbo-max'},
+    {id: 350,  name: 'Apple TV+',          logo: 'apple-tv'},
+    {id: 2303, name: 'Paramount+',         logo: 'paramount-plus'},
+    {id: 15,   name: 'Hulu',               logo: 'hulu'},
+    {id: 43,   name: 'Starz',              logo: 'starz'}
+]
+
+function providerUrl(provider){
+    return 'discover/movie?with_watch_providers=' + provider.id + '&watch_region=' + provider.region + '&sort_by=popularity.desc'
+}
+
+/**
+ * Carousel of streaming services for the home page. Each tile is the service's logo,
+ * and opens every title it streams.
+ */
+function partProviders(params, call){
+    let status = new Status(providers.length)
+
+    status.onComplite = (data)=>{
+        let results = providers.map((provider, i)=>{
+            let json = data[i]
+
+            if(!json || !json.results) return null
+
+            return {
+                // a row keeps one tile per id, so each service gets its own (negative, never a title id)
+                id: -(i + 1),
+                title: provider.name,
+                logo: './img/providers/' + provider.logo + '.svg',
+                params: {
+                    style: {name: 'provider'},
+                    module: CardModule.only('Card', 'Style', 'Callback')
+                },
+                route: {
+                    name: 'category_full',
+                    params: {url: providerUrl(provider), title: provider.name}
+                }
+            }
+        }).filter(Boolean)
+
+        if(results.length) call({
+            title: Lang.translate('title_streaming'),
+            results: results,
+            params: {items: {view: results.length}}
+        })
+        else call()
+    }
+
+    providers.forEach((provider, i)=>{
+        get(providerUrl(provider), params, (json)=>status.append(i, json), ()=>status.error(), {life: day * 3})
+    })
+}
+
 function main(params = {}, oncomplite, onerror){
     let parts_limit = 6
     let parts_data  = [
@@ -301,6 +360,8 @@ function main(params = {}, oncomplite, onerror){
             },call, {life: day * 7})
         }
     ]
+
+    Arrays.insert(parts_data, 1, (call)=>partProviders(params, call))
 
     ContentRows.call('main', params, parts_data)
 

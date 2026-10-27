@@ -33,7 +33,8 @@ function component(object){
                 onMore: Router.call.bind(Router, 'category_full', data),
                 onInstance: function(card, data){
                     card.use({
-                        onEnter: Router.call.bind(Router, 'full', data),
+                        // a row tile can open its own screen (streaming services open their catalogue)
+                        onEnter: data.route ? Router.call.bind(Router, data.route.name, data.route.params) : Router.call.bind(Router, 'full', data),
                         onFocus: function(){
                             Background.change(Utils.cardImgBackground(data))
                         }

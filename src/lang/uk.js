@@ -342,6 +342,7 @@ export default {
     personal_liked: 'Бо вам сподобалось',
     personal_watched: 'Бо ви дивились',
     title_new_episodes: 'Нові серії',
+    title_streaming: 'Стрімінгові сервіси',
     title_popular: 'Популярне',
     title_popular_movie: 'Популярні фільми',
     title_popular_tv: 'Популярні серіали',

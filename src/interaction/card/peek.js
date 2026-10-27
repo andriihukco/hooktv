@@ -42,26 +42,34 @@ function listLabel(data){
     pane.querySelector('.card-peek__list span').textContent = Lang.translate(added ? 'hooktv_in_list' : 'hooktv_add_list')
 }
 
-// rating · year · age · runtime · status in one line; the slow parts arrive with the TMDB extra
+// rating · year · age · runtime in one meta row, the same chips as the title page (status lives there)
 function facts(data, extra){
-    let box  = el('div', 'card-peek__facts')
+    let box  = el('div', 'hk-meta card-peek__facts')
     let vote = parseFloat(data.vote_average || 0)
     let year = ((data.release_date || data.first_air_date || '') + '').slice(0, 4)
 
-    if(vote) box.appendChild(el('span', 'hk-chip card-peek__rating', '★ ' + vote.toFixed(1)))
+    if(vote) box.appendChild(rateChip(vote))
     if(year) box.appendChild(el('span', 'hk-chip', year))
 
     if(extra){
-        if(extra.pg) box.appendChild(el('span', 'hk-chip card-peek__badge', extra.pg))
-        if(extra.runtime) box.appendChild(el('span', '', Utils.secondsToTimeHuman(extra.runtime * 60).trim()))
-        if(extra.status) box.appendChild(el('span', 'hk-chip', Lang.translate('tv_status_' + extra.status.toLowerCase().replace(/ /g, '_'))))
+        if(extra.pg) box.appendChild(el('span', 'hk-chip', extra.pg))
+        if(extra.runtime) box.appendChild(el('span', 'hk-chip', Utils.secondsToTimeHuman(extra.runtime * 60).trim()))
     }
 
     return box
 }
 
+function rateChip(vote){
+    let tone = vote >= 7 ? 'good' : vote >= 5 ? 'mid' : 'bad'
+    let chip = el('span', 'hk-chip hk-rate rate--' + tone)
+
+    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value">' + vote.toFixed(1) + '</span>'
+
+    return chip
+}
+
 function chips(list){
-    let row = el('div', 'card-peek__genres')
+    let row = el('div', 'hk-meta card-peek__genres')
 
     list.forEach(name=>row.appendChild(el('span', 'hk-chip', name)))
 
@@ -76,7 +84,7 @@ function fill(card){
 
     let render = (extra)=>{
         let name  = data.title || data.name
-        let title = el('div', 'card-peek__title', extra && extra.logo ? '' : name)
+        let title = el('div', extra && extra.logo ? 'card-peek__title card-peek__title--logo' : 'card-peek__title', extra && extra.logo ? '' : name)
 
         if(extra && extra.logo){
             let logo = el('img', 'card-peek__logo')
@@ -87,7 +95,8 @@ function fill(card){
             title.appendChild(logo)
         }
 
-        let genres = extra && extra.genres.length ? extra.genres : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '').split(' · ').filter(Boolean) : [])
+        // three genres at most: the row never wraps, so the pane keeps its height
+        let genres = (extra && extra.genres.length ? extra.genres : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '').split(' · ').filter(Boolean) : [])).slice(0, 3)
 
         info.innerHTML = ''
         info.appendChild(title)
@@ -190,7 +199,8 @@ function float(card){
 }
 
 function open(card){
-    if(!card.hooktvData || !card.querySelector('.card__hover-info') || !allowed()) return close()
+    // a streaming service badge has no details to show
+    if(!card.hooktvData || card.classList.contains('card--provider') || !card.querySelector('.card__hover-info') || !allowed()) return close()
 
     if(host !== card){
         let view = card.querySelector('.card__view')

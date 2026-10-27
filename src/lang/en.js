@@ -364,6 +364,7 @@ export default {
     title_continue: 'Continue browsing',
     title_recomend_watch: 'We recommend to see',
     title_new_episodes: 'New episodes',
+    title_streaming: 'Streaming services',
     title_popular: 'Popular',
     title_popular_movie: 'Popular films',
     title_popular_tv: 'Popular TV shows',

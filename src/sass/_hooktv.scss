@@ -1389,7 +1389,7 @@ $hk-spring-time: 0.5s;
 }
 
 .card-peek{
-    --peek-w: clamp(17em, 24vw, 25em);
+    --peek-w: clamp(19em, 26vw, 26em);
 
     flex: 0 0 auto;
     width: 0;
@@ -1441,22 +1441,26 @@ $hk-spring-time: 0.5s;
         overflow: hidden;
     }
 
+    // a logo is a picture, not text: it is never clamped, so its letters are never cut
+    &__title--logo{
+        display: block;
+        overflow: visible;
+    }
+
     &__logo{
         display: block;
+        width: auto;
         max-width: 100%;
-        max-height: 2.6em;
+        height: auto;
+        max-height: 2.4em;
         object-fit: contain;
         object-position: left center;
     }
 
+    // rating, year, age, runtime: the shared meta row at the pane's small size
     &__facts{
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.3em 0.75em;
-        font-size: 0.85em;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.8em;
+        gap: 0.4em;
     }
 
     &__rating{
@@ -1472,12 +1476,16 @@ $hk-spring-time: 0.5s;
         line-height: 1.3;
     }
 
+    // one line only: the chips never wrap into the description
     &__genres{
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.8em;
-        white-space: nowrap;
+        flex-wrap: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 0.8em;
+        gap: 0.4em;
+
+        > .hk-chip{
+            flex: 0 0 auto;
+        }
     }
 
     &__descr{
@@ -1485,7 +1493,7 @@ $hk-spring-time: 0.5s;
         font-size: 0.82em;
         line-height: 1.4;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -1493,7 +1501,7 @@ $hk-spring-time: 0.5s;
     // one layout on every pane, in rows and grids alike: Watch and My List as two equal halves
     &__buttons{
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
         flex: 0 0 auto;
         gap: 0.5em;
     }
@@ -4157,8 +4165,9 @@ body.minimal--ui{
 }
 
 /* ---------------------------------------------------------------------
- * Chips: one shape for every label on the details page and the hover peek
- * (rating, age, status, year, country, genre). Runtime stays plain text.
+ * Meta row: one shape for every label on the title page, the hero and the
+ * hover peek (rating, year, age, status, country, runtime, genre, progress).
+ * Rows are flex-wrap with one gap, so the same content lines up everywhere.
  * ------------------------------------------------------------------- */
 .hk-chip{
     box-sizing: border-box;
@@ -4182,100 +4191,73 @@ body.minimal--ui{
     &.hide{
         display: none !important;
     }
-}
 
-.full-start-new__rate-line{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6em;
-    margin-bottom: 0.9em;
-
-    > .hk-chip{
-        margin: 0 !important;
-    }
-
-    // the rating keeps its big number, the source stays small; the star leads
-    > .full-start__rate > div:first-child{
-        font-size: 1.25em;
-        font-weight: 700;
-    }
-
-    // IMDb chip: star, number and label sit closer together
-    > .full-start__rate.rate--imdb{
-        gap: 0.25em;
-    }
-
-    // the star leads the number and is a size bigger than the label it replaces
-    > .full-start__rate > .source--name{
-        display: flex;
-        align-items: center;
-        order: -1;
-        font-size: 0.8em;
-        opacity: 0.75;
-    }
-
-    > .full-start__rate > .source--name svg{
-        display: block;
-        width: 1.5em;
-        height: 1.5em;
-    }
-
-    // the rating colour follows the score (set in components/full/start.js)
-    > .full-start__rate.rate--good{
-        color: $hk-lime;
-    }
-
-    > .full-start__rate.rate--mid{
-        color: #FFC93C;
-    }
-
-    > .full-start__rate.rate--bad{
-        color: #FF6B6B;
-    }
-
-    @media screen and (max-width: $media_sm) {
-        font-size: 0.9em;
+    svg{
+        width: 1.1em;
+        height: 1.1em;
+        flex: 0 0 auto;
     }
 }
 
-.full-start-new__genres{
+.hk-meta{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6em;
-    margin: 0 0 1.6em;
+    gap: 0.5em;
 
     &:empty{
         display: none;
     }
 }
 
-// duration: plain text with its clock, no chip around it
-.full-start-new__runtime{
-    display: inline-flex;
-    align-items: center;
+// rating: the star and the value take the score colour; the source name stays muted
+.hk-rate{
     gap: 0.4em;
-    height: 2.2em;
-    padding: 0 0.4em 0 0;
-    color: rgba(255, 255, 255, 0.86);
-    font-size: 1em;
-    font-weight: 500;
-    white-space: nowrap;
 
-    svg{
-        width: 1.2em;
-        height: 1.2em;
-        flex: 0 0 auto;
+    &__value{
+        font-weight: 700;
+    }
+
+    &__source{
+        opacity: 0.6;
+        font-size: 0.85em;
+        font-weight: 500;
+    }
+
+    &.rate--good{
+        color: $hk-lime;
+    }
+
+    &.rate--mid{
+        color: #FFC93C;
+    }
+
+    &.rate--bad{
+        color: #FF6B6B;
     }
 }
 
-// the hover peek uses the same chips for its facts and genres
-.card-peek__facts,
-.card-peek__genres{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5em;
-    margin: 0.6em 0;
+// progress: a short bar and one line of text, inside the same chip shape
+.hk-progress{
+    gap: 0.6em;
+    padding: 0 0.9em 0 0.75em;
+
+    &__bar{
+        position: relative;
+        flex: 0 0 auto;
+        width: 3.4em;
+        height: 0.28em;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.25);
+        overflow: hidden;
+
+        > b{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            border-radius: inherit;
+            background: #fff;
+        }
+    }
 }

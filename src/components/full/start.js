@@ -76,7 +76,7 @@ class Start extends Emit {
         this.card.name && this.html.find('.full-start-new__poster').addClass('card--tv').append('<div class="card__type">TV</div>')
         this.card.adult && this.html.find('.full-start-new__poster').addClass('card--adult').append('<div class="card__type">ADULT</div>')
 
-        // the release year and the countries sit in the rate line, each in its own chip
+        // year, status, age and countries sit in the rate line, each in its own chip
         if(year) this.html.find('.full-start__year').removeClass('hide').text(year)
 
         // each country is its own chip in the rate line
@@ -112,7 +112,7 @@ class Start extends Emit {
 
         if(imdb > 0){
             this.html.find('.rate--tmdb').addClass('hide')
-            this.html.find('.rate--imdb').removeClass('hide').addClass(tone).find('> div').eq(0).text(Math.min(imdb, 10).toFixed(1))
+            this.html.find('.rate--imdb').removeClass('hide').addClass(tone).find('.hk-rate__value').text(Math.min(imdb, 10).toFixed(1))
         }
         else if(this.card.vote_average == 0) this.html.find('.rate--tmdb').addClass('hide')
         else this.html.find('.rate--tmdb').addClass(tone)
@@ -122,7 +122,7 @@ class Start extends Emit {
         // duration and genres share one chip row under the details line
         let chips = []
 
-        if(this.card.runtime > 0) chips.push('<span class="full-start-new__runtime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' + Utils.secondsToTime(this.card.runtime * 60, true) + '</span>')
+        if(this.card.runtime > 0) chips.push('<span class="hk-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' + Utils.secondsToTime(this.card.runtime * 60, true) + '</span>')
 
         if(this.card.genres) this.card.genres.slice(0,5).forEach(a=>chips.push('<span class="hk-chip">' + Utils.capitalizeFirstLetter(a.name) + '</span>'))
 

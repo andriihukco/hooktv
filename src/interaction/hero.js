@@ -11,6 +11,23 @@ import Layer from '../core/layer'
 import Extra from '../utils/tmdb_extra'
 
 /**
+ * The meta row under the title, the same chips as the title page: year, type, rating
+ */
+function metaChips(card){
+    let year = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
+    let vote = parseFloat(card.vote_average || 0)
+    let list = []
+
+    if(year) list.push('<span class="hk-chip">' + year + '</span>')
+
+    list.push('<span class="hk-chip">' + (card.name ? Lang.translate('menu_tv') : Lang.translate('menu_movies')) + '</span>')
+
+    if(vote) list.push('<span class="hk-chip hk-rate rate--' + (vote >= 7 ? 'good' : vote >= 5 ? 'mid' : 'bad') + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value">' + vote.toFixed(1) + '</span></span>')
+
+    return list.join('')
+}
+
+/**
  * Apple TV-style hero for the top of Home: full-bleed backdrop, title,
  * overview and Watch / Details / Add to List. Rotates through the first few
  * titles of the first row. Speaks the same item API as a line (toggle, use,
@@ -35,9 +52,8 @@ class Hero extends Emit{
             <div class="hero-tv__shade"></div>
             <div class="hero-tv__body">
                 <div class="hero-tv__title"></div>
-                <div class="hero-tv__meta"></div>
+                <div class="hk-meta hero-tv__meta"></div>
                 <div class="hero-tv__descr"></div>
-                <div class="hero-tv__progress"></div>
                 <div class="hero-tv__controls">
                     <div class="hero-tv__buttons">
                         <button class="hero-tv__button hero-tv__button--watch selector" type="button"><svg aria-hidden="true"><use xlink:href="#sprite-play"></use></svg><span>${Lang.translate('hooktv_watch_now')}</span></button>
@@ -123,10 +139,13 @@ class Hero extends Emit{
      * Watched progress of the slide, the same pill as on the details page
      */
     renderProgress(card){
-        let progress = this.html.find('.hero-tv__progress').empty()
+        let meta = this.html.find('.hero-tv__meta')
+
+        meta.find('.hk-progress').remove()
+
         let last = Timeline.lastProgress(card)
 
-        if(last) progress.append(Timeline.pill(last.view, last.prefix))
+        if(last) meta.append(Timeline.pill(last.view, last.prefix))
     }
 
     step(by){
@@ -218,11 +237,7 @@ class Hero extends Emit{
         this.loading = true
         let transitionId = ++this.transitionId
 
-        let year  = ((card.release_date || card.first_air_date || '') + '').slice(0, 4)
-        let meta  = [year, card.name ? Lang.translate('menu_tv') : Lang.translate('menu_movies')]
-        let vote  = parseFloat(card.vote_average || 0)
-
-        if(vote) meta.push('★ ' + vote.toFixed(1))
+        let meta  = metaChips(card)
 
         let currentImg = this.html.find('.hero-tv__backdrop--current')
         let nextImg = this.html.find('.hero-tv__backdrop--next')
@@ -243,7 +258,7 @@ class Hero extends Emit{
             this.shownAt = Date.now()
 
             this.html.find('.hero-tv__title').text(card.title || card.name)
-            this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+            this.html.find('.hero-tv__meta').html(meta)
             this.html.find('.hero-tv__descr').text(card.overview || '')
             this.renderProgress(card)
 
@@ -286,7 +301,7 @@ class Hero extends Emit{
                 if(transitionId !== this.transitionId) return
 
                 this.html.find('.hero-tv__title').text(card.title || card.name)
-                this.html.find('.hero-tv__meta').text(meta.filter(Boolean).join('  ·  '))
+                this.html.find('.hero-tv__meta').html(meta)
                 this.html.find('.hero-tv__descr').text(card.overview || '')
                 this.renderProgress(card)
 

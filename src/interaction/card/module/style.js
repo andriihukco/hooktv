@@ -2,6 +2,20 @@ import Template from '../../template'
 
 export default {
     onCreate: function(){
+        // a streaming service: its logo, round, or its name when there is no logo
+        if(this.params.style.name == 'provider'){
+            this.html.addClass('card--provider')
+
+            this.html.find('.card__title, .card__age').remove()
+
+            let badge = $('<div class="card__provider"></div>')
+
+            if(this.data.logo) badge.append($('<img class="card__provider-logo">').attr({src: this.data.logo, alt: this.data.title || ''}))
+            else badge.append(Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''}))
+
+            this.html.find('.card__view').append(badge)
+        }
+
         if(this.params.style.name == 'collection'){
             this.html.addClass('card--collection')
 
@@ -18,7 +32,11 @@ export default {
 
             let promo_wrap = Template.elem('div', {class: 'card__promo'})
 
-            if(this.data.title || this.data.name){
+            // a streaming service shows its own logo instead of the name
+            if(this.data.logo){
+                promo_wrap.append($('<img class="card__promo-logo">').attr({src: this.data.logo, alt: this.data.title || ''}))
+            }
+            else if(this.data.title || this.data.name){
                 promo_wrap.append(Template.elem('div', {class: 'card__promo-title', text: this.data.title || this.data.name}))
             }
 

@@ -10,15 +10,15 @@ let html = `<div class="full-start-new">
             <div class="full-start-new__head"></div>
             <div class="full-start-new__title">{title}</div>
             <div class="full-start-new__tagline full--tagline">{tagline}</div>
-            <div class="full-start-new__rate-line">
-                <div class="full-start__rate rate--tmdb"><div>{rating}</div><div class="source--name"><svg viewBox="0 0 24 24" aria-label="TMDB"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></div>
-                <div class="full-start__rate rate--imdb hide"><div></div><div class="source--name"><svg viewBox="0 0 24 24" aria-label="IMDb"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><div>IMDb</div></div>
-
-                <div class="full-start__pg hk-chip hide"></div>
-                <div class="full-start__status hk-chip hide"></div>
-                <div class="full-start__year hk-chip hide"></div>            </div>
+            <div class="hk-meta full-start-new__rate-line">
+                <div class="hk-chip hk-rate rate--tmdb"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value">{rating}</span><span class="hk-rate__source">TMDB</span></div>
+                <div class="hk-chip hk-rate rate--imdb hide"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="hk-rate__value"></span><span class="hk-rate__source">IMDb</span></div>
+                <div class="hk-chip full-start__pg hide"></div>
+                <div class="hk-chip full-start__status hide"></div>
+                <div class="hk-chip full-start__year hide"></div>
+            </div>
             <div class="full-start-new__details"></div>
-            <div class="full-start-new__genres"></div>
+            <div class="hk-meta full-start-new__genres"></div>
 
             <div class="full-start-new__buttons">
                 <div class="full-start__button selector button--play">
