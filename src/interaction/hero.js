@@ -6,7 +6,6 @@ import Utils from '../utils/utils'
 import Favorite from '../core/favorite'
 import Router from '../core/router'
 import Watch from './watch'
-import Timeline from './timeline'
 import Layer from '../core/layer'
 import Extra from '../utils/tmdb_extra'
 import {rateHTML, metaRow, metaYear} from '../utils/meta'
@@ -126,19 +125,6 @@ class Hero extends Emit{
         return this.cards[this.index]
     }
 
-    /**
-     * Watched progress of the slide, the same pill as on the details page
-     */
-    renderProgress(card){
-        let meta = this.html.find('.hero-tv__meta')
-
-        meta.find('.hk-progress').remove()
-
-        let last = Timeline.lastProgress(card)
-
-        if(last) meta.append(Timeline.pill(last.view, last.prefix, 'compact'))
-    }
-
     step(by){
         if(this.cards.length < 2) return
 
@@ -251,7 +237,6 @@ class Hero extends Emit{
             this.html.find('.hero-tv__title').text(card.title || card.name)
             this.html.find('.hero-tv__meta').html(meta)
             this.html.find('.hero-tv__descr').text(card.overview || '')
-            this.renderProgress(card)
 
             this.loadLogo(card)
 
@@ -294,7 +279,6 @@ class Hero extends Emit{
                 this.html.find('.hero-tv__title').text(card.title || card.name)
                 this.html.find('.hero-tv__meta').html(meta)
                 this.html.find('.hero-tv__descr').text(card.overview || '')
-                this.renderProgress(card)
 
                 this.loadLogo(card)
             }, 150)

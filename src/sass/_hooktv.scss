@@ -4026,10 +4026,13 @@ body.minimal--ui{
     }
 
     // the peek pane shows the title and year itself; the grid's own labels would sit over the widened card
+    // the rating moves to the star line in the pane, so the badge on the poster goes
     .card.card--peek .card__title,
     .card.card--peek .card__age,
+    .card.card--peek .card__vote,
     .card.card--peek-open .card__title,
-    .card.card--peek-open .card__age{
+    .card.card--peek-open .card__age,
+    .card.card--peek-open .card__vote{
         display: none;
     }
 }

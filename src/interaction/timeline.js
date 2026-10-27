@@ -167,7 +167,7 @@ function render(params){
  * @param {string} [prefix] - текст перед процентом, например номер серии
  * @return {HTMLElement} - элемент пилюли
  */
-// variant 'compact' is the smaller pill on the hero and the title page; the card preview uses the default
+// variant 'compact' is the smaller pill on the title page; the card preview uses the default
 function pill(params, prefix = '', variant = ''){
     let watched = params.time ? Utils.secondsToTimeHuman(params.time) : ''
     let total   = params.duration ? Utils.secondsToTimeHuman(params.duration) : ''
