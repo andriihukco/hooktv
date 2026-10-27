@@ -9,6 +9,15 @@ import Router from '../../core/router'
 import Utils from '../../utils/utils'
 import Template from '../template'
 
+// the results layout while a query loads: a title bar and a row of poster cards
+function skeleton(){
+    let cards = ''
+
+    for(let i = 0; i < 8; i++) cards += '<div class="search-skeleton__card"></div>'
+
+    return '<div class="search-skeleton"><div class="search-skeleton__title"></div><div class="search-skeleton__row">' + cards + '</div></div>'
+}
+
 function Results(source){
     let timer,
         html   = Template.elem('div'),
@@ -48,7 +57,7 @@ function Results(source){
     this.loading = function(){
         this.listener.send('start')
 
-        html.empty().append($('<div><div class="broadcast__text">'+Lang.translate('search_searching')+'</div><div class="broadcast__scan"><div></div></div></div>'))
+        html.empty().append($(skeleton()))
     }
 
     this.cancel = function(){
@@ -59,6 +68,9 @@ function Results(source){
 
     this.search = function(value, immediately){
         clearTimeout(timer)
+
+        // the skeleton shows from the first character; the request follows once there are three
+        if(value.length && value !== query) this.loading()
 
         if(value.length >= 3){
             timer = setTimeout(()=>{
@@ -89,14 +101,16 @@ function Results(source){
 
                     this.listener.send('finded',{count, data})
                 })
-            },immediately ? 10 : 2500)
+            },immediately ? 10 : 400)
         }
         else{
             query = value
 
-            this.clear()
+            if(!value){
+                this.clear()
 
-            if(!value) this.recall('')
+                this.recall('')
+            }
         }
     }
 

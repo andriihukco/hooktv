@@ -172,7 +172,39 @@ $search-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         display: none;
     }
 
-    // phones and computers: one column. The native field runs the full width with the close
+    // loading: the results layout as grey placeholders, one card row under a title bar
+.search-skeleton{
+    padding-top: 0.6em;
+
+    &__title,
+    &__card{
+        background: linear-gradient(90deg, #161618 25%, #242426 50%, #161618 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+    }
+
+    &__title{
+        width: 9em;
+        height: 1.4em;
+        margin: 0 0 0.8em;
+        border-radius: 0.5em;
+    }
+
+    &__row{
+        display: flex;
+        gap: 1em;
+        overflow: hidden;
+    }
+
+    &__card{
+        flex: 0 0 auto;
+        width: 10em;
+        aspect-ratio: 2 / 3;
+        border-radius: 0.9em;
+    }
+}
+
+// phones and computers: one column. The native field runs the full width with the close
     // circle level with it on the right, and the rows below it share the same left edge and gap
     &__body--native{
         display: block;
