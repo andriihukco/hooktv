@@ -23,12 +23,14 @@ export default {
 
             if(this.data.logo) badge.append($('<img class="card__provider-logo">').attr({src: this.data.logo, alt: this.data.title || ''}))
             else{
-                let name = Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''})
+                // a page tile: its Material icon fills the same box as a channel logo, the title sits under the circle
+                if(this.data.icon){
+                    let icon = $(Template.elem('div', {class: 'card__provider-name card__provider-name--icon'})).prepend(Material.icon(this.data.icon))
 
-                // a page tile: its Material icon above the title
-                if(this.data.icon) $(name).addClass('card__provider-name--icon').prepend(Material.icon(this.data.icon))
-
-                badge.append(name)
+                    badge.append(icon)
+                    this.html.append(Template.elem('div', {class: 'card__provider-caption', text: this.data.title || ''}))
+                }
+                else badge.append(Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''}))
             }
 
             this.html.find('.card__view').append(badge)
