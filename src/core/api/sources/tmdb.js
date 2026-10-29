@@ -17,6 +17,7 @@ import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
 import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
+import uaTv from './ua_tv'
 
 
 let network   = new Reguest()
@@ -310,6 +311,30 @@ function partProviders(params, call){
     })
 }
 
+/**
+ * Carousel of free Ukrainian TV channels, styled like the streaming row.
+ * Each tile is the channel's logo and plays its live stream on enter.
+ */
+function partUaTv(params, call){
+    let results = uaTv.map((channel, i)=>({
+        id: -(100 + i),
+        title: channel.name,
+        logo: channel.logo,
+        brand: '#1c1c1e',
+        stream: channel.url,
+        params: {
+            style: {name: 'provider'},
+            module: CardModule.only('Card', 'Style', 'Callback')
+        }
+    }))
+
+    call({
+        title: Lang.translate('title_ua_tv'),
+        results: results,
+        params: {items: {view: results.length}}
+    })
+}
+
 function main(params = {}, oncomplite, onerror){
     let parts_limit = 6
     let parts_data  = [
@@ -363,6 +388,7 @@ function main(params = {}, oncomplite, onerror){
     ]
 
     Arrays.insert(parts_data, 1, (call)=>partProviders(params, call))
+    Arrays.insert(parts_data, 2, (call)=>partUaTv(params, call))
 
     ContentRows.call('main', params, parts_data)
 
