@@ -86,8 +86,8 @@ function fill(card){
         // three genres at most: the row never wraps, so the pane keeps its height
         let genres = (extra && extra.genres.length ? extra.genres : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '').split(' · ').filter(Boolean) : [])).slice(0, 3)
 
-        // a game has no rating or year: its kind takes their place
-        if(data.game) genres = [Lang.translate('hooktv_game_' + data.kind)]
+        // a game has no rating or year: its kind and the ways to play it take their place
+        if(data.game) genres = [Lang.translate('hooktv_game_' + data.kind), Lang.translate('hooktv_game_inputs')]
 
         info.innerHTML = ''
         info.appendChild(title)

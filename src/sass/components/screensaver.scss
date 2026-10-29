@@ -187,47 +187,6 @@
         object-fit: cover;
     }
 
-    // the clock and the title move up to make room for the 24-hour strip
-    .screensaver__title,
-    .screensaver__datetime{
-        bottom: 24%;
-    }
-
-    .screensaver__weather{
-        position: fixed;
-        left: 5%;
-        right: 5%;
-        bottom: 5%;
-        z-index: 3;
-        display: flex;
-        justify-content: space-between;
-        text-shadow: 2px 2px 2px #000;
-        font-weight: 300;
-        font-size: 1.1em;
-        opacity: 0.85;
-
-        &-hour{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4em;
-        }
-
-        &-time{
-            opacity: 0.75;
-        }
-
-        svg{
-            width: 2em;
-            height: 2em;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-    }
-
     .screensaver__title{
         &.visible{
             opacity: 0.85;
