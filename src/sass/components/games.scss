@@ -1076,3 +1076,46 @@
         display: none;
     }
 }
+
+// Full-screen play: an arcade game with a world of its own takes the whole screen. The only control left is
+// the menu button, floating in the corner. The letterbox around the game is its own colours, so no part of the
+// screen looks empty. Grid games (tetris, snake, pacman) keep the framed board.
+.games--fill{
+    .games__bar{
+        position: absolute;
+        top: max(0.6em, env(safe-area-inset-top));
+        left: 0.6em;
+        z-index: 2;
+        padding: 0;
+        background: none;
+    }
+
+    .games__icon,
+    .games__title,
+    .games__tag,
+    .games__stat,
+    .games__hint,
+    .games__keys{
+        display: none;
+    }
+
+    .games__wrap{
+        padding: 0;
+        background: radial-gradient(120% 90% at 50% 40%, var(--game-c1, #1c1c1f) 0%, #050506 80%);
+    }
+
+    .games__play{
+        border-radius: 0;
+    }
+
+    .games__pad{
+        display: none;
+    }
+}
+
+// touch screens keep the on-screen pad, since there is no keyboard or remote to play with
+@media (pointer: coarse){
+    .games--fill.games--pad .games__pad{
+        display: flex;
+    }
+}

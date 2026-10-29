@@ -6039,6 +6039,44 @@ body.platform--netcast .card__title {
     display: none;
   }
 }
+.games--fill .games__bar {
+  position: absolute;
+  top: max(0.6em, env(safe-area-inset-top));
+  left: 0.6em;
+  z-index: 2;
+  padding: 0;
+  background: none;
+}
+.games--fill .games__icon,
+.games--fill .games__title,
+.games--fill .games__tag,
+.games--fill .games__stat,
+.games--fill .games__hint,
+.games--fill .games__keys {
+  display: none;
+}
+.games--fill .games__wrap {
+  padding: 0;
+  background: -webkit-radial-gradient(50% 40%, 120% 90%, var(--game-c1, #1c1c1f) 0%, #050506 80%);
+  background: -o-radial-gradient(50% 40%, 120% 90%, var(--game-c1, #1c1c1f) 0%, #050506 80%);
+  background: radial-gradient(120% 90% at 50% 40%, var(--game-c1, #1c1c1f) 0%, #050506 80%);
+}
+.games--fill .games__play {
+  -webkit-border-radius: 0;
+          border-radius: 0;
+}
+.games--fill .games__pad {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .games--fill.games--pad .games__pad {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+}
 .music-page {
   min-height: 100%;
   padding: 2em 3em 11em;

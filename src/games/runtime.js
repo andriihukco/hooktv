@@ -153,6 +153,11 @@ function build(){
     root.on('click', '.games__sheet', function(e){ if(e.target === this && session) session.back() })
 }
 
+// Arcade games with a world of their own (lanes, a sky, a field) fill the whole screen once they start;
+// the grid games keep a framed board so the play area stays readable.
+const FRAMED = ["tetris", "snake", "pacman"]
+const fills = game => game.kind == "arcade" && FRAMED.indexOf(game.id) < 0
+
 function fit(){
     if(!play || !current) return
     let wrap = root.find('.games__wrap')[0], [w, h] = current.size
@@ -179,6 +184,7 @@ function launch(game, cfg){
     root.find('.games__best').text(best.get(game.id))
     root.find('.games__tag').text('')
     root.find('.games__lobby').remove()
+    root.removeClass('games--fill')
     root.toggleClass('games--lobby', !cfg)
     applySkin(cfg ? cfg.skin : config.get(game).skin)
     fit()
@@ -452,6 +458,9 @@ function launch(game, cfg){
         if(lobbyUi) lobbyUi.destroy()
         lobbyUi = null
         root.removeClass('games--lobby')
+        root.toggleClass('games--fill', fills(game))
+        root[0].style.setProperty('--game-c1', game.c1)
+        root[0].style.setProperty('--game-c2', game.c2)
         applySkin(chosen.skin)
         root.find('.games__tag').text([levelName(chosen.level), chosen.mode && chosen.mode != 'solo' ? modeName(chosen.mode) : '', chosen.skin != 'classic' ? skinName(skinById(chosen.skin)) : ''].filter(Boolean).join(' · '))
         fit()
