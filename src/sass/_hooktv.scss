@@ -3774,10 +3774,12 @@ body.minimal--ui{
         border-radius: 50%;
         font-size: inherit;
 
+        // the base icon box reserves 1.5em on the right for a label; here the label is only shown on demand
         .menu__ico{
             display: flex;
             width: 1.6em;
             height: 1.6em;
+            margin: 0;
 
             svg{
                 width: 100%;
@@ -3829,7 +3831,43 @@ body.minimal--ui{
                 font-weight: 500;
             }
         }
+
+        // one label at a time: while another tab is hovered or focused, the current tab drops back to its icon
+        @at-root body.minimal--ui .menu__list:has(.menu__item.focus, .menu__item.hover, .menu__item.traverse, .menu__item.active) .menu__item.menu__item--current:not(.focus):not(.hover):not(.traverse):not(.active){
+            width: $hk-control;
+            flex: 0 0 $hk-control;
+            gap: 0;
+            padding: 0 !important;
+            border-radius: 50%;
+
+            .menu__text{
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip: rect(0 0 0 0);
+            }
+        }
     }
+}
+
+// the focus colour rules also repaint the icon masks: the white mask fill went dark and hid the glyph
+// (movie screen, TV panel), and the black cut-outs went white. Masks keep their own colours.
+body.minimal--ui .menu__item mask [fill="#fff"]{
+    fill: #fff !important;
+}
+
+body.minimal--ui .menu__item mask [fill="#000"]{
+    fill: #000 !important;
+}
+
+body.minimal--ui .menu__item mask [stroke="#000"]{
+    stroke: #000 !important;
+}
+
+// the filled glyph itself takes the text colour, so it stays dark on the white focus pill
+body.minimal--ui .menu__item .navigation-bar__glyph--filled [fill]:not([fill="none"]){
+    fill: currentColor !important;
 }
 
 @media (max-width: 580px){
