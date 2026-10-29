@@ -1409,6 +1409,7 @@ export default {
     hooktv_reload: 'Перезапустити застосунок',
     hooktv_reload_descr: 'Якщо щось зависло. Нічого не втратиться',
     hooktv_where_title: 'Поки що немає в HOOK TV',
+    hooktv_torrent_fallback_title: 'Торрент-релізи',
     hooktv_where_available: 'Дивіться на',
     hooktv_where_subscription: 'За підпискою',
     hooktv_where_free: 'Безкоштовно',

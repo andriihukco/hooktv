@@ -1432,6 +1432,7 @@ export default {
     hooktv_reload: 'Reload app',
     hooktv_reload_descr: 'If something is stuck. Nothing is lost',
     hooktv_where_title: 'Not on HOOK TV yet',
+    hooktv_torrent_fallback_title: 'Torrent releases',
     hooktv_where_available: 'Watch it on',
     hooktv_where_subscription: 'With a subscription',
     hooktv_where_free: 'Free',

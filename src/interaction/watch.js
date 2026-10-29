@@ -4,6 +4,7 @@ import Storage from '../core/storage/storage'
 import Lang from '../core/lang'
 import LoadingProgress from './loading_progress'
 import WhereToWatch from './where_to_watch'
+import TorrentFallback from './torrent_fallback'
 import Player from './player'
 import Noty from './noty'
 
@@ -53,9 +54,14 @@ function play(movie, want, back = 'content'){
             return offerBalancers(movie, want, key)
         }
 
-        LoadingProgress.destroy()
+        // No online source: the viewer's torrent indexers come next, the
+        // legal "where to watch" sheet only when they have nothing either
+        TorrentFallback.search(movie, (items)=>{
+            LoadingProgress.destroy()
 
-        WhereToWatch.show(movie, back)
+            if(items.length) TorrentFallback.show(items, movie, back)
+            else WhereToWatch.show(movie, back)
+        })
     })
 }
 
