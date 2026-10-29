@@ -42,7 +42,8 @@ function search(movie, call){
 
     Parser.get({
         search: query(movie),
-        from_search: true
+        from_search: true,
+        public_indexer: true
     }, (json)=>{
         let items = (json.Results || []).filter(item=>item.MagnetUri || item.Link)
 
