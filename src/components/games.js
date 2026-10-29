@@ -3,12 +3,12 @@ import CardModule from '../interaction/card/module/module'
 import Utils from '../utils/utils'
 import Games from '../games/runtime'
 import Activity from '../interaction/activity/activity'
-import games, {categories, categoryById, categoryCardId, cardData} from '../games/catalog'
+import {categories, categoryById, categoryCardId, cardData} from '../games/catalog'
 
 /**
  * Games tab. The root shows the categories as folders; a folder opens the games in it.
  * Enter on a game opens it full-screen; enter on a folder opens that folder.
- * `all` is the page More on the games row opens: every game in one grid.
+ * `all` is the page More on the games row opens: every game in one grid, grouped by category.
  * @param {object} object activity; `category` set means a folder page
  * @return {object} component instance
  */
@@ -24,7 +24,7 @@ function component(object){
                     style: {name: 'game'},
                     module: CardModule.only('Card', 'Style', 'Callback')
                 }
-            })) : object.all ? games.map(g=>Object.assign(cardData(g), {
+            })) : object.all ? categories.reduce((list, c)=>list.concat(c.games), []).map(g=>Object.assign(cardData(g), {
                 params: {
                     style: {name: 'game'},
                     module: CardModule.only('Card', 'Style', 'Callback')
