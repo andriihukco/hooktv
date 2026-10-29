@@ -696,6 +696,7 @@ export default {
     menu_movies: 'Movies',
     menu_tv: 'Series',
     menu_games: 'Games',
+    menu_music: 'Music',
     menu_ua_tv: 'TV',
     menu_catalog: 'Catalog',
     menu_filter: 'Filter',
