@@ -1654,4 +1654,10 @@ export default {
     music_close_player: 'Закрити плеєр',
     music_visualizer: 'Візуалізатор',
     music_favorite: 'Зберегти в улюблене',
+    title_music: 'Музика',
+    menu_music: 'Музика',
+    hooktv_controls_hold: 'Утримуйте',
+    hooktv_controls_menu: 'Більше дій',
+    hooktv_controls_play_pause: 'Відтворити або пауза',
+    hooktv_controls_skip: 'Попередній або наступний трек',
 }

@@ -94,6 +94,7 @@ import LoadingProgress from './interaction/loading_progress'
 import StorageMenager from './interaction/storage_manager'
 import RemoteHelper from './interaction/remote_helper'
 import DataBase from './interaction/database'
+import ControlsHelp from './interaction/controls_help'
 import Maker from './interaction/maker'
 import MaskHelper from './utils/mask'
 import ContentRows from './core/content_rows'
@@ -610,6 +611,7 @@ function startApp(){
     LoadingProgress.status('Search init')
 
     DataBase.init()
+    ControlsHelp.init()
     LoadingProgress.status('DataBase init')
 
     ContentRows.init()

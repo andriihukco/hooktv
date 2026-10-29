@@ -1,4 +1,7 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect, vi} from 'vitest'
+
+// each test imports all 40 language packs; under a full parallel run that can pass the 5 s default
+vi.setConfig({testTimeout: 20000})
 import fs from 'fs'
 import path from 'path'
 

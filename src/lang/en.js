@@ -1723,4 +1723,8 @@ export default {
     games_cat_party_overview: 'Solo, duo or teams',
     games_cat_more_title: 'More',
     games_cat_more_overview: 'Everything else',
+    hooktv_controls_hold: 'Hold',
+    hooktv_controls_menu: 'More options',
+    hooktv_controls_play_pause: 'Play or pause',
+    hooktv_controls_skip: 'Previous or next track',
 }

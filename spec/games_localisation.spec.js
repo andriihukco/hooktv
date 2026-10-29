@@ -1,4 +1,7 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect, vi} from 'vitest'
+
+// each test imports all 40 language packs; under a full parallel run that can pass the 5 s default
+vi.setConfig({testTimeout: 20000})
 import fs from 'fs'
 import path from 'path'
 import catalog from '../src/games/catalog'
@@ -51,6 +54,21 @@ describe('games localisation rule', ()=>{
                 const key = `game_${g.id}_hint`
                 expect(pack[key], `${code}: ${key} is still English`).not.toBe(en[key])
             })
+        }
+    })
+})
+
+describe('games help and Settings → Controls strings', ()=>{
+    it('every language pack has every help, controls and menu string the games and Settings use', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+        const keys = Object.keys(en).filter(k => /^(hooktv_help_|hooktv_controls_|hooktv_game_(arcade|puzzle|words|logic|board|cards)$|hooktv_(play_game|games_count|paused|score|best|play_again|game_over)$|(title|menu)_(games|music)$)/.test(k))
+
+        expect(keys.length).toBeGreaterThan(30)
+
+        for(const code of codes){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            keys.forEach(key => expect(pack[key], `${code}: ${key}`).toBeTruthy())
         }
     })
 })

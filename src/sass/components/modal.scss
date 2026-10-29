@@ -240,3 +240,70 @@
         margin-top: 1em;
     }
 }
+// Settings → Controls: one table, the same action on a remote, a keyboard and a touch screen
+.controls-help{
+    table{
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td{
+        padding: 0.55em 0.7em;
+        text-align: left;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    thead th{
+        font-size: 0.8em;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.62);
+    }
+
+    tbody th{
+        font-weight: 500;
+    }
+
+    &__group th{
+        padding-top: 1.2em;
+        font-size: 0.85em;
+        font-weight: 700;
+        color: var(--brand-primary, #C8F542);
+        border-bottom: 0;
+    }
+
+    td{
+        color: rgba(255, 255, 255, 0.82);
+        white-space: nowrap;
+    }
+
+    kbd{
+        display: inline-block;
+        min-width: 1.6em;
+        padding: 0.1em 0.45em;
+        border-radius: 0.35em;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        font-family: inherit;
+        font-size: 0.9em;
+        text-align: center;
+    }
+
+    &__dot{
+        display: inline-block;
+        width: 0.7em;
+        height: 0.7em;
+        border-radius: 50%;
+        vertical-align: -0.05em;
+    }
+}
+
+// phones: the table scrolls sideways inside the window instead of squeezing the columns
+@media (max-width: 600px){
+    .controls-help{
+        overflow-x: auto;
+    }
+}

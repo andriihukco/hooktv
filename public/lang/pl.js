@@ -1572,4 +1572,10 @@ export default {
     music_close_player: 'Zamknij odtwarzacz',
     music_visualizer: 'Wizualizacja',
     music_favorite: 'Zapisz w ulubionych',
+    title_music: 'Muzyka',
+    menu_music: 'Muzyka',
+    hooktv_controls_hold: 'Przytrzymaj',
+    hooktv_controls_menu: 'Więcej opcji',
+    hooktv_controls_play_pause: 'Odtwórz lub wstrzymaj',
+    hooktv_controls_skip: 'Poprzedni lub następny utwór',
 }
