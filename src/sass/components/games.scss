@@ -280,6 +280,377 @@
         }
     }
 
+    // console chrome: the lobby before a game, the menu on the pause and result cards
+    &__tag{
+        flex: none;
+        padding: 0.25em 0.8em;
+        border-radius: 99em;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 0.8em;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+
+        &:empty{
+            display: none;
+        }
+    }
+
+    &--lobby &__wrap,
+    &--lobby &__hint,
+    &--lobby &__keys,
+    &--lobby &__stat{
+        display: none;
+    }
+
+    &__lobby{
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        gap: 2.4em;
+        padding: 0.4em 2.4em 2em;
+        overflow: auto;
+        animation: games-in 0.25s ease-out;
+
+        @media (max-width: 760px){
+            flex-direction: column;
+            gap: 1.2em;
+            padding: 0.2em 1.2em 1.4em;
+        }
+    }
+
+    &__hero{
+        flex: 1.1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9em;
+        justify-content: center;
+
+        &-icon{
+            position: relative;
+            flex: none;
+            width: 7em;
+            height: 7em;
+            border-radius: 1.6em;
+            overflow: hidden;
+            box-shadow: 0 1em 3em rgba(0, 0, 0, 0.55);
+        }
+
+        &-title{
+            font-size: 2.6em;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+        }
+
+        &-hint{
+            opacity: 0.6;
+            max-width: 32em;
+            line-height: 1.4;
+        }
+    }
+
+    &__chips{
+        display: flex;
+        gap: 0.6em;
+        flex-wrap: wrap;
+    }
+
+    &__chip{
+        min-width: 4.6em;
+        padding: 0.6em 0.9em;
+        border-radius: 0.9em;
+        background: rgba(255, 255, 255, 0.07);
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+
+        b{
+            font-size: 1.35em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        span{
+            font-size: 0.62em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.55;
+        }
+    }
+
+    &__runs{
+        max-width: 26em;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+
+        &-t{
+            font-size: 0.72em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.55;
+            margin-bottom: 0.3em;
+        }
+
+        &-none{
+            opacity: 0.45;
+            font-size: 0.9em;
+        }
+    }
+
+    &__run{
+        display: flex;
+        align-items: baseline;
+        gap: 0.8em;
+        padding: 0.4em 0.8em;
+        border-radius: 0.6em;
+        background: rgba(255, 255, 255, 0.05);
+
+        b{
+            min-width: 3em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        span{
+            flex: 1;
+            opacity: 0.6;
+            font-size: 0.85em;
+        }
+
+        i{
+            font-style: normal;
+            opacity: 0.4;
+            font-size: 0.8em;
+        }
+
+        &--win b{
+            color: var(--accent, #C8F542);
+        }
+    }
+
+    &__side{
+        flex: 0.9;
+        min-width: 0;
+        max-width: 28em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.7em;
+
+        @media (max-width: 760px){
+            max-width: none;
+        }
+    }
+
+    &__settings{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+    }
+
+    &__row{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1em;
+        padding: 0.8em 1.1em;
+        border-radius: 1em;
+        background: rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition: background 0.15s, transform 0.12s;
+
+        > span{
+            opacity: 0.65;
+        }
+
+        &-v{
+            display: flex;
+            align-items: center;
+            gap: 0.7em;
+            font-weight: 700;
+
+            i{
+                font-style: normal;
+                opacity: 0.45;
+                font-size: 1.3em;
+                line-height: 1;
+                padding: 0 0.3em;
+            }
+        }
+
+        &.focus{
+            background: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 0 0 0.1em var(--accent, #C8F542);
+
+            i{
+                opacity: 1;
+            }
+        }
+    }
+
+    &__play-btn{
+        margin-top: 0.4em;
+        padding: 0.95em 1.4em;
+        border-radius: 99em;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 1.2em;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+
+        &.focus{
+            background: var(--accent, #C8F542);
+            color: var(--accent-contrast, #0B0F00);
+        }
+    }
+
+    &__menu{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        margin-top: 0.8em;
+        min-width: 14em;
+
+        .games__btn{
+            text-align: center;
+        }
+    }
+
+    &__badge{
+        padding: 0.3em 1em;
+        border-radius: 99em;
+        background: var(--accent, #C8F542);
+        color: var(--accent-contrast, #0B0F00);
+        font-weight: 800;
+        font-size: 0.85em;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    // cinema: the poster of a lobby, the title card before a game and the closing line after it
+    &__hero-genre{
+        font-size: 0.78em;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent, #C8F542);
+    }
+
+    &__hero-tag{
+        font-size: 1.15em;
+        font-style: italic;
+        opacity: 0.9;
+    }
+
+    &__card{
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;
+        padding: 0 8%;
+        text-align: center;
+        background: #000;
+        animation: games-card 2.4s ease-in-out both;
+        cursor: pointer;
+
+        &-bar{
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 12%;
+            background: #000;
+
+            &:first-child{
+                top: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            }
+
+            &:last-child{
+                bottom: 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.14);
+            }
+        }
+
+        &-c{
+            font-size: 0.8em;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        &-t{
+            font-size: 3em;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.05;
+            color: var(--accent, #fff);
+            text-shadow: 0 0 1.2em rgba(255, 255, 255, 0.15);
+        }
+
+        &-s{
+            font-style: italic;
+            opacity: 0.8;
+            max-width: 24em;
+        }
+    }
+
+    &__end{
+        font-size: 0.85em;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        opacity: 0.75;
+        color: var(--accent, #fff);
+    }
+
+    // film skins: a tint over the whole board, a vignette, a little grain, and a typeface with some character
+    &__play::after{
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        background:
+            radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%),
+            url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");
+        mix-blend-mode: overlay;
+    }
+
+    @each $name, $filter, $font, $grain in (
+        (wizard, 'sepia(.35) saturate(1.25) hue-rotate(-12deg) contrast(1.05)', 'Georgia, "Times New Roman", serif', .5),
+        (ring, 'sepia(.4) saturate(1.05) hue-rotate(35deg) contrast(1.05)', 'Georgia, "Times New Roman", serif', .5),
+        (pulp, 'sepia(.35) contrast(1.2) saturate(1.3)', '"Arial Black", Impact, sans-serif', .9),
+        (neon, 'hue-rotate(150deg) saturate(1.5) contrast(1.12) brightness(1.05)', '"SF Mono", Menlo, Consolas, monospace', .35),
+        (space, 'hue-rotate(190deg) saturate(1.2) contrast(1.1)', '"Avenir Next", "Segoe UI", system-ui, sans-serif', .3),
+        (western, 'sepia(.85) saturate(.85) contrast(1.15)', 'Georgia, "Times New Roman", serif', 1)
+    ){
+        &--skin-#{$name}{
+            .games__play{
+                filter: unquote($filter);
+            }
+
+            .games__play::after{
+                opacity: $grain;
+            }
+
+            .games__hero-title,
+            .games__card-t,
+            .games__end{
+                font-family: unquote($font);
+            }
+
+            .games__hero-icon{
+                filter: unquote($filter);
+            }
+        }
+    }
+
     &__over{
         position: absolute;
         inset: 0;
@@ -610,4 +981,11 @@
         padding-bottom: 100%;
         border-radius: 22%;
     }
+}
+
+@keyframes games-card{
+    0%{ opacity: 0; }
+    12%{ opacity: 1; }
+    82%{ opacity: 1; }
+    100%{ opacity: 0; }
 }

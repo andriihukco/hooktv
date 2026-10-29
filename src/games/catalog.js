@@ -6,27 +6,17 @@ import logic from './packs/logic'
 import puzzle from './packs/puzzle'
 import words from './packs/words'
 import quiz from './packs/quiz'
+import party from './packs/party'
 import categoryList from './categories'
 import {tint} from './icons'
 
-// Titles and hints are looked up under game_<id>_title / game_<id>_hint, and the folders under
-// games_cat_<id>_title / games_cat_<id>_overview. The app sets the translator (runtime.js); until then,
-// and in the specs, the English in the packs is what shows.
-let translate = (key, fallback) => fallback
-
-export function setTranslator(fn){
-    translate = fn
-}
-
-export const gameTitle = game => translate('game_' + game.id + '_title', game.title)
-export const gameHint = game => translate('game_' + game.id + '_hint', game.hint || '')
-export const categoryTitle = category => translate('games_cat_' + category.id + '_title', category.title)
-export const categoryOverview = category => translate('games_cat_' + category.id + '_overview', category.overview)
+export {setTranslator, gameTitle, gameHint, categoryTitle, categoryOverview} from './i18n'
+import {gameTitle, gameHint} from './i18n'
 
 // Every playable game, in the order the home row shows them: the most inviting first.
-const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'invaders', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'connect4', 'tictactoe', 'checkers', 'reversi', 'asteroids', 'pong', 'frogger', 'bubbles', 'slicer', 'emoji', 'tower', 'archery', 'maze', 'memory', 'simon', 'mastermind', 'battleship', 'nonogram', 'lightsout', 'sliding', 'mahjong', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'insects', 'shapes', 'typing', 'speedtype', 'wordrain', 'numtype', 'numspeak', 'dice']
+const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot']
 
-const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz], logic, board: boards, cards}
+const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz, ...party], logic, board: boards, cards}
 const all = []
 
 for(let kind in packs) packs[kind].forEach(g => all.push(Object.assign({}, g, {kind, c1: tint(g.id)[0], c2: tint(g.id)[1]})))

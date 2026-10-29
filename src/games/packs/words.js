@@ -70,7 +70,7 @@ function numberGame(env, speak){
 
 export default [
 {
-    id: 'wordle', title: 'Wordle', emoji: '🔤', c1: '#30D158', c2: '#FFD60A', size: [100, 110], hint: 'Guess the hidden word · green = right spot, yellow = wrong spot',
+    id: 'wordle', options: [{id: 'letters', label: 'Word length', def: 1, values: [{id: 4, label: '4 letters'}, {id: 5, label: '5 letters'}, {id: 6, label: '6 letters'}, {id: 7, label: '7 letters'}]}], title: 'Wordle', emoji: '🔤', c1: '#30D158', c2: '#FFD60A', size: [100, 110], hint: 'Guess the hidden word · green = right spot, yellow = wrong spot',
     start(env){
         let n, word, row = 0, cur = '', board, kb
         const colors = {g: '#2f9e44', y: '#d1a000', x: '#3a3a40'}
@@ -98,7 +98,7 @@ export default [
             row++; cur = ''
             if(row == 6) env.over(`The word was ${word}`)
         }
-        let menu = env.buttons(['4 letters', '5 letters', '6 letters', '7 letters'], i => { menu.remove(); begin(i + 4) }, {modal: true})
+        begin(+env.opts.letters)
     }
 },
 {
@@ -129,28 +129,6 @@ export default [
     }
 },
 {
-    id: 'simon', title: 'Simon Says', emoji: '🎵', c1: '#BF5AF2', c2: '#0A84FF', size: SQ, pad: true, hint: 'Watch the pattern, then repeat it',
-    start(env){
-        const col = ['#30D158', '#FF453A', '#FFD60A', '#0A84FF'], tone = [330, 440, 550, 660]
-        let seq = [], at = 0, show = true
-        let g = env.grid(2, 2, (c, i) => { c.style.background = col[i]; c.style.opacity = .35; c.style.borderRadius = ['100% 8% 8% 8%', '8% 100% 8% 8%', '8% 8% 8% 100%', '8% 8% 100% 8%'][i] }, pick, {css: 'gap:.8em;padding:1.2em'})
-        const beep = i => { try { env.sfx('tap') } catch(e){} }
-        function flash(i){ let c = g.cells[i]; c.style.opacity = 1; c.style.boxShadow = `0 0 3em ${col[i]}`; beep(i); env.after(() => { c.style.opacity = .35; c.style.boxShadow = '' }, 320) }
-        function next(){
-            seq.push(env.rnd(4)); at = 0; show = true
-            seq.forEach((s, k) => env.after(() => flash(s), 700 + k * 560))
-            env.after(() => show = false, 700 + seq.length * 560)
-        }
-        function pick(i){
-            if(show) return
-            flash(i)
-            if(i != seq[at]) return env.over(`Reached round ${seq.length}`)
-            if(++at == seq.length){ env.score(seq.length); show = true; env.after(next, 700) }
-        }
-        next()
-    }
-},
-{
     id: 'rps', title: 'Rock Paper Scissors', emoji: '✂️', c1: '#FF375F', c2: '#FF9F0A', size: SQ, hint: 'First to lose 3 rounds ends the run · score is your wins',
     start(env){
         const H = ['✊', '✋', '✌️'], N = ['Rock', 'Paper', 'Scissors']
@@ -176,74 +154,8 @@ export default [
     }
 },
 {
-    id: 'dice', title: 'Dice Roll', emoji: '🎲', c1: '#FF453A', c2: '#BF5AF2', size: SQ, pad: true, hint: 'OK rolls · up / down changes the number of dice',
-    start(env){
-        let n = 2, rolling = false
-        let box = document.createElement('div'); box.style.cssText = 'position:absolute;inset:6% 4% 34%;display:flex;flex-wrap:wrap;gap:3%;align-items:center;justify-content:center'
-        let sum = document.createElement('div'); sum.style.cssText = 'position:absolute;left:0;right:0;bottom:14%;text-align:center;font-size:3em;font-weight:800'
-        let sub = document.createElement('div'); sub.style.cssText = 'position:absolute;left:0;right:0;bottom:6%;text-align:center;opacity:.55'
-        env.el.append(box, sum, sub)
-        const pips = {1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8]}
-        const face = v => `<div style="width:${n > 2 ? 22 : 30}%;aspect-ratio:1;background:linear-gradient(145deg,#fff,#d9d9de);border-radius:18%;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:7%;box-shadow:0 .5em 1.2em rgba(0,0,0,.5)">${[...Array(9).keys()].map(i => `<i style="margin:12%;border-radius:50%;background:${pips[v].includes(i) ? '#111' : 'transparent'}"></i>`).join('')}</div>`
-        let vals = []
-        const render = () => { box.innerHTML = vals.map(face).join(''); sum.textContent = vals.reduce((a, b) => a + b, 0); sub.textContent = `${n} dice · OK to roll` }
-        function roll(){
-            if(rolling) return; rolling = true; let k = 0
-            let t = env.timer(() => {
-                vals = Array.from({length: n}, () => 1 + env.rnd(6)); render(); env.sfx('tap')
-                if(++k > 8){ clearInterval(t); rolling = false; let s = vals.reduce((a, b) => a + b, 0); env.score(s, 1); if(s == n * 6) env.sfx('win') }
-            }, 70)
-        }
-        env.on('press', k => { if(k == 'ok') roll(); else if(k == 'up' && n < 4){ n++; vals = Array(n).fill(1); render() } else if(k == 'down' && n > 1){ n--; vals = Array(n).fill(1); render() } })
-        box.onclick = roll
-        vals = [3, 4]; render()
-    }
-},
-{
     id: 'numtype', title: 'Number Guess', emoji: '🔟', c1: '#64D2FF', c2: '#0A84FF', size: SQ, hint: 'Find the number between 1 and 100 in 7 tries',
     start(env){ numberGame(env, false) }
-},
-{
-    id: 'numspeak', title: 'Speak & Guess', emoji: '🎤', c1: '#FF375F', c2: '#BF5AF2', size: SQ, hint: 'Say your guess out loud (needs a microphone)',
-    start(env){ numberGame(env, true) }
-},
-{
-    id: 'quiz', title: 'Trivia Quiz', emoji: '🧠', c1: '#FFD60A', c2: '#FF9F0A', size: [100, 80], hint: 'Ten questions · faster answers score more',
-    start(env){
-        const Q = [
-            ['What is the capital of Ukraine?', 'Kyiv', 'Lviv', 'Odesa', 'Kharkiv'], ['Which planet is known as the Red Planet?', 'Mars', 'Venus', 'Jupiter', 'Mercury'],
-            ['How many continents are there?', '7', '5', '6', '8'], ['What is H₂O?', 'Water', 'Salt', 'Hydrogen', 'Oxygen'],
-            ['Who painted the Mona Lisa?', 'Leonardo da Vinci', 'Michelangelo', 'Raphael', 'Van Gogh'], ['Largest ocean on Earth?', 'Pacific', 'Atlantic', 'Indian', 'Arctic'],
-            ['How many players are on a football team on the pitch?', '11', '9', '10', '12'], ['Which gas do plants absorb?', 'Carbon dioxide', 'Oxygen', 'Nitrogen', 'Helium'],
-            ['Fastest land animal?', 'Cheetah', 'Lion', 'Horse', 'Greyhound'], ['Smallest prime number?', '2', '1', '3', '0'],
-            ['Which language has the most native speakers?', 'Mandarin Chinese', 'English', 'Spanish', 'Hindi'], ['The Great Wall is in which country?', 'China', 'Japan', 'India', 'Mongolia'],
-            ['Chemical symbol for gold?', 'Au', 'Ag', 'Gd', 'Go'], ['Who wrote “Romeo and Juliet”?', 'Shakespeare', 'Dickens', 'Tolstoy', 'Homer'],
-            ['Which is the longest river in Ukraine?', 'Dnipro', 'Dniester', 'Danube', 'Southern Bug'], ['How many minutes in two hours?', '120', '90', '100', '180'],
-            ['What is the boiling point of water at sea level?', '100 °C', '90 °C', '80 °C', '120 °C'], ['Which organ pumps blood?', 'Heart', 'Liver', 'Lung', 'Kidney'],
-            ['Which planet has rings and is the 6th from the Sun?', 'Saturn', 'Jupiter', 'Uranus', 'Neptune'], ['In which year did humans first land on the Moon?', '1969', '1959', '1975', '1981']
-        ]
-        let qs = env.shuffle(Q).slice(0, 10), qi = 0, t0, order, locked
-        let q = document.createElement('div'); q.style.cssText = 'position:absolute;left:5%;right:5%;top:6%;text-align:center;font-size:1.9em;font-weight:700;min-height:3.4em'
-        let bar = document.createElement('div'); bar.style.cssText = 'position:absolute;left:5%;right:5%;top:0;height:.4em;background:var(--accent,#C8F542);transform-origin:left;transition:transform .1s linear;border-radius:99em'
-        env.el.append(q, bar)
-        let g = env.grid(2, 2, c => { c.style.fontSize = '1.2em'; c.style.padding = '.5em'; c.style.textAlign = 'center' }, pick, {css: 'inset:auto 4% 4% 4%;height:48%;gap:.5em;padding:0'})
-        function ask(){
-            let [text, ...a] = qs[qi]; order = env.shuffle(a.map((v, i) => i))
-            q.textContent = `${qi + 1}/10 · ${text}`
-            g.cells.forEach((c, i) => { c.textContent = a[order[i]]; c.style.background = '' })
-            t0 = Date.now(); locked = false
-        }
-        function pick(i){
-            if(locked) return; locked = true
-            let ok = order[i] == 0, left = Math.max(0, 15000 - (Date.now() - t0)) / 15000
-            if(g.cells[i]) g.cells[i].style.background = ok ? '#2f9e44' : '#a82a2a'
-            if(!ok) g.cells[order.indexOf(0)].style.background = '#2f9e44'
-            ok ? (env.score(50 + (left * 50 | 0), 1), env.sfx('good')) : env.sfx('bad')
-            env.after(() => { if(++qi == qs.length) env.over(`${env.points} points`, true); else ask() }, 900)
-        }
-        env.timer(() => { let l = 1 - (Date.now() - t0) / 15000; bar.style.transform = `scaleX(${Math.max(0, locked ? 0 : l)})`; if(l <= 0 && !locked) pick(-1) }, 100)
-        ask()
-    }
 },
 {
     id: 'typing', title: 'Typing Test', emoji: '⌨️', c1: '#5E5CE6', c2: '#64D2FF', size: SQ, hint: 'Type the sentence · accuracy and speed are scored',

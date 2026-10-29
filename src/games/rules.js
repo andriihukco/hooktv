@@ -1,0 +1,51 @@
+// The rules of each game, in the menu's Rules page: how a run is won, lost and scored.
+// Written short and plain, from what each game really does. A game without an entry shows its one-line hint.
+import {t} from './i18n'
+
+export const RULES = {
+    '2048': 'Swipe or use the arrows to slide every tile. Equal tiles merge into their double. The run ends when no move is left.',
+    snake: 'Steer the snake to the food. Each bite makes it longer and quicker. Touching your own body ends the run.',
+    tetris: 'Move and rotate falling blocks. A full row clears and scores. Drop past the top and the game is over.',
+    pacman: 'Eat every dot in the maze. Power pellets turn the ghosts blue, and then you can eat them. A ghost touch costs a life.',
+    flappy: 'Tap to flap through the gaps. Every pipe you pass is one point. Hit a pipe or the ground and the run ends.',
+    chess: 'You play white. Checkmate wins, stalemate is a draw. Pieces move the way they always do.',
+    candy: 'Swap two neighbouring candies to line up three or more. You have 25 moves.',
+    wordle: 'Guess the hidden word. Green means the right spot, yellow means the letter is in the word but elsewhere.',
+    breakout: 'Bounce the ball off the paddle and break every brick. Let the ball fall and you lose a life.',
+    doodle: 'Bounce from platform to platform and climb as high as you can. Falling off the bottom ends the run.',
+    crossy: 'Hop forward across the road. Cars squash you; ride the logs across the river.',
+    sudoku: 'Every row, column and 3×3 box needs the digits 1 to 9, each once.',
+    minesweeper: 'Dig the safe squares. A number tells how many mines touch that square. Flag the mines; digging one ends the game.',
+    solitaire: 'Build each suit up from the ace. Stack cards down in alternating colours. Empty the deck to win.',
+    blackjack: 'Beat the dealer without going over 21. Blackjack pays 3 to 2.',
+    tictactoe: 'Three marks in a row wins. Beat the computer and each win is a point.',
+    checkers: 'Move diagonally. Captures are mandatory. Reach the far row to crown a king.',
+    reversi: 'Place a disc so it flanks the computer’s discs; those flip to yours. The most discs at the end wins.',
+    pong: 'Keep the ball in play with your paddle. The first to 7 wins takes the match.',
+    bubbles: 'Aim and shoot. Match three bubbles of one colour to pop them; anything left hanging falls.',
+    slicer: 'Swipe through the fruit. Bombs end the round, and three missed fruit end it too.',
+    tower: 'Drop each block so it lines up on the tower. Every block that lands is a point.',
+    memory: 'Turn two cards at a time and find every pair. Fewer moves score higher.',
+    battleship: 'Fire at the hidden fleet one square at a time. Sink the whole fleet first to win.',
+    sliding: 'Slide the tiles into the gap until the picture is in order. Pick 3×3, 4×4 or 5×5.',
+    poker: 'Five-card draw. Mark the cards to keep, draw new ones, then make the best hand you can.',
+    hangman: 'Pick one letter at a time. Six wrong guesses and the game is over.',
+    quiz: 'Pick a category and answer fast. Faster right answers score more. Play solo, as a duo or in teams.',
+    rps: 'Rock beats scissors, scissors beat paper, paper beats rock. The run ends when you lose three rounds; your score is your wins.',
+    mole: 'Hit the moles as they pop up. You have 30 seconds; every hit scores.',
+    typing: 'Type the sentence exactly as shown. Accuracy and speed are both scored.',
+    speedtype: 'Type each word and press space. You have 45 seconds to type as many as you can.',
+    wordrain: 'Type the falling words before they reach the ground. Enter clears the field.',
+    numtype: 'Find the number between 1 and 100 in seven tries. Higher or lower is your hint.',
+    alias: 'Explain the word without saying it. Your team guesses before the clock runs out.',
+    charades: 'Act out the word without a sound. Your team guesses before the clock runs out.',
+    higher_lower: 'Is the next figure higher or lower than the last? Wrong guesses cost a life.',
+    capitals: 'Name the capital city. Play solo, as a duo or in teams.',
+    kahoot: 'Four coloured answers, one right one. Faster right answers score more. Beat the three bots to win.',
+    movie_quiz: 'Films, actors and series. Play solo, as a duo or in teams.',
+    flags: 'Name the country that owns each flag. Play solo, as a duo or in teams.',
+    true_false: 'Decide fast whether each statement is true. Faster answers score more. Solo, duo or teams.'
+}
+
+/** the rules of a game, in the interface language; the one-line hint when a game has none written */
+export const rulesOf = game => t('game_' + game.id + '_rules', RULES[game.id] || game.hint || '')

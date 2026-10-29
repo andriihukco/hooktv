@@ -3,7 +3,7 @@ const SQ = [100, 100]
 
 export default [
 {
-    id: 'sudoku', title: 'Sudoku', emoji: '9️⃣', c1: '#0A84FF', c2: '#5E5CE6', size: [100, 112], pad: true, hint: 'Arrows move · OK or a number key fills · every row, column and box needs 1–9',
+    id: 'sudoku', levels: true, title: 'Sudoku', emoji: '9️⃣', c1: '#0A84FF', c2: '#5E5CE6', size: [100, 112], pad: true, hint: 'Arrows move · OK or a number key fills · every row, column and box needs 1–9',
     start(env){
         let sol, puz, b, fixed, level
         const base = (r, c) => (r * 3 + ((r / 3) | 0) + c) % 9
@@ -34,64 +34,8 @@ export default [
         function pick(i){ if(!fixed[i]) set((b[i] + 1) % 10); else draw() }
         env.on('key', e => { if(/^[0-9]$/.test(e.key)) set(+e.key); else if(e.keyCode == 8) set(0) })
         env.on('press', () => env.after(draw, 0))
-        let menu = env.buttons(['Easy', 'Medium', 'Hard'], i => { menu.remove(); level = i + 1; begin([36, 46, 54][i]) }, {modal: true})
-    }
-},
-{
-    id: 'nonogram', title: 'Nonogram', emoji: '🖼️', c1: '#BF5AF2', c2: '#FF375F', size: SQ, pad: true, hint: 'OK fills, OK again marks ✕ · numbers show runs of filled cells',
-    start(env){
-        let n, pic, st, rowc, colc, g, clueEls = []
-        const runs = a => { let r = [], k = 0; a.forEach(v => { if(v) k++; else if(k){ r.push(k); k = 0 } }); if(k) r.push(k); return r.length ? r : [0] }
-        function begin(size){
-            n = size; do { pic = Array.from({length: n * n}, () => Math.random() < .55 ? 1 : 0) } while(pic.filter(Boolean).length < n * n * .35)
-            st = Array(n * n).fill(0)
-            rowc = Array.from({length: n}, (_, r) => runs(pic.slice(r * n, r * n + n))); colc = Array.from({length: n}, (_, c) => runs(pic.filter((_, i) => i % n == c)))
-            let off = n == 5 ? 28 : 30, fs = n == 5 ? 1.5 : 1
-            let rc = document.createElement('div'), cc = document.createElement('div')
-            rc.style.cssText = `position:absolute;left:0;top:${off}%;width:${off}%;bottom:0;display:flex;flex-direction:column;padding:.4em 0`
-            cc.style.cssText = `position:absolute;top:0;left:${off}%;right:0;height:${off}%;display:flex;padding:0 .4em`
-            rowc.forEach(r => { let d = document.createElement('div'); d.style.cssText = `flex:1;display:flex;align-items:center;justify-content:flex-end;gap:.45em;padding-right:.6em;font-size:${fs}em;color:#cfd3dc`; d.textContent = r.join(' '); rc.appendChild(d) })
-            colc.forEach(c => { let d = document.createElement('div'); d.style.cssText = `flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.1em;padding-bottom:.4em;font-size:${fs}em;color:#cfd3dc`; d.innerHTML = c.join('<br>'); cc.appendChild(d) })
-            env.el.append(rc, cc)
-            g = env.grid(n, n, c => { c.style.borderRadius = '.2em'; c.style.fontSize = '1.5em' }, pick, {css: `inset:${off}% 0 0 ${off}%;gap:.2em;padding:.4em`})
-            draw()
-        }
-        const draw = () => g.cells.forEach((c, i) => { c.style.background = st[i] == 1 ? '#C8F542' : 'rgba(255,255,255,.07)'; c.textContent = st[i] == 2 ? '✕' : ''; c.style.color = '#888' })
-        function pick(i){
-            st[i] = (st[i] + 1) % 3; env.sfx('tap'); draw()
-            let ok = [...Array(n).keys()].every(r => runs(st.slice(r * n, r * n + n).map(v => v == 1 ? 1 : 0)).join() == rowc[r].join()) && [...Array(n).keys()].every(c => runs(st.filter((_, k) => k % n == c).map(v => v == 1 ? 1 : 0)).join() == colc[c].join())
-            if(ok){ env.score(n * 100, 1); env.over('Picture complete!', true) }
-        }
-        let menu = env.buttons(['5 × 5', '8 × 8', '10 × 10'], i => { menu.remove(); begin([5, 8, 10][i]) }, {modal: true})
-    }
-},
-{
-    id: 'mastermind', title: 'Mastermind', emoji: '🎯', c1: '#FF9F0A', c2: '#BF5AF2', size: [70, 100], pad: true, hint: 'Left / right pick a peg · up / down change colour · OK checks',
-    start(env){
-        const COL = ['#FF453A', '#FF9F0A', '#FFD60A', '#30D158', '#0A84FF', '#BF5AF2'], ROWS = 10
-        let secret = Array.from({length: 4}, () => env.rnd(6)), row = 0, cur = [0, 1, 2, 3], at = 0
-        let el = document.createElement('div'); el.style.cssText = 'position:absolute;inset:2% 4%;display:flex;flex-direction:column;gap:2.4%'
-        env.el.appendChild(el)
-        const rowsEl = Array.from({length: ROWS}, () => { let r = document.createElement('div'); r.style.cssText = 'flex:1;display:flex;align-items:center;gap:6%;padding:0 6%;border-radius:.6em;background:rgba(255,255,255,.04)'; r.innerHTML = '<div class="p" style="display:flex;gap:5%;flex:1"></div><div class="f" style="display:grid;grid-template:1fr 1fr/1fr 1fr;gap:6%;width:15%;aspect-ratio:1"></div>'; el.appendChild(r); return r })
-        const peg = (c, on) => `<div style="flex:1;aspect-ratio:1;border-radius:50%;background:${c};${on ? 'box-shadow:0 0 0 .18em #C8F542' : 'box-shadow:inset 0 0 0 .1em rgba(255,255,255,.12)'};cursor:pointer"></div>`
-        function draw(){
-            let r = rowsEl[row].querySelector('.p'); r.innerHTML = cur.map((c, i) => peg(COL[c], i == at)).join('')
-            ;[...r.children].forEach((p, i) => p.onclick = () => { at = i; cur[i] = (cur[i] + 1) % 6; draw() })
-            rowsEl[row].style.background = 'rgba(255,255,255,.1)'
-        }
-        function check(){
-            let ex = 0, co = 0, s = secret.slice(), g = cur.slice()
-            for(let i = 0; i < 4; i++) if(g[i] == s[i]){ ex++; s[i] = g[i] = -1 }
-            for(let i = 0; i < 4; i++) if(g[i] >= 0){ let k = s.indexOf(g[i]); if(k >= 0){ co++; s[k] = -2 } }
-            rowsEl[row].querySelector('.p').innerHTML = cur.map(c => peg(COL[c])).join('')
-            rowsEl[row].querySelector('.f').innerHTML = [...'x'.repeat(ex), ...'o'.repeat(co), ...'.'.repeat(4 - ex - co)].map(k => `<i style="border-radius:50%;background:${k == 'x' ? '#fff' : k == 'o' ? '#8E8E93' : 'rgba(255,255,255,.1)'}"></i>`).join('')
-            rowsEl[row].style.background = 'rgba(255,255,255,.04)'
-            if(ex == 4){ env.score((ROWS - row) * 100, 1); return env.over('Code cracked!', true) }
-            if(++row == ROWS) return env.over(`It was ${secret.map(c => ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣'][c]).join('')}`)
-            env.sfx('tap'); draw()
-        }
-        env.on('press', k => { if(k == 'left') at = (at + 3) % 4; else if(k == 'right') at = (at + 1) % 4; else if(k == 'up') cur[at] = (cur[at] + 1) % 6; else if(k == 'down') cur[at] = (cur[at] + 5) % 6; else if(k == 'ok') return check(); draw() })
-        draw()
+        level = env.level + 1
+        begin([36, 46, 54][env.level])
     }
 },
 {

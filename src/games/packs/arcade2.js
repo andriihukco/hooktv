@@ -1,6 +1,5 @@
 // Real-time canvas games, part 2: jumpers, hoppers, pointers.
 import {C, rr, text, glow, noglow, stars} from '../draw'
-import {aimer} from './arcade'
 
 const steer = (env, cv, w, fn) => { cv.addEventListener('pointermove', e => fn(cv.pt(e).x)); return dt => ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * w * dt }
 
@@ -81,44 +80,6 @@ export default [
     }
 },
 {
-    id: 'frogger', title: 'Frogger', emoji: '🐸', c1: '#30D158', c2: '#0A84FF', size: [100, 100], swipe: true, pad: true, hint: 'Cross the road and the river · fill all five homes',
-    start(env){
-        const {ctx} = env.canvas(), U = 100 / 13
-        // rows 1-5 river, 6 safe, 7-11 road, 12 start, 0 homes
-        let rows = [], f, homes = [0, 0, 0, 0, 0], lives = 3, time = 40, t = 0
-        for(let r = 1; r <= 11; r++){ if(r == 6) continue; let river = r < 6, sp = (river ? 4 : 5) + r % 3 * 2.2 + Math.random() * 1.5, dir = r % 2 ? 1 : -1, n = river ? 3 : 3 + (r % 2), w = river ? 3.2 - (r % 2) * .6 : 1.4 + (r % 3) * .35; rows[r] = {river, sp: sp * dir, w, items: Array.from({length: n}, (_, i) => i * (13 / n) + Math.random())} }
-        const spawn = () => { f = {x: 6, y: 12}; time = 40 }
-        spawn()
-        env.on('press', k => {
-            let d = {up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0]}[k]; if(!d) return
-            f.x = Math.max(0, Math.min(12, Math.round(f.x) + d[0])); f.y = Math.max(0, Math.min(12, f.y + d[1])); env.sfx('tap')
-            if(d[1] < 0 && f.y < (f.top || 12)){ f.top = f.y; env.score(10, 1) }
-            if(f.y == 0){ let h = Math.floor((f.x + 1) / 2.6); if(h > 4 || homes[h] || f.x < .2) return die(); homes[h] = 1; env.score(100 + Math.floor(time) * 3, 1); env.sfx('win'); if(homes.every(Boolean)){ homes = [0, 0, 0, 0, 0]; env.score(500, 1) } spawn() }
-        })
-        const die = () => { lives--; env.sfx('bad'); if(!lives) env.over(`${env.points} points`); else spawn() }
-        env.loop(dt => {
-            t += dt; time -= dt
-            rows.forEach(r => r && r.items.forEach((x, i) => { r.items[i] = (x + r.sp * dt + 16 + r.w) % (13 + r.w + 3) - r.w - 1.5 }))
-            let r = rows[f.y]
-            if(r){
-                let on = r.items.some(x => f.x + .5 > x && f.x + .5 < x + r.w)
-                if(r.river){ if(on) f.x += r.sp * dt; else return die() } else if(on) return die()
-                if(f.x < -.3 || f.x > 12.3) return die()
-            }
-            if(time <= 0) return die()
-            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 100)
-            ctx.fillStyle = '#0e4a8a'; ctx.fillRect(0, U, 100, U * 5); ctx.fillStyle = '#2b2b30'; ctx.fillRect(0, U * 7, 100, U * 5); ctx.fillStyle = '#1f6b3a'; ctx.fillRect(0, U * 6, 100, U); ctx.fillRect(0, U * 12, 100, U); ctx.fillRect(0, 0, 100, U)
-            for(let i = 0; i < 5; i++){ ctx.fillStyle = homes[i] ? C.lime : '#0b3a1c'; rr(ctx, (i * 2.6 + .5) * U, 1, 2 * U, U - 2, 2); ctx.fill(); if(homes[i]) text(ctx, '🐸', (i * 2.6 + 1.5) * U, U / 2, 5) }
-            rows.forEach((r, y) => r && r.items.forEach(x => {
-                if(r.river){ ctx.fillStyle = y % 2 ? '#8b5a2b' : '#6b4423'; rr(ctx, x * U, y * U + 1.2, r.w * U, U - 2.4, 2.5); ctx.fill() }
-                else { ctx.fillStyle = ['#FF375F', '#FF9F0A', '#64D2FF', '#BF5AF2', '#FFD60A'][y % 5]; rr(ctx, x * U, y * U + 1.4, r.w * U, U - 2.8, 2); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.65)'; ctx.fillRect(x * U + (r.sp > 0 ? r.w * U - 2 : .5), y * U + 2.4, 1.4, U - 4.8) }
-            }))
-            text(ctx, '🐸', (f.x + .5) * U, (f.y + .5) * U + .5, 6)
-            ctx.fillStyle = time < 8 ? C.red : C.lime; ctx.fillRect(2, 98.6, time / 40 * 60, 1); text(ctx, '❤'.repeat(lives), 98, 98, 3, C.red, 'right')
-        })
-    }
-},
-{
     id: 'tower', title: 'Tower Blocks', emoji: '🏗️', c1: '#FF9F0A', c2: '#FF375F', size: [60, 100], pad: true, hint: 'OK or tap to drop · line the blocks up',
     start(env){
         const {cv, ctx} = env.canvas()
@@ -145,114 +106,6 @@ export default [
             falling.forEach(f => { ctx.fillStyle = col(stack.length); rr(ctx, f.x, by(stack.length - 1) + f.y, f.w, 6, 1); ctx.fill() })
             if(cur){ ctx.fillStyle = col(stack.length); glow(ctx, col(stack.length), 6); rr(ctx, cur.x, by(stack.length), cur.w, 6, 1); ctx.fill(); noglow(ctx) }
             text(ctx, h, 30, 10, 9)
-        })
-    }
-},
-{
-    id: 'archery', title: 'Archery', emoji: '🏹', c1: '#FF9F0A', c2: '#30D158', size: [100, 70], pad: true, hint: 'Aim drifts · OK / tap to loose an arrow · 10 arrows',
-    start(env){
-        const {cv, ctx} = env.canvas()
-        let arrows = [], n = 10, t = 0, amp = 1, flash = 0, last = ''
-        const R = [{r: 3, c: '#FFD60A', p: 10}, {r: 6, c: '#FF375F', p: 8}, {r: 9, c: '#0A84FF', p: 6}, {r: 12, c: '#1c1c1e', p: 4}, {r: 15, c: '#f2f2f7', p: 2}]
-        const pos = () => ({x: 50 + Math.sin(t * 1.7) * 11 * amp + Math.sin(t * 3.1) * 3, y: 35 + Math.cos(t * 1.3) * 9 * amp + Math.sin(t * 2.3) * 3})
-        const shoot = () => {
-            if(!n) return; n--
-            let a = pos(), d = Math.hypot(a.x - 78, a.y - 35), ring = R.find(r => d <= r.r), pts = ring ? ring.p : 0
-            arrows.push({x: a.x, y: a.y}); env.score(pts, 1); last = pts ? `+${pts}` : 'Miss'; flash = .8; env.sfx(pts > 7 ? 'win' : pts ? 'good' : 'bad'); amp = Math.min(1.8, amp + .08)
-            if(!n) env.after(() => env.over(`${env.points} / 100`, env.points > 60), 900)
-        }
-        env.on('press', k => k == 'ok' && shoot())
-        cv.addEventListener('pointerdown', shoot)
-        env.loop(dt => {
-            t += dt; flash -= dt
-            let g = ctx.createLinearGradient(0, 0, 0, 70); g.addColorStop(0, '#1d3b2b'); g.addColorStop(1, '#0c0c0f'); ctx.fillStyle = g; ctx.fillRect(0, 0, 100, 70)
-            ctx.fillStyle = '#4a3320'; ctx.fillRect(77, 48, 2, 22)
-            ;[...R].reverse().forEach(r => { ctx.fillStyle = r.c; ctx.beginPath(); ctx.arc(78, 35, r.r, 0, 7); ctx.fill() })
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = .4; arrows.forEach(a => { ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x - 9, a.y + 2.4); ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(a.x, a.y, .7, 0, 7); ctx.fill() })
-            if(n){ let p = pos(); ctx.strokeStyle = C.lime; ctx.lineWidth = .6; ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, 7); ctx.moveTo(p.x - 4, p.y); ctx.lineTo(p.x + 4, p.y); ctx.moveTo(p.x, p.y - 4); ctx.lineTo(p.x, p.y + 4); ctx.stroke() }
-            text(ctx, '🏹'.repeat(Math.min(n, 10)), 3, 66, 3.4, '#fff', 'left'); if(flash > 0){ ctx.globalAlpha = Math.min(1, flash * 2); text(ctx, last, 50, 12, 9, C.lime); ctx.globalAlpha = 1 }
-        })
-    }
-},
-{
-    id: 'maze', title: 'Tilting Maze', emoji: '🔮', c1: '#5E5CE6', c2: '#BF5AF2', size: [100, 100], pad: true, hint: 'Arrows tilt the board (or tilt your phone) · roll to the green goal',
-    start(env){
-        const {ctx} = env.canvas()
-        let level = 1, N, cells, walls, ball, goal, tilt = {x: 0, y: 0}, U
-        function gen(){
-            N = 6 + level * 2; if(N > 18) N = 18; U = 100 / N
-            walls = Array.from({length: N * N}, () => ({r: 1, b: 1})); let seen = new Set([0]), st = [0]
-            while(st.length){ let c = st[st.length - 1], x = c % N, y = (c / N) | 0, o = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [x + dx, y + dy, dx, dy]).filter(([X, Y]) => X >= 0 && X < N && Y >= 0 && Y < N && !seen.has(Y * N + X)); if(!o.length){ st.pop(); continue } let [X, Y, dx, dy] = env.pick(o); if(dx == 1) walls[c].r = 0; if(dx == -1) walls[Y * N + X].r = 0; if(dy == 1) walls[c].b = 0; if(dy == -1) walls[Y * N + X].b = 0; seen.add(Y * N + X); st.push(Y * N + X) }
-            for(let i = 0; i < N; i++){ let c = env.rnd(N * N); if(c % N < N - 1 && Math.random() < .5) walls[c].r = 0 } // a few loops
-            ball = {x: U / 2, y: U / 2, vx: 0, vy: 0, r: U * .28}; goal = {x: N - .5, y: N - .5}
-        }
-        gen()
-        const wallAt = (cx, cy, side) => cx < 0 || cy < 0 || cx >= N || cy >= N ? true : false
-        const rects = () => { let rs = []; for(let i = 0; i < N * N; i++){ let x = i % N, y = (i / N) | 0; if(walls[i].r) rs.push([(x + 1) * U - .7, y * U - .7, 1.4, U + 1.4]); if(walls[i].b) rs.push([x * U - .7, (y + 1) * U - .7, U + 1.4, 1.4]) } rs.push([-1.4, -1.4, 1.4, 102.8], [100, -1.4, 1.4, 102.8], [-1.4, -1.4, 102.8, 1.4], [-1.4, 100, 102.8, 1.4]); return rs }
-        let R = rects()
-        let off
-        if(window.DeviceOrientationEvent){
-            const on = e => { if(e.gamma != null){ tilt.x = Math.max(-1, Math.min(1, e.gamma / 25)); tilt.y = Math.max(-1, Math.min(1, (e.beta - 40) / 25)); tilt.dev = 1 } }
-            window.addEventListener('deviceorientation', on)
-            off = () => window.removeEventListener('deviceorientation', on)
-        }
-        env.loop(dt => {
-            let tx = tilt.dev ? tilt.x : (env.held.right ? 1 : 0) - (env.held.left ? 1 : 0), ty = tilt.dev ? tilt.y : (env.held.down ? 1 : 0) - (env.held.up ? 1 : 0)
-            ball.vx += tx * 140 * dt; ball.vy += ty * 140 * dt; ball.vx *= 1 - 2.4 * dt; ball.vy *= 1 - 2.4 * dt
-            for(let s = 0; s < 3; s++){
-                ball.x += ball.vx * dt / 3; ball.y += ball.vy * dt / 3
-                R.forEach(([x, y, w, h]) => { let cx = Math.max(x, Math.min(ball.x, x + w)), cy = Math.max(y, Math.min(ball.y, y + h)), dx = ball.x - cx, dy = ball.y - cy, d = Math.hypot(dx, dy); if(d < ball.r){ let nx = d ? dx / d : 1, ny = d ? dy / d : 0; ball.x = cx + nx * ball.r; ball.y = cy + ny * ball.r; let vn = ball.vx * nx + ball.vy * ny; if(vn < 0){ ball.vx -= 1.5 * vn * nx; ball.vy -= 1.5 * vn * ny } } })
-            }
-            if(Math.hypot(ball.x - goal.x * U, ball.y - goal.y * U) < U * .45){ env.score(level * 100, 1); env.sfx('win'); level++; gen(); R = rects() }
-            ctx.fillStyle = '#14141a'; ctx.fillRect(0, 0, 100, 100)
-            ctx.fillStyle = '#5E5CE6'; R.forEach(([x, y, w, h]) => { rr(ctx, x, y, w, h, .7); ctx.fill() })
-            glow(ctx, C.green, 10); ctx.fillStyle = C.green; ctx.beginPath(); ctx.arc(goal.x * U, goal.y * U, U * .3, 0, 7); ctx.fill(); noglow(ctx)
-            let g = ctx.createRadialGradient(ball.x - ball.r / 3, ball.y - ball.r / 3, 0, ball.x, ball.y, ball.r); g.addColorStop(0, '#fff'); g.addColorStop(1, '#BF5AF2'); ctx.fillStyle = g; glow(ctx, '#BF5AF2', 8); ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, 7); ctx.fill(); noglow(ctx)
-            text(ctx, 'Level ' + level, 98, 2.4, 2.6, C.dim, 'right')
-        })
-        return () => off && off()
-    }
-},
-{
-    id: 'insects', title: 'Insect Catch', emoji: '🐞', c1: '#FF453A', c2: '#30D158', size: [100, 70], pad: true, hint: 'Tap the bugs before they vanish · arrows + OK on a remote',
-    start(env){
-        const {cv, ctx} = env.canvas()
-        let bugs = [], left = 30, spawn = 0, t = 0
-        const a = aimer(env, cv, 100, 70, (x, y) => {
-            let b = bugs.find(b => Math.hypot(b.x - x, b.y - y) < 6); if(b){ bugs.splice(bugs.indexOf(b), 1); env.score(10 + Math.max(0, (b.life * 4) | 0), 1); env.sfx('pop'); pops.push({x: b.x, y: b.y, t: .4}) } else env.sfx('bad')
-        })
-        let pops = []
-        env.timer(() => { left--; if(left <= 0) env.over(`${env.points} points`, true) }, 1000)
-        env.loop(dt => {
-            t += dt; spawn -= dt; a.step(dt)
-            if(spawn <= 0){ bugs.push({x: env.rnd(8, 92), y: env.rnd(10, 62), e: env.pick(['🐞', '🐜', '🪲', '🪰', '🦗', '🐛']), life: env.rnd(1.2, 2.4), r: env.rnd(6.28)}); spawn = Math.max(.25, .8 - t / 60) }
-            bugs.forEach(b => { b.life -= dt; b.x += Math.cos(b.r) * 8 * dt; b.y += Math.sin(b.r) * 8 * dt; if(Math.random() < dt) b.r += env.rnd(-1.5, 1.5) }); bugs = bugs.filter(b => b.life > 0 && b.x > 3 && b.x < 97 && b.y > 5 && b.y < 67)
-            pops.forEach(p => p.t -= dt); pops = pops.filter(p => p.t > 0)
-            ctx.fillStyle = '#14301e'; ctx.fillRect(0, 0, 100, 70)
-            ctx.fillStyle = 'rgba(255,255,255,.04)'; for(let i = 0; i < 40; i++) ctx.fillRect((i * 37) % 100, (i * 17) % 70, 8, .6)
-            bugs.forEach(b => { ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.r + Math.PI / 2); ctx.globalAlpha = Math.min(1, b.life * 2); text(ctx, b.e, 0, 0, 7); ctx.restore() })
-            pops.forEach(p => { ctx.globalAlpha = p.t * 2.5; ctx.strokeStyle = C.lime; ctx.beginPath(); ctx.arc(p.x, p.y, 8 - p.t * 10, 0, 7); ctx.stroke(); ctx.globalAlpha = 1 })
-            text(ctx, left + 's', 50, 4, 4, C.dim); a.draw(ctx)
-        })
-    }
-},
-{
-    id: 'shapes', title: 'Shape Clicker', emoji: '🔷', c1: '#0A84FF', c2: '#BF5AF2', size: [100, 70], pad: true, hint: 'Hit shapes before they shrink away · small ones score more',
-    start(env){
-        const {cv, ctx} = env.canvas()
-        let sh = [], left = 30, sp = 0, t = 0, combo = 0
-        const a = aimer(env, cv, 100, 70, (x, y) => {
-            let s = sh.filter(s => Math.hypot(s.x - x, s.y - y) < s.r + 1).sort((p, q) => p.r - q.r)[0]
-            if(s){ sh.splice(sh.indexOf(s), 1); combo++; env.score(Math.round((14 - s.r) * 2 * (1 + Math.min(combo, 8) / 8)), 1); env.sfx('pop') } else { combo = 0; env.sfx('bad') }
-        })
-        env.timer(() => { left--; if(left <= 0) env.over(`${env.points} points`, true) }, 1000)
-        env.loop(dt => {
-            t += dt; sp -= dt; a.step(dt)
-            if(sp <= 0){ sh.push({x: env.rnd(10, 90), y: env.rnd(12, 60), r: env.rnd(7, 13), k: env.rnd(3), c: env.pick([C.pink, C.blue, C.orange, C.green, C.purple, C.teal, C.yellow]), life: 2.2}); sp = Math.max(.3, .7 - t / 80) }
-            sh.forEach(s => { s.life -= dt; s.r = Math.max(0, s.r - dt * 1.5) }); sh = sh.filter(s => s.life > 0 && s.r > 1.2)
-            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 70)
-            sh.forEach(s => { ctx.fillStyle = s.c; glow(ctx, s.c, 8); ctx.beginPath(); if(s.k == 0) ctx.arc(s.x, s.y, s.r, 0, 7); else if(s.k == 1) rr(ctx, s.x - s.r, s.y - s.r, s.r * 2, s.r * 2, s.r * .25); else { ctx.moveTo(s.x, s.y - s.r); ctx.lineTo(s.x + s.r, s.y + s.r * .8); ctx.lineTo(s.x - s.r, s.y + s.r * .8); ctx.closePath() } ctx.fill(); noglow(ctx) })
-            text(ctx, left + 's', 50, 4, 4, C.dim); if(combo > 1) text(ctx, `x${combo}`, 6, 4, 3.4, C.lime, 'left'); a.draw(ctx)
         })
     }
 },
@@ -285,30 +138,6 @@ export default [
             halves.forEach(h => { ctx.save(); ctx.translate(h.x, h.y); ctx.rotate(h.r); ctx.beginPath(); ctx.rect(h.h ? 0 : -9, -9, 9, 18); ctx.clip(); text(ctx, h.e, 0, 0, 9); ctx.restore() })
             if(trail.length > 1){ ctx.strokeStyle = '#fff'; ctx.lineCap = 'round'; for(let i = 1; i < trail.length; i++){ ctx.globalAlpha = i / trail.length; ctx.lineWidth = i / trail.length * 1.8; ctx.beginPath(); ctx.moveTo(trail[i - 1].x, trail[i - 1].y); ctx.lineTo(trail[i].x, trail[i].y); ctx.stroke() } ctx.globalAlpha = 1 }
             text(ctx, '❤'.repeat(Math.max(0, lives)), 97, 4, 3.4, C.red, 'right')
-        })
-    }
-},
-{
-    id: 'emoji', title: 'Emoji Catcher', emoji: '😎', c1: '#FFD60A', c2: '#FF9F0A', size: [70, 100], pad: true, hint: 'Slide the basket · catch the good, dodge the bombs',
-    start(env){
-        const {cv, ctx} = env.canvas()
-        let bx = 35, items = [], lives = 3, sp = 0, t = 0
-        const good = ['😀', '😍', '🥳', '🤩', '😎', '⭐', '💎', '🍕']
-        const move = steer(env, cv, 80, x => bx = x)
-        env.loop(dt => {
-            t += dt; sp -= dt; bx = Math.max(7, Math.min(63, bx + move(dt)))
-            if(sp <= 0){ let bad = Math.random() < .22 + Math.min(.15, t / 200); items.push({x: env.rnd(6, 64), y: -4, v: env.rnd(22, 34) + t / 5, e: bad ? '💣' : env.pick(good), bad}); sp = Math.max(.35, .85 - t / 90) }
-            items.forEach(i => i.y += i.v * dt)
-            items = items.filter(i => {
-                if(i.y > 86 && i.y < 94 && Math.abs(i.x - bx) < 8){ if(i.bad){ lives--; env.sfx('bad'); if(!lives) env.over(`${env.points} points`) } else { env.score(10, 1); env.sfx('good') } return false }
-                if(i.y > 104){ return false }
-                return true
-            })
-            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 70, 100)
-            let g = ctx.createRadialGradient(35, 100, 0, 35, 100, 80); g.addColorStop(0, 'rgba(255,214,10,.16)'); g.addColorStop(1, 'transparent'); ctx.fillStyle = g; ctx.fillRect(0, 0, 70, 100)
-            items.forEach(i => text(ctx, i.e, i.x, i.y, 8))
-            ctx.fillStyle = C.lime; ctx.beginPath(); ctx.moveTo(bx - 8, 87); ctx.lineTo(bx + 8, 87); ctx.lineTo(bx + 6, 95); ctx.quadraticCurveTo(bx, 97, bx - 6, 95); ctx.closePath(); ctx.fill()
-            text(ctx, '❤'.repeat(lives), 3, 4, 3.4, C.red, 'left')
         })
     }
 },

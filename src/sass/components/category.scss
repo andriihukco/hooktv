@@ -61,3 +61,38 @@ body.platform--netcast{
     font-weight: 700;
     color: #fff;
 }
+
+// the way back on a games folder page; shown where there is no Back key to press
+.games-back{
+    display: none;
+    width: 100% !important;
+    box-sizing: border-box;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.6em 0.5em;
+    font-size: 1.15em;
+    font-weight: 700;
+    cursor: pointer;
+
+    svg{
+        flex: none;
+        padding: 0.45em;
+        width: 1.9em;
+        height: 1.9em;
+        box-sizing: border-box;
+        border-radius: 50%;
+        background: var(--hk-glass, rgba(30, 30, 32, 0.62));
+    }
+
+    &:active svg{
+        transform: scale(0.94);
+    }
+
+    @media (pointer: coarse){
+        display: flex;
+    }
+}
+
+body.mouse--controll .games-back{
+    display: flex;
+}

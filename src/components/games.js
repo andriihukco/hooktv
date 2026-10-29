@@ -30,7 +30,7 @@ function component(object){
     // the folders share one row across the whole screen; a folder's games keep the usual grid
     let comp = Utils.createInstance(Category, object, object.category || object.all ? {} : {items: {cols: 5}})
     let folder = object.category && categoryById(object.category)
-    let group = ''
+    let group = '', back
 
     comp.use({
         onCreate: function(){
@@ -57,6 +57,18 @@ function component(object){
         },
         // the all-games grid: a header goes in front of the first game of each category
         onAppend: function(item, element){
+            // a folder or the all-games page: a way back for touch and mouse (a remote or keyboard uses Back)
+            if((object.category || object.all) && !back){
+                back = document.createElement('div')
+
+                back.className = 'games-back'
+                back.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>'
+                back.lastChild.textContent = object.title || ''
+                back.addEventListener('click', ()=>Activity.back())
+
+                item.render(true).before(back)
+            }
+
             if(!object.all || !item.data || !item.data.group || item.data.group == group) return
 
             group = item.data.group
