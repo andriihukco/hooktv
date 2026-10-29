@@ -506,11 +506,14 @@ function open(id){
     Controller.add('games', {toggle(){}, back: () => { if(!(session && session.back())) close() }})
     Controller.toggle('games')
     window.addEventListener('resize', fit)
+    // the screen belongs to the game while it is open: the screensaver waits for the player to leave
+    Screensaver.suspend()
     launch(game)
 }
 
 function close(){
     teardown()
+    Screensaver.resume()
     Object.assign(C, basePalette)
     window.removeEventListener('resize', fit)
     root.removeClass('games--on').detach()

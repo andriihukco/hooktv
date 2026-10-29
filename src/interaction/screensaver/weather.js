@@ -1,10 +1,8 @@
 import Storage from '../../core/storage/storage'
 
 /**
- * HOOK TV screensaver: the next 24 hours of weather for Kyiv, from Open-Meteo (no key needed)
+ * Screensaver weather is provided by Open-Meteo and needs no API key.
  */
-
-const url = 'https://api.open-meteo.com/v1/forecast?latitude=50.45&longitude=30.52&hourly=temperature_2m,weather_code&timezone=auto'
 
 const cloud = 'M7 14h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 7 14z'
 
@@ -26,6 +24,16 @@ function kind(code){
     return 'cloud'
 }
 
+function condition(code){
+    if(code === 0) return 'screensaver_weather_clear'
+    if(code >= 95) return 'screensaver_weather_storm'
+    if((code >= 70 && code <= 77) || (code >= 85 && code <= 86)) return 'screensaver_weather_snow'
+    if((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'screensaver_weather_rain'
+    if(code === 45 || code === 48) return 'screensaver_weather_fog'
+
+    return 'screensaver_weather_cloudy'
+}
+
 // the 24 hours from the current one, in the forecast's own timezone
 function hours(data){
     let now   = new Date(Date.now() + data.utc_offset_seconds * 1000).toISOString().slice(0, 13)
@@ -40,6 +48,52 @@ function hours(data){
     }))
 }
 
+async function json(url){
+    let response = await fetch(url)
+
+    if(!response.ok) throw new Error(`Weather request failed (${response.status})`)
+
+    return response.json()
+}
+
+async function load(city = 'Kyiv'){
+    let query = city.trim() || 'Kyiv'
+    let geocode = new URL('https://geocoding-api.open-meteo.com/v1/search')
+
+    geocode.search = new URLSearchParams({
+        name: query,
+        count: '1',
+        language: 'en',
+        format: 'json'
+    })
+
+    let locations = await json(geocode.toString())
+    let location = locations.results && locations.results[0]
+
+    if(!location) throw new Error(`No weather location found for "${query}"`)
+
+    let forecast = new URL('https://api.open-meteo.com/v1/forecast')
+
+    forecast.search = new URLSearchParams({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        current: 'temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m',
+        hourly: 'temperature_2m,weather_code',
+        daily: 'temperature_2m_max,temperature_2m_min,sunrise,sunset',
+        forecast_days: '1',
+        timezone: 'auto'
+    })
+
+    let data = await json(forecast.toString())
+
+    return {
+        city: [location.name, location.admin1].filter(Boolean).join(', '),
+        current: data.current,
+        daily: data.daily,
+        hours: hours(data)
+    }
+}
+
 function render(list){
     let uk = Storage.get('language', 'uk') != 'en'
 
@@ -51,8 +105,10 @@ function render(list){
 }
 
 export default {
-    load: () => fetch(url).then(r => r.json()).then(hours),
+    load,
     render,
     kind,
-    hours
+    hours,
+    condition,
+    icon: code => icons[kind(code)]
 }

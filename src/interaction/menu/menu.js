@@ -32,6 +32,7 @@ let menu_items = [
     {action: 'tv', title: 'menu_tv', sprite: 'tv'},
     {action: 'ua_tv', title: 'menu_ua_tv', sprite: 'live_tv'},
     {action: 'games', title: 'menu_games', sprite: 'games'},
+    {action: 'music', title: 'menu_music', sprite: 'music'},
     {action: 'catalog', title: 'menu_catalog', sprite: 'catalog'},
     {action: 'filter', title: 'menu_filter', sprite: 'filter'},    
     {action: 'favorite', title: 'settings_input_links', sprite: 'favorite'},
@@ -53,7 +54,7 @@ function init(){
 
     // Фильтрация пунктов меню в зависимости от настроек
     menu_items = menu_items.filter(item=>{
-        if(window.lampa_settings.minimal_ui) return ['main','movie','tv','ua_tv','games'].indexOf(item.action) >= 0
+        if(window.lampa_settings.minimal_ui) return ['main','movie','tv','ua_tv','games','music'].indexOf(item.action) >= 0
 
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false
 
@@ -290,6 +291,12 @@ function ready(){
         if(prepared(action,['games'])){
             Router.call('games', {
                 title: Lang.translate('title_games')
+            })
+        }
+
+        if(prepared(action,['music'])){
+            Router.call('music', {
+                title: Lang.translate('menu_music')
             })
         }
 
