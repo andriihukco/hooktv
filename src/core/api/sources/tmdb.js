@@ -313,8 +313,8 @@ function providerTiles(params, oncomplite, onerror){
 // Logos come from TMDB (logo_path); a few studios have none and show their name.
 const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
 
-// logos drawn in several colours (Warner, MGM, Marvel, 20th Century Studios): shown as they are
-const colourLogos = [174, 21, 420, 127928]
+// logos drawn in several colours (Warner, MGM, Marvel): shown as they are
+const colourLogos = [174, 21, 420]
 
 /**
  * The big studios as round tiles, each one opens its movies. Logos come from TMDB.
@@ -336,16 +336,17 @@ function studioTiles(params, oncomplite, onerror){
                 title: json.name,
                 logo: json.logo_path ? img(json.logo_path, 'w185') : '',
                 // most logos are one ink, drawn white on the dark circle so they read alike;
-                // the colour ones keep their colours, and the 20th Century box keeps its black
-                brand: id == 127928 ? '#000000' : '#1c1c1e',
+                // the colour ones keep their colours
+                brand: '#1c1c1e',
                 mono: colourLogos.indexOf(id) < 0,
                 params: {
                     style: {name: 'provider'},
                     module: CardModule.only('Card', 'Style', 'Callback')
                 },
+                // the studio's profile, the same page as a production company link
                 route: {
-                    name: 'category_full',
-                    params: {url: 'discover/movie?sort_by=popularity.desc', companies: id, title: json.name, source: 'tmdb'}
+                    name: 'company',
+                    params: {id: id, card: {source: 'tmdb'}}
                 }
             }
         }).filter(Boolean)

@@ -197,15 +197,38 @@ body.minimal--ui{
     }
 }
 
-/* Deeper pages (grids, lists) name themselves in the bar; the home screen does not */
-body.minimal--ui:not(.section--root) .head__title{
-    display: block !important;
-    margin-left: 1em;
-    font-size: 1.3em;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Deeper pages (grids, lists): the section nav is gone, the name sits centred on the bar
+   and stops short of the logo and the actions (their width is reserved on each side) */
+body.minimal--ui:not(.section--root){
+    .wrap__left{
+        display: none !important;
+    }
+
+    .head__body{
+        position: relative;
+    }
+
+    .head__title{
+        display: block !important;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-width: calc(100% - 2 * 13em);
+        margin: 0;
+        font-size: 1.3em;
+        font-weight: 700;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 767px){
+    body.minimal--ui:not(.section--root) .head__title{
+        max-width: calc(100% - 2 * 8.5em);
+    }
 }
 
 /* Notifications sit under the tab bar instead of covering it */
