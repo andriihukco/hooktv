@@ -22,7 +22,7 @@ class Screensaver{
         this.time_reset = 0
         this.time_start = 0
 
-        // HOOK TV: the 4K landscape and building rotation is the only screensaver
+        // HOOK TV: the 4K Ukrainian landscape rotation is the only screensaver
         this.class_list = {
             ukraine: Ukraine
         }

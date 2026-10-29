@@ -4,7 +4,7 @@ import Storage from '../../core/storage/storage'
 import photos from './photos'
 
 /**
- * HOOK TV screensaver: a rotation of 4K landscapes and buildings. Slow Ken Burns slides with
+ * HOOK TV screensaver: a rotation of 4K Ukrainian landscapes. Slow Ken Burns slides with
  * the place and the photographer on the left, the clock on the right.
  */
 
