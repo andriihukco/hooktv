@@ -26,9 +26,10 @@ suite('games', ()=>{
         expect(hydrate({id: 5, title: 'Not a game'}).params).toBeUndefined()
     })
 
-    test('icons are plain markup with their gradient', ()=>{
-        expect(iconHTML('snake')).toContain('<svg viewBox="0 0 100 100"')
-        expect(iconHTML('snake')).toContain('--ga:')
+    test('icons are plain markup: a white glyph on a monochrome tile', ()=>{
+        expect(iconHTML('snake')).toContain('<span class="game-icon"><svg viewBox="0 0 100 100"')
+        expect(iconHTML('snake')).toContain('fill="#fff"')
+        expect(iconHTML('snake')).not.toContain('--ga:')
         expect(cardData(byId('2048')).game).toBe('2048')
     })
 })
