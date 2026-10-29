@@ -174,7 +174,8 @@ function section(object){
     if(object.component == 'category' && (object.url == 'movie' || object.url == 'tv')) return object.url
     if(object.component == 'bookmarks') return 'favorite'
     if(object.component == 'ua_tv') return 'ua_tv'
-    if(object.component == 'games') return 'games'
+    // the Games tab is a root section; a folder or the All page opened from it is deeper, so it shows Back
+    if(object.component == 'games' && !object.category && !object.all) return 'games'
 
     return ''
 }
