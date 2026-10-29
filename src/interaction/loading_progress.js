@@ -7,6 +7,10 @@ let totalSteps = 5
 let shown = -1
 let ticker
 
+// a title opened inside the app is a pushState to /movie/…, where a relative ./img path would
+// resolve under /movie/ (index.html sets <base> only on a full load), so the web uses the root
+const SPLASH = (/^https?:$/.test(location.protocol) ? '/' : './') + 'img/splash.svg?v=2.98'
+
 /**
  * Cinema-style status lines, one per stage, shown in order. Translations
  * load after the splash, so the copy lives here, picked by the saved language.
@@ -58,7 +62,7 @@ function init(sound = true){
 
     let content = `
         <div class="welcome__logo">
-            <img src="./img/splash.svg?v=2.98" alt="HOOK TV"/>
+            <img src="${SPLASH}" alt="HOOK TV"/>
         </div>
         <div class="welcome__loading">
             <div class="welcome__status"></div>

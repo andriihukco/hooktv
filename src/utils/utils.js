@@ -742,8 +742,9 @@ function filterCardsByType(items, need){
         return false
     }
 
-    if(need == 'movies')    filtred = items.filter(a=>!a.name && !genres(a, 16))
+    if(need == 'movies')    filtred = items.filter(a=>!a.name && !a.game && !genres(a, 16))
     if(need == 'tv')        filtred = items.filter(a=>a.name && !genres(a, 16))
+    if(need == 'games')     filtred = items.filter(a=>a.game)
     if(need == 'multmovie') filtred = items.filter(a=>!a.name && genres(a, 16))
     if(need == 'multtv')    filtred = items.filter(a=>a.name && genres(a, 16))
     

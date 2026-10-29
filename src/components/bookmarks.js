@@ -45,7 +45,7 @@ function component(object){
             let lines    = []
             let chips    = []
             let folders  = ['book','like','wath', 'viewed','scheduled','thrown']
-            let media    = ['movies','tv']
+            let media    = ['movies','tv','games']
 
             // Шапка: каждая полка одним чипом с количеством, ведет на свою страницу
             category.forEach(a=>{

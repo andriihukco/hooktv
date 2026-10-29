@@ -78,24 +78,23 @@ const TAB_ICONS = {
             `<mask id="navigation-bar-mask-tv" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${play}" fill="#000" stroke="#000" stroke-width="1.4"/></mask>`
         )
     })(),
-    favorite: (()=>{
-        let bookmark = 'M7 4h10a1.5 1.5 0 0 1 1.5 1.5V20L12 15.8 5.5 20V5.5A1.5 1.5 0 0 1 7 4z'
+    ua_tv: (()=>{
+        let dish = 'M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2'
 
-        return tabIcon(`<path d="${bookmark}"/>`, `<path d="${bookmark}" fill="currentColor"/>`)
-    })(),
-    search: tabIcon(
-        '<circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.6 15.6 4.4 4.4"/>',
-        '<circle cx="10.8" cy="10.8" r="6.3" fill="currentColor"/><path d="m15.6 15.6 4.4 4.4" stroke-width="2.6"/>'
-    )
+        return tabIcon(
+            `<circle cx="12" cy="12" r="2"/><path d="${dish}"/>`,
+            `<circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="${dish}"/>`
+        )
+    })()
 }
 
+// Search and Favorites live in the top bar on phones, next to the menu; the tab bar keeps the sections
 function tabs(){
     let items = [
         ['main', 'menu_main'],
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
-        ['favorite', 'settings_input_links'],
-        ['search', 'search']
+        ['ua_tv', 'menu_ua_tv']
     ].map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')
@@ -109,9 +108,7 @@ function tabs(){
         item.on('click',()=>{
             updateVisibility(-1)
 
-            if(action == 'search') Lampa.Search.open()
-            else if(action == 'favorite') $('.head .open--favorite').trigger('hover:enter')
-            else $('.menu .menu__item[data-action="' + action + '"]').trigger('hover:enter')
+            $('.menu .menu__item[data-action="' + action + '"]').trigger('hover:enter')
         })
 
         bar.find('.navigation-bar__body').append(item)

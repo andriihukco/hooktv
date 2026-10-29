@@ -38,8 +38,9 @@ function sfx(kind){
 
 // how this device is played: a phone / tablet (touch), a TV (remote) or a computer (keyboard and mouse)
 function mode(){
-    if(Platform.tv()) return 'tv'
+    // a finger on the glass first: some phones' user agents look like a TV box
     if(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return 'touch'
+    if(Platform.tv()) return 'tv'
 
     return 'desk'
 }

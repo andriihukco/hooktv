@@ -4518,6 +4518,7 @@ body.platform--netcast .card__title {
 .card.card--game .card__img {
   display: none;
 }
+.card.card--game.card--details-overlay .card__title,
 .card.card--game .card__title {
   display: block;
   position: static;
@@ -4588,7 +4589,7 @@ body.true--mobile .card.card--game .card__game-play, body.touch-device .card.car
 .card.card--game .card__view::before {
   display: none !important;
 }
-.card.card--game.card--peek .card__title, .card.card--game.card--peek .card__game-play {
+.card.card--game.card--details-overlay.card--peek .card__title, .card.card--game.card--peek .card__game-play {
   display: none;
 }
 .card.card--game.card--peek-open > .card__view {
@@ -4681,6 +4682,7 @@ body.true--mobile .card.card--game .card__game-play, body.touch-device .card.car
   -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
+  min-width: 0;
   font-size: 1.3em;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -5207,6 +5209,24 @@ body.true--mobile .card.card--game .card__game-play, body.touch-device .card.car
   opacity: 0.5;
 }
 
+@media (max-width: 520px) {
+  .games__bar {
+    gap: 0.55em;
+    padding-left: 0.9em;
+    padding-right: 0.9em;
+  }
+  .games__bar .games__back {
+    width: 2.3em;
+    height: 2.3em;
+  }
+  .games__icon {
+    width: 2.3em;
+    height: 2.3em;
+  }
+  .games__stat {
+    min-width: 2.6em;
+  }
+}
 /**
  * Modern Card Component
  * Netflix-inspired card design with smooth animations and hover effects
@@ -18162,21 +18182,37 @@ body.minimal--ui .navigation-bar--tabs {
   body.minimal--ui .head__logo-icon {
     margin-right: 0;
   }
-  body.minimal--ui .head .open--search,
-  body.minimal--ui .head .open--favorite {
-    display: none !important;
-  }
   body.minimal--ui .head .open--history {
     -webkit-box-ordinal-group: 2;
     -webkit-order: 1;
         -ms-flex-order: 1;
             order: 1;
   }
-  body.minimal--ui .head .open--settings {
+  body.minimal--ui .head .open--favorite {
+    display: -webkit-box !important;
+    display: -webkit-flex !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
     -webkit-box-ordinal-group: 3;
     -webkit-order: 2;
         -ms-flex-order: 2;
             order: 2;
+  }
+  body.minimal--ui .head .open--search {
+    display: -webkit-box !important;
+    display: -webkit-flex !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -webkit-box-ordinal-group: 4;
+    -webkit-order: 3;
+        -ms-flex-order: 3;
+            order: 3;
+  }
+  body.minimal--ui .head .open--settings {
+    -webkit-box-ordinal-group: 5;
+    -webkit-order: 4;
+        -ms-flex-order: 4;
+            order: 4;
     display: -webkit-box !important;
     display: -webkit-flex !important;
     display: -ms-flexbox !important;
@@ -18186,7 +18222,7 @@ body.minimal--ui .navigation-bar--tabs {
     width: 2.6em !important;
     height: 2.6em !important;
   }
-  body.minimal--ui .head .head__actions > :not(.open--history):not(.open--settings) {
+  body.minimal--ui .head .head__actions > :not(.open--history):not(.open--favorite):not(.open--search):not(.open--settings) {
     display: none !important;
   }
   body.minimal--ui .navigation-bar--tabs {

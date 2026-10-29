@@ -152,6 +152,7 @@
 
     &__title{
         flex: 1;
+        min-width: 0;
         font-size: 1.3em;
         font-weight: 700;
         letter-spacing: -0.01em;
@@ -526,5 +527,28 @@
         margin-top: 1em;
         font-size: 0.8em;
         opacity: 0.5;
+    }
+}
+
+// phones: five bar buttons and two scores share the width, so everything gets a little smaller
+@media (max-width: 520px){
+    .games__bar{
+        gap: 0.55em;
+        padding-left: 0.9em;
+        padding-right: 0.9em;
+    }
+
+    .games__bar .games__back{
+        width: 2.3em;
+        height: 2.3em;
+    }
+
+    .games__icon{
+        width: 2.3em;
+        height: 2.3em;
+    }
+
+    .games__stat{
+        min-width: 2.6em;
     }
 }

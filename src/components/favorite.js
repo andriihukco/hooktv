@@ -18,13 +18,14 @@ import EmptyRouter from '../interaction/empty/module/router'
  */
 function mediaChips(object){
     let cards = LibraryFilter.apply(Favorite.get({type: object.type}), object.library_filter)
-    let count = (type)=> type == 'tv' ? cards.filter(c=>c.name).length : type == 'movie' ? cards.filter(c=>!c.name).length : cards.length
-    let active = object.filter == 'tv' || object.filter == 'movie' ? object.filter : 'all'
+    let count = (type)=> type == 'tv' ? cards.filter(c=>c.name).length : type == 'movie' ? cards.filter(c=>!c.name && !c.game).length : type == 'games' ? cards.filter(c=>c.game).length : cards.length
+    let active = object.filter == 'tv' || object.filter == 'movie' || object.filter == 'games' ? object.filter : 'all'
 
     let chips = [
         {title: Lang.translate('library_all'), count: count('all'),   active: active == 'all',   onSelect: ()=>Activity.replace({filter: ''})},
         {title: Lang.translate('menu_movies'), count: count('movie'), active: active == 'movie', onSelect: ()=>Activity.replace({filter: 'movie'})},
-        {title: Lang.translate('menu_tv'),     count: count('tv'),    active: active == 'tv',    onSelect: ()=>Activity.replace({filter: 'tv'})}
+        {title: Lang.translate('menu_tv'),     count: count('tv'),    active: active == 'tv',    onSelect: ()=>Activity.replace({filter: 'tv'})},
+        {title: Lang.translate('menu_games'),  count: count('games'), active: active == 'games', onSelect: ()=>Activity.replace({filter: 'games'})}
     ]
 
     // an empty kind has nothing to show, so its chip stays away unless it is the open one

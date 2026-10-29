@@ -188,9 +188,11 @@ function favorite(params = {}, oncomplite, onerror){
 
     data.results = Favorite.get({type})
 
-    if(params.filter == 'tv' || params.filter == 'movie'){
+    if(params.filter == 'tv' || params.filter == 'movie' || params.filter == 'games'){
         data.results = data.results.filter(a=>{
-            return params.filter == 'tv' ? a.name : !a.name
+            if(params.filter == 'games') return a.game
+
+            return params.filter == 'tv' ? a.name : !a.name && !a.game
         })
     }
 

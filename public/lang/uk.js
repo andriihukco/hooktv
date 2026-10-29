@@ -664,6 +664,7 @@ export default {
     menu_main: 'Головна',
     menu_movies: 'Фільми',
     menu_tv: 'Серіали',
+    menu_games: 'Ігри',
     menu_ua_tv: 'ТБ',
     menu_catalog: 'Каталог',
     menu_filter: 'Фільтр',

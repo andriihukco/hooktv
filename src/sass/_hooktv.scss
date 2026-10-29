@@ -280,17 +280,23 @@ body.minimal--ui .navigation-bar--tabs{
             margin-right: 0;
         }
 
-        .head .open--search,
-        .head .open--favorite{
-            display: none !important;
-        }
-
+        // top bar order: history, favorites, search, settings (the tab bar holds the sections)
         .head .open--history{
             order: 1;
         }
 
-        .head .open--settings{
+        .head .open--favorite{
+            display: flex !important;
             order: 2;
+        }
+
+        .head .open--search{
+            display: flex !important;
+            order: 3;
+        }
+
+        .head .open--settings{
+            order: 4;
             display: flex !important;
 
             // material glyph fills its 24px box; this matches the history sprite's visual weight
@@ -300,9 +306,9 @@ body.minimal--ui .navigation-bar--tabs{
             }
         }
 
-        // phones keep just history and the menu (settings) button: the side menu is hidden
+        // phones keep history, favorites, search and the settings button: the side menu is hidden
         // here, and icons that plugins add would crowd the bar or duplicate the menu
-        .head .head__actions > :not(.open--history):not(.open--settings){
+        .head .head__actions > :not(.open--history):not(.open--favorite):not(.open--search):not(.open--settings){
             display: none !important;
         }
 
