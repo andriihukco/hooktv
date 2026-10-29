@@ -4530,7 +4530,7 @@ body.platform--netcast .card__title {
   opacity: 1;
   margin: 0.7em 0 0;
   padding: 0 0.1em;
-  text-align: left;
+  text-align: center;
   font-size: 0.92em;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -4560,8 +4560,9 @@ body.platform--netcast .card__title {
   --tile: #1c1c1f;
 }
 .card.card--game.focus:not(.card--peek-open) .game-icon svg, .card.card--game.hover:not(.card--peek-open) .game-icon svg {
-  -webkit-filter: drop-shadow(-0.06em 0 0 rgba(255, 40, 90, 0.75)) drop-shadow(0.06em 0 0 rgba(0, 210, 255, 0.75));
-          filter: drop-shadow(-0.06em 0 0 rgba(255, 40, 90, 0.75)) drop-shadow(0.06em 0 0 rgba(0, 210, 255, 0.75));
+  -webkit-transform: scale(1.08);
+      -ms-transform: scale(1.08);
+          transform: scale(1.08);
 }
 .card.card--game.focus:not(.card--peek-open) .card__title, .card.card--game.hover:not(.card--peek-open) .card__title {
   color: #fff;
@@ -4608,11 +4609,11 @@ body.platform--netcast .card__title {
   top: 22%;
   width: 56%;
   height: 56%;
-  -webkit-transition: -webkit-filter 0.25s ease;
-  transition: -webkit-filter 0.25s ease;
-  -o-transition: filter 0.25s ease;
-  transition: filter 0.25s ease;
-  transition: filter 0.25s ease, -webkit-filter 0.25s ease;
+  -webkit-transition: -webkit-transform 0.25s ease;
+  transition: -webkit-transform 0.25s ease;
+  -o-transition: transform 0.25s ease;
+  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, -webkit-transform 0.25s ease;
 }
 .game-icon::after {
   content: "";
