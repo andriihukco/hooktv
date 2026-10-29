@@ -308,39 +308,85 @@
         }
     }
 
+    // phones: a centred cross of glass keys with OK in the middle, sized for thumbs
     @media (pointer: coarse){
         &--pad &__pad{
-            display: block;
-            height: 11em;
+            display: flex;
+            justify-content: center;
             flex: none;
-            position: relative;
+            padding: 0.4em 1.4em calc(1.2em + env(safe-area-inset-bottom));
+            box-sizing: border-box;
         }
 
         &__dpad{
-            position: absolute;
-            right: 1.5em;
-            bottom: 1.2em;
-            width: 10em;
-            height: 10em;
+            width: 12.6em;
+            height: 12.6em;
             display: grid;
             grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+            gap: 0.3em;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
 
             i{
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.14);
-                margin: 0.15em;
+                position: relative;
+                display: block;
+                border-radius: 1.1em;
+                background: linear-gradient(145deg, rgba(60, 60, 66, 0.72), rgba(24, 24, 28, 0.8));
+                border: 1px solid rgba(255, 255, 255, 0.14);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 16px rgba(0, 0, 0, 0.36);
                 touch-action: none;
+                transition: transform 0.12s ease, background 0.12s ease;
 
                 &:active{
+                    transform: scale(0.94);
                     background: var(--accent, #C8F542);
+                }
+
+                // chevrons drawn with borders, so they stay crisp at any size
+                &::before{
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    width: 0.9em;
+                    height: 0.9em;
+                    border-right: 0.2em solid rgba(255, 255, 255, 0.85);
+                    border-bottom: 0.2em solid rgba(255, 255, 255, 0.85);
+                    border-radius: 0.1em;
+                    transform: translate(-65%, -65%) rotate(45deg);
+                }
+
+                &:active::before{
+                    border-color: #000;
                 }
             }
 
-            [data-k=up]{ grid-area: 1 / 2; }
-            [data-k=left]{ grid-area: 2 / 1; }
-            [data-k=ok]{ grid-area: 2 / 2; }
-            [data-k=right]{ grid-area: 2 / 3; }
-            [data-k=down]{ grid-area: 3 / 2; }
+            [data-k=up]{ grid-area: 1 / 2; border-radius: 1.4em 1.4em 1.1em 1.1em; }
+            [data-k=left]{ grid-area: 2 / 1; border-radius: 1.4em 1.1em 1.1em 1.4em; }
+            [data-k=right]{ grid-area: 2 / 3; border-radius: 1.1em 1.4em 1.4em 1.1em; }
+            [data-k=down]{ grid-area: 3 / 2; border-radius: 1.1em 1.1em 1.4em 1.4em; }
+
+            [data-k=up]::before{ transform: translate(-50%, -30%) rotate(-135deg); }
+            [data-k=down]::before{ transform: translate(-50%, -70%) rotate(45deg); }
+            [data-k=left]::before{ transform: translate(-30%, -50%) rotate(135deg); }
+            [data-k=right]::before{ transform: translate(-70%, -50%) rotate(-45deg); }
+
+            // OK sits in the middle as a solid disc
+            [data-k=ok]{
+                grid-area: 2 / 2;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            [data-k=ok]::before{
+                width: 0.5em;
+                height: 0.5em;
+                border: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.85);
+                transform: translate(-50%, -50%);
+            }
         }
     }
 }
