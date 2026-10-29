@@ -7,6 +7,7 @@ import Template from '../interaction/template'
 import Controller from './controller'
 import Lang from './lang'
 import Bell from '../interaction/bell'
+import InputMode from './input_mode'
 
 function init(){
     let agent = navigator.userAgent.toLowerCase()
@@ -71,6 +72,8 @@ function init(){
 
     $('body').toggleClass('touch-device', screen('mobile'))
     $('body').toggleClass('mouse--controll', mouse())
+
+    InputMode.init()
 }
 
 /**
