@@ -1,12 +1,13 @@
 // Games: the row tiles and the full-screen player. Dark TV theme, lime focus ring like the rest of the app.
 
-// the tile: an app-store icon, the name below it, a Play Game label where there is no hover pane
+// the tile: a black monochrome icon, the name below it. TV style: white focus ring, chromatic fringe on the glyph
 .card.card--game{
     .card__view{
         padding-bottom: 100%;
-        border-radius: 22.5%;
+        border-radius: 16%;
         overflow: hidden;
-        box-shadow: 0 0.15em 0.5em rgba(0, 0, 0, 0.4);
+        box-shadow: none;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
     }
 
     .card__img{
@@ -20,55 +21,40 @@
         display: block;
         position: static;
         opacity: 1;
-        margin: 0.65em 0 0;
-        text-align: center;
-        font-size: 0.95em;
-        font-weight: 600;
+        margin: 0.7em 0 0;
+        padding: 0 0.1em;
+        text-align: left;
+        font-size: 0.92em;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.62);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         pointer-events: none;
         transform: none;
+        transition: color 0.2s ease;
     }
 
+    // the name is the call to action now; the label stays in the markup for plugins that style it
     .card__game-play{
-        display: none;
-        align-items: center;
-        justify-content: center;
-        margin: 0.45em auto 0;
-        padding: 0.35em 1.1em;
-        width: max-content;
-        max-width: 100%;
-        border-radius: 99em;
-        background: var(--accent, #C8F542);
-        color: #0b0b0d;
-        font-size: 0.78em;
-        font-weight: 800;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-        pointer-events: none;
+        display: none !important;
     }
 
-    // without a hover pane the label is the call to action
-    body.true--mobile &,
-    body.touch-device &{
-        .card__game-play{
-            display: flex;
-        }
-    }
-
-    @media (hover: none), (pointer: coarse), (max-width: 767px){
-        .card__game-play{
-            display: flex;
-        }
-    }
-
-    // keyboard / remote focus and mouse hover: lift and ring (the pane takes over once it opens)
+    // keyboard / remote focus and mouse hover: lift, white ring, chromatic glyph (the pane takes over once it opens)
     &.focus:not(.card--peek-open),
     &.hover:not(.card--peek-open){
         .card__view{
-            transform: translate3d(0, -0.15em, 0) scale(1.04);
-            box-shadow: 0 0 0 0.2em var(--accent, #C8F542), 0 1em 2em rgba(0, 0, 0, 0.5);
+            transform: translate3d(0, -0.1em, 0) scale(1.05);
+            box-shadow: 0 0 0 0.14em #000, 0 0 0 0.3em #fff, 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
+        }
+
+        .game-icon{
+            --tile: #1c1c1f;
+        }
+
+        .game-icon svg{
+            filter: drop-shadow(-0.06em 0 0 rgba(255, 40, 90, 0.75)) drop-shadow(0.06em 0 0 rgba(0, 210, 255, 0.75));
         }
 
         .card__title{
@@ -81,8 +67,7 @@
         display: none !important;
     }
 
-    &.card--details-overlay.card--peek .card__title,
-    &.card--peek .card__game-play{
+    &.card--details-overlay.card--peek .card__title{
         display: none;
     }
 
@@ -97,24 +82,27 @@
     inset: 0;
 }
 
-// the icon itself, shared by the tiles and the player's bar: deep gradient, soft top light, hairline edge
+// the icon itself, shared by the tiles and the player's bar: near-black tile, soft top light, hairline edge
 .game-icon{
+    --tile: #111113;
     position: absolute;
     inset: 0;
     display: block;
     overflow: hidden;
     border-radius: inherit;
+    color: var(--tile);
     background:
-        radial-gradient(130% 85% at 22% -5%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 58%),
-        linear-gradient(168deg, var(--ga), var(--gb));
+        radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 60%),
+        var(--tile);
+    transition: background-color 0.25s ease;
 
     svg{
         position: absolute;
-        left: 11%;
-        top: 11%;
-        width: 78%;
-        height: 78%;
-        filter: drop-shadow(0 0.04em 0.07em rgba(0, 0, 0, 0.32));
+        left: 22%;
+        top: 22%;
+        width: 56%;
+        height: 56%;
+        transition: filter 0.25s ease;
     }
 
     &::after{
@@ -122,7 +110,7 @@
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 -0.35em 0.7em rgba(0, 0, 0, 0.16);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
         pointer-events: none;
     }
 }
@@ -390,9 +378,8 @@
     flex: none;
     width: 2.6em;
     height: 2.6em;
-    border-radius: 22.5%;
+    border-radius: 16%;
     overflow: hidden;
-    box-shadow: 0 0.1em 0.4em rgba(0, 0, 0, 0.45);
 }
 
 // the keys of this device under the board (computer, TV remote); phones have the on-screen pad instead

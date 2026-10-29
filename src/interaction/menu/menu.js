@@ -31,6 +31,7 @@ let menu_items = [
     {action: 'cartoon', title: 'menu_multmovie', sprite: 'cartoon'},
     {action: 'tv', title: 'menu_tv', sprite: 'tv'},
     {action: 'ua_tv', title: 'menu_ua_tv', sprite: 'live_tv'},
+    {action: 'games', title: 'menu_games', sprite: 'games'},
     {action: 'catalog', title: 'menu_catalog', sprite: 'catalog'},
     {action: 'filter', title: 'menu_filter', sprite: 'filter'},    
     {action: 'favorite', title: 'settings_input_links', sprite: 'favorite'},
@@ -52,7 +53,7 @@ function init(){
 
     // Фильтрация пунктов меню в зависимости от настроек
     menu_items = menu_items.filter(item=>{
-        if(window.lampa_settings.minimal_ui) return ['main','movie','tv','ua_tv'].indexOf(item.action) >= 0
+        if(window.lampa_settings.minimal_ui) return ['main','movie','tv','ua_tv','games'].indexOf(item.action) >= 0
 
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false
 
@@ -172,6 +173,7 @@ function section(object){
     if(object.component == 'category' && (object.url == 'movie' || object.url == 'tv')) return object.url
     if(object.component == 'bookmarks') return 'favorite'
     if(object.component == 'ua_tv') return 'ua_tv'
+    if(object.component == 'games') return 'games'
 
     return ''
 }
@@ -282,6 +284,12 @@ function ready(){
         if(prepared(action,['ua_tv'])){
             Router.call('ua_tv', {
                 title: Lang.translate('title_ua_tv')
+            })
+        }
+
+        if(prepared(action,['games'])){
+            Router.call('games', {
+                title: Lang.translate('title_games')
             })
         }
 

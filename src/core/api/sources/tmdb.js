@@ -315,7 +315,8 @@ function partProviders(params, call){
  * Carousel of playable games; a tile opens the game full-screen.
  */
 function partGames(params, call){
-    let results = games.map(g=>Object.assign(cardData(g), {
+    // home shows the featured few; the Games tab has them all
+    let results = games.slice(0, 8).map(g=>Object.assign(cardData(g), {
         params: {
             style: {name: 'game'},
             module: CardModule.only('Card', 'Style', 'Callback')
@@ -325,7 +326,7 @@ function partGames(params, call){
     call({
         title: Lang.translate('title_games'),
         results: results,
-        params: {items: {view: 7}}
+        params: {items: {view: 8}}
     })
 }
 

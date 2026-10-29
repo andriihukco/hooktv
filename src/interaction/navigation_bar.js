@@ -85,6 +85,16 @@ const TAB_ICONS = {
             `<circle cx="12" cy="12" r="2"/><path d="${dish}"/>`,
             `<circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="${dish}"/>`
         )
+    })(),
+    games: (()=>{
+        let pad = 'M8.2 7h7.6a4.8 4.8 0 0 1 4.6 3.4l1.1 4.1a2.7 2.7 0 0 1-4.6 2.5L15 15H9l-1.9 2a2.7 2.7 0 0 1-4.6-2.5l1.1-4.1A4.8 4.8 0 0 1 8.2 7z'
+        let keys = 'M8 9.6v3.2M6.4 11.2h3.2M15.6 10.6v.01M17.4 12.2v.01'
+
+        return tabIcon(
+            `<path d="${pad}"/><path d="${keys}"/>`,
+            `<path d="${pad}" fill="currentColor" mask="url(#navigation-bar-mask-games)"/>`,
+            `<mask id="navigation-bar-mask-games" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${keys}" stroke="#000" stroke-width="1.8"/></mask>`
+        )
     })()
 }
 
@@ -94,7 +104,8 @@ function tabs(){
         ['main', 'menu_main'],
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
-        ['ua_tv', 'menu_ua_tv']
+        ['ua_tv', 'menu_ua_tv'],
+        ['games', 'menu_games']
     ].map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')

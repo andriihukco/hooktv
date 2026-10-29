@@ -1,5 +1,5 @@
-// App-store style game icons: a deep two-tone gradient (drawn by the card's CSS) and a flat white glyph on top.
-// Glyphs live in a 100×100 box; the darker gradient colour is `currentColor`, so cut-outs read as holes in the white shape.
+// Game icons: a flat white glyph on a black tile (drawn by the card's CSS).
+// Glyphs live in a 100×100 box; the tile colour is `currentColor`, so cut-outs read as holes in the white shape.
 
 const W = (o = 1) => `fill="#fff"${o < 1 ? ` fill-opacity="${o}"` : ''}`
 const S = (w = 6, o = 1) => `fill="none" stroke="#fff" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${o < 1 ? ` stroke-opacity="${o}"` : ''}`
@@ -96,11 +96,9 @@ export function tint(id){
     return tints[id] || ['#6C63F0', '#38C8F0']
 }
 
-// markup shared by the cards and the player: a gradient squircle with the glyph on it
+// markup shared by the cards and the player: a white glyph on a black tile (colours come from the CSS)
 export function iconHTML(id){
-    let [a, b] = tint(id)
-
-    return `<span class="game-icon" style="--ga:${a};--gb:${b};color:${b}"><svg viewBox="0 0 100 100" aria-hidden="true">${glyph(id)}</svg></span>`
+    return `<span class="game-icon"><svg viewBox="0 0 100 100" aria-hidden="true">${glyph(id)}</svg></span>`
 }
 
 export const ids = Object.keys(glyphs)

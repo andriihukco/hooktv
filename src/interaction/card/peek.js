@@ -191,8 +191,8 @@ function float(card){
 }
 
 function open(card){
-    // a streaming service badge has no details to show
-    if(!card.hooktvData || card.classList.contains('card--provider') || !card.querySelector('.card__hover-info') || !allowed()) return close()
+    // a streaming service badge has no details to show; a game in the Games grid is its own button (the pane would push the grid apart)
+    if(!card.hooktvData || card.classList.contains('card--provider') || (card.hooktvData.game && card.closest('.mapping--grid')) || !card.querySelector('.card__hover-info') || !allowed()) return close()
 
     if(host !== card){
         let view = card.querySelector('.card__view')
