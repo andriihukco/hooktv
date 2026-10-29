@@ -60,7 +60,9 @@
     <!-- not render-blocking: the scripts at the end of <body> start once it is in -->
     <link rel="preload" href="css/app.css?v=3.05" as="style">
     <link rel="stylesheet" href="css/app.css?v=3.05" media="print" onload="this.media='all'; window.hooktv_css = true; window.hooktv_boot && hooktv_boot()" onerror="window.hooktv_css = true; window.hooktv_boot && hooktv_boot()">
-
+    <!-- Vercel Web Analytics: queues events until /_vercel/insights/script.js loads (served on Vercel only) -->
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
     <!-- painted before app.js arrives, so the first paint does not wait for it; loading_progress.js

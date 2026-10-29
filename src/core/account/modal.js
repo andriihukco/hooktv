@@ -20,14 +20,10 @@ function show(template_name){
 }
 
 /**
- * Вход в аккаунт: email и пароль или QR с телефона (см. signin.js)
+ * Вход в аккаунт: правая панель настроек или QR на ТВ (см. signin.js)
  */
 function account(){
-    let enabled = Controller.enabled().name
-
-    SignIn.open(()=>{
-        Controller.toggle(enabled)
-    })
+    SignIn.open()
 }
 
 function limited(){

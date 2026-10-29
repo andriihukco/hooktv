@@ -1551,6 +1551,12 @@ $hk-spring-time: 0.5s;
             text-overflow: ellipsis;
         }
 
+        span{
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         &:hover{
             background: #fff;
             color: #000;
@@ -4126,4 +4132,10 @@ body.minimal--ui{
 /* an empty page has nothing to filter: the Filters pill stays away */
 body.page--empty .library-filter-pill{
     display: none !important;
+}
+
+// Login is its own cell at the end of the settings page, apart from the groups above
+.settings-folder.settings-account{
+    margin-top: 1.6em;
+    border-top: 0;
 }

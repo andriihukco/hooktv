@@ -5,6 +5,7 @@ import Params from '../settings/params'
 import Platform from '../../core/platform.js'
 import Api from './api'
 import Lang from '../../core/lang'
+import Material from '../../utils/material'
 
 function Component(name, component_params = {}){
     let scrl = new Scroll({mask: true, over:true, step: 200})
@@ -163,6 +164,20 @@ function Component(name, component_params = {}){
     }
     
     /**
+     * Вход в аккаунт: отдельная ячейка в самом конце, открывает панель аккаунта справа
+     */
+    function addAccount(){
+        if(!window.lampa_settings.account_use) return
+
+        comp.append(`<div class="settings-folder selector settings-account" data-component="account">
+            <div class="settings-folder__icon">
+                ${Material.icon('person')}
+            </div>
+            <div class="settings-folder__name">${Lang.translate('settings_login')}</div>
+        </div>`)
+    }
+
+    /**
      * HOOK TV: rows and headings the flat page drops, by param name and title
      */
     function hideRows(){
@@ -226,6 +241,8 @@ function Component(name, component_params = {}){
         addParams()
 
         if(name == 'interface') addSections()
+
+        if(name == 'interface') addAccount()
 
         buildEvents()
 
