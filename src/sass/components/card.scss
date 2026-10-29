@@ -197,6 +197,49 @@
         }
     }
 
+    // a services chip above a home row: a pill, filled white while its row is on
+    &.card--chip{
+        .card__img,
+        .card__age,
+        .card__title{
+            display: none !important;
+        }
+
+        .card__view{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 3em;
+            padding-bottom: 0 !important;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .card__chip-label{
+            padding: 0 1em;
+            font-size: 1.1em;
+            font-weight: 700;
+            white-space: nowrap;
+            color: #fff;
+        }
+
+        &.card--chip-on .card__view{
+            background: #fff;
+        }
+
+        &.card--chip-on .card__chip-label{
+            color: #000;
+        }
+
+        &.focus,
+        &.hover{
+            .card__view{
+                box-shadow: 0 0 0 0.2em #fff;
+            }
+        }
+    }
+
     // a studio logo of any colour turns white, so every studio reads alike on the dark circle
     &.card--mono .card__provider-logo{
         filter: brightness(0) invert(1);

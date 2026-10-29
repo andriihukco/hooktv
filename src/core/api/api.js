@@ -137,10 +137,10 @@ function company(params = {}, oncomplite, onerror){
 }
 
 /**
- * Productions page: the main production companies, with their logos
+ * The More page of a services row: the streaming services or the studios, as a grid
  */
-function studios(params = {}, oncomplite, onerror){
-    TMDB.studios(params, oncomplite, onerror)
+function services(params = {}, oncomplite, onerror){
+    TMDB.services(params, oncomplite, onerror)
 }
 
 /**
@@ -394,7 +394,7 @@ export default {
     search,
     clear,
     company,
-    studios,
+    services,
     person,
     favorite,
     seasons,
