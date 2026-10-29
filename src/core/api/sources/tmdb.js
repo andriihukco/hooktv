@@ -318,6 +318,9 @@ function partProviders(params, call){
 // Logos come from TMDB (logo_path); a few studios have none and show their name.
 const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
 
+// logos drawn in several colours (Warner, MGM, Marvel, 20th Century Studios): shown as they are
+const colourLogos = [174, 21, 420, 127928]
+
 /**
  * Productions page: the studios as round tiles, each one opens its movies.
  * @param {object} params
@@ -337,9 +340,10 @@ function studios(params = {}, oncomplite, onerror){
                 id: -(i + 1),
                 title: json.name,
                 logo: json.logo_path ? img(json.logo_path, 'w185') : '',
-                // every logo is drawn white on the same dark circle, so they all read alike
-                brand: '#1c1c1e',
-                mono: true,
+                // most logos are one ink, drawn white on the dark circle so they read alike;
+                // the colour ones keep their colours, and the 20th Century box keeps its black
+                brand: id == 127928 ? '#000000' : '#1c1c1e',
+                mono: colourLogos.indexOf(id) < 0,
                 params: {
                     style: {name: 'provider'},
                     module: CardModule.only('Card', 'Style', 'Callback')
