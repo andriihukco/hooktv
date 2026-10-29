@@ -343,6 +343,7 @@ export default {
     personal_watched: 'Бо ви дивились',
     title_new_episodes: 'Нові серії',
     title_streaming: 'Стрімінгові сервіси',
+    title_studios: 'Студії',
     title_ua_tv: 'ТБ',
     title_ua_group_national: 'Національні',
     title_ua_group_suspilne: 'Суспільне',

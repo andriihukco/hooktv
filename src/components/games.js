@@ -3,22 +3,28 @@ import CardModule from '../interaction/card/module/module'
 import Utils from '../utils/utils'
 import Games from '../games/runtime'
 import Activity from '../interaction/activity/activity'
-import {categories, categoryById, categoryCardId, cardData} from '../games/catalog'
+import games, {categories, categoryById, categoryCardId, cardData} from '../games/catalog'
 
 /**
  * Games tab. The root shows the categories as folders; a folder opens the games in it.
  * Enter on a game opens it full-screen; enter on a folder opens that folder.
+ * `all` is the page More on the games row opens: every game in one grid.
  * @param {object} object activity; `category` set means a folder page
  * @return {object} component instance
  */
 function component(object){
     // the folders share one row across the whole screen; a folder's games keep the usual grid
-    let comp = Utils.createInstance(Category, object, object.category ? {} : {items: {cols: 5}})
+    let comp = Utils.createInstance(Category, object, object.category || object.all ? {} : {items: {cols: 5}})
     let folder = object.category && categoryById(object.category)
 
     comp.use({
         onCreate: function(){
             let results = folder ? folder.games.map(g=>Object.assign(cardData(g), {
+                params: {
+                    style: {name: 'game'},
+                    module: CardModule.only('Card', 'Style', 'Callback')
+                }
+            })) : object.all ? games.map(g=>Object.assign(cardData(g), {
                 params: {
                     style: {name: 'game'},
                     module: CardModule.only('Card', 'Style', 'Callback')

@@ -17,6 +17,9 @@ export default {
         if(this.params.style.name == 'provider'){
             this.html.addClass('card--provider')
 
+            // logos drawn in one colour (the productions page): white on the dark circle
+            if(this.data.mono) this.html.addClass('card--mono')
+
             this.html.find('.card__title, .card__age').remove()
 
             let badge = $('<div class="card__provider"></div>')

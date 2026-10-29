@@ -197,6 +197,11 @@
         }
     }
 
+    // a studio logo of any colour turns white, so every studio reads alike on the dark circle
+    &.card--mono .card__provider-logo{
+        filter: brightness(0) invert(1);
+    }
+
     // the logo sits in the tile at its own size: vector, so it stays sharp
     &__provider{
         position: absolute;

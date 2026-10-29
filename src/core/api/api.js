@@ -137,6 +137,13 @@ function company(params = {}, oncomplite, onerror){
 }
 
 /**
+ * Productions page: the main production companies, with their logos
+ */
+function studios(params = {}, oncomplite, onerror){
+    TMDB.studios(params, oncomplite, onerror)
+}
+
+/**
  * Полная категори
  * @param {{page:integer, url:string, source:string}} params 
  * @param {function} oncomplite 
@@ -387,6 +394,7 @@ export default {
     search,
     clear,
     company,
+    studios,
     person,
     favorite,
     seasons,

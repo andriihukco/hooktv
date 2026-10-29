@@ -301,13 +301,62 @@ function partProviders(params, call){
         if(results.length) call({
             title: Lang.translate('title_streaming'),
             results: results,
-            params: {items: {view: results.length}}
+            params: {items: {view: results.length}},
+            // More opens the productions page
+            total_pages: 2,
+            morePage: {name: 'studios', params: {title: Lang.translate('title_studios')}}
         })
         else call()
     }
 
     providers.forEach((provider, i)=>{
         get(providerUrl(provider), params, (json)=>status.append(i, json), ()=>status.error(), {life: day * 3})
+    })
+}
+
+// Production companies on the productions page, in the order they are shown.
+// Logos come from TMDB (logo_path); a few studios have none and show their name.
+const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
+
+/**
+ * Productions page: the studios as round tiles, each one opens its movies.
+ * @param {object} params
+ * @param {function} oncomplite receives {results, page, total_pages}
+ * @param {function} onerror
+ */
+function studios(params = {}, oncomplite, onerror){
+    let status = new Status(studioIds.length)
+
+    status.onComplite = (data)=>{
+        let results = studioIds.map((id, i)=>{
+            let json = data[i]
+
+            if(!json || !json.name) return null
+
+            return {
+                id: -(i + 1),
+                title: json.name,
+                logo: json.logo_path ? TMDB.img(json.logo_path, 'w185') : '',
+                // every logo is drawn white on the same dark circle, so they all read alike
+                brand: '#1c1c1e',
+                mono: true,
+                params: {
+                    style: {name: 'provider'},
+                    module: CardModule.only('Card', 'Style', 'Callback')
+                },
+                route: {
+                    name: 'category_full',
+                    params: {url: 'discover/movie?sort_by=popularity.desc', companies: id, title: json.name, source: 'tmdb'}
+                }
+            }
+        }).filter(Boolean)
+
+        if(results.length) oncomplite({results: results, page: 1, total_pages: 1})
+        else if(onerror) onerror()
+    }
+
+    studioIds.forEach((id, i)=>{
+        get('company/' + id, params, (json)=>status.append(i, json), ()=>status.error(), {life: day * 7})
     })
 }
 
@@ -326,7 +375,10 @@ function partGames(params, call){
     call({
         title: Lang.translate('title_games'),
         results: results,
-        params: {items: {view: 8}}
+        params: {items: {view: 8}},
+        // More opens every game on its own page
+        total_pages: 2,
+        morePage: {name: 'games', params: {title: Lang.translate('title_games'), all: true}}
     })
 }
 
@@ -1359,6 +1411,7 @@ export default {
     search,
     clear,
     company,
+    studios,
     person,
     seasons,
     find,

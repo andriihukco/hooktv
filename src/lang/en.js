@@ -365,6 +365,7 @@ export default {
     title_recomend_watch: 'We recommend to see',
     title_new_episodes: 'New episodes',
     title_streaming: 'Streaming services',
+    title_studios: 'Productions',
     title_ua_tv: 'Ukrainian TV',
     title_ua_group_national: 'National',
     title_ua_group_suspilne: 'Suspilne',

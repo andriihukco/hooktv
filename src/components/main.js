@@ -31,7 +31,8 @@ function component(object){
         },
         onInstance: function(item, data){
             item.use({
-                onMore: Router.call.bind(Router, 'category_full', data),
+                // a row can name its own More page (the services and games rows); the rest open their list
+                onMore: ()=>data.morePage ? Router.call(data.morePage.name, {...data.morePage.params}) : Router.call('category_full', data),
                 onInstance: function(card, data){
                     card.use({
                         // a row tile can open its own screen (streaming services open their catalogue)

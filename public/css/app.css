@@ -4211,6 +4211,10 @@ body.settings--open .settings__layer {
 .card.card--provider.focus .card__view::after, .card.card--provider.hover .card__view::after {
   display: none;
 }
+.card.card--mono .card__provider-logo {
+  -webkit-filter: brightness(0) invert(1);
+          filter: brightness(0) invert(1);
+}
 .card__provider {
   position: absolute;
   inset: 0;
