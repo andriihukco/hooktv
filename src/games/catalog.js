@@ -9,6 +9,20 @@ import quiz from './packs/quiz'
 import categoryList from './categories'
 import {tint} from './icons'
 
+// Titles and hints are looked up under game_<id>_title / game_<id>_hint, and the folders under
+// games_cat_<id>_title / games_cat_<id>_overview. The app sets the translator (runtime.js); until then,
+// and in the specs, the English in the packs is what shows.
+let translate = (key, fallback) => fallback
+
+export function setTranslator(fn){
+    translate = fn
+}
+
+export const gameTitle = game => translate('game_' + game.id + '_title', game.title)
+export const gameHint = game => translate('game_' + game.id + '_hint', game.hint || '')
+export const categoryTitle = category => translate('games_cat_' + category.id + '_title', category.title)
+export const categoryOverview = category => translate('games_cat_' + category.id + '_overview', category.overview)
+
 // Every playable game, in the order the home row shows them: the most inviting first.
 const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'invaders', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'connect4', 'tictactoe', 'checkers', 'reversi', 'asteroids', 'pong', 'frogger', 'bubbles', 'slicer', 'emoji', 'tower', 'archery', 'maze', 'memory', 'simon', 'mastermind', 'battleship', 'nonogram', 'lightsout', 'sliding', 'mahjong', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'insects', 'shapes', 'typing', 'speedtype', 'wordrain', 'numtype', 'numspeak', 'dice']
 
@@ -53,8 +67,8 @@ export function cardData(game){
     return {
         id: game.card_id,
         game: game.id,
-        title: game.title,
-        overview: game.hint || '',
+        title: gameTitle(game),
+        overview: gameHint(game),
         kind: game.kind,
         c1: game.c1,
         c2: game.c2

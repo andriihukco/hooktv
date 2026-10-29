@@ -3,7 +3,7 @@ import CardModule from '../interaction/card/module/module'
 import Utils from '../utils/utils'
 import Games from '../games/runtime'
 import Activity from '../interaction/activity/activity'
-import {categories, categoryById, categoryCardId, cardData} from '../games/catalog'
+import {categories, categoryById, categoryCardId, cardData, categoryTitle, categoryOverview} from '../games/catalog'
 
 /**
  * Every game, category by category: each game carries its category's title as `group`
@@ -11,7 +11,7 @@ import {categories, categoryById, categoryCardId, cardData} from '../games/catal
  */
 function allGames(){
     return categories.reduce((list, c)=>list.concat(c.games.map(g=>Object.assign(cardData(g), {
-        group: c.title,
+        group: categoryTitle(c),
         params: {
             style: {name: 'game'},
             module: CardModule.only('Card', 'Style', 'Callback')
@@ -41,8 +41,8 @@ function component(object){
                 }
             })) : object.all ? allGames() : categories.map(c=>({
                 id: categoryCardId(c.id),
-                title: c.title,
-                overview: c.overview,
+                title: categoryTitle(c),
+                overview: categoryOverview(c),
                 category: c.id,
                 games: c.games.map(g=>g.id),
                 c1: c.c1,

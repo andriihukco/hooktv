@@ -1,8 +1,15 @@
 import Controller from '../core/controller'
 import Lang from '../core/lang'
 import Platform from '../core/platform'
-import catalog from './catalog'
+import catalog, {gameTitle, gameHint, setTranslator} from './catalog'
 import {iconHTML} from './icons'
+
+// the games show the interface language; a key the pack lacks keeps the English title
+setTranslator((key, fallback)=>{
+    let text = Lang.translate(key)
+
+    return text == key ? fallback : text
+})
 
 // Full-screen game player. Games get `env` (see start() below) and never touch the app's controller:
 // while a game is open this module owns the keyboard, so TV remotes, keyboards, touch and mouse all reach the game.
@@ -69,8 +76,8 @@ function helpHTML(game, kind){
     }[kind]
 
     return `<div class="games__sheet-card">
-        <div class="games__sheet-t">${game.title}</div>
-        <div class="games__sheet-s">${game.hint || ''}</div>
+        <div class="games__sheet-t">${gameTitle(game)}</div>
+        <div class="games__sheet-s">${gameHint(game)}</div>
         <div class="games__sheet-h">${Lang.translate('hooktv_help_title')} · ${Lang.translate('hooktv_help_' + (kind == 'tv' ? 'remote' : kind == 'touch' ? 'touch' : 'keyboard'))}</div>
         ${rows.map(([name, keys]) => `<div class="games__sheet-r"><span>${Lang.translate('hooktv_help_' + name)}</span><div>${keys}</div></div>`).join('')}
         <div class="games__sheet-f">${Lang.translate('hooktv_help_resume')}</div>
@@ -133,8 +140,8 @@ function launch(game){
     current = game
     play = root.find('.games__play').empty()[0]
     root.find('.games__icon').html(iconHTML(game.id))
-    root.find('.games__title').text(game.title)
-    root.find('.games__hint').text(game.hint || '')
+    root.find('.games__title').text(gameTitle(game))
+    root.find('.games__hint').text(gameHint(game))
     root.find('.games__keys').html(keysHTML(mode()))
     root.find('.games__sheet').removeClass('games__sheet--on').empty()
     root.toggleClass('games--pad', !!game.pad)
