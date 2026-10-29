@@ -18,6 +18,15 @@ export default {
             if(this.data.brand) this.html.style.setProperty('--brand-bg', this.data.brand)
         }
 
+        // a game: a rounded app-icon tile with its own gradient and glyph, the title stays below
+        if(this.params.style.name == 'game'){
+            this.html.addClass('card--game')
+
+            this.html.find('.card__age').remove()
+
+            this.html.find('.card__view').append($('<div class="card__game"></div>').css('background', `linear-gradient(145deg, ${this.data.c1}, ${this.data.c2})`).append($('<span class="card__game-glyph"></span>').text(this.data.emoji)))
+        }
+
         if(this.params.style.name == 'collection'){
             this.html.addClass('card--collection')
 

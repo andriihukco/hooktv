@@ -1,0 +1,281 @@
+// Games: the row tiles and the full-screen player. Dark TV theme, lime focus ring like the rest of the app.
+.card.card--game{
+    .card__view{
+        padding-bottom: 100%;
+        border-radius: 22%;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .card__img{
+        display: none;
+    }
+
+    &.focus,
+    &.hover{
+        .card__view{
+            transform: scale(1.06) !important;
+            box-shadow: 0 0 0 0.2em var(--accent, #C8F542), 0 1em 2em rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .card__view::after{
+            display: none;
+        }
+    }
+}
+
+.card__game{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // soft top light, like an app icon
+    &::after{
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+    }
+}
+
+.card__game-glyph{
+    font-size: 4.4em;
+    line-height: 1;
+    filter: drop-shadow(0 0.08em 0.12em rgba(0, 0, 0, 0.35));
+}
+
+.games{
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(120% 90% at 50% 0%, #17171b 0%, #050506 70%);
+    color: #fff;
+    font-family: inherit;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+
+    &__bar{
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        padding: 0.9em 1.4em;
+        padding-top: max(0.9em, env(safe-area-inset-top));
+        font-size: 1.15em;
+    }
+
+    &__title{
+        flex: 1;
+        font-size: 1.3em;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__back{
+        width: 2.6em;
+        height: 2.6em;
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--hk-glass, rgba(30, 30, 32, 0.62));
+        cursor: pointer;
+
+        &:active{
+            transform: scale(0.94);
+        }
+    }
+
+    &__stat{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        min-width: 3.4em;
+        line-height: 1.15;
+
+        span{
+            font-size: 0.62em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.55;
+        }
+
+        b{
+            font-size: 1.35em;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+
+    &__wrap{
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 1.4em 1em;
+    }
+
+    &__play{
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.2em;
+        background: #0c0c0f;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 2em 5em rgba(0, 0, 0, 0.6);
+        color: #fff;
+        font-weight: 600;
+    }
+
+    &__canvas{
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+
+    &__hint{
+        padding: 0 1.4em 1em;
+        text-align: center;
+        font-size: 0.95em;
+        opacity: 0.5;
+
+        &:empty{
+            display: none;
+        }
+    }
+
+    &__pad{
+        display: none;
+    }
+
+    &__grid{
+        position: absolute;
+        inset: 0;
+        display: grid;
+        gap: 0.4em;
+        padding: 0.6em;
+        box-sizing: border-box;
+    }
+
+    &__cell{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        min-height: 0;
+        border-radius: 0.5em;
+        background: rgba(255, 255, 255, 0.07);
+        font-size: 1.5em;
+        cursor: pointer;
+        transition: transform 0.12s, background 0.15s;
+
+        &.focus{
+            box-shadow: 0 0 0 0.12em var(--accent, #C8F542);
+            z-index: 1;
+        }
+    }
+
+    &__buttons{
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.6em;
+        padding: 0.8em;
+        flex-wrap: wrap;
+    }
+
+    &__btn{
+        padding: 0.7em 1.4em;
+        border-radius: 99em;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 1.1em;
+        font-weight: 700;
+        cursor: pointer;
+
+        &.focus{
+            background: var(--accent, #C8F542);
+            color: var(--accent-contrast, #0B0F00);
+        }
+    }
+
+    &__over{
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6em;
+        background: rgba(0, 0, 0, 0.72);
+        -webkit-backdrop-filter: blur(14px);
+                backdrop-filter: blur(14px);
+        animation: games-in 0.25s ease-out;
+
+        &-t{
+            font-size: 2.4em;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-align: center;
+            padding: 0 0.5em;
+        }
+
+        &-s{
+            opacity: 0.6;
+            margin-bottom: 0.6em;
+        }
+    }
+
+    @media (pointer: coarse){
+        &--pad &__pad{
+            display: block;
+            height: 11em;
+            flex: none;
+            position: relative;
+        }
+
+        &__dpad{
+            position: absolute;
+            right: 1.5em;
+            bottom: 1.2em;
+            width: 10em;
+            height: 10em;
+            display: grid;
+            grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+
+            i{
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.14);
+                margin: 0.15em;
+                touch-action: none;
+
+                &:active{
+                    background: var(--accent, #C8F542);
+                }
+            }
+
+            [data-k=up]{ grid-area: 1 / 2; }
+            [data-k=left]{ grid-area: 2 / 1; }
+            [data-k=ok]{ grid-area: 2 / 2; }
+            [data-k=right]{ grid-area: 2 / 3; }
+            [data-k=down]{ grid-area: 3 / 2; }
+        }
+    }
+}
+
+@keyframes games-in{
+    from{ opacity: 0; transform: scale(1.04); }
+    to{ opacity: 1; transform: none; }
+}

@@ -677,6 +677,7 @@ export default {
     menu_main: 'Home',
     menu_movies: 'Movies',
     menu_tv: 'Series',
+    menu_ua_tv: 'UA TV',
     menu_catalog: 'Catalog',
     menu_filter: 'Filter',
     menu_collections: 'Collections',

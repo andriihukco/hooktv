@@ -4,7 +4,7 @@ import Background from '../interaction/background'
 import Utils from '../utils/utils'
 import Router from '../core/router'
 import Hero from '../interaction/hero'
-import Player from '../interaction/player'
+import Games from '../games/runtime'
 
 /**
  * Компонент главной страницы
@@ -34,13 +34,9 @@ function component(object){
                 onMore: Router.call.bind(Router, 'category_full', data),
                 onInstance: function(card, data){
                     card.use({
-                        // a row tile can open its own screen (streaming services open their catalogue),
-                        // a TV channel tile plays its live stream
-                        onEnter: function(){
-                            if(data.stream) Player.play({url: data.stream, title: data.title, tv: true, isonline: true})
-                            else if(data.route) Router.call(data.route.name, data.route.params)
-                            else Router.call('full', data)
-                        },
+                        // a row tile can open its own screen (streaming services open their catalogue)
+                        // a game tile opens the game full-screen
+                        onEnter: data.game ? Games.open.bind(Games, data.game) : data.route ? Router.call.bind(Router, data.route.name, data.route.params) : Router.call.bind(Router, 'full', data),
                         onFocus: function(){
                             Background.change(Utils.cardImgBackground(data))
                         }

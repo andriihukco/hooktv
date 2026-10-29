@@ -17,7 +17,7 @@ import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
 import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
-import uaTv from './ua_tv'
+import games from '../../../games/catalog'
 
 
 let network   = new Reguest()
@@ -312,26 +312,26 @@ function partProviders(params, call){
 }
 
 /**
- * Carousel of free Ukrainian TV channels, styled like the streaming row.
- * Each tile is the channel's logo and plays its live stream on enter.
+ * Carousel of playable games; a tile opens the game full-screen.
  */
-function partUaTv(params, call){
-    let results = uaTv.map((channel, i)=>({
-        id: -(100 + i),
-        title: channel.name,
-        logo: channel.logo,
-        brand: '#1c1c1e',
-        stream: channel.url,
+function partGames(params, call){
+    let results = games.map((g, i)=>({
+        id: -(1000 + i),
+        title: g.title,
+        emoji: g.emoji,
+        c1: g.c1,
+        c2: g.c2,
+        game: g.id,
         params: {
-            style: {name: 'provider'},
+            style: {name: 'game'},
             module: CardModule.only('Card', 'Style', 'Callback')
         }
     }))
 
     call({
-        title: Lang.translate('title_ua_tv'),
+        title: Lang.translate('title_games'),
         results: results,
-        params: {items: {view: results.length}}
+        params: {items: {view: 7}}
     })
 }
 
@@ -388,7 +388,7 @@ function main(params = {}, oncomplite, onerror){
     ]
 
     Arrays.insert(parts_data, 1, (call)=>partProviders(params, call))
-    Arrays.insert(parts_data, 2, (call)=>partUaTv(params, call))
+    Arrays.insert(parts_data, 2, (call)=>partGames(params, call))
 
     ContentRows.call('main', params, parts_data)
 

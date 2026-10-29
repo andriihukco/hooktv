@@ -647,6 +647,7 @@ export default {
     menu_main: 'Головна',
     menu_movies: 'Фільми',
     menu_tv: 'Серіали',
+    menu_ua_tv: 'Укр. ТБ',
     menu_catalog: 'Каталог',
     menu_filter: 'Фільтр',
     menu_collections: 'Добірки',

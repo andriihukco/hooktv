@@ -12,6 +12,7 @@ import company from '../components/company'
 import bookmarks from '../components/bookmarks'
 import episodes from '../components/episodes'
 import recomend from '../components/recomend'
+import ua_tv from '../components/ua_tv'
 
 let component = {
     main,
@@ -27,7 +28,8 @@ let component = {
     company,
     bookmarks,
     episodes,
-    recomend
+    recomend,
+    ua_tv
 }
 
 /**
