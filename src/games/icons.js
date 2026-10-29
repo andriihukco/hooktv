@@ -60,6 +60,10 @@ const glyphs = {
     poker: () => `<g transform="rotate(-14 40 56)">${rect(20, 22, 40, 58, 7, .5)}</g>` + rect(38, 20, 42, 60, 7) + cut('M59 33L75 52L59 71L43 52Z'),
     hangman: () => stroke('M18 84H58M32 84V16H66V28', 7) + circ(66, 38, 9) + stroke('M66 48V66M66 54L56 62M66 54L76 62M66 66L58 78M66 66L74 78', 5.5),
     quiz: () => stroke('M36 38A14 14 0 1 1 57 49C52 52 50 55 50 62', 9) + circ(50, 77, 6),
+    kahoot: () => path('M30 14L48 46H12Z') + path('M72 14L90 30L72 46L54 30Z') + circ(30, 70, 16) + rect(58, 54, 32, 32, 5),
+    movie_quiz: () => rect(14, 22, 72, 56, 8) + hole(24, 34, 3.4) + hole(24, 50, 3.4) + hole(24, 66, 3.4) + hole(76, 34, 3.4) + hole(76, 50, 3.4) + hole(76, 66, 3.4) + cut('M44 40L62 50L44 60Z'),
+    flags: () => stroke('M22 84V14', 7) + path('M26 20C40 12 50 28 66 20C72 17 76 18 80 20V56C76 54 72 53 66 56C50 64 40 48 26 56Z'),
+    true_false: () => stroke('M16 52L40 76L84 28', 11),
     rps: () => line(32, 24, 68, 66, 7) + line(68, 24, 32, 66, 7) + `<circle cx="30" cy="76" r="10" ${S(5.2)}/>` + `<circle cx="70" cy="76" r="10" ${S(5.2)}/>`,
     mole: () => rect(10, 72, 80, 13, 6.5, .45) + path('M22 76A28 32 0 0 1 78 76Z') + hole(40, 54, 4.2) + hole(60, 54, 4.2) + `<ellipse cx="50" cy="64" rx="7" ry="5" fill="currentColor"/>`,
     insects: () => circ(50, 28, 10) + circ(50, 56, 27) + `<path d="M50 30V83" stroke="currentColor" stroke-opacity=".4" stroke-width="4"/>` + hole(40, 52, 4.8, .6) + hole(60, 52, 4.8, .6) + hole(42, 68, 4, .6) + hole(58, 68, 4, .6) + line(40, 20, 34, 12, 3.6) + line(60, 20, 66, 12, 3.6),
@@ -86,7 +90,8 @@ const tints = {
     mahjong: ['#35C976', '#8A5A2B'], poker: ['#FF4F78', '#5B4CE0'], hangman: ['#FFA52E', '#F0453A'], quiz: ['#FFD83D', '#FF9019'],
     rps: ['#FF5A7A', '#FF9A2E'], mole: ['#B38A5F', '#4C9A52'], insects: ['#FF5A4D', '#2DB961'], shapes: ['#3E91FF', '#A55CEB'],
     typing: ['#6C63F0', '#38C8F0'], speedtype: ['#FFD93D', '#FF3B6B'], wordrain: ['#6AD6FF', '#5B55E6'], numtype: ['#62D6FF', '#1F7CF5'],
-    numspeak: ['#FF5A7A', '#B450E6'], dice: ['#FF5B52', '#B352E8']
+    numspeak: ['#FF5A7A', '#B450E6'], dice: ['#FF5B52', '#B352E8'],
+    kahoot: ['#E21B3C', '#1368CE'], movie_quiz: ['#FF375F', '#5E5CE6'], flags: ['#0A84FF', '#FFD60A'], true_false: ['#30D158', '#64D2FF']
 }
 
 export function glyph(id){

@@ -5,12 +5,14 @@ import cards from './packs/cards'
 import logic from './packs/logic'
 import puzzle from './packs/puzzle'
 import words from './packs/words'
+import quiz from './packs/quiz'
+import categoryList from './categories'
 import {tint} from './icons'
 
 // Every playable game, in the order the home row shows them: the most inviting first.
 const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'invaders', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'connect4', 'tictactoe', 'checkers', 'reversi', 'asteroids', 'pong', 'frogger', 'bubbles', 'slicer', 'emoji', 'tower', 'archery', 'maze', 'memory', 'simon', 'mastermind', 'battleship', 'nonogram', 'lightsout', 'sliding', 'mahjong', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'insects', 'shapes', 'typing', 'speedtype', 'wordrain', 'numtype', 'numspeak', 'dice']
 
-const packs = {arcade: [...arcade, ...arcade2], puzzle, words, logic, board: boards, cards}
+const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz], logic, board: boards, cards}
 const all = []
 
 for(let kind in packs) packs[kind].forEach(g => all.push(Object.assign({}, g, {kind, c1: tint(g.id)[0], c2: tint(g.id)[1]})))
@@ -28,6 +30,20 @@ function numeric(id){
 }
 
 games.forEach(g => g.card_id = numeric(g.id))
+
+// the categories as the Games tab shows them: each one holds its games in the order listed in categories.js
+const categories = categoryList.map(c => Object.assign({}, c, {games: c.games.map(id => games.find(g => g.id == id)).filter(Boolean)}))
+const placed = categories.reduce((ids, c) => ids.concat(c.games.map(g => g.id)), [])
+const loose = games.filter(g => !placed.includes(g.id))
+
+if(loose.length) categories.push({id: 'more', title: 'More', overview: 'Everything else', c1: '#8E8E93', c2: '#48484A', games: loose})
+
+// a category's card id, negative like a game's, so it never meets a TMDB id
+export const categoryCardId = id => numeric('category:' + id)
+
+export function categoryById(id){
+    return categories.find(c => c.id == id)
+}
 
 /**
  * The card data of a game: what a row tile, My List and the bookmarks all draw from.
@@ -61,5 +77,7 @@ export function hydrate(data){
 export function byId(id){
     return games.find(g => g.id == id)
 }
+
+export {categories}
 
 export default games

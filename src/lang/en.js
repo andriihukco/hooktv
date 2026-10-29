@@ -1449,6 +1449,7 @@ export default {
     hooktv_filter_show: 'Show',
     hooktv_in_list: 'In List',
     hooktv_play_game: 'Play Game',
+    hooktv_games_count: 'games',
     hooktv_game_inputs: 'Keyboard · Touch · Remote',
     hooktv_game_arcade: 'Arcade',
     hooktv_game_puzzle: 'Puzzle',

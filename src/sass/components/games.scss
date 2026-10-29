@@ -585,3 +585,24 @@
         min-width: 2.6em;
     }
 }
+
+// a category folder on the Games tab: its first four game icons in a 2×2 grid over the category colour
+.card__folder{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-content: center;
+    gap: 6%;
+    padding: 12%;
+    box-sizing: border-box;
+    border-radius: inherit;
+    background: linear-gradient(150deg, var(--tile), rgba(0, 0, 0, 0.85));
+
+    .game-icon{
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        padding-bottom: 100%;
+        border-radius: 22%;
+    }
+}

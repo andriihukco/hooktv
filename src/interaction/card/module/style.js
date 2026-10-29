@@ -26,8 +26,18 @@ export default {
 
             this.html.find('.card__age').remove()
 
-            this.html.find('.card__view').append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
-            this.html.append($('<div class="card__game-play"></div>').text(Lang.translate('hooktv_play_game')))
+            // a category: a folder showing the first four of its game icons, with its game count below
+            if(this.data.category){
+                let folder = $('<div class="card__game card__folder"></div>').css('--tile', this.data.c1 || '#111113')
+
+                ;(this.data.games || []).slice(0, 4).forEach(id=>folder.append($(iconHTML(id))))
+                this.html.find('.card__view').append(folder)
+                this.html.append($('<div class="card__game-play"></div>').text((this.data.games || []).length + ' ' + Lang.translate('hooktv_games_count')))
+            }
+            else{
+                this.html.find('.card__view').append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+                this.html.append($('<div class="card__game-play"></div>').text(Lang.translate('hooktv_play_game')))
+            }
         }
 
         if(this.params.style.name == 'collection'){

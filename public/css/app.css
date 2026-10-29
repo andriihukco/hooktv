@@ -4903,16 +4903,20 @@ body.platform--netcast .card__title {
   .games--pad .games__pad {
     display: -webkit-box;
     display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
+        -ms-flex-pack: center;
             justify-content: center;
     -webkit-box-flex: 0;
     -webkit-flex: none;
         -ms-flex: none;
             flex: none;
+    padding: 0.4em 1.4em -webkit-calc(1.2em + env(safe-area-inset-bottom));
     padding: 0.4em 1.4em calc(1.2em + env(safe-area-inset-bottom));
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
   }
   .games__dpad {
     width: 12.6em;
@@ -4920,8 +4924,10 @@ body.platform--netcast .card__title {
     display: grid;
     grid-template: repeat(3, 1fr)/repeat(3, 1fr);
     gap: 0.3em;
+    -moz-user-select: none;
+     -ms-user-select: none;
+         user-select: none;
     -webkit-user-select: none;
-            user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
   .games__dpad i {
@@ -4929,17 +4935,19 @@ body.platform--netcast .card__title {
     display: block;
     -webkit-border-radius: 1.1em;
             border-radius: 1.1em;
-    background: -webkit-linear-gradient(145deg, rgba(60, 60, 66, 0.72), rgba(24, 24, 28, 0.8));
+    background: -webkit-linear-gradient(305deg, rgba(60, 60, 66, 0.72), rgba(24, 24, 28, 0.8));
+    background: -o-linear-gradient(305deg, rgba(60, 60, 66, 0.72), rgba(24, 24, 28, 0.8));
     background: linear-gradient(145deg, rgba(60, 60, 66, 0.72), rgba(24, 24, 28, 0.8));
     border: 1px solid rgba(255, 255, 255, 0.14);
     -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 16px rgba(0, 0, 0, 0.36);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 16px rgba(0, 0, 0, 0.36);
     -ms-touch-action: none;
         touch-action: none;
-    -webkit-transition: -webkit-transform 0.12s ease, background 0.12s ease;
-    transition: -webkit-transform 0.12s ease, background 0.12s ease;
+    -webkit-transition: background 0.12s ease, -webkit-transform 0.12s ease;
+    transition: background 0.12s ease, -webkit-transform 0.12s ease;
     -o-transition: transform 0.12s ease, background 0.12s ease;
     transition: transform 0.12s ease, background 0.12s ease;
+    transition: transform 0.12s ease, background 0.12s ease, -webkit-transform 0.12s ease;
   }
   .games__dpad i:active {
     -webkit-transform: scale(0.94);
@@ -4948,7 +4956,7 @@ body.platform--netcast .card__title {
     background: var(--accent, #C8F542);
   }
   .games__dpad i::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 50%;
     top: 50%;
@@ -4956,7 +4964,8 @@ body.platform--netcast .card__title {
     height: 0.9em;
     border-right: 0.2em solid rgba(255, 255, 255, 0.85);
     border-bottom: 0.2em solid rgba(255, 255, 255, 0.85);
-    border-radius: 0.1em;
+    -webkit-border-radius: 0.1em;
+            border-radius: 0.1em;
     -webkit-transform: translate(-65%, -65%) rotate(45deg);
         -ms-transform: translate(-65%, -65%) rotate(45deg);
             transform: translate(-65%, -65%) rotate(45deg);
@@ -4966,19 +4975,23 @@ body.platform--netcast .card__title {
   }
   .games__dpad [data-k=up] {
     grid-area: 1/2;
-    border-radius: 1.4em 1.4em 1.1em 1.1em;
+    -webkit-border-radius: 1.4em 1.4em 1.1em 1.1em;
+            border-radius: 1.4em 1.4em 1.1em 1.1em;
   }
   .games__dpad [data-k=left] {
     grid-area: 2/1;
-    border-radius: 1.4em 1.1em 1.1em 1.4em;
+    -webkit-border-radius: 1.4em 1.1em 1.1em 1.4em;
+            border-radius: 1.4em 1.1em 1.1em 1.4em;
   }
   .games__dpad [data-k=right] {
     grid-area: 2/3;
-    border-radius: 1.1em 1.4em 1.4em 1.1em;
+    -webkit-border-radius: 1.1em 1.4em 1.4em 1.1em;
+            border-radius: 1.1em 1.4em 1.4em 1.1em;
   }
   .games__dpad [data-k=down] {
     grid-area: 3/2;
-    border-radius: 1.1em 1.1em 1.4em 1.4em;
+    -webkit-border-radius: 1.1em 1.1em 1.4em 1.4em;
+            border-radius: 1.1em 1.1em 1.4em 1.4em;
   }
   .games__dpad [data-k=up]::before {
     -webkit-transform: translate(-50%, -30%) rotate(-135deg);
@@ -22951,4 +22964,24 @@ body.page--empty .library-filter-pill {
 .settings-folder.settings-account {
   margin-top: 1.6em;
   border-top: 0;
+}.card__folder {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  gap: 6%;
+  padding: 12%;
+  box-sizing: border-box;
+  border-radius: inherit;
+  background: linear-gradient(150deg, var(--tile), rgba(0, 0, 0, 0.85));
+}
+.card__folder .game-icon {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  padding-bottom: 100%;
+  border-radius: 22%;
 }
