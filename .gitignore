@@ -21,5 +21,11 @@ temp/
 package-lock.json
 src/utils/api/okko.js
 .DS_Store
-# Local Supabase config (keys)
-.env.local
+# Local and pulled environment files (keys): never commit
+.env
+.env.*
+
+# Local tool state, worktrees and session notes
+.freebuff/
+.claude/worktrees/
+.superpowers/

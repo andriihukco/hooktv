@@ -78,7 +78,16 @@ features: {
 
 ### Service Configuration
 
-Configure external services (TMDB, TorrServer, etc.) in brand config. The API and CDN endpoints in brand config still point at the StreamFlow services until you set your own.
+Configure external services (TMDB, TorrServer, etc.) in brand config. The API and CDN endpoints in `src/core/brand.js` are the defaults; change them there before you deploy your own copy.
+
+## Documentation
+
+| Document | For |
+|---|---|
+| [Development, stage and production](docs/DEVELOPMENT.md) | Setting up, running, staging, deploying, environment variables |
+| [Git workflow](docs/GIT_WORKFLOW.md) | Branches, features, fixes, commit and push (with diagrams) |
+| [Engineering audit](docs/AUDIT.md) | Current state, risks and findings |
+| [Implementation plan](docs/IMPLEMENTATION_PLAN.md) | What to fix next, in what order |
 
 ## Migration
 
