@@ -1,10 +1,12 @@
 /**
  * sitemap.xml: the popular and top-rated titles in Ukrainian, each pointing at
- * its share page (api/title.js), which is the URL search engines should index.
+ * its readable address (/movie/123-title, served to crawlers by api/title.js).
  * vercel.json rewrites /sitemap.xml here.
  *
  * TMDB_API_KEY in the Vercel project settings overrides the app's public key.
  */
+
+const {cardPath} = require('./_slug.js')
 
 const PUBLIC_TMDB_KEY = '4ef0d7355d9ffb5151e987764708ce96'
 const PAGES = 5 // 20 titles per list and page
@@ -30,7 +32,7 @@ async function list(key, media, path){
 
     let pages = await Promise.all(calls)
 
-    return pages.flatMap(p => p.results || []).map(item => ({id: item.id, media, date: item.release_date || item.first_air_date || ''}))
+    return pages.flatMap(p => p.results || []).map(item => ({id: item.id, media, name: item.title || item.name || '', date: item.release_date || item.first_air_date || ''}))
 }
 
 module.exports = async (req, res) => {
@@ -60,7 +62,7 @@ module.exports = async (req, res) => {
     })
 
     let urls = [...seen.values()].map(item => {
-        let loc = base + '/?' + new URLSearchParams({card: item.id, media: item.media, source: 'tmdb'}).toString()
+        let loc = base + cardPath(item.media, item.id, item.name)
         let lastmod = item.date && /^\d{4}-\d{2}-\d{2}$/.test(item.date) ? `<lastmod>${item.date}</lastmod>` : ''
 
         return `  <url><loc>${esc(loc)}</loc>${lastmod}</url>`

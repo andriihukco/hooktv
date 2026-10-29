@@ -332,6 +332,12 @@ function browser_sync(done) {
         server: {
             baseDir: bulFolder+'web/'
         },
+        // /movie/123-title and /tv/123-title are the app itself, as on Vercel
+        middleware: [function(req, res, next){
+            if(/^\/(movie|tv)\//.test(req.url)) req.url = '/index.html'
+
+            next()
+        }],
         open: false,
         notify: false,
         ghostMode: false,

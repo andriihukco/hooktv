@@ -10,6 +10,7 @@ import Utils from '../../utils/utils'
 import Arrays from '../../utils/arrays'
 import Platform from '../../core/platform'
 import App from '../app'
+import Slug from '../../utils/slug'
 import Select from '../select'
 import PropsProvider from '../../utils/props'
 import ActivitySlide from './slide'
@@ -31,8 +32,24 @@ function parseStart(){
     if(window.start_deep_link) return
 
     let id = Utils.gup('card')
+    let path = Slug.parseCardPath(window.location.pathname)
 
-    if(id){
+    if(path){
+        // /movie/123-title: the number is the title, the words are only for people
+        let source = Utils.gup('source') || 'tmdb'
+
+        window.start_deep_link = {
+            id: path.id,
+            component: "full",
+            method: path.media,
+            source: source,
+            card: {
+                id: path.id,
+                source: source
+            }
+        }
+    }
+    else if(id){
         window.start_deep_link = {
             id: id,
             component: "full",
@@ -250,6 +267,14 @@ function limit(){
 }
 
 /**
+ * Readable path addresses only where the page is served over http(s); TV shells keep query addresses
+ * @returns {boolean}
+ */
+function pathUrls(){
+    return /^https?:$/.test(window.location.protocol) && !(Platform.is('orsay') || Platform.is('netcast') || Platform.is('webos') || Platform.is('tizen'))
+}
+
+/**
  * Обновить адрес в строке из активности
  * @param {object} object - параметры активности
  * @param {boolean} replace - заменить текущий адрес, по умолчанию false (добавить в историю)
@@ -274,7 +299,20 @@ function pushState(object, replace, mix){
     let sour = object.source || (card ? card.source : 'tmdb')
     let durl = card && card.id ? '?card=' + card.id + (meth ? '&media=' + meth : '') + (sour ? '&source=' + sour : '') : '?' + comp.join('&')
 
-    if(mix) durl += '&' + mix
+    if(pathUrls()){
+        // readable addresses: /movie/123-title for a title, / for the home page
+        path = '/'
+
+        if(card && card.id){
+            // the title address starts with its own slash
+            durl = Slug.cardPath(meth == 'tv' ? 'tv' : 'movie', card.id, card.title || card.name || card.original_title || card.original_name, sour)
+            path = ''
+        }
+        else if(object.component == 'main' && (!object.source || object.source == 'tmdb')) durl = ''
+    }
+
+    // 'r=' only forces a new history entry, which pushState does anyway
+    if(mix && !(pathUrls() && mix.indexOf('r=') === 0)) durl += (durl.indexOf('?') >= 0 ? '&' : '?') + mix
 
     if(replace) window.history.replaceState(null, null, path + durl)
     else window.history.pushState(null, null, path + durl)

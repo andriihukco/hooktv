@@ -18,10 +18,24 @@ suite('link previews', ()=>{
         expect(BOTS.test('facebookexternalhit/1.1')).toBe(true)
         expect(BOTS.test('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0) Safari/604.1')).toBe(false)
 
-        let bot = middleware(new Request('https://hook.tv/?card=7', {headers: {'user-agent': 'Viber'}}))
+        let bot = middleware(new Request('https://hook.tv/movie/7-the-title', {headers: {'user-agent': 'Viber'}}))
 
-        expect(bot.headers.get('x-middleware-rewrite')).toBe('https://hook.tv/api/title?card=7&preview=1')
+        expect(bot.headers.get('x-middleware-rewrite')).toBe('https://hook.tv/api/title?card=7&media=movie&source=tmdb&preview=1')
+        expect(middleware(new Request('https://hook.tv/tv/9', {headers: {'user-agent': 'Viber'}})).headers.get('x-middleware-rewrite')).toBe('https://hook.tv/api/title?card=9&media=tv&source=tmdb&preview=1')
+        expect(middleware(new Request('https://hook.tv/', {headers: {'user-agent': 'Viber'}})).headers.get('x-middleware-rewrite')).toBe('https://hook.tv/api/title?preview=1')
         expect(middleware(new Request('https://hook.tv/', {headers: {'user-agent': 'Mozilla/5.0 Chrome/130'}}))).toBeUndefined()
+    })
+
+    test('old ?card= links are sent to the readable address', ()=>{
+        let human = {headers: {'user-agent': 'Mozilla/5.0 Chrome/130'}}
+        let moved = middleware(new Request('https://hook.tv/?card=42&media=tv&source=tmdb', human))
+
+        expect(moved.status).toBe(301)
+        expect(moved.headers.get('location')).toBe('https://hook.tv/tv/42')
+        expect(middleware(new Request('https://hook.tv/?card=7', human)).headers.get('location')).toBe('https://hook.tv/movie/7')
+        // another catalogue's id is not a TMDB id, and junk is not an id
+        expect(middleware(new Request('https://hook.tv/?card=7&source=cub', human))).toBeUndefined()
+        expect(middleware(new Request('https://hook.tv/?card=abc', human))).toBeUndefined()
     })
 
     test('home page gets the branded card with absolute image', async ()=>{
@@ -44,7 +58,7 @@ suite('link previews', ()=>{
         expect(res.body).toContain('<meta property="og:image" content="https://hook.tv/api/og?card=42&amp;media=movie">')
         expect(res.body).toContain('<meta property="og:image:width" content="1200">')
         expect(res.body).toContain('<meta property="og:type" content="video.movie">')
-        expect(res.body).toContain('http-equiv="refresh" content="0; url=/?card=42&amp;media=movie&amp;source=tmdb"')
+        expect(res.body).toContain('http-equiv="refresh" content="0; url=/movie/42-nadiya-b"')
     })
 
     test('movie page has readable content and schema.org data, and cannot break out of the script', async ()=>{
@@ -73,7 +87,7 @@ suite('link previews', ()=>{
         expect(res.body).toContain('<title>Серіал «Пес Патрон» (2022) дивитися онлайн українською · HOOK TV</title>')
         expect(res.body).toContain('<meta name="description" content="Дивіться серіал «Пес Патрон» (2022) онлайн українською. ★ 7.1 · Сімейний. Опис">')
         expect(res.body).toContain('Оригінальна назва: Patron')
-        expect(res.body).toContain('<a href="/?card=5&amp;media=tv&amp;source=tmdb">Мавка (2023)</a>')
+        expect(res.body).toContain('<a href="/tv/5-mavka">Мавка (2023)</a>')
 
         let ld = [...res.body.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]))
 
@@ -88,7 +102,7 @@ suite('link previews', ()=>{
 
         expect(res.body).toContain('<title>HOOK TV — дивитися фільми та серіали онлайн українською</title>')
         expect(res.body).toContain('<h2>Українські фільми</h2>')
-        expect(res.body).toContain('<a href="/?card=7&amp;media=movie&amp;source=tmdb">Мавка: Лісова пісня (2023)</a>')
+        expect(res.body).toContain('<a href="/movie/7-mavka-lisova-pisnya">Мавка: Лісова пісня (2023)</a>')
     })
 
     test('non-numeric card ids are not reflected', async ()=>{

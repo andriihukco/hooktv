@@ -2,7 +2,7 @@
  * Share pages for social link previews and search engines. Crawlers do not run
  * the app, so this returns an HTML page per title: Open Graph tags, readable
  * content (title, rating, year, runtime, genres, cast, overview) and schema.org
- * structured data. People are sent on to the app with the same ?card= link
+ * structured data. People are sent on to the app at the same /movie/123-title address
  * (see activity.js).
  *
  * Also serves the home page preview: middleware.js sends link-preview bots that
@@ -10,6 +10,8 @@
  *
  * TMDB_API_KEY in the Vercel project settings overrides the app's public key.
  */
+
+const {cardPath} = require('./_slug.js')
 
 const APP_NAME = 'HOOK TV'
 // the same public key the web app ships with
@@ -85,7 +87,7 @@ function item(entry){
 }
 
 function link(entry){
-    return '/?' + new URLSearchParams({card: entry.id, media: entry.media, source: 'tmdb'}).toString()
+    return cardPath(entry.media, entry.id, entry.name)
 }
 
 function links(list){
@@ -303,7 +305,7 @@ module.exports = async (req, res) => {
 
     // card ids are numeric; anything else is ignored, so nothing is reflected into the page
     let valid = /^\d{1,12}$/.test(id)
-    let target = valid ? '/?' + new URLSearchParams({card: id, media, source}).toString() : '/'
+    let target = valid ? cardPath(media, id, '', source) : '/'
 
     // middleware.js already serves the app URL itself to bots; redirecting there again would loop
     let viaApp = url.searchParams.get('preview') === '1'
@@ -325,6 +327,9 @@ module.exports = async (req, res) => {
             meta = FALLBACK
         }
     }
+
+    // the address carries the title once it is known
+    if(valid && meta.info) target = cardPath(media, id, meta.info.name, source)
 
     if(meta.image.startsWith('/')) meta = {...meta, image: base + meta.image}
 

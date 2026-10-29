@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // /movie/123-title is served by this same page, so assets (css/, lang/, app.js) must resolve from the root
+        if(/^https?:$/.test(location.protocol) && /^\/(movie|tv)\//.test(location.pathname)) document.write('<base href="/">')
+    </script>
     <meta name="color-scheme" content="dark">
     <title>HOOK TV — дивитися фільми та серіали онлайн українською</title>
     <meta name="description" content="HOOK TV: що подивитися сьогодні. Новинки 2026, популярні фільми й серіали, українське кіно з рейтингами та українською озвучкою.">
