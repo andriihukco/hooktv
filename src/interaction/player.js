@@ -1225,6 +1225,7 @@ export default {
     listener,
     play,
     playlist,
+    balancers: Panel.setBalancers,
     render,
     stat,
     subtitles,

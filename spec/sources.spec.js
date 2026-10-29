@@ -32,6 +32,26 @@ suite('sources', ()=>{
         Sources.remove('broken')
     })
 
+    test('drops Russian audio and streams with no English or Ukrainian track', async ()=>{
+        Sources.register({
+            name: 'ru',
+            search: async ()=>[{id: 1, title: 'Film'}],
+            streams: async ()=>[
+                {url: 'http://ru/only.m3u8', audio: [{label: 'Русский'}]},
+                {url: 'http://ru/mixed.m3u8', audio: [{label: 'Русский', language: 'rus'}, {label: 'English', language: 'eng'}]},
+                {url: 'http://ru/unlabelled.m3u8'}
+            ]
+        })
+
+        let items = await Sources.search('film')
+        let streams = await Sources.streams(items[0])
+
+        expect(streams.map(s=>s.url)).toEqual(['http://ru/mixed.m3u8'])
+        expect(streams[0].audio.map(a=>a.label)).toEqual(['English'])
+
+        Sources.remove('ru')
+    })
+
     test('rejects malformed providers', ()=>{
         expect(()=>Sources.register({name: 'x'})).toThrow()
     })

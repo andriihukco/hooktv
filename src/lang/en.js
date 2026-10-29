@@ -807,6 +807,7 @@ export default {
     player_change_source: 'Change source',
     player_no_sources_title: 'No other sources',
     player_no_sources_descr: 'There are no other sources for this title right now.',
+    player_balancer: 'Source',
     player_disabled: 'Disabled',
     player_unknown: 'Unknown',
     player_subs: 'Subtitles',

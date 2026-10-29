@@ -12,6 +12,17 @@ describe('Dub.classify', () => {
         expect(Dub.classify('LostFilm')).toBe('unknown')
         expect(Dub.classify('багатоголосий закадровий | ICTV', 'makhno')).toBe('uk')
     })
+
+    it('allows only English and Ukrainian tracks', () => {
+        expect(Dub.allowedTrack('Українська')).toBe(true)
+        expect(Dub.allowedTrack('ukr')).toBe(true)
+        expect(Dub.allowedTrack('English')).toBe(true)
+        expect(Dub.allowedTrack('eng')).toBe(true)
+        expect(Dub.allowedTrack('Русский')).toBe(false)
+        expect(Dub.allowedTrack('rus English')).toBe(false)
+        expect(Dub.allowedTrack('Deutsch')).toBe(false)
+        expect(Dub.allowedTrack('')).toBe(false)
+    })
 })
 
 describe('Dub.pickVoices', () => {

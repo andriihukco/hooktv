@@ -772,6 +772,7 @@ export default {
     player_change_source: 'Змінити джерело',
     player_no_sources_title: 'Немає інших джерел',
     player_no_sources_descr: 'Для цього відео зараз немає інших джерел.',
+    player_balancer: 'Джерело',
     player_disabled: 'Вимкнено',
     player_unknown: 'Невідомо',
     player_subs: 'Субтитри',
