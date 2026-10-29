@@ -95,7 +95,20 @@ const TAB_ICONS = {
             `<path d="${pad}" fill="currentColor" mask="url(#navigation-bar-mask-games)"/>`,
             `<mask id="navigation-bar-mask-games" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${keys}" stroke="#000" stroke-width="1.8"/></mask>`
         )
+    })(),
+    music: (()=>{
+        let note = 'M9 18V5l12-2v13M9 10l12-2'
+
+        return tabIcon(
+            `<path d="${note}"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="18" cy="16" rx="3" ry="2.5"/>`,
+            `<path d="${note}" stroke-width="2.2"/><ellipse cx="6" cy="18" rx="3" ry="2.5" fill="currentColor"/><ellipse cx="18" cy="16" rx="3" ry="2.5" fill="currentColor"/>`
+        )
     })()
+}
+
+// Top bar sections on desktop use the same icons; their masks get own ids so the two bars never share one
+export function sectionIcon(action){
+    return TAB_ICONS[action].replace(/navigation-bar-mask/g, 'menu-mask')
 }
 
 // Search and Favorites live in the top bar on phones, next to the menu; the tab bar keeps the sections
@@ -105,7 +118,8 @@ function tabs(){
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
         ['ua_tv', 'menu_ua_tv'],
-        ['games', 'menu_games']
+        ['games', 'menu_games'],
+        ['music', 'menu_music']
     ].map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')

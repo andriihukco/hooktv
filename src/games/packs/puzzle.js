@@ -42,9 +42,9 @@ export default [
     }
 },
 {
-    id: 'tictactoe', title: 'Tic-Tac-Toe', emoji: '⭕', c1: '#0A84FF', c2: '#64D2FF', size: SQ, pad: true, hint: 'Beat the computer · each win is a point',
+    id: 'tictactoe', levels: true, modes: [{id: 'cpu', label: 'vs Computer'}, {id: 'two', label: '2 Players'}], title: 'Tic-Tac-Toe', emoji: '⭕', c1: '#0A84FF', c2: '#64D2FF', size: SQ, pad: true, hint: 'Beat the computer · each win is a point',
     start(env){
-        let b = Array(9).fill(''), turn = 'X', ai = true, busy = false
+        let b = Array(9).fill(''), turn = 'X', ai = env.mode != 'two', busy = false
         let L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
         let win = (b, p) => L.find(l => l.every(i => b[i] == p))
         let mm = (b, p) => { // minimax: score from O's view
@@ -78,60 +78,21 @@ export default [
                 env.after(() => {
                     let best = -2, mv = []
                     b.forEach((v, j) => { if(v) return; b[j] = 'O'; let s = mm(b, 'X'); b[j] = ''; if(s > best){ best = s; mv = [j] } else if(s == best) mv.push(j) })
-                    b[env.pick(mv)] = 'O'; turn = 'X'; busy = false; draw(); if(!end()) status('Your move')
+                    // easier levels sometimes play a random square instead of the best one
+                    let free = b.map((v, j) => v ? -1 : j).filter(j => j > -1)
+                    b[Math.random() < [.6, .2, 0][env.level] ? env.pick(free) : env.pick(mv)] = 'O'; turn = 'X'; busy = false; draw(); if(!end()) status('Your move')
                 }, 450)
             } else status(turn + ' to move')
         }
         draw(); status('Your move')
-        let mode = env.buttons(['vs Computer', '2 Players'], i => { ai = i == 0; mode.close(); status(ai ? 'Your move' : 'X to move') }, {modal: true})
+        status(ai ? 'Your move' : 'X to move')
     }
 },
 {
-    id: 'connect4', title: 'Connect Four', emoji: '🔴', c1: '#FFD60A', c2: '#FF453A', size: [100, 86], pad: true, hint: 'Left / right to aim, OK to drop',
+    id: 'memory', levels: true, title: 'Memory Match', emoji: '🃏', c1: '#BF5AF2', c2: '#FF375F', size: SQ, pad: true, hint: 'Find all the pairs with the fewest moves',
     start(env){
-        const W = 7, H = 6
-        let b = Array(W * H).fill(0), col = 3, busy = false
-        let g = env.grid(W, H, null, null, {static: true, css: 'top:12%;gap:.35em;padding:.5em;background:#0a3a8a;border-radius:1em;bottom:0'})
-        g.cells.forEach(c => { c.style.borderRadius = '50%'; c.style.background = '#06204f'; c.style.cursor = 'pointer' })
-        let chip = document.createElement('div')
-        chip.style.cssText = 'position:absolute;top:1.2%;width:9%;aspect-ratio:1;border-radius:50%;background:#FFD60A;transition:left .08s;box-shadow:0 0 1em rgba(255,214,10,.6)'
-        env.el.appendChild(chip)
-        const show = () => chip.style.left = (3 + col * 13.4) + '%'
-        const colorOf = v => v == 1 ? '#FFD60A' : v == 2 ? '#FF453A' : '#06204f'
-        const draw = () => g.cells.forEach((c, i) => c.style.background = colorOf(b[i]))
-        const four = (b, p) => { for(let y = 0; y < H; y++) for(let x = 0; x < W; x++) for(const [dx, dy] of [[1,0],[0,1],[1,1],[1,-1]]){ let ok = 1; for(let k = 0; k < 4; k++){ let X = x + dx * k, Y = y + dy * k; if(X < 0 || X >= W || Y < 0 || Y >= H || b[Y * W + X] != p){ ok = 0; break } } if(ok) return true } return false }
-        const drop = (b, c, p) => { for(let y = H - 1; y >= 0; y--) if(!b[y * W + c]){ b[y * W + c] = p; return y } return -1 }
-        const score = (b, p) => { let s = 0; for(let y = 0; y < H; y++) for(let x = 0; x < W; x++) for(const [dx, dy] of [[1,0],[0,1],[1,1],[1,-1]]){ let m = 0, o = 0; for(let k = 0; k < 4; k++){ let X = x + dx * k, Y = y + dy * k; if(X < 0 || X >= W || Y < 0 || Y >= H){ m = o = 9; break } let v = b[Y * W + X]; v == p ? m++ : v ? o++ : 0 } if(m < 5 && !o) s += m * m; if(m < 5 && !m) s -= o * o } return s }
-        const search = (b, d, a, be, max) => {
-            if(four(b, 2)) return 1000 + d; if(four(b, 1)) return -1000 - d; if(!d || b.every(Boolean)) return score(b, 2) - score(b, 1) * 1.1
-            let best = max ? -1e9 : 1e9
-            for(const c of [3, 2, 4, 1, 5, 0, 6]){ if(b[c]) continue; let y = drop(b, c, max ? 2 : 1); let s = search(b, d - 1, a, be, !max); b[y * W + c] = 0; if(max){ best = Math.max(best, s); a = Math.max(a, s) } else { best = Math.min(best, s); be = Math.min(be, s) } if(a >= be) break }
-            return best
-        }
-        function play(c){
-            if(busy || b[c]) return
-            let y = drop(b, c, 1); env.sfx('tap'); draw()
-            if(four(b, 1)){ env.score(1, 1); env.over('You win!', true); return }
-            if(b.every(Boolean)) return env.over('Draw')
-            busy = true
-            env.after(() => {
-                let best = -1e9, mv = 3
-                for(const c2 of [3, 2, 4, 1, 5, 0, 6]){ if(b[c2]) continue; let y2 = drop(b, c2, 2), s = search(b, 4, -1e9, 1e9, false); b[y2 * W + c2] = 0; if(s > best){ best = s; mv = c2 } }
-                drop(b, mv, 2); env.sfx('tap'); draw(); busy = false
-                if(four(b, 2)) env.over('Computer wins')
-                else if(b.every(Boolean)) env.over('Draw')
-            }, 350)
-        }
-        g.cells.forEach((c, i) => c.onclick = () => { col = i % W; show(); play(col) })
-        env.on('press', k => { if(k == 'left') col = (col + W - 1) % W; if(k == 'right') col = (col + 1) % W; if(k == 'ok') play(col); show() })
-        show(); draw()
-    }
-},
-{
-    id: 'memory', title: 'Memory Match', emoji: '🃏', c1: '#BF5AF2', c2: '#FF375F', size: SQ, pad: true, hint: 'Find all the pairs with the fewest moves',
-    start(env){
-        let faces = env.shuffle([...'🍎🍋🍇🍓🥝🍉🍒🥑'].flatMap(x => [x, x])), open = [], moves = 0, left = 8, lock = false
-        let g = env.grid(4, 4, (c, i) => { c.style.fontSize = '3em'; c.style.background = 'linear-gradient(145deg,#2a2a31,#1b1b20)' }, pick, {css: 'gap:.5em;padding:.6em'})
+        let pairs = [6, 8, 10][env.level], faces = env.shuffle([...'🍎🍋🍇🍓🥝🍉🍒🥑🍍🥥'].slice(0, pairs).flatMap(x => [x, x])), open = [], moves = 0, left = pairs, lock = false
+        let g = env.grid(pairs == 10 ? 5 : 4, pairs == 6 ? 3 : 4, (c, i) => { c.style.fontSize = '3em'; c.style.background = 'linear-gradient(145deg,#2a2a31,#1b1b20)' }, pick, {css: 'gap:.5em;padding:.6em'})
         function pick(i){
             if(lock || open.includes(i) || g.cells[i].dataset.done) return
             g.cells[i].textContent = faces[i]; g.cells[i].style.background = '#34343c'; open.push(i); env.sfx('tap')
@@ -148,9 +109,9 @@ export default [
     }
 },
 {
-    id: 'minesweeper', title: 'Minesweeper', emoji: '💣', c1: '#8E8E93', c2: '#3A3A3C', size: SQ, hint: 'OK digs · F / long-press / colour button toggles flag mode',
+    id: 'minesweeper', levels: true, title: 'Minesweeper', emoji: '💣', c1: '#8E8E93', c2: '#3A3A3C', size: SQ, hint: 'OK digs · F / long-press / colour button toggles flag mode',
     start(env){
-        const N = 9, M = 10
+        const N = 9, M = [7, 10, 15][env.level]
         let mines = null, shown = Array(N * N).fill(0), flag = Array(N * N).fill(0), flagMode = false, dead = false, t0
         const nb = i => { let x = i % N, y = (i / N) | 0, o = []; for(let dy = -1; dy <= 1; dy++) for(let dx = -1; dx <= 1; dx++){ let X = x + dx, Y = y + dy; if((dx || dy) && X >= 0 && X < N && Y >= 0 && Y < N) o.push(Y * N + X) } return o }
         const cnt = i => nb(i).filter(j => mines[j]).length
@@ -188,22 +149,7 @@ export default [
     }
 },
 {
-    id: 'lightsout', title: 'Lights Out', emoji: '💡', c1: '#FFD60A', c2: '#FF9F0A', size: SQ, hint: 'Toggle a light and its neighbours · turn them all off',
-    start(env){
-        const N = 5; let on = Array(N * N).fill(0), moves = 0, level = 1
-        const flip = i => { let x = i % N, y = (i / N) | 0; [[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx, dy]) => { let X = x + dx, Y = y + dy; if(X >= 0 && X < N && Y >= 0 && Y < N) on[Y * N + X] ^= 1 }) }
-        const deal = () => { on.fill(0); for(let k = 0; k < 4 + level * 2; k++) flip(env.rnd(N * N)); if(!on.some(Boolean)) flip(12); moves = 0; draw() }
-        let g = env.grid(N, N, c => { c.style.borderRadius = '30%' }, pick, {css: 'gap:.5em;padding:.7em'})
-        const draw = () => g.cells.forEach((c, i) => { c.style.background = on[i] ? 'radial-gradient(circle at 50% 40%,#FFE680,#FF9F0A)' : '#1d1d22'; c.style.boxShadow = on[i] ? '0 0 1.2em rgba(255,214,10,.55)' : '' })
-        function pick(i){
-            flip(i); moves++; env.sfx('tap'); draw()
-            if(!on.some(Boolean)){ env.score(Math.max(10, 100 - moves * 3), 1); env.sfx('win'); level++; env.after(deal, 600) }
-        }
-        deal()
-    }
-},
-{
-    id: 'sliding', title: 'Sliding Puzzle', emoji: '🧩', c1: '#30D158', c2: '#0A84FF', size: SQ, pad: true, swipe: true, hint: 'Arrows slide tiles into the gap · pick 3×3, 4×4 or 5×5',
+    id: 'sliding', options: [{id: 'size', label: 'Board', def: 0, values: [{id: 3, label: '3 × 3'}, {id: 4, label: '4 × 4'}, {id: 5, label: '5 × 5'}]}], title: 'Sliding Puzzle', emoji: '🧩', c1: '#30D158', c2: '#0A84FF', size: SQ, pad: true, swipe: true, hint: 'Arrows slide tiles into the gap · pick 3×3, 4×4 or 5×5',
     start(env){
         let n = 3, b, g, moves
         const solved = () => b.every((v, i) => v == (i + 1) % (n * n))
@@ -226,10 +172,7 @@ export default [
             let e = b.indexOf(0), x = e % n, y = (e / n) | 0
             if(k == 'left' && x < n - 1) step(e + 1); if(k == 'right' && x > 0) step(e - 1); if(k == 'up' && y < n - 1) step(e + n); if(k == 'down' && y > 0) step(e - n)
         })
-        let bar = env.buttons(['3 × 3', '4 × 4', '5 × 5'], i => setup(i + 3), {nokeys: true})
-        bar.el.style.cssText = 'top:0;bottom:auto'
-        bar.el.style.transform = 'scale(.8)'
-        setup(3)
+        setup(+env.opts.size)
     }
 },
 ]

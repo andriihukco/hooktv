@@ -159,6 +159,12 @@ function mergeResults(items){
     return Array.from(map.values())
 }
 
+/**
+ * Indexer used when the viewer has set up no Jackett or Prowlarr search URL
+ * (same host the Jackett settings are mapped to above)
+ */
+const PUBLIC_INDEXER = 'https://jac.red'
+
 function get(params = {}, oncomplite, onerror){
     function complite(data){
         oncomplite(data)
@@ -166,6 +172,10 @@ function get(params = {}, oncomplite, onerror){
 
     function error(e){
         onerror(e)
+    }
+
+    if(params.public_indexer && !selectParserLinks('jackett').length && !selectParserLinks('prowlarr').length){
+        return jackett(params, PUBLIC_INDEXER, '', 0, complite, error)
     }
 
     if(Storage.field('parser_torrent_type') == 'jackett'){

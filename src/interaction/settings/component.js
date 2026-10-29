@@ -167,7 +167,7 @@ function Component(name, component_params = {}){
      * HOOK TV: rows and headings the flat page drops, by param name and title
      */
     function hideRows(){
-        let rows   = ['background','player','player_torrent','player_scale_method','player_hls_method','source','protocol','request_caching','pages_save_total','time_offset','navigation_type','keyboard_type','device_name','export','terminal','screensaver_type','poster_size','proxy_tmdb_auto','proxy_tmdb','tmdb_proxy_api','tmdb_proxy_image']
+        let rows   = ['background','player','player_torrent','player_scale_method','player_hls_method','source','protocol','request_caching','pages_save_total','time_offset','navigation_type','keyboard_type','device_name','export','terminal','poster_size','proxy_tmdb_auto','proxy_tmdb','tmdb_proxy_api','tmdb_proxy_image']
         let titles = ['settings_interface_background','settings_main_player','more','menu_console']
 
         rows.forEach(name=>comp.find('[data-name="' + name + '"]').remove())

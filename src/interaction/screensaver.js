@@ -15,6 +15,8 @@ class Screensaver{
 
         this.enabled = false
         this.worked  = false
+        // a full-screen game holds the screen: nothing starts the screensaver until it is closed
+        this.suspended = false
 
         this.screensaver
         this.timer
@@ -99,12 +101,26 @@ class Screensaver{
         this.worked = true
     }
 
+    suspend(){
+        this.suspended = true
+
+        if(this.worked) this.stopSlideshow()
+
+        clearTimeout(this.timer)
+    }
+
+    resume(){
+        this.suspended = false
+
+        this.resetTimer()
+    }
+
     resetTimer(){
         clearTimeout(this.timer)
 
         this.time_reset = Date.now()
 
-        if(!Storage.field('screensaver') || !this.enabled || this.worked) return
+        if(!Storage.field('screensaver') || !this.enabled || this.worked || this.suspended) return
 
         let timeout = 1000 * 60 * Storage.field('screensaver_time')
 

@@ -20,7 +20,37 @@ const GREETING = {
     he: ['עִברִית', 'ברוך הבא', 'בחר שפה'],
     cs: ['Čeština', 'Vítejte v HOOK TV', 'Vyberte jazyk', 'Filmy, seriály a TV — vše na jednom místě.', 'Vaše země', 'Jazyk'],
     ro: ['Română', 'Bun venit la HOOK TV', 'Alegeți limba', 'Filme, seriale și TV — toate într-un singur loc.', 'Țara dvs.', 'Limbă'],
-    fr: ['Français', 'Bienvenue sur HOOK TV', 'Choisissez votre langue', 'Films, séries et TV — tout au même endroit.', 'Votre pays', 'Langue']
+    fr: ['Français', 'Bienvenue sur HOOK TV', 'Choisissez votre langue', 'Films, séries et TV — tout au même endroit.', 'Votre pays', 'Langue'],
+    pl: ['Polski', 'Witamy w HOOK TV', 'Wybierz swój język', 'Filmy, seriale i TV — wszystko w jednym miejscu.', 'Twój kraj', 'Język'],
+    de: ['Deutsch', 'Willkommen bei HOOK TV', 'Wähle deine Sprache', 'Filme, Serien und TV — alles an einem Ort.', 'Dein Land', 'Sprache'],
+    es: ['Español', 'Bienvenido a HOOK TV', 'Elige tu idioma', 'Películas, series y TV — todo en un solo lugar.', 'Tu país', 'Idioma'],
+    it: ['Italiano', 'Benvenuto su HOOK TV', 'Scegli la tua lingua', 'Film, serie e TV — tutto in un unico posto.', 'Il tuo paese', 'Lingua'],
+    nl: ['Nederlands', 'Welkom bij HOOK TV', 'Kies je taal', 'Films, series en tv — alles op één plek.', 'Jouw land', 'Taal'],
+    sv: ['Svenska', 'Välkommen till HOOK TV', 'Välj ditt språk', 'Filmer, serier och TV — allt på ett ställe.', 'Ditt land', 'Språk'],
+    da: ['Dansk', 'Velkommen til HOOK TV', 'Vælg dit sprog', 'Film, serier og TV — alt samlet ét sted.', 'Dit land', 'Sprog'],
+    no: ['Norsk', 'Velkommen til HOOK TV', 'Velg språk', 'Filmer, serier og TV — alt på ett sted.', 'Ditt land', 'Språk'],
+    fi: ['Suomi', 'Tervetuloa HOOK TV:hen', 'Valitse kieli', 'Elokuvat, sarjat ja TV — kaikki yhdessä paikassa.', 'Maasi', 'Kieli'],
+    et: ['Eesti', 'Tere tulemast HOOK TV-sse', 'Vali oma keel', 'Filmid, sarjad ja TV — kõik ühes kohas.', 'Sinu riik', 'Keel'],
+    lv: ['Latviešu', 'Laipni lūdzam HOOK TV', 'Izvēlieties valodu', 'Filmas, seriāli un TV — viss vienā vietā.', 'Jūsu valsts', 'Valoda'],
+    lt: ['Lietuvių', 'Sveiki atvykę į HOOK TV', 'Pasirinkite kalbą', 'Filmai, serialai ir TV — viskas vienoje vietoje.', 'Jūsų šalis', 'Kalba'],
+    sk: ['Slovenčina', 'Vitajte v HOOK TV', 'Vyberte si jazyk', 'Filmy, seriály a TV — všetko na jednom mieste.', 'Vaša krajina', 'Jazyk'],
+    hu: ['Magyar', 'Üdvözöljük a HOOK TV-n', 'Válassza ki a nyelvet', 'Filmek, sorozatok és TV — mindez egy helyen.', 'Az Ön országa', 'Nyelv'],
+    el: ['Ελληνικά', 'Καλώς ήρθατε στο HOOK TV', 'Επιλέξτε τη γλώσσα σας', 'Ταινίες, σειρές και τηλεόραση — όλα σε ένα μέρος.', 'Η χώρα σας', 'Γλώσσα'],
+    hr: ['Hrvatski', 'Dobro došli u HOOK TV', 'Odaberite jezik', 'Filmovi, serije i TV — sve na jednom mjestu.', 'Vaša zemlja', 'Jezik'],
+    sr: ['Српски', 'Добродошли у HOOK TV', 'Изаберите језик', 'Филмови, серије и ТВ — све на једном месту.', 'Ваша земља', 'Језик'],
+    sl: ['Slovenščina', 'Dobrodošli v HOOK TV', 'Izberite jezik', 'Filmi, serije in TV — vse na enem mestu.', 'Vaša država', 'Jezik'],
+    mk: ['Македонски', 'Добредојдовте во HOOK TV', 'Изберете јазик', 'Филмови, серии и ТВ — сè на едно место.', 'Вашата земја', 'Јазик'],
+    sq: ['Shqip', 'Mirë se erdhët në HOOK TV', 'Zgjidhni gjuhën tuaj', 'Filma, seriale dhe TV — gjithçka në një vend.', 'Vendi juaj', 'Gjuha'],
+    bs: ['Bosanski', 'Dobro došli na HOOK TV', 'Odaberite jezik', 'Filmovi, serije i TV — sve na jednom mjestu.', 'Vaša zemlja', 'Jezik'],
+    is: ['Íslenska', 'Velkomin á HOOK TV', 'Veldu tungumál', 'Kvikmyndir, þættir og sjónvarp — allt á einum stað.', 'Land þitt', 'Tungumál'],
+    mt: ['Malti', 'Merħba fuq HOOK TV', 'Agħżel il-lingwa tiegħek', 'Films, serje u TV — kollox f’post wieħed.', 'Il-pajjiż tiegħek', 'Lingwa'],
+    ga: ['Gaeilge', 'Fáilte go HOOK TV', 'Roghnaigh do theanga', 'Scannáin, sraitheanna agus teilifís — gach rud in aon áit amháin.', 'Do thír', 'Teanga'],
+    ca: ['Català', 'Benvingut a HOOK TV', 'Tria el teu idioma', 'Pel·lícules, sèries i TV — tot en un sol lloc.', 'El teu país', 'Idioma'],
+    lb: ['Lëtzebuergesch', 'Wëllkomm op HOOK TV', 'Wiel deng Sprooch', 'Filmer, Serien a TV — alles op enger Plaz.', 'Däi Land', 'Sprooch'],
+    ja: ['日本語', 'HOOK TVへようこそ', '言語を選択してください', '映画、ドラマ、テレビ番組をすべて一か所で。', 'お住まいの国', '言語'],
+    ko: ['한국어', 'HOOK TV에 오신 것을 환영합니다', '언어를 선택하세요', '영화, 드라마, TV를 한곳에서.', '국가', '언어'],
+    tr: ['Türkçe', "HOOK TV'ye hoş geldiniz", 'Dilinizi seçin', 'Filmler, diziler ve TV — hepsi tek bir yerde.', 'Ülkeniz', 'Dil'],
+    ka: ['ქართული', 'კეთილი იყოს თქვენი მობრძანება HOOK TV-ზე', 'აირჩიეთ ენა', 'ფილმები, სერიალები და ტელევიზია — ყველაფერი ერთ ადგილას.', 'თქვენი ქვეყანა', 'ენა']
 }
 
 GREETING.he[1] = 'ברוכים הבאים ל-HOOK TV'
@@ -30,10 +60,17 @@ GREETING.he[5] = 'שפה'
 
 const COUNTRY_LANGUAGE = {
     bg: 'bg', by: 'be', cn: 'zh', cz: 'cs', fr: 'fr', il: 'he',
-    pt: 'pt', ro: 'ro', ru: 'ru', ua: 'uk'
+    pt: 'pt', ro: 'ro', ru: 'ru', ua: 'uk',
+    pl: 'pl', de: 'de', at: 'de', es: 'es', it: 'it', nl: 'nl', se: 'sv', dk: 'da', no: 'no', fi: 'fi',
+    ee: 'et', lv: 'lv', lt: 'lt', sk: 'sk', hu: 'hu', gr: 'el', hr: 'hr', rs: 'sr', si: 'sl', mk: 'mk',
+    al: 'sq', ba: 'bs', is: 'is', mt: 'mt', ie: 'ga', ad: 'ca', lu: 'lb', jp: 'ja', kr: 'ko', tr: 'tr', ge: 'ka'
 }
 
 const FLAG = {
+    pl: '🇵🇱', de: '🇩🇪', es: '🇪🇸', it: '🇮🇹', nl: '🇳🇱', sv: '🇸🇪', da: '🇩🇰', no: '🇳🇴', fi: '🇫🇮',
+    et: '🇪🇪', lv: '🇱🇻', lt: '🇱🇹', sk: '🇸🇰', hu: '🇭🇺', el: '🇬🇷', hr: '🇭🇷', sr: '🇷🇸', sl: '🇸🇮',
+    mk: '🇲🇰', sq: '🇦🇱', bs: '🇧🇦', is: '🇮🇸', mt: '🇲🇹', ga: '🇮🇪', ca: '🇦🇩', lb: '🇱🇺', ja: '🇯🇵',
+    ko: '🇰🇷', tr: '🇹🇷', ka: '🇬🇪',
     en: '🇬🇧', uk: '🇺🇦', ru: '🇷🇺', be: '🇧🇾', zh: '🇨🇳', pt: '🇵🇹',
     bg: '🇧🇬', he: '🇮🇱', cs: '🇨🇿', ro: '🇷🇴', fr: '🇫🇷'
 }
@@ -41,7 +78,11 @@ const FLAG = {
 // the Save button, in the language being chosen
 const SAVE = {
     en: 'Save', uk: 'Зберегти', ru: 'Сохранить', be: 'Захаваць', zh: '保存', pt: 'Guardar',
-    bg: 'Запази', he: 'שמירה', cs: 'Uložit', ro: 'Salvează', fr: 'Enregistrer'
+    bg: 'Запази', he: 'שמירה', cs: 'Uložit', ro: 'Salvează', fr: 'Enregistrer',
+    pl: 'Zapisz', de: 'Speichern', es: 'Guardar', it: 'Salva', nl: 'Opslaan', sv: 'Spara', da: 'Gem', no: 'Lagre',
+    fi: 'Tallenna', et: 'Salvesta', lv: 'Saglabāt', lt: 'Išsaugoti', sk: 'Uložiť', hu: 'Mentés', el: 'Αποθήκευση',
+    hr: 'Spremi', sr: 'Сачувај', sl: 'Shrani', mk: 'Зачувај', sq: 'Ruaj', bs: 'Sačuvaj', is: 'Vista', mt: 'Ħżin',
+    ga: 'Sábháil', ca: 'Desa', lb: 'Späicheren', ja: '保存', ko: '저장', tr: 'Kaydet', ka: 'შენახვა'
 }
 
 const CHECK ='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"></polyline></svg>'

@@ -402,7 +402,6 @@ function partChips(params, call){
             title: Lang.translate(kind == 'studios' ? 'title_studios' : 'title_streaming'),
             kind: kind,
             chip: true,
-            selected: kind == 'streaming',
             load: (done)=>servicesRow(kind, params, done),
             params: {
                 style: {name: 'chip'},

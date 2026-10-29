@@ -6,13 +6,17 @@ import logic from './packs/logic'
 import puzzle from './packs/puzzle'
 import words from './packs/words'
 import quiz from './packs/quiz'
+import party from './packs/party'
 import categoryList from './categories'
 import {tint} from './icons'
 
-// Every playable game, in the order the home row shows them: the most inviting first.
-const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'invaders', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'connect4', 'tictactoe', 'checkers', 'reversi', 'asteroids', 'pong', 'frogger', 'bubbles', 'slicer', 'emoji', 'tower', 'archery', 'maze', 'memory', 'simon', 'mastermind', 'battleship', 'nonogram', 'lightsout', 'sliding', 'mahjong', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'insects', 'shapes', 'typing', 'speedtype', 'wordrain', 'numtype', 'numspeak', 'dice']
+export {setTranslator, gameTitle, gameHint, categoryTitle, categoryOverview} from './i18n'
+import {gameTitle, gameHint} from './i18n'
 
-const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz], logic, board: boards, cards}
+// Every playable game, in the order the home row shows them: the most inviting first.
+const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot']
+
+const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz, ...party], logic, board: boards, cards}
 const all = []
 
 for(let kind in packs) packs[kind].forEach(g => all.push(Object.assign({}, g, {kind, c1: tint(g.id)[0], c2: tint(g.id)[1]})))
@@ -53,8 +57,8 @@ export function cardData(game){
     return {
         id: game.card_id,
         game: game.id,
-        title: game.title,
-        overview: game.hint || '',
+        title: gameTitle(game),
+        overview: gameHint(game),
         kind: game.kind,
         c1: game.c1,
         c2: game.c2

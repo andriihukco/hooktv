@@ -143,7 +143,29 @@ function init(){
     trigger('glass_style', Platform.screen('mobile'))
     trigger('advanced_animation', Platform.is('apple_tv') || Platform.is('browser') || Platform.desktop() || navigator.userAgent.toLowerCase().indexOf('shield') >= 0)
 
-    select('screensaver_type',{'ukraine': 'Україна'},'ukraine')
+    select('screensaver_type',{'ukraine': '#{screensaver_style_landscapes}'},'ukraine')
+
+    select('screensaver_grid', {
+        '3': '#{screensaver_grid_three}',
+        '2': '#{screensaver_grid_two}'
+    }, '3')
+
+    let screensaver_widgets = {
+        'weather_combined': '#{screensaver_widget_weather_combined}',
+        'weather_forecast': '#{screensaver_widget_weather_forecast}',
+        'weather_current': '#{screensaver_widget_weather_current}',
+        'clock': '#{screensaver_widget_clock}',
+        'calendar': '#{screensaver_widget_calendar}',
+        'news': '#{screensaver_widget_news}',
+        'last_played': '#{screensaver_widget_last_played}',
+        'todo': '#{screensaver_widget_todo}',
+        'music': '#{screensaver_widget_music}',
+        'none': '#{screensaver_widget_none}'
+    }
+
+    for(let i = 1; i <= 6; i++){
+        select('screensaver_widget_' + i, screensaver_widgets, ['weather_combined', 'weather_forecast', 'clock', 'calendar', 'last_played', 'todo'][i - 1])
+    }
 
     select('keyboard_type', {
         'lampa': '#{settings_param_keyboard_lampa}',
@@ -516,6 +538,9 @@ select('screensaver_time',{
     '10': '10',
 },'5')
 
+select('screensaver_location', '', 'Kyiv')
+select('screensaver_news_url', '', '')
+select('screensaver_todo_list', '', '')
 
 select('parse_lang',{
     'df': '#{settings_param_torrent_lang_orig}'

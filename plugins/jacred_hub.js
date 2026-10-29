@@ -244,8 +244,20 @@
                     Lampa.Noty.show('Помилка: магніт-посилання відсутнє')
                     return
                 }
-                // Передача на вбудований TorrServer в Lampa
-                Lampa.Torrserver.stream(item.magnet, movie)
+                // Передача на TorrCluster або вбудований плеєр торрентів Lampa
+                if (window.TorrCluster && typeof window.TorrCluster.stream === 'function') {
+                    window.TorrCluster.stream(item.magnet, movie)
+                } else if (Lampa.Torrserver && typeof Lampa.Torrserver.stream === 'function') {
+                    Lampa.Torrserver.stream(item.magnet, movie)
+                } else if (Lampa.Torrent && typeof Lampa.Torrent.start === 'function') {
+                    Lampa.Torrent.start({
+                        title: item.title,
+                        MagnetUri: item.magnet,
+                        Link: item.magnet
+                    }, movie)
+                } else {
+                    Lampa.Noty.show('Помилка: плеєр торрентів недоступний')
+                }
             }
         }))
 

@@ -3332,7 +3332,7 @@ function init() {
 
     window.hook_online = true
 
-    Watch.register({ autoPlay: autoPlay })
+    Watch.register({ autoPlay: autoPlay, balancers: balancers })
 
     // Register components
     Component.add('hook_online', component)

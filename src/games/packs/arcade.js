@@ -1,23 +1,12 @@
 // Real-time canvas games, part 1: classics.
 import {C, rr, text, glow, noglow, stars, hit} from '../draw'
 
-// Virtual cursor for games that point: arrows move it (TV remote), a mouse or finger sets it directly.
-export function aimer(env, cv, w, h, onTap, speed = 70){
-    let a = {x: w / 2, y: h / 2, show: false}
-    cv.addEventListener('pointermove', e => { let p = cv.pt(e); a.x = p.x; a.y = p.y; a.show = e.pointerType == 'mouse' })
-    cv.addEventListener('pointerdown', e => { let p = cv.pt(e); a.x = p.x; a.y = p.y; onTap(a.x, a.y, true) })
-    env.on('press', k => { if(k == 'ok'){ a.show = true; onTap(a.x, a.y, false) } else a.show = true })
-    a.step = dt => { let h2 = env.held; a.x = Math.max(0, Math.min(w, a.x + ((h2.right ? 1 : 0) - (h2.left ? 1 : 0)) * speed * dt)); a.y = Math.max(0, Math.min(h, a.y + ((h2.down ? 1 : 0) - (h2.up ? 1 : 0)) * speed * dt)) }
-    a.draw = ctx => { if(!a.show) return; ctx.strokeStyle = C.lime; ctx.lineWidth = .8; ctx.beginPath(); ctx.arc(a.x, a.y, 3, 0, 7); ctx.moveTo(a.x - 5, a.y); ctx.lineTo(a.x + 5, a.y); ctx.moveTo(a.x, a.y - 5); ctx.lineTo(a.x, a.y + 5); ctx.stroke() }
-    return a
-}
-
 export default [
 {
-    id: 'snake', title: 'Snake', emoji: '🐍', c1: '#30D158', c2: '#0A84FF', size: [100, 100], swipe: true, pad: true, hint: 'Eat, grow, and do not hit yourself',
+    id: 'snake', levels: true, title: 'Snake', emoji: '🐍', c1: '#30D158', c2: '#0A84FF', size: [100, 100], swipe: true, pad: true, hint: 'Eat, grow, and do not hit yourself',
     start(env){
         const {ctx} = env.canvas(), N = 20, U = 5
-        let s = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}], d = {x: 1, y: 0}, q = [], food, acc = 0, step = .12
+        let s = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}], d = {x: 1, y: 0}, q = [], food, acc = 0, step = .12 / env.mult
         const place = () => { do food = {x: env.rnd(N), y: env.rnd(N)}; while(s.some(c => c.x == food.x && c.y == food.y)) }
         place()
         env.on('press', k => { let n = {left: {x: -1, y: 0}, right: {x: 1, y: 0}, up: {x: 0, y: -1}, down: {x: 0, y: 1}}[k]; if(n) q.push(n) })
@@ -30,7 +19,7 @@ export default [
                 let h = {x: (s[0].x + d.x + N) % N, y: (s[0].y + d.y + N) % N}
                 if(s.some(c => c.x == h.x && c.y == h.y)) return env.over(`Length ${s.length}`)
                 s.unshift(h)
-                if(h.x == food.x && h.y == food.y){ env.score(10, 1); env.sfx('good'); step = Math.max(.06, step - .002); place() } else s.pop()
+                if(h.x == food.x && h.y == food.y){ env.score(10, 1); env.sfx('good'); step = Math.max(.06 / env.mult, step - .002); place() } else s.pop()
             }
             ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 100)
             ctx.fillStyle = 'rgba(255,255,255,.035)'
@@ -42,10 +31,10 @@ export default [
     }
 },
 {
-    id: 'flappy', title: 'Flappy Bird', emoji: '🐤', c1: '#64D2FF', c2: '#30D158', size: [60, 100], pad: true, hint: 'OK, tap or click to flap',
+    id: 'flappy', levels: true, title: 'Flappy Bird', emoji: '🐤', c1: '#64D2FF', c2: '#30D158', size: [60, 100], pad: true, hint: 'OK, tap or click to flap',
     start(env){
         const {cv, ctx} = env.canvas()
-        let b = {y: 45, v: 0}, pipes = [], t = 0, started = false, gap = 26
+        let b = {y: 45, v: 0}, pipes = [], t = 0, started = false, gap = [32, 26, 21][env.level]
         const flap = () => { started = true; b.v = -52; env.sfx('tap') }
         env.on('press', k => (k == 'ok' || k == 'up') && flap())
         cv.addEventListener('pointerdown', flap)
@@ -71,13 +60,13 @@ export default [
     }
 },
 {
-    id: 'breakout', title: 'Breakout', emoji: '🧱', c1: '#FF375F', c2: '#FF9F0A', size: [100, 72], pad: true, hint: 'Left / right or drag to move the paddle · OK launches',
+    id: 'breakout', levels: true, title: 'Breakout', emoji: '🧱', c1: '#FF375F', c2: '#FF9F0A', size: [100, 72], pad: true, hint: 'Left / right or drag to move the paddle · OK launches',
     start(env){
         const {cv, ctx} = env.canvas()
-        let px = 50, pw = 16, ball = {x: 50, y: 62, vx: 0, vy: 0, on: true}, lives = 3, level = 1, bricks = []
+        let px = 50, pw = 16, ball = {x: 50, y: 62, vx: 0, vy: 0, on: true}, lives = [5, 3, 2][env.level], level = 1, bricks = []
         const build = () => { bricks = []; for(let r = 0; r < 4 + Math.min(level, 3); r++) for(let c = 0; c < 10; c++) bricks.push({x: 2 + c * 9.6, y: 8 + r * 4.6, w: 9, h: 3.8, c: ['#FF375F', '#FF9F0A', '#FFD60A', '#30D158', '#0A84FF', '#BF5AF2', '#64D2FF'][r % 7]}) }
         build()
-        const launch = () => { if(ball.on){ ball.on = false; let sp = 46 + level * 4, a = -Math.PI / 2 + env.rnd(-.4, .4); ball.vx = Math.cos(a) * sp; ball.vy = Math.sin(a) * sp } }
+        const launch = () => { if(ball.on){ ball.on = false; let sp = (46 + level * 4) * env.mult, a = -Math.PI / 2 + env.rnd(-.4, .4); ball.vx = Math.cos(a) * sp; ball.vy = Math.sin(a) * sp } }
         env.on('press', k => k == 'ok' && launch())
         cv.addEventListener('pointerdown', launch)
         cv.addEventListener('pointermove', e => { px = cv.pt(e).x })
@@ -102,24 +91,28 @@ export default [
     }
 },
 {
-    id: 'pong', title: 'Ping Pong', emoji: '🏓', c1: '#0A84FF', c2: '#5E5CE6', size: [100, 60], pad: true, hint: 'Up / down or drag to move · first to 7 wins',
+    id: 'pong', levels: true, modes: [{id: 'cpu', label: 'vs Computer'}, {id: 'two', label: '2 Players'}], title: 'Ping Pong', emoji: '🏓', c1: '#0A84FF', c2: '#5E5CE6', size: [100, 60], pad: true, hint: 'Up / down or drag to move · first to 7 wins',
     start(env){
         const {cv, ctx} = env.canvas()
         let py = 30, ay = 30, ball, sc = [0, 0], ph = 12
         const serve = d => { ball = {x: 50, y: 30, vx: 48 * d, vy: env.rnd(-22, 22)} }
         serve(1)
-        cv.addEventListener('pointermove', e => { py = cv.pt(e).y })
+        const duo = env.mode == 'two'
+        cv.addEventListener('pointermove', e => { let p = cv.pt(e); if(duo && p.x > 50) ay = p.y; else py = p.y })
+        // two players share the keyboard: W / S and the arrows each move their own paddle
+        if(duo) env.on('key', e => { let d = {87: [0, -3.5], 83: [0, 3.5], 38: [1, -3.5], 40: [1, 3.5]}[e.keyCode]; if(d) d[0] ? ay += d[1] : py += d[1] })
         env.loop(dt => {
-            py = Math.max(ph / 2, Math.min(60 - ph / 2, py + ((env.held.down ? 1 : 0) - (env.held.up ? 1 : 0)) * 75 * dt))
-            ay += Math.max(-1, Math.min(1, (ball.y - ay) / 4)) * 38 * dt * (ball.vx > 0 ? 1 : .35); ay = Math.max(ph / 2, Math.min(60 - ph / 2, ay))
+            py = Math.max(ph / 2, Math.min(60 - ph / 2, py + (duo ? 0 : ((env.held.down ? 1 : 0) - (env.held.up ? 1 : 0)) * 75 * dt)))
+            if(!duo) ay += Math.max(-1, Math.min(1, (ball.y - ay) / 4)) * 38 * env.mult * dt * (ball.vx > 0 ? 1 : .35)
+            ay = Math.max(ph / 2, Math.min(60 - ph / 2, ay))
             ball.x += ball.vx * dt; ball.y += ball.vy * dt
             if(ball.y < 1.5 || ball.y > 58.5) ball.vy *= -1, ball.y = Math.max(1.5, Math.min(58.5, ball.y))
             const bounce = (y, dir) => { let o = (ball.y - y) / (ph / 2); ball.vx = dir * Math.min(95, Math.abs(ball.vx) * 1.06); ball.vy = o * 42; env.sfx('tap') }
             if(ball.vx < 0 && ball.x < 5.5 && ball.x > 2 && Math.abs(ball.y - py) < ph / 2 + 1.5) bounce(py, 1)
             if(ball.vx > 0 && ball.x > 94.5 && ball.x < 98 && Math.abs(ball.y - ay) < ph / 2 + 1.5) bounce(ay, -1)
             if(ball.x < -2){ sc[1]++; env.sfx('bad'); serve(1) } else if(ball.x > 102){ sc[0]++; env.score(sc[0]); env.sfx('good'); serve(-1) }
-            if(sc[0] >= 7) return env.over('You win!', true)
-            if(sc[1] >= 7) return env.over('Computer wins')
+            if(sc[0] >= 7) return env.over(duo ? 'Player 1 wins' : 'You win!', true)
+            if(sc[1] >= 7) return env.over(duo ? 'Player 2 wins' : 'Computer wins', duo)
             ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 60)
             ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.moveTo(50, 0); ctx.lineTo(50, 60); ctx.stroke(); ctx.setLineDash([])
             text(ctx, sc[0], 38, 8, 8, C.dim); text(ctx, sc[1], 62, 8, 8, C.dim)
@@ -129,7 +122,7 @@ export default [
     }
 },
 {
-    id: 'tetris', title: 'Tetris', emoji: '🟦', c1: '#BF5AF2', c2: '#0A84FF', size: [70, 100], swipe: true, pad: true, hint: 'Left / right move · up rotates · down drops · OK hard drop',
+    id: 'tetris', levels: true, title: 'Tetris', emoji: '🟦', c1: '#BF5AF2', c2: '#0A84FF', size: [70, 100], swipe: true, pad: true, hint: 'Left / right move · up rotates · down drops · OK hard drop',
     start(env){
         const {cv, ctx} = env.canvas(), W = 10, H = 20, U = 4.5
         const SH = {I: [[0,1],[1,1],[2,1],[3,1]], O: [[1,0],[2,0],[1,1],[2,1]], T: [[1,0],[0,1],[1,1],[2,1]], S: [[1,0],[2,0],[0,1],[1,1]], Z: [[0,0],[1,0],[1,1],[2,1]], J: [[0,0],[0,1],[1,1],[2,1]], L: [[2,0],[0,1],[1,1],[2,1]]}
@@ -158,7 +151,7 @@ export default [
         const cell = (x, y, c, a = 1) => { ctx.globalAlpha = a; ctx.fillStyle = c; rr(ctx, x * U + 12.5 + .25, y * U + 5 + .25, U - .5, U - .5, .9); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(x * U + 12.5 + .8, y * U + 5 + .8, U - 1.6, .7); ctx.globalAlpha = 1 }
         env.loop(dt => {
             acc += dt
-            if(acc > Math.max(.08, .75 - level * .06)){ acc = 0; drop() }
+            if(acc > Math.max(.08, .75 - level * .06) / env.mult){ acc = 0; drop() }
             ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 70, 100)
             ctx.fillStyle = 'rgba(255,255,255,.05)'; rr(ctx, 12, 4.5, W * U + 1, H * U + 1, 1.5); ctx.fill()
             board.forEach((r, y) => r.forEach((t, x) => t && cell(x, y, COL[t])))
@@ -166,70 +159,6 @@ export default [
             cur.c.forEach(([a, b]) => { cell(cur.x + a, cur.y + b + gy, COL[cur.t], .22); cell(cur.x + a, cur.y + b, COL[cur.t]) })
             text(ctx, 'NEXT', 6, 8, 2.6, C.dim); SH[next].forEach(([a, b]) => { ctx.fillStyle = COL[next]; rr(ctx, 1.5 + a * 2.4, 11 + b * 2.4, 2.2, 2.2, .5); ctx.fill() })
             text(ctx, 'LINES', 6, 30, 2.6, C.dim); text(ctx, lines, 6, 34, 4); text(ctx, 'LEVEL', 6, 44, 2.6, C.dim); text(ctx, level, 6, 48, 4)
-        })
-    }
-},
-{
-    id: 'invaders', title: 'Space Invaders', emoji: '👾', c1: '#30D158', c2: '#5E5CE6', size: [100, 100], pad: true, hint: 'Left / right to move · OK to shoot · hide behind the bunkers',
-    start(env){
-        const {cv, ctx} = env.canvas()
-        let ship = 50, shots = [], bombs = [], al, dir = 1, lives = 3, wave = 1, cd = 0, bk, t = 0, speed
-        const build = () => { al = []; for(let r = 0; r < 4; r++) for(let c = 0; c < 8; c++) al.push({x: 14 + c * 9.5, y: 14 + r * 8, r}); dir = 1; speed = 6 + wave * 2; bk = [0, 1, 2, 3].map(i => ({x: 10 + i * 22, y: 78, cells: Array.from({length: 24}, () => 1)})) }
-        build()
-        const fire = () => { if(cd <= 0){ shots.push({x: ship, y: 90}); cd = .35; env.sfx('pop') } }
-        env.on('press', k => k == 'ok' && fire())
-        cv.addEventListener('pointerdown', e => { ship = cv.pt(e).x; fire() })
-        cv.addEventListener('pointermove', e => { if(e.buttons) ship = cv.pt(e).x })
-        const bhit = (x, y) => { for(const b of bk){ let cx = ((x - b.x) / 2.5) | 0, cy = ((y - b.y) / 2.5) | 0; if(x >= b.x && cx < 6 && y >= b.y && cy < 4 && b.cells[cy * 6 + cx]){ b.cells[cy * 6 + cx] = 0; return true } } return false }
-        env.loop(dt => {
-            t += dt; cd -= dt
-            ship = Math.max(5, Math.min(95, ship + ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * 70 * dt))
-            let sp = speed * (1 + (32 - al.length) / 12)
-            al.forEach(a => a.x += dir * sp * dt)
-            if(al.some(a => a.x < 4 || a.x > 96)){ dir *= -1; al.forEach(a => { a.y += 3; a.x += dir * 1 }) }
-            shots.forEach(s => s.y -= 80 * dt); bombs.forEach(b => b.y += (30 + wave * 4) * dt)
-            if(al.length && Math.random() < dt * (1 + wave * .5)){ let a = env.pick(al); bombs.push({x: a.x, y: a.y + 3}) }
-            shots = shots.filter(s => { if(s.y < 0) return false; if(bhit(s.x, s.y)) return false; let a = al.find(a => Math.abs(a.x - s.x) < 4 && Math.abs(a.y - s.y) < 3); if(a){ al.splice(al.indexOf(a), 1); env.score(10 + (3 - a.r) * 5, 1); env.sfx('pop'); return false } return true })
-            bombs = bombs.filter(b => { if(b.y > 100) return false; if(bhit(b.x, b.y)) return false; if(b.y > 91 && Math.abs(b.x - ship) < 4.5){ lives--; env.sfx('bad'); return false } return true })
-            if(!lives || al.some(a => a.y > 84)) return env.over(`Wave ${wave}`)
-            if(!al.length){ wave++; build(); env.sfx('win') }
-            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 100); stars(ctx, 100, 100, t)
-            al.forEach(a => { ctx.fillStyle = ['#FF375F', '#FF9F0A', '#30D158', '#64D2FF'][a.r]; let w = Math.sin(t * 4 + a.r) > 0; ctx.fillRect(a.x - 3.5, a.y - 2, 7, 3.4); ctx.fillRect(a.x - 2, a.y - 3, 4, 1.2); ctx.fillRect(a.x - 4.5, a.y + (w ? 0 : 1), 1.2, 2.4); ctx.fillRect(a.x + 3.3, a.y + (w ? 0 : 1), 1.2, 2.4); ctx.fillStyle = C.bg; ctx.fillRect(a.x - 2, a.y - 1, 1.2, 1.2); ctx.fillRect(a.x + .8, a.y - 1, 1.2, 1.2) })
-            bk.forEach(b => b.cells.forEach((c, i) => { if(c){ ctx.fillStyle = '#30D158'; ctx.fillRect(b.x + (i % 6) * 2.5, b.y + ((i / 6) | 0) * 2.5, 2.4, 2.4) } }))
-            ctx.fillStyle = C.yellow; shots.forEach(s => ctx.fillRect(s.x - .4, s.y - 2, .8, 3)); ctx.fillStyle = C.red; bombs.forEach(b => ctx.fillRect(b.x - .5, b.y - 1.5, 1, 3))
-            ctx.fillStyle = C.lime; glow(ctx, C.lime, 8); ctx.beginPath(); ctx.moveTo(ship - 4.5, 95); ctx.lineTo(ship, 88); ctx.lineTo(ship + 4.5, 95); ctx.closePath(); ctx.fill(); noglow(ctx)
-            text(ctx, '❤'.repeat(lives), 3, 4, 3, C.red, 'left'); text(ctx, 'Wave ' + wave, 97, 4, 3, C.dim, 'right')
-        })
-    }
-},
-{
-    id: 'asteroids', title: 'Asteroids', emoji: '☄️', c1: '#8E8E93', c2: '#0A84FF', size: [100, 100], pad: true, hint: 'Left / right rotate · up thrust · OK fire',
-    start(env){
-        const {ctx} = env.canvas()
-        let ship = {x: 50, y: 50, a: -Math.PI / 2, vx: 0, vy: 0, inv: 2}, rocks = [], shots = [], lives = 3, cd = 0, level = 0, parts = []
-        const rock = (x, y, r) => { let a = env.rnd(0, 6.28), s = env.rnd(7, 16) * (1 + level * .08); return {x, y, r, vx: Math.cos(a) * s, vy: Math.sin(a) * s, p: Array.from({length: 10}, (_, i) => env.rnd(.75, 1.2)), rot: env.rnd(-1, 1)} }
-        const wave = () => { level++; rocks = []; for(let i = 0; i < 3 + level; i++){ let x, y; do { x = env.rnd(100); y = env.rnd(100) } while(Math.hypot(x - ship.x, y - ship.y) < 28); rocks.push(rock(x, y, 7)) } }
-        wave()
-        const fire = () => { if(cd <= 0){ shots.push({x: ship.x + Math.cos(ship.a) * 4, y: ship.y + Math.sin(ship.a) * 4, vx: Math.cos(ship.a) * 70 + ship.vx, vy: Math.sin(ship.a) * 70 + ship.vy, life: 1.1}); cd = .22; env.sfx('pop') } }
-        env.on('press', k => k == 'ok' && fire())
-        const wrap = o => { o.x = (o.x + 100) % 100; o.y = (o.y + 100) % 100 }
-        env.loop(dt => {
-            cd -= dt; ship.inv -= dt
-            ship.a += ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * 3.6 * dt
-            if(env.held.up){ ship.vx += Math.cos(ship.a) * 55 * dt; ship.vy += Math.sin(ship.a) * 55 * dt; parts.push({x: ship.x - Math.cos(ship.a) * 3, y: ship.y - Math.sin(ship.a) * 3, l: .3}) }
-            ship.vx *= 1 - .4 * dt; ship.vy *= 1 - .4 * dt; ship.x += ship.vx * dt; ship.y += ship.vy * dt; wrap(ship)
-            rocks.forEach(r => { r.x += r.vx * dt; r.y += r.vy * dt; wrap(r) }); shots.forEach(s => { s.x += s.vx * dt; s.y += s.vy * dt; s.life -= dt; wrap(s) }); shots = shots.filter(s => s.life > 0)
-            parts.forEach(p => p.l -= dt); parts = parts.filter(p => p.l > 0)
-            shots.forEach(s => rocks.forEach(r => { if(!r.dead && !s.dead && Math.hypot(r.x - s.x, r.y - s.y) < r.r){ r.dead = s.dead = 1; env.score(r.r > 5 ? 20 : r.r > 3 ? 50 : 100, 1); env.sfx('pop'); if(r.r > 3) for(let i = 0; i < 2; i++) rocks.push(rock(r.x, r.y, r.r / 1.8)) } }))
-            shots = shots.filter(s => !s.dead); rocks = rocks.filter(r => !r.dead)
-            if(ship.inv <= 0 && rocks.some(r => Math.hypot(r.x - ship.x, r.y - ship.y) < r.r + 1.5)){ lives--; env.sfx('bad'); ship = {x: 50, y: 50, a: -Math.PI / 2, vx: 0, vy: 0, inv: 2.5}; if(!lives) return env.over(`Level ${level}`) }
-            if(!rocks.length) wave()
-            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 100); ctx.lineWidth = .6; ctx.lineJoin = 'round'
-            ctx.strokeStyle = '#c9d1d9'; rocks.forEach(r => { ctx.beginPath(); r.p.forEach((m, i) => { let a = i / 10 * 6.28 + performance.now() / 4000 * r.rot; ctx[i ? 'lineTo' : 'moveTo'](r.x + Math.cos(a) * r.r * m, r.y + Math.sin(a) * r.r * m) }); ctx.closePath(); ctx.stroke() })
-            ctx.strokeStyle = C.yellow; parts.forEach(p => { ctx.globalAlpha = p.l * 3; ctx.beginPath(); ctx.arc(p.x, p.y, .6, 0, 7); ctx.stroke() }); ctx.globalAlpha = 1
-            ctx.fillStyle = '#fff'; shots.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, .7, 0, 7); ctx.fill() })
-            if(ship.inv <= 0 || (ship.inv * 8 | 0) % 2){ ctx.save(); ctx.translate(ship.x, ship.y); ctx.rotate(ship.a); ctx.strokeStyle = C.lime; glow(ctx, C.lime, 6); ctx.beginPath(); ctx.moveTo(4, 0); ctx.lineTo(-3, 2.8); ctx.lineTo(-1.6, 0); ctx.lineTo(-3, -2.8); ctx.closePath(); ctx.stroke(); ctx.restore(); noglow(ctx) }
-            text(ctx, '❤'.repeat(lives), 3, 4, 3, C.red, 'left'); text(ctx, 'Level ' + level, 97, 4, 3, C.dim, 'right')
         })
     }
 },

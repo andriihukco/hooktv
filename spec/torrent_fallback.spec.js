@@ -33,7 +33,7 @@ describe('TorrentFallback.search', () => {
     it('searches by original title and year, from the search endpoint', () => {
         run(movie)
 
-        expect(parser.get).toHaveBeenCalledWith({search: 'Inception 2010', from_search: true}, expect.any(Function), expect.any(Function))
+        expect(parser.get).toHaveBeenCalledWith({search: 'Inception 2010', from_search: true, public_indexer: true}, expect.any(Function), expect.any(Function))
     })
 
     it('keeps only playable results, best seeded first, at most 20', () => {

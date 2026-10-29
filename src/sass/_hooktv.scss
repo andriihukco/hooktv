@@ -3733,8 +3733,8 @@ body.minimal--ui .head__logo-icon{
     }
 }
 
-/* The tab pill and the round buttons beside it share one height, and every tab
-   fills the pill top to bottom, so tabs and buttons are the same touch target */
+/* The sections and the round buttons beside them (search, favorites, menu) share one size,
+   so every section is the same touch target: a 2.85em round button, no pill behind them */
 $hk-control: 2.85em;
 
 body.minimal--ui{
@@ -3749,19 +3749,69 @@ body.minimal--ui{
     .menu__list{
         box-sizing: border-box;
         height: $hk-control !important;
-        padding: 0.22em !important;
-        align-items: stretch;
+        padding: 0 !important;
+        gap: 0.5em !important;
+        align-items: center;
+        background: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         // centred on the same line as the buttons
         margin-top: 0.59em !important;
     }
 
+    // icon-only sections: the phone tab bar's icons, no visible label (the name stays for screen readers)
     .menu__item{
         display: flex !important;
+        position: relative;
         align-items: center;
-        height: 100%;
+        justify-content: center;
+        width: $hk-control;
+        height: $hk-control;
+        flex: 0 0 $hk-control;
         box-sizing: border-box;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
+        padding: 0 !important;
+        border-radius: 50%;
+        font-size: inherit;
+
+        .menu__ico{
+            display: flex;
+            width: 1.6em;
+            height: 1.6em;
+
+            svg{
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .menu__text{
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        // outline glyph when idle, filled glyph on the current section and on focus
+        .navigation-bar__glyph--filled{
+            display: none;
+        }
+
+        &.menu__item--current,
+        &.focus,
+        &.hover,
+        &.traverse,
+        &.active{
+            .navigation-bar__glyph--outline{
+                display: none;
+            }
+
+            .navigation-bar__glyph--filled{
+                display: inline;
+            }
+        }
     }
 }
 

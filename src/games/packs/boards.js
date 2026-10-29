@@ -135,9 +135,9 @@ function rsearch(b, p, d, a, be){ // from the computer's (p = -1) view
 
 export default [
 {
-    id: 'chess', title: 'Chess', emoji: '♟️', c1: '#8E8E93', c2: '#1C1C1E', size: SQ, pad: true, hint: 'You play white · select a piece, then a square',
+    id: 'chess', levels: true, modes: [{id: 'cpu', label: 'vs Computer'}, {id: 'two', label: '2 Players'}], title: 'Chess', emoji: '♟️', c1: '#8E8E93', c2: '#1C1C1E', size: SQ, pad: true, hint: 'You play white · select a piece, then a square',
     start(env){
-        let s = {b: [...P0], turn: 'w', c: 'KQkq', ep: -1}, sel = -1, targets = [], busy = false, last = null
+        let s = {b: [...P0], turn: 'w', c: 'KQkq', ep: -1}, sel = -1, targets = [], busy = false, last = null, two = env.mode == 'two'
         let bar = document.createElement('div'); bar.style.cssText = 'position:absolute;left:0;right:0;top:0;height:6%;text-align:center;font-size:1.2em;line-height:2;opacity:.8'; env.el.appendChild(bar)
         let g = env.grid(8, 8, (c, i) => { c.style.borderRadius = 0; c.style.fontSize = '3em'; c.style.lineHeight = 1 }, pick, {css: 'inset:6% 0 0 0;gap:0;padding:0'})
         const draw = () => g.cells.forEach((c, i) => {
@@ -150,33 +150,33 @@ export default [
         const cap = m => VAL[(s.b[m.to] == ' ' ? (m.ep ? 'p' : ' ') : s.b[m.to]).toLowerCase()] || 0
         function after(){
             let ms = legal(s), chk = inCheck(s)
-            bar.textContent = ms.length ? (chk ? 'Check!' : s.turn == 'w' ? 'Your move' : 'Computer is thinking…') : ''
+            bar.textContent = ms.length ? (chk ? 'Check!' + (two ? (s.turn == 'w' ? ' White' : ' Black') : '') : two ? (s.turn == 'w' ? 'White to move' : 'Black to move') : s.turn == 'w' ? 'Your move' : 'Computer is thinking…') : ''
             draw()
-            if(!ms.length){ if(chk){ env.score(500, 1); return env.over(s.turn == 'b' ? 'Checkmate — you win!' : 'Checkmate — computer wins', s.turn == 'b') } return env.over('Stalemate') }
+            if(!ms.length){ if(chk){ if(two) return env.over('Checkmate — ' + (s.turn == 'b' ? 'White' : 'Black') + ' wins', true); env.score(500, 1); return env.over(s.turn == 'b' ? 'Checkmate — you win!' : 'Checkmate — computer wins', s.turn == 'b') } return env.over('Stalemate') }
             if(s.b.filter(c => c != ' ' && c.toLowerCase() != 'k').length == 0) return env.over('Draw')
-            if(s.turn == 'b'){ busy = true; env.after(think, 60) }
+            if(s.turn == 'b' && !two){ busy = true; env.after(think, 60) }
         }
         function think(){
             let best = -1e9, pick2 = []
-            legal(s).forEach(m => { let v = -search(apply(s, m), 2, -1e9, 1e9); if(v > best + 2){ best = v; pick2 = [m] } else if(Math.abs(v - best) <= 2) pick2.push(m) })
+            legal(s).forEach(m => { let v = -search(apply(s, m), [1, 2, 3][env.level], -1e9, 1e9); if(v > best + 2){ best = v; pick2 = [m] } else if(Math.abs(v - best) <= 2) pick2.push(m) })
             let m = env.pick(pick2); last = m; s = apply(s, m); busy = false; env.sfx('tap'); after()
         }
         function pick(i){
-            if(busy || s.turn != 'w') return
+            if(busy || (!two && s.turn != 'w')) return
             let m = legal(s).find(m => m.from == sel && m.to == i)
-            if(m){ env.score(cap(m), 1); env.sfx(cap(m) ? 'pop' : 'tap'); last = m; s = apply(s, m); sel = -1; targets = []; return after() }
-            if(white(s.b[i]) && s.b[i] != ' '){ sel = i; targets = legal(s).filter(m => m.from == i).map(m => m.to) } else { sel = -1; targets = [] }
+            if(m){ if(!two) env.score(cap(m), 1); env.sfx(cap(m) ? 'pop' : 'tap'); last = m; s = apply(s, m); sel = -1; targets = []; return after() }
+            if(s.b[i] != ' ' && white(s.b[i]) == (s.turn == 'w')){ sel = i; targets = legal(s).filter(m => m.from == i).map(m => m.to) } else { sel = -1; targets = [] }
             draw()
         }
         g.focus(52); after()
     }
 },
 {
-    id: 'checkers', title: 'Checkers', emoji: '🔴', c1: '#FF453A', c2: '#7A1F1F', size: SQ, pad: true, hint: 'Captures are mandatory · reach the far row to crown a king',
+    id: 'checkers', levels: true, modes: [{id: 'cpu', label: 'vs Computer'}, {id: 'two', label: '2 Players'}], title: 'Checkers', emoji: '🔴', c1: '#FF453A', c2: '#7A1F1F', size: SQ, pad: true, hint: 'Captures are mandatory · reach the far row to crown a king',
     start(env){
         let b = Array(64).fill(' ')
         for(let i = 0; i < 64; i++){ let r = i >> 3, c = i & 7; if((r + c) % 2){ if(r < 3) b[i] = 'b'; else if(r > 4) b[i] = 'r' } }
-        let sel = -1, opts = [], busy = false
+        let sel = -1, opts = [], busy = false, two = env.mode == 'two', side = 'r'
         let bar = document.createElement('div'); bar.style.cssText = 'position:absolute;left:0;right:0;top:0;height:6%;text-align:center;font-size:1.2em;line-height:2;opacity:.8'; env.el.appendChild(bar)
         let g = env.grid(8, 8, c => { c.style.borderRadius = 0; c.style.fontSize = '2.4em' }, pick, {css: 'inset:6% 0 0 0;gap:0;padding:0', start: 41})
         const draw = () => g.cells.forEach((c, i) => {
@@ -187,23 +187,25 @@ export default [
             if(opts.some(m => m.path[m.path.length - 1] == i)) c.style.boxShadow = 'inset 0 0 0 .22em rgba(200,245,66,.95)'
         })
         function after(){
-            let pm = cmoves(b, 'r'), am = cmoves(b, 'b')
-            bar.textContent = !pm.length ? '' : pm[0].caps.length ? 'You must capture' : 'Your move'
+            let pm = cmoves(b, side), am = cmoves(b, 'b')
+            bar.textContent = !pm.length ? '' : two ? (side == 'r' ? 'Red' : 'Black') + (pm[0].caps.length ? ' must capture' : ' to move') : pm[0].caps.length ? 'You must capture' : 'Your move'
             draw()
+            if(two && !pm.length) return env.over((side == 'r' ? 'Black' : 'Red') + ' wins', true)
+            if(two) return
             if(!pm.length) return env.over('Computer wins')
             if(!am.length){ env.score(300, 1); return env.over('You win!', true) }
         }
         function ai(){
             let ms = cmoves(b, 'b'), best = -1e9, ch = []
             if(!ms.length) return after()
-            ms.forEach(m => { let v = csearch(capply(b, m), 5, -1e9, 1e9, false); if(v > best){ best = v; ch = [m] } else if(v == best) ch.push(m) })
+            ms.forEach(m => { let v = csearch(capply(b, m), [3, 5, 6][env.level], -1e9, 1e9, false); if(v > best){ best = v; ch = [m] } else if(v == best) ch.push(m) })
             b = capply(b, env.pick(ch)); busy = false; env.sfx('tap'); after()
         }
         function pick(i){
             if(busy) return
-            let all = cmoves(b, 'r')
+            let all = cmoves(b, side)
             let m = all.find(m => m.path[0] == sel && m.path[m.path.length - 1] == i)
-            if(m){ b = capply(b, m); if(m.caps.length){ env.score(m.caps.length * 20, 1); env.sfx('pop') } else env.sfx('tap'); sel = -1; opts = []; busy = true; draw(); if(!cmoves(b, 'b').length) return after(); return env.after(ai, 450) }
+            if(m){ b = capply(b, m); if(m.caps.length){ env.score(m.caps.length * 20, 1); env.sfx('pop') } else env.sfx('tap'); sel = -1; opts = []; if(two){ side = side == 'r' ? 'b' : 'r'; return after() } busy = true; draw(); if(!cmoves(b, 'b').length) return after(); return env.after(ai, 450) }
             let mine = all.filter(m => m.path[0] == i)
             if(mine.length){ sel = i; opts = mine } else { sel = -1; opts = [] }
             draw()
@@ -212,22 +214,28 @@ export default [
     }
 },
 {
-    id: 'reversi', title: 'Reversi', emoji: '⚫', c1: '#30D158', c2: '#0B5D2A', size: SQ, pad: true, hint: 'Flank the computer’s discs to flip them',
+    id: 'reversi', levels: true, modes: [{id: 'cpu', label: 'vs Computer'}, {id: 'two', label: '2 Players'}], title: 'Reversi', emoji: '⚫', c1: '#30D158', c2: '#0B5D2A', size: SQ, pad: true, hint: 'Flank the computer’s discs to flip them',
     start(env){
         let b = Array(64).fill(0); b[27] = b[36] = -1; b[28] = b[35] = 1
-        let busy = false, bar = document.createElement('div'); bar.style.cssText = 'position:absolute;left:0;right:0;top:0;height:7%;text-align:center;font-size:1.2em;line-height:2;opacity:.85'; env.el.appendChild(bar)
+        let busy = false, two = env.mode == 'two', cur = 1, bar = document.createElement('div'); bar.style.cssText = 'position:absolute;left:0;right:0;top:0;height:7%;text-align:center;font-size:1.2em;line-height:2;opacity:.85'; env.el.appendChild(bar)
         let g = env.grid(8, 8, c => { c.style.borderRadius = 0 }, pick, {css: 'inset:7% 0 0 0;gap:.12em;padding:.12em;background:#0b3d1d', start: 19})
         const draw = () => {
-            let hint = rmoves(b, 1)
+            let hint = rmoves(b, two ? cur : 1)
             g.cells.forEach((c, i) => {
                 c.style.background = '#14803a'
                 c.innerHTML = b[i] ? `<div style="width:78%;aspect-ratio:1;border-radius:50%;background:${b[i] == 1 ? 'radial-gradient(circle at 35% 30%,#fff,#bfc3cc)' : 'radial-gradient(circle at 35% 30%,#4a4a52,#050507)'};box-shadow:0 .1em .3em rgba(0,0,0,.6)"></div>` : (!busy && hint.includes(i) ? '<div style="width:22%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.4)"></div>' : '')
             })
             let you = b.filter(v => v == 1).length, cpu = b.filter(v => v == -1).length
-            bar.textContent = `You ${you}  ·  Computer ${cpu}`; env.score(you)
+            bar.textContent = two ? `White ${you}  ·  Black ${cpu}  ·  ${cur == 1 ? 'White' : 'Black'} to move` : `You ${you}  ·  Computer ${cpu}`; env.score(you)
         }
         function place(i, p){ flips(b, i, p).forEach(k => b[k] = p); b[i] = p }
         function next(p){ // p just moved
+            if(two){
+                let a = rmoves(b, -p), c = rmoves(b, p), w = b.filter(v => v == 1).length, k = b.filter(v => v == -1).length
+                if(!a.length && !c.length){ draw(); return env.over(w > k ? 'White wins' : w < k ? 'Black wins' : 'Draw', w != k) }
+                cur = a.length ? -p : p
+                return draw()
+            }
             draw()
             let me = rmoves(b, 1), cpu = rmoves(b, -1)
             if(!me.length && !cpu.length){ let you = b.filter(v => v == 1).length, c = b.filter(v => v == -1).length; return env.over(you > c ? 'You win!' : you < c ? 'Computer wins' : 'Draw', you > c) }
@@ -235,12 +243,13 @@ export default [
         }
         function ai(){
             let ms = rmoves(b, -1), best = -1e9, ch = []
-            ms.forEach(m => { let nb = b.slice(); flips(nb, m, -1).forEach(k => nb[k] = -1); nb[m] = -1; let v = rsearch(nb, 1, 3, -1e9, 1e9); if(v > best){ best = v; ch = [m] } else if(v == best) ch.push(m) })
+            ms.forEach(m => { let nb = b.slice(); flips(nb, m, -1).forEach(k => nb[k] = -1); nb[m] = -1; let v = rsearch(nb, 1, [1, 3, 4][env.level], -1e9, 1e9); if(v > best){ best = v; ch = [m] } else if(v == best) ch.push(m) })
             place(env.pick(ch), -1); env.sfx('tap'); next(-1)
         }
         function pick(i){
-            if(busy || !flips(b, i, 1).length) return
-            place(i, 1); env.sfx('pop'); next(1)
+            let p = two ? cur : 1
+            if(busy || !flips(b, i, p).length) return
+            place(i, p); env.sfx('pop'); next(p)
         }
         draw()
     }
