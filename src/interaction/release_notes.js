@@ -1,19 +1,20 @@
 import Storage from '../core/storage/storage'
 import Platform from '../core/platform'
 import Lang from '../core/lang'
+import Modal from './modal'
 import Releases from '../utils/releases'
 
 /**
  * HOOK TV: every push to main is a new deploy, but an open tab keeps running the old one.
- * This asks the server for releases.json and shows what is new since the device last updated.
- * There is no close button: the only way on is "Update", which clears the cache and reloads.
+ * releases.json lists the recent changes. They live under the Info row of the settings panel:
+ * a dot on the row means this device is behind, and "Update" in the sheet reloads the app.
  */
 
 const SEEN = 'release_seen'
 const CHECK_EVERY = 15 * 60 * 1000
 
-let opened = false
-let latest = ''
+let releases = []
+let pending = []
 
 function eligible(){
     let native = ['tizen', 'webos', 'orsay', 'netcast', 'apple_tv', 'android', 'nw', 'electron'].some(name=>Platform.is(name))
@@ -28,17 +29,17 @@ function escape(text){
 function date(value){
     let time = new Date(value)
 
-    return isNaN(time) ? '' : time.toLocaleDateString(undefined, {day: 'numeric', month: 'short'})
+    return isNaN(time) ? '' : time.toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'})
 }
 
-function items(list){
-    return list.map(item=>`
-        <li class="release-notes__item">
-            <div class="release-notes__text">
-                ${item.area ? `<span class="release-notes__area">${escape(item.area)}</span>` : ''}
-                <span class="release-notes__title">${escape(item.title)}</span>
+function rows(){
+    return releases.slice(0, 10).map(item=>`
+        <li class="whats-new__item">
+            <div class="whats-new__text">
+                ${item.area ? `<span class="whats-new__area">${escape(item.area)}</span>` : ''}
+                <span class="whats-new__title">${escape(item.title)}${pending.indexOf(item) >= 0 ? `<span class="whats-new__new">${escape(Lang.translate('release_new'))}</span>` : ''}</span>
             </div>
-            <span class="release-notes__date">${escape(date(item.date))}</span>
+            <span class="whats-new__date">${escape(date(item.date))}</span>
         </li>
     `).join('')
 }
@@ -46,99 +47,110 @@ function items(list){
 /**
  * Update: forget the cached app files, remember this release, reload
  */
-function update(button){
-    button.disabled = true
-    button.textContent = Lang.translate('release_updating')
-
-    Storage.set(SEEN, latest, true)
+function update(){
+    Storage.set(SEEN, releases[0].id, true)
 
     let clear = ('caches' in window) ? caches.keys().then(keys=>Promise.all(keys.map(key=>caches.delete(key)))) : Promise.resolve()
 
     clear.catch(()=>{}).then(()=>location.reload())
 }
 
-function open(list){
-    if(opened) return
-
-    opened = true
-
-    let many = list.length > 1
-
-    let overlay = document.createElement('div')
-
-    overlay.className = 'release-notes'
-    overlay.innerHTML = `
-        <div class="release-notes__card" role="dialog" aria-modal="true" aria-labelledby="release-notes-title">
-            <div class="release-notes__head">
-                <img class="release-notes__icon" src="./img/logo-icon.svg" alt="">
-                <h2 class="release-notes__heading" id="release-notes-title">${Lang.translate(many ? 'release_title_many' : 'release_title_one')}</h2>
-                <p class="release-notes__lead">${Lang.translate(many ? 'release_lead_many' : 'release_lead_one')}</p>
-            </div>
-            <ul class="release-notes__list">${items(list)}</ul>
-            <button class="release-notes__update" type="button">${Lang.translate('release_update')}</button>
-            <p class="release-notes__note">${Lang.translate('release_note')}</p>
-        </div>
-    `
-
-    let button = overlay.querySelector('.release-notes__update')
-
-    button.addEventListener('click', ()=>update(button))
-
-    // Escape and the browser back gesture must not close it; the only way out is the update
-    overlay.addEventListener('keydown', (e)=>{
-        if(e.key == 'Escape'){
-            e.preventDefault()
-            e.stopPropagation()
-        }
-    })
-
-    document.body.appendChild(overlay)
-
-    button.focus()
-}
-
-function check(){
-    if(opened) return
-
-    fetch('./releases.json?_=' + Date.now(), {cache: 'no-store'})
+/**
+ * Loads releases.json. Keeps the list of releases this device has not loaded yet.
+ * @returns {Promise} resolves when the list is known
+ */
+function load(){
+    return fetch('./releases.json?_=' + Date.now(), {cache: 'no-store'})
         .then(response=>response.ok ? response.json() : null)
         .then(data=>{
-            let releases = data && data.releases ? data.releases : []
+            releases = data && data.releases ? data.releases : []
 
             if(!releases.length) return
 
-            latest = releases[0].id
-
             // a first visit has nothing to catch up on
-            if(!Storage.get(SEEN, '')){
-                Storage.set(SEEN, latest, true)
+            if(!Storage.get(SEEN, '') && eligible()) Storage.set(SEEN, releases[0].id, true)
 
-                return
-            }
-
-            let list = Releases.missed(releases, Storage.get(SEEN, ''))
-
-            if(list.length) open(list)
+            pending = eligible() ? Releases.missed(releases, Storage.get(SEEN, '')) : []
         })
         .catch(()=>{})
+}
+
+/**
+ * Shows or hides the dot on the Info row of the settings panel
+ */
+function badge(){
+    $('[data-component="whats_new"] .whats-new-dot').toggleClass('hide', !pending.length)
+}
+
+/**
+ * Whether this device has updates it has not loaded yet
+ * @returns {boolean}
+ */
+function hasNew(){
+    return pending.length > 0
+}
+
+/**
+ * The Info row: version and date of the latest release, what changed, and the update when there is one
+ */
+function open(){
+    load().then(()=>{
+        badge()
+
+        let latest = releases[0]
+
+        let html = $(`
+            <div class="whats-new">
+                <div class="whats-new__meta">
+                    <div>
+                        <small>${escape(Lang.translate('release_version'))}</small><br>
+                        <span>${latest ? escape(latest.id.slice(0, 8)) : '—'}</span>
+                    </div>
+                    <div>
+                        <small>${escape(Lang.translate('release_updated'))}</small><br>
+                        <span>${latest ? escape(date(latest.date)) : '—'}</span>
+                    </div>
+                </div>
+                <ul class="whats-new__list">${releases.length ? rows() : `<li class="whats-new__empty">${escape(Lang.translate('release_empty'))}</li>`}</ul>
+            </div>
+        `)
+
+        let buttons = pending.length ? [
+            {
+                name: Lang.translate('release_update'),
+                onSelect: ()=>update()
+            }
+        ] : [
+            {
+                name: Lang.translate('release_close'),
+                onSelect: ()=>Modal.close()
+            }
+        ]
+
+        Modal.open({
+            title: Lang.translate('release_info'),
+            html,
+            size: 'small',
+            buttons
+        })
+    })
 }
 
 /**
  * Starts after the app is on screen: a check now, again on every return to the tab and every 15 minutes
  */
 function init(){
-    if(!eligible()) return
+    load().then(badge)
 
-    setTimeout(check, 2000)
-
-    setInterval(check, CHECK_EVERY)
+    setInterval(()=>load().then(badge), CHECK_EVERY)
 
     document.addEventListener('visibilitychange', ()=>{
-        if(!document.hidden) check()
+        if(!document.hidden) load().then(badge)
     })
 }
 
 export default {
     init,
-    check
+    open,
+    hasNew
 }

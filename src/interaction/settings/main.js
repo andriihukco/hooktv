@@ -2,6 +2,7 @@ import Template from '../../interaction/template'
 import Controller from '../../core/controller'
 import Scroll from '../../interaction/scroll'
 import Api from './api'
+import ReleaseNotes from '../release_notes'
 
 function Main(){
     let comp
@@ -21,6 +22,10 @@ function Main(){
             comp.find('[data-component="parser"]').remove()
             comp.find('[data-component="server"]').remove()
         }
+
+        // Info: what changed in the app, with a dot while this device is behind
+        comp.find('[data-component="whats_new"] .whats-new-dot').toggleClass('hide', !ReleaseNotes.hasNew())
+        comp.find('[data-component="whats_new"]').on('hover:enter', ()=>ReleaseNotes.open())
 
         scrl.render().css('max-height', window.innerWidth <= 480 ? window.innerHeight * 0.6 : 'unset')
         scrl.append(comp)

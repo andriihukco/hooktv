@@ -3781,175 +3781,88 @@ body.minimal--ui{
 }
 
 /**
- * What's new (interaction/release_notes.js): a frosted sheet over the app with no close button.
+ * What's new under the Info row of the settings panel (interaction/release_notes.js)
  */
-.release-notes{
-    position: fixed;
-    inset: 0;
-    z-index: 100000;
+.whats-new{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.42);
-    -webkit-backdrop-filter: blur(24px) saturate(1.3);
-    backdrop-filter: blur(24px) saturate(1.3);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #fff;
-    animation: release-notes-fade 0.3s ease-out both;
+    flex-direction: column;
+    gap: 1em;
 
-    &__card{
+    &__meta{
         display: flex;
-        flex-direction: column;
-        width: 100%;
-        max-width: 380px;
-        max-height: min(640px, 100%);
-        padding: 28px 22px 20px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 28px;
-        background: rgba(28, 28, 30, 0.92);
-        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
-        animation: release-notes-rise 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
-    }
-
-    &__head{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    &__icon{
-        width: 64px;
-        height: 64px;
-        margin-bottom: 14px;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    &__heading{
-        margin: 0;
-        font-size: 22px;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1.2;
-    }
-
-    &__lead{
-        margin: 8px 0 0;
-        font-size: 15px;
-        line-height: 1.4;
-        color: rgba(255, 255, 255, 0.62);
-    }
-
-    // iOS grouped list: one rounded group, hairlines between rows
-    &__list{
-        flex: 1 1 auto;
-        min-height: 0;
-        margin: 20px 0 0;
-        padding: 0 14px;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        list-style: none;
-        border-radius: 16px;
+        justify-content: space-between;
+        gap: 1em;
+        padding: 0.8em 1em;
+        border-radius: 1em;
         background: rgba(255, 255, 255, 0.06);
+    }
+
+    &__list{
+        margin: 0;
+        padding: 0;
+        max-height: 50vh;
+        overflow-y: auto;
+        list-style: none;
     }
 
     &__item{
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        padding: 12px 0;
+        gap: 1em;
+        padding: 0.75em 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
 
-        & + &{
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        &:first-child{
+            border-top: 0;
         }
     }
 
     &__text{
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 0.15em;
         min-width: 0;
     }
 
     &__area{
-        font-size: 11px;
+        font-size: 0.75em;
         font-weight: 600;
         letter-spacing: 0.06em;
         text-transform: uppercase;
         color: #c8f542;
     }
 
-    &__title{
-        font-size: 15px;
-        line-height: 1.35;
+    &__new{
+        margin-left: 0.5em;
+        padding: 0.15em 0.6em;
+        border-radius: 999px;
+        background: #c8f542;
+        color: #0b0f00;
+        font-size: 0.7em;
+        font-weight: 700;
+        vertical-align: middle;
     }
 
     &__date{
         flex-shrink: 0;
-        font-size: 12px;
+        font-size: 0.8em;
         color: rgba(255, 255, 255, 0.45);
     }
 
-    &__update{
-        width: 100%;
-        min-height: 50px;
-        margin-top: 20px;
-        border: 0;
-        border-radius: 14px;
-        background: #c8f542;
-        color: #0b0f00;
-        font: inherit;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.15s ease, opacity 0.2s ease;
-
-        &:active{
-            transform: scale(0.98);
-        }
-
-        &:disabled{
-            opacity: 0.6;
-            cursor: default;
-        }
-
-        &:focus-visible{
-            outline: 3px solid rgba(200, 245, 66, 0.45);
-            outline-offset: 2px;
-        }
-    }
-
-    &__note{
-        margin: 12px 0 0;
-        text-align: center;
-        font-size: 12.5px;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    @media (max-width: 480px){
-        align-items: flex-end;
-        padding: 0;
-
-        &__card{
-            max-width: none;
-            max-height: 88%;
-            border-radius: 28px 28px 0 0;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        }
+    &__empty{
+        padding: 1em 0;
+        opacity: 0.6;
     }
 }
 
-@keyframes release-notes-fade{
-    from{ opacity: 0; }
-    to{ opacity: 1; }
-}
-
-@keyframes release-notes-rise{
-    from{ opacity: 0; transform: translateY(24px) scale(0.97); }
-    to{ opacity: 1; transform: none; }
+.whats-new-dot{
+    flex-shrink: 0;
+    width: 0.7em;
+    height: 0.7em;
+    margin-left: auto;
+    border-radius: 50%;
+    background: #c8f542;
 }
 
 /**
