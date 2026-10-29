@@ -269,10 +269,12 @@ function providerUrl(provider){
 }
 
 /**
- * Carousel of streaming services for the home page. Each tile is the service's logo,
- * and opens every title it streams.
+ * The streaming services as round tiles: each one opens every title it streams
+ * @param {object} params
+ * @param {function} oncomplite receives the tiles
+ * @param {function} onerror
  */
-function partProviders(params, call){
+function providerTiles(params, oncomplite, onerror){
     let status = new Status(providers.length)
 
     status.onComplite = (data)=>{
@@ -298,15 +300,8 @@ function partProviders(params, call){
             }
         }).filter(Boolean)
 
-        if(results.length) call({
-            title: Lang.translate('title_streaming'),
-            results: results,
-            params: {items: {view: results.length}},
-            // More opens the productions page
-            total_pages: 2,
-            morePage: {name: 'studios', params: {title: Lang.translate('title_studios')}}
-        })
-        else call()
+        if(results.length) oncomplite(results)
+        else if(onerror) onerror()
     }
 
     providers.forEach((provider, i)=>{
@@ -314,7 +309,7 @@ function partProviders(params, call){
     })
 }
 
-// Production companies on the productions page, in the order they are shown.
+// Production companies on the studios page, in the order they are shown.
 // Logos come from TMDB (logo_path); a few studios have none and show their name.
 const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
 
@@ -322,12 +317,12 @@ const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521
 const colourLogos = [174, 21, 420, 127928]
 
 /**
- * Productions page: the studios as round tiles, each one opens its movies.
+ * The big studios as round tiles, each one opens its movies. Logos come from TMDB.
  * @param {object} params
- * @param {function} oncomplite receives {results, page, total_pages}
+ * @param {function} oncomplite receives the tiles
  * @param {function} onerror
  */
-function studios(params = {}, oncomplite, onerror){
+function studioTiles(params, oncomplite, onerror){
     let status = new Status(studioIds.length)
 
     status.onComplite = (data)=>{
@@ -355,13 +350,79 @@ function studios(params = {}, oncomplite, onerror){
             }
         }).filter(Boolean)
 
-        if(results.length) oncomplite({results: results, page: 1, total_pages: 1})
+        if(results.length) oncomplite(results)
         else if(onerror) onerror()
     }
 
     studioIds.forEach((id, i)=>{
         get('company/' + id, params, (json)=>status.append(i, json), ()=>status.error(), {life: day * 7})
     })
+}
+
+/**
+ * One services kind as a home row: the streaming services or the studios
+ * @param {string} kind 'streaming' or 'studios'
+ * @param {object} params
+ * @param {function} oncomplite receives the row
+ * @param {function} onerror
+ */
+function servicesRow(kind, params, oncomplite, onerror){
+    let tiles = kind == 'studios' ? studioTiles : providerTiles
+    let title = Lang.translate(kind == 'studios' ? 'title_studios' : 'title_streaming')
+
+    tiles(params, (results)=>{
+        oncomplite({
+            kind: kind,
+            title: title,
+            results: results,
+            params: {items: {view: Math.min(results.length, 10)}},
+            // More opens the same kind as its own page
+            total_pages: 2,
+            morePage: {name: 'services', params: {tab: kind, title: title}}
+        })
+    }, onerror)
+}
+
+/**
+ * The home row under the chips: streaming services first, or the studios when the chip is picked
+ */
+function partServices(params, call){
+    servicesRow('streaming', params, call, ()=>call())
+}
+
+/**
+ * The chips above the services row: Streaming and Studios. Enter on a chip swaps the row below.
+ */
+function partChips(params, call){
+    call({
+        title: '',
+        kind: 'chips',
+        results: ['streaming', 'studios'].map((kind, i)=>({
+            id: -(300 + i),
+            title: Lang.translate(kind == 'studios' ? 'title_studios' : 'title_streaming'),
+            kind: kind,
+            chip: true,
+            selected: kind == 'streaming',
+            load: (done)=>servicesRow(kind, params, done),
+            params: {
+                style: {name: 'chip'},
+                module: CardModule.only('Card', 'Style', 'Callback')
+            }
+        })),
+        params: {items: {view: 2}}
+    })
+}
+
+/**
+ * The More page of a services row: every tile of one kind, in a grid
+ * @param {object} params {tab: 'streaming' | 'studios'}
+ * @param {function} oncomplite receives {results, page, total_pages}
+ * @param {function} onerror
+ */
+function services(params = {}, oncomplite, onerror){
+    let tiles = params.tab == 'streaming' ? providerTiles : studioTiles
+
+    tiles(params, (results)=>oncomplite({results: results, page: 1, total_pages: 1}), onerror)
 }
 
 /**
@@ -458,8 +519,9 @@ function main(params = {}, oncomplite, onerror){
         }
     ]
 
-    Arrays.insert(parts_data, 1, (call)=>partProviders(params, call))
-    Arrays.insert(parts_data, 2, (call)=>partGames(params, call))
+    Arrays.insert(parts_data, 1, (call)=>partServices(params, call))
+    Arrays.insert(parts_data, 1, (call)=>partChips(params, call))
+    Arrays.insert(parts_data, 3, (call)=>partGames(params, call))
 
     ContentRows.call('main', params, parts_data)
 
@@ -1415,7 +1477,7 @@ export default {
     search,
     clear,
     company,
-    studios,
+    services,
     person,
     seasons,
     find,

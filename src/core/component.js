@@ -15,7 +15,7 @@ import recomend from '../components/recomend'
 import ua_tv from '../components/ua_tv'
 import ua_tv_grid from '../components/ua_tv_grid'
 import games from '../components/games'
-import studios from '../components/studios'
+import services from '../components/studios'
 
 let component = {
     main,
@@ -35,7 +35,7 @@ let component = {
     ua_tv,
     ua_tv_grid,
     games,
-    studios
+    services
 }
 
 /**

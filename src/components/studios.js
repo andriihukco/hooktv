@@ -4,8 +4,8 @@ import Api from '../core/api/api'
 import Router from '../core/router'
 
 /**
- * Productions page, opened by More on the streaming services row: the big studios as round
- * tiles with their logos. A tile opens the studio's movies.
+ * The More page of a services row (streaming services or studios): one kind as a grid of round
+ * tiles. A tile opens its titles.
  * @param {object} object activity
  * @return {object} component instance
  */
@@ -14,7 +14,7 @@ function component(object){
 
     comp.use({
         onCreate: function(){
-            Api.studios(object, this.build.bind(this), this.empty.bind(this))
+            Api.services(object, this.build.bind(this), this.empty.bind(this))
         },
         onNext: function(resolve, reject){
             reject.call(this)
