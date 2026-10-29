@@ -3,6 +3,7 @@
   "outputDirectory": "build/web",
   "rewrites": [
     {"source": "/sitemap.xml", "destination": "/api/sitemap"},
+    {"source": "/design", "destination": "/design.html"},
     {"source": "/movie/:path*", "destination": "/index.html"},
     {"source": "/tv/:path*", "destination": "/index.html"}
   ],

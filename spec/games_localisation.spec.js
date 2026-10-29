@@ -39,3 +39,18 @@ describe('games localisation', ()=>{
         })
     })
 })
+
+describe('games localisation rule', ()=>{
+    it('no language pack leaves a game hint in English', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+
+        for(const code of codes.filter(c => c !== 'en')){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            catalog.forEach(g=>{
+                const key = `game_${g.id}_hint`
+                expect(pack[key], `${code}: ${key} is still English`).not.toBe(en[key])
+            })
+        }
+    })
+})

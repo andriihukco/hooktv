@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HOOK TV Design — principles, colour, components, accessibility</title>
+    <meta name="description" content="HOOK TV design system: philosophy, colour and type tokens with contrast ratios, components, players, remote input, and the accessibility and SEO checklist.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.hooktv.online/design">
+    <meta property="og:site_name" content="HOOK TV">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="HOOK TV Design">
+    <meta property="og:description" content="Principles, colour, components and accessibility for HOOK TV on TV, phone and desktop.">
+    <meta property="og:url" content="https://www.hooktv.online/design">
+    <meta property="og:image" content="https://www.hooktv.online/img/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="/favicon.ico">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "HOOK TV Design",
+        "description": "Principles, colour, components and accessibility for HOOK TV.",
+        "url": "https://www.hooktv.online/design",
+        "inLanguage": "en",
+        "isPartOf": {"@type": "WebSite", "name": "HOOK TV", "url": "https://www.hooktv.online/"}
+    }
+    </script>
+    <style>
+        :root {
+            --brand-primary: #C8F542;
+            --brand-primary-hover: #D6FF5C;
+            --brand-primary-dark: #A6D12A;
+            --brand-on-primary: #0B0F00;
+            --brand-background: #000;
+            --surface-1: #121214;
+            --surface-2: #1C1C1F;
+            --glass: rgba(30,30,32,.62);
+            --text-primary: #fff;
+            --text-secondary: rgba(255,255,255,.62);
+            --brand-text-muted: #98989D;
+            --brand-border: rgba(255,255,255,.12);
+            --focus-ring: #C8F542;
+            --space-xs: .25rem; --space-sm: .5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --space-2xl: 3rem; --space-3xl: 4rem;
+            --radius-sm: .25rem; --radius-md: .5rem; --radius-lg: .75rem; --radius-xl: 1rem; --radius-full: 9999px;
+            --transition-fast: 150ms; --transition-base: 200ms; --transition-slow: 300ms;
+            --ease: cubic-bezier(.4, 0, .2, 1);
+            --max: 1100px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { background: var(--brand-background); color: var(--text-primary); }
+
+        body {
+            margin: 0;
+            background: var(--brand-background);
+            color: var(--text-primary);
+            font-family: "SegoeUI", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 1rem;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: var(--brand-primary); text-underline-offset: .2em; }
+        a:hover { color: var(--brand-primary-hover); }
+
+        .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--space-md); }
+
+        /* Focus: 3px lime ring with a 2px black gap, the same as hk-focus in src/sass/brand.scss */
+        :focus { outline: none; }
+        :focus-visible { box-shadow: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring); border-radius: var(--radius-md); }
+
+        .skip {
+            position: absolute; left: var(--space-md); top: -100px; z-index: 10;
+            background: var(--brand-primary); color: var(--brand-on-primary);
+            padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); font-weight: 600;
+        }
+        .skip:focus { top: var(--space-md); }
+
+        header.top {
+            position: sticky; top: 0; z-index: 5;
+            background: var(--glass); backdrop-filter: blur(30px) saturate(1.4); -webkit-backdrop-filter: blur(30px) saturate(1.4);
+            border-bottom: 1px solid var(--brand-border);
+        }
+        header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: 56px; flex-wrap: wrap; padding-top: var(--space-sm); padding-bottom: var(--space-sm); }
+        .brand { font-weight: 800; letter-spacing: .02em; color: var(--text-primary); text-decoration: none; font-size: 1.125rem; }
+        .brand b { color: var(--brand-primary); font-weight: 800; }
+        nav.sections ul { list-style: none; display: flex; gap: var(--space-md); margin: 0; padding: 0; flex-wrap: wrap; }
+        nav.sections a { color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-xs); }
+        nav.sections a:hover { color: var(--text-primary); }
+
+        .hero { padding: var(--space-3xl) 0 var(--space-2xl); border-bottom: 1px solid var(--brand-border); }
+        .eyebrow { color: var(--text-secondary); text-transform: uppercase; letter-spacing: .14em; font-size: .8125rem; margin: 0 0 var(--space-sm); }
+        h1 { font-size: clamp(2.25rem, 6vw, 3.75rem); line-height: 1.05; margin: 0 0 var(--space-md); letter-spacing: -.01em; }
+        h1 span { color: var(--brand-primary); }
+        .lede { color: var(--text-secondary); font-size: 1.125rem; max-width: 46rem; margin: 0; }
+
+        section { padding: var(--space-2xl) 0; border-bottom: 1px solid var(--brand-border); }
+        section:last-of-type { border-bottom: 0; }
+        h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin: 0 0 var(--space-sm); letter-spacing: -.005em; }
+        h3 { font-size: 1.125rem; margin: 0 0 var(--space-xs); }
+        .intro { color: var(--text-secondary); max-width: 48rem; margin: 0 0 var(--space-xl); }
+        .muted { color: var(--brand-text-muted); }
+
+        .grid { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+        .card { background: var(--surface-1); border: 1px solid var(--brand-border); border-radius: var(--radius-xl); padding: var(--space-lg); }
+        .card p { margin: 0; color: var(--text-secondary); }
+        .card .num { color: var(--brand-primary); font-weight: 700; font-size: .875rem; margin-bottom: var(--space-xs); display: block; }
+
+        table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+        th, td { text-align: left; padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--brand-border); vertical-align: top; }
+        th { color: var(--text-secondary); font-weight: 600; font-size: .8125rem; text-transform: uppercase; letter-spacing: .08em; }
+        td code, .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .875rem; color: var(--text-primary); }
+        .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--brand-border); background: var(--surface-1); }
+
+        .swatches { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-bottom: var(--space-xl); }
+        .swatch { border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--brand-border); background: var(--surface-1); }
+        .swatch .chip { height: 96px; display: flex; align-items: flex-end; padding: var(--space-sm) var(--space-md); font-weight: 600; }
+        .swatch .meta { padding: var(--space-sm) var(--space-md) var(--space-md); font-size: .875rem; color: var(--text-secondary); }
+        .swatch .meta strong { color: var(--text-primary); display: block; font-size: 1rem; }
+
+        .type-sample { display: grid; gap: var(--space-md); margin-top: var(--space-lg); }
+        .type-sample p { margin: 0; }
+
+        .row-demo { display: flex; gap: var(--space-md); flex-wrap: wrap; align-items: center; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm);
+            min-height: 44px; min-width: 44px; padding: 0 var(--space-lg); border-radius: var(--radius-full);
+            font: inherit; font-weight: 600; border: 1px solid transparent; cursor: pointer; text-decoration: none;
+            transition: background var(--transition-fast) var(--ease), box-shadow var(--transition-fast) var(--ease), transform var(--transition-fast) var(--ease);
+        }
+        .btn-primary { background: var(--brand-primary); color: var(--brand-on-primary); }
+        .btn-primary:hover { background: var(--brand-primary-hover); }
+        .btn-secondary { background: rgba(255,255,255,.12); color: var(--text-primary); }
+        .btn-secondary:hover { background: rgba(255,255,255,.2); }
+        .btn-ghost { background: transparent; color: var(--text-primary); border-color: var(--brand-border); }
+        .btn-ghost:hover { border-color: rgba(255,255,255,.4); }
+        .btn:focus-visible { box-shadow: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring); }
+
+        .poster-row { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        .poster { border-radius: var(--radius-xl); overflow: hidden; background: var(--surface-2); }
+        .poster .art { aspect-ratio: 2 / 3; background: linear-gradient(160deg, #3E91FF 0%, #A55CEB 60%, #1C1C1F 100%); display: flex; align-items: flex-end; padding: var(--space-sm); }
+        .poster .art span { background: rgba(0,0,0,.45); border-radius: var(--radius-sm); padding: 2px 6px; font-size: .75rem; }
+        .poster .cap { padding: var(--space-sm) var(--space-xs) var(--space-md); font-size: .875rem; }
+        .poster .cap strong { display: block; font-weight: 600; }
+        .poster .cap span { color: var(--text-secondary); font-size: .8125rem; }
+
+        .tile { border-radius: var(--radius-xl); overflow: hidden; position: relative; min-height: 150px; padding: var(--space-md); display: flex; flex-direction: column; justify-content: flex-end; }
+        .tile .emoji { position: absolute; top: var(--space-md); left: var(--space-md); font-size: 2rem; }
+        .tile h3 { margin: 0; font-size: 1.0625rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+        .tile p { margin: 2px 0 0; color: rgba(255,255,255,.9); font-size: .8125rem; }
+        .tile-game { background: linear-gradient(135deg, #30D158 0%, #0A84FF 100%); }
+        .tile-folder { background: linear-gradient(135deg, #FF5A4D 0%, #FF9F0A 100%); }
+        .tile-folder.puzzle { background: linear-gradient(135deg, #3E91FF 0%, #A55CEB 100%); }
+
+        .chips { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+        .chip { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); border-radius: var(--radius-full); border: 1px solid var(--brand-border); color: var(--text-secondary); font-size: .9375rem; }
+        .chip[aria-pressed="true"] { background: var(--text-primary); color: #000; border-color: transparent; font-weight: 600; }
+
+        .badge { display: inline-flex; align-items: center; height: 22px; padding: 0 var(--space-sm); border-radius: var(--radius-sm); background: rgba(0,0,0,.6); color: #fff; font-size: .75rem; font-weight: 600; }
+        .badge.lime { background: var(--brand-primary); color: var(--brand-on-primary); }
+
+        .search { display: flex; align-items: center; gap: var(--space-sm); max-width: 28rem; min-height: 48px; padding: 0 var(--space-md); border-radius: var(--radius-full); background: var(--surface-2); border: 1px solid var(--brand-border); }
+        .search input { flex: 1; background: transparent; border: 0; color: var(--text-primary); font: inherit; font-size: 1rem; min-height: 44px; }
+        .search input::placeholder { color: var(--brand-text-muted); }
+        .search input:focus-visible { outline: none; }
+        .search:focus-within { box-shadow: 0 0 0 2px #000, 0 0 0 5px var(--focus-ring); }
+
+        .notice { display: flex; gap: var(--space-md); align-items: center; background: var(--glass); backdrop-filter: blur(30px) saturate(1.4); -webkit-backdrop-filter: blur(30px) saturate(1.4); border-radius: var(--radius-xl); padding: var(--space-md) var(--space-lg); border: 1px solid var(--brand-border); max-width: 30rem; }
+        .notice p { margin: 0; }
+        .notice small { color: var(--text-secondary); }
+
+        .panel { background: var(--surface-1); border-radius: var(--radius-xl); border: 1px solid var(--brand-border); padding: var(--space-lg); }
+
+        .player { background: #000; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--brand-border); }
+        .player .screen { aspect-ratio: 16 / 9; background: linear-gradient(120deg, #1C1C1F 0%, #0B0F00 100%); position: relative; }
+        .player .bar { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.85) 100%); margin-top: -64px; position: relative; flex-wrap: wrap; }
+        .progress { flex: 1 1 200px; height: 6px; background: rgba(255,255,255,.2); border-radius: var(--radius-full); overflow: hidden; min-width: 120px; }
+        .progress i { display: block; height: 100%; width: 42%; background: var(--brand-primary); }
+        .time { font-variant-numeric: tabular-nums; color: var(--text-secondary); font-size: .875rem; }
+        .player .ctl { min-width: 44px; min-height: 44px; border-radius: var(--radius-full); border: 0; background: rgba(255,255,255,.14); color: #fff; font: inherit; font-weight: 600; padding: 0 var(--space-md); }
+
+        .arcade { display: grid; gap: var(--space-md); grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; }
+        .arcade .stage { aspect-ratio: 4 / 3; border-radius: var(--radius-xl); background: linear-gradient(135deg, #30D158 0%, #0A84FF 100%); position: relative; overflow: hidden; }
+        .arcade .stage .hud { position: absolute; left: var(--space-md); right: var(--space-md); top: var(--space-md); display: flex; justify-content: space-between; color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; text-shadow: 0 1px 2px rgba(0,0,0,.45); }
+        .keys { display: grid; gap: var(--space-sm); }
+        .keys .k { display: flex; justify-content: space-between; gap: var(--space-md); border-bottom: 1px solid var(--brand-border); padding: var(--space-sm) 0; }
+        .keys .k kbd { font-family: ui-monospace, Menlo, Consolas, monospace; background: var(--surface-2); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); padding: 0 var(--space-xs); font-size: .8125rem; }
+        .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 6px; }
+
+        .checks td:first-child { white-space: nowrap; font-weight: 600; }
+        .ok { color: var(--brand-primary); font-weight: 600; }
+        .part { color: #FFD60A; font-weight: 600; }
+        .todo { color: #FF9F0A; font-weight: 600; }
+
+        footer { padding: var(--space-xl) 0 var(--space-3xl); color: var(--brand-text-muted); font-size: .875rem; }
+
+        @media (max-width: 720px) {
+            .arcade { grid-template-columns: 1fr; }
+            nav.sections ul { gap: var(--space-xs); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="top">
+        <div class="wrap">
+            <a class="brand" href="/">HOOK<b>·</b>TV</a>
+            <nav class="sections" aria-label="Design sections">
+                <ul>
+                    <li><a href="#philosophy">Philosophy</a></li>
+                    <li><a href="#colour">Colour</a></li>
+                    <li><a href="#type">Type</a></li>
+                    <li><a href="#components">Components</a></li>
+                    <li><a href="#players">Players</a></li>
+                    <li><a href="#input">Remote</a></li>
+                    <li><a href="#a11y">Accessibility</a></li>
+                    <li><a href="#seo">SEO</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <div class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Design system · v1</p>
+                <h1>HOOK TV <span>Design</span></h1>
+                <p class="lede">One calm surface for films, series, live TV and games. The same tokens drive the TV remote, the phone and the desktop, so a person who learns one screen already knows the next.</p>
+            </div>
+        </div>
+
+        <section id="philosophy" aria-labelledby="philosophy-h">
+            <div class="wrap">
+                <h2 id="philosophy-h">Philosophy of service</h2>
+                <p class="intro">HOOK TV exists so that someone can find something good to watch in a few seconds and start it. Everything on screen serves that moment. Where a choice does not help it, we remove it.</p>
+                <div class="grid">
+                    <article class="card">
+                        <span class="num">01</span>
+                        <h3>Content is the hero</h3>
+                        <p>Posters and backdrops carry the screen. Chrome stays quiet: dark surfaces, few borders, text that recedes until it is needed.</p>
+                    </article>
+                    <article class="card">
+                        <span class="num">02</span>
+                        <h3>Built for the couch first</h3>
+                        <p>Assume a remote, three metres away and a glance. Every control is reachable with arrows and OK, and the focus is always visible.</p>
+                    </article>
+                    <article class="card">
+                        <span class="num">03</span>
+                        <h3>Calm motion</h3>
+                        <p>Transitions are short and purposeful: 150 ms for presses, 200 ms for panels, 300 ms for pages. Motion is reduced when the person asks for less.</p>
+                    </article>
+                    <article class="card">
+                        <span class="num">04</span>
+                        <h3>Ukrainian first, every language honest</h3>
+                        <p>Ukrainian is the home language, and the interface is available in 40 languages. Untranslated text falls back to English, never to an empty label. Brand names stay as they are.</p>
+                    </article>
+                    <article class="card">
+                        <span class="num">05</span>
+                        <h3>Accessible by default</h3>
+                        <p>Contrast meets WCAG 2.2 AA, focus rings are kept on every control, and touch targets are at least 44 px, and language and reading order are declared on every page.</p>
+                    </article>
+                    <article class="card">
+                        <span class="num">06</span>
+                        <h3>One system, every screen</h3>
+                        <p>TV, phone, tablet and desktop share the same tokens and components. Layout adapts; meaning does not change.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="colour" aria-labelledby="colour-h">
+            <div class="wrap">
+                <h2 id="colour-h">Colour</h2>
+                <p class="intro">Black is the canvas. Electric lime is the single accent for actions and focus. Ratios are computed against the surface they sit on (WCAG 2.2 contrast formula).</p>
+                <div class="swatches">
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:#C8F542;color:#0B0F00" role="img" aria-label="Electric lime, #C8F542">Primary</div>
+                        <figcaption class="meta"><strong>#C8F542</strong><code class="code">--brand-primary</code><br>16.6:1 on black · focus ring · primary actions</figcaption>
+                    </figure>
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:#0B0F00;color:#C8F542;border-bottom:1px solid #222" role="img" aria-label="Near black, #0B0F00">On primary</div>
+                        <figcaption class="meta"><strong>#0B0F00</strong><code class="code">--brand-on-primary</code><br>15.3:1 on lime · text on primary</figcaption>
+                    </figure>
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:#000;color:#fff;border-bottom:1px solid #222" role="img" aria-label="Black, #000000">Canvas</div>
+                        <figcaption class="meta"><strong>#000000</strong><code class="code">--brand-background</code><br>21:1 white text</figcaption>
+                    </figure>
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:#121214;color:#fff" role="img" aria-label="Surface 1, #121214">Surface 1</div>
+                        <figcaption class="meta"><strong>#121214</strong><code class="code">--surface-1</code><br>Raised cards and panels</figcaption>
+                    </figure>
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:#1C1C1F;color:#fff" role="img" aria-label="Surface 2, #1C1C1F">Surface 2</div>
+                        <figcaption class="meta"><strong>#1C1C1F</strong><code class="code">--surface-2</code><br>Nested fields, search, chips</figcaption>
+                    </figure>
+                    <figure class="swatch" style="margin:0">
+                        <div class="chip" style="background:rgba(30,30,32,.62);color:#fff;backdrop-filter:blur(8px)" role="img" aria-label="Glass, 62 percent dark grey">Glass</div>
+                        <figcaption class="meta"><strong>rgba(30,30,32,.62)</strong><code class="code">--glass</code><br>Frosted sheets over artwork; blur is static</figcaption>
+                    </figure>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <caption class="muted" style="text-align:left;padding:var(--space-sm) var(--space-md)">Text pairs used in the app</caption>
+                        <thead>
+                            <tr><th scope="col">Text</th><th scope="col">On</th><th scope="col">Ratio</th><th scope="col">Result</th><th scope="col">Used for</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#FFFFFF</td><td>#000000</td><td>21.0:1</td><td class="ok">AA, AAA</td><td>Titles, body text</td></tr>
+                            <tr><td>rgba(255,255,255,.62) ≈ #9E9E9E</td><td>#000000</td><td>7.8:1</td><td class="ok">AA, AAA</td><td>Secondary text</td></tr>
+                            <tr><td>#98989D (muted)</td><td>#000000</td><td>7.3:1</td><td class="ok">AA, AAA</td><td>Placeholders, captions</td></tr>
+                            <tr><td>#98989D (muted)</td><td>#1C1C1F</td><td>5.9:1</td><td class="ok">AA</td><td>Captions on cards</td></tr>
+                            <tr><td>#0B0F00</td><td>#C8F542</td><td>15.3:1</td><td class="ok">AA, AAA</td><td>Label on primary buttons</td></tr>
+                            <tr><td>#C8F542</td><td>#000000</td><td>16.6:1</td><td class="ok">AA, AAA</td><td>Accent text, focus ring</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="type" aria-labelledby="type-h">
+            <div class="wrap">
+                <h2 id="type-h">Typography, space and shape</h2>
+                <p class="intro">One family, the system UI stack as fallback. Sizes are in rem so they follow the person's settings. Spacing and radii come from the same scale across every component.</p>
+                <div class="grid">
+                    <div class="panel">
+                        <h3>Family</h3>
+                        <p class="code">SegoeUI, -apple-system, Segoe UI, Roboto, sans-serif</p>
+                        <h3 style="margin-top:var(--space-md)">Weights</h3>
+                        <p class="muted">400 body · 500 medium · 600 labels and buttons · 700 titles</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Space scale</h3>
+                        <p class="code">4 · 8 · 16 · 24 · 32 · 48 · 64 px</p>
+                        <h3 style="margin-top:var(--space-md)">Radius</h3>
+                        <p class="code">4 · 8 · 12 · 16 px · pill</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Motion</h3>
+                        <p class="code">150 ms press · 200 ms panel · 300 ms page</p>
+                        <p class="muted" style="margin-top:var(--space-sm)">cubic-bezier(.4, 0, .2, 1). Reduced motion turns transitions off.</p>
+                    </div>
+                </div>
+                <div class="type-sample" aria-label="Type scale sample">
+                    <p style="font-size:2.5rem;font-weight:700;line-height:1.1">The quiet one about the sea</p>
+                    <p style="font-size:1.5rem;font-weight:600">A film, a series, a live channel</p>
+                    <p style="font-size:1.125rem;color:var(--text-secondary)">Body text at 18 px for lists and descriptions on TV.</p>
+                    <p style="font-size:.875rem;color:var(--brand-text-muted)">Captions and metadata, never smaller than 12 px.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="components" aria-labelledby="components-h">
+            <div class="wrap">
+                <h2 id="components-h">Components</h2>
+                <p class="intro">Each component states its job and the states it must show: default, focused, pressed and disabled. The focus ring is the one state that is never removed.</p>
+
+                <h3 style="margin-top:var(--space-xl)">Buttons</h3>
+                <div class="row-demo" role="group" aria-label="Button examples">
+                    <button class="btn btn-primary" type="button">Watch now</button>
+                    <button class="btn btn-secondary" type="button">Add to list</button>
+                    <button class="btn btn-ghost" type="button">Details</button>
+                    <button class="btn btn-primary" type="button" disabled style="opacity:.45;cursor:not-allowed">Unavailable</button>
+                </div>
+                <p class="muted" style="margin:var(--space-sm) 0 0">Primary: one per screen. Secondary and ghost: everything else. Minimum 44 × 44 px.</p>
+
+                <h3 style="margin-top:var(--space-xl)">Focus</h3>
+                <div class="row-demo">
+                    <button class="btn btn-secondary" type="button" style="box-shadow:0 0 0 2px #000, 0 0 0 5px var(--focus-ring)">Focused</button>
+                    <span class="muted">3 px lime ring with a 2 px black gap. Contrast 16.6:1 against black, so it passes WCAG 2.2 non-text contrast (1.4.11).</span>
+                </div>
+
+                <h3 style="margin-top:var(--space-xl)">Poster card</h3>
+                <p class="muted" style="margin:0 0 var(--space-md)">2:3 artwork, title and year below.</p>
+                <div class="poster-row">
+                    <article class="poster" aria-label="Example poster card">
+                        <div class="art"><span>Film</span></div>
+                        <div class="cap"><strong>Example title</strong><span>2026 · 1 h 52 min</span></div>
+                    </article>
+                    <article class="poster" aria-label="Example poster card">
+                        <div class="art" style="background:linear-gradient(160deg,#FF5A4D,#1C1C1F)"><span>Series</span></div>
+                        <div class="cap"><strong>Another title</strong><span>2025 · 3 seasons</span></div>
+                    </article>
+                    <article class="poster" aria-label="Example poster card">
+                        <div class="art" style="background:linear-gradient(160deg,#35C976,#1C1C1F)"><span>New</span></div>
+                        <div class="cap"><strong>Third title</strong><span>2026 · new episode</span></div>
+                    </article>
+                </div>
+
+                <h3 style="margin-top:var(--space-xl)">Game tile and folder</h3>
+                <p class="muted" style="margin:0 0 var(--space-md)">Each game has its own two-colour gradient. Each folder (Arcade, Puzzle, Board, Words, Quiz, Party) has one too. Titles and hints come from the interface language.</p>
+                <div class="grid">
+                    <div class="tile tile-game" role="img" aria-label="Snake game tile"><span class="emoji" aria-hidden="true">🐍</span><h3>Snake</h3><p>Eat, grow, and do not hit yourself</p></div>
+                    <div class="tile tile-folder" role="img" aria-label="Arcade folder tile"><span class="emoji" aria-hidden="true">🕹️</span><h3>Arcade</h3><p>Reflex and action</p></div>
+                    <div class="tile tile-folder puzzle" role="img" aria-label="Puzzle folder tile"><span class="emoji" aria-hidden="true">🧩</span><h3>Puzzle</h3><p>Think it through</p></div>
+                </div>
+
+                <h3 style="margin-top:var(--space-xl)">Chips, search and badges</h3>
+                <div class="row-demo" style="margin-bottom:var(--space-md)">
+                    <div class="chips" role="group" aria-label="Filter example">
+                        <button class="chip" type="button" aria-pressed="true">All</button>
+                        <button class="chip" type="button" aria-pressed="false">Films</button>
+                        <button class="chip" type="button" aria-pressed="false">Series</button>
+                    </div>
+                </div>
+                <div class="row-demo" style="margin-bottom:var(--space-md)">
+                    <label class="search" style="flex:1 1 280px">
+                        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search titles</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+                        <input type="search" placeholder="Search films and series">
+                    </label>
+                </div>
+                <div class="row-demo">
+                    <span class="badge lime">HD</span>
+                    <span class="badge">4K</span>
+                    <span class="badge">Ukrainian</span>
+                    <span class="badge">New episode</span>
+                </div>
+
+                <h3 style="margin-top:var(--space-xl)">Notice</h3>
+                <div class="notice" role="status">
+                    <div>
+                        <p><strong>Cache cleared</strong></p>
+                        <small>Artwork loads again as you browse.</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="players" aria-labelledby="players-h">
+            <div class="wrap">
+                <h2 id="players-h">Players</h2>
+                <p class="intro">Two players share one rule: the picture stays the hero and the controls appear on demand, then get out of the way.</p>
+
+                <h3>Video player</h3>
+                <div class="player" role="group" aria-label="Video player controls example">
+                    <div class="screen" aria-hidden="true"></div>
+                    <div class="bar">
+                        <button class="ctl" type="button" aria-label="Pause">❚❚</button>
+                        <div class="progress" role="presentation"><i></i></div>
+                        <span class="time">24:10 / 1:52:00</span>
+                        <button class="ctl" type="button">Subtitles</button>
+                        <button class="ctl" type="button">Quality</button>
+                        <button class="ctl" type="button">Audio</button>
+                    </div>
+                </div>
+                <p class="muted" style="margin:var(--space-sm) 0 var(--space-xl)">Audio, subtitles and quality sit in the same bar, one press away. Controls are kept large enough to hit with a finger.</p>
+
+                <h3>Game player</h3>
+                <div class="arcade">
+                    <div class="stage" role="img" aria-label="Example game screen: Snake, score 12, best 40">
+                        <div class="hud" aria-hidden="true"><span>Score 12</span><span>Best 40</span></div>
+                    </div>
+                    <div>
+                        <p style="margin:0 0 var(--space-md)"><strong>Snake</strong><br><span class="muted">Eat, grow, and do not hit yourself</span></p>
+                        <div class="keys" role="list" aria-label="Controls">
+                            <div class="k" role="listitem"><span>Move</span><kbd>← → ↑ ↓</kbd></div>
+                            <div class="k" role="listitem"><span>Select / Action</span><kbd>OK · Enter</kbd></div>
+                            <div class="k" role="listitem"><span><span class="dot" style="background:#FF453A" aria-hidden="true"></span>Restart</span><kbd>Red</kbd></div>
+                            <div class="k" role="listitem"><span><span class="dot" style="background:#30D158" aria-hidden="true"></span>Pause</span><kbd>Green</kbd></div>
+                            <div class="k" role="listitem"><span><span class="dot" style="background:#FFD60A" aria-hidden="true"></span>Help</span><kbd>Yellow</kbd></div>
+                            <div class="k" role="listitem"><span>Back to games</span><kbd>Back</kbd></div>
+                        </div>
+                        <p class="muted" style="margin:var(--space-md) 0 0">The game owns the keyboard while it is open. Colour keys are shortcuts only; every action also has a visible control.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="input" aria-labelledby="input-h">
+            <div class="wrap">
+                <h2 id="input-h">Input: remote, keyboard, touch, mouse</h2>
+                <p class="intro">Four ways in, one model. Arrows move focus, OK selects, Back leaves. Touch and mouse work directly on the same targets.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th scope="col">Action</th><th scope="col">Remote</th><th scope="col">Keyboard</th><th scope="col">Touch / mouse</th></tr></thead>
+                        <tbody>
+                            <tr><td>Move focus</td><td>Arrows</td><td>Arrow keys, W A S D</td><td>Hover (mouse only)</td></tr>
+                            <tr><td>Select</td><td>OK</td><td>Enter, Space</td><td>Tap, click</td></tr>
+                            <tr><td>Back / close</td><td>Back</td><td>Esc</td><td>Back control</td></tr>
+                            <tr><td>Context menu</td><td>Hold OK</td><td>Long press Enter</td><td>Press and hold</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="a11y" aria-labelledby="a11y-h">
+            <div class="wrap">
+                <h2 id="a11y-h">Accessibility: WCAG 2.2 AA check</h2>
+                <p class="intro">Status is stated as found, not as hoped. <span class="ok">Met</span> means checked in code or by measurement. <span class="part">Partial</span> means some screens or widgets do not yet meet it. <span class="todo">To do</span> means not started.</p>
+                <div class="table-wrap">
+                    <table class="checks">
+                        <thead><tr><th scope="col">Criterion</th><th scope="col">Requirement</th><th scope="col">HOOK TV</th><th scope="col">Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>1.4.3 Contrast (minimum)</td><td>4.5:1 text, 3:1 large text</td><td>The tokens and the pairs in the colour table pass (lowest 5.9:1). Other colours in the app are not measured yet.</td><td class="part">Partial</td></tr>
+                            <tr><td>1.4.11 Non-text contrast</td><td>3:1 for focus and controls</td><td>Focus ring 16.6:1 against black.</td><td class="ok">Met</td></tr>
+                            <tr><td>2.4.7 Focus visible</td><td>Focus is always visible</td><td>A focus ring is defined for controls, but not every control in the app has been checked.</td><td class="part">Partial</td></tr>
+                            <tr><td>2.5.5 Target size</td><td>44 × 44 px</td><td>A 44 px minimum is defined in the app stylesheet; not every control has been measured.</td><td class="part">Partial</td></tr>
+                            <tr><td>2.1.1 Keyboard</td><td>All functions by keyboard</td><td>Navigation is built around the remote and keyboard controller. Not every screen has been tested this way yet.</td><td class="part">Partial</td></tr>
+                            <tr><td>2.3.3 Motion from interaction</td><td>Option to reduce motion</td><td>CSS honours prefers-reduced-motion in the main stylesheets. Some JavaScript animations (scroll, background) are not yet gated.</td><td class="part">Partial</td></tr>
+                            <tr><td>3.1.1 Language of page</td><td>Page declares its language</td><td>The html lang now follows the chosen interface language, not a fixed value.</td><td class="ok">Met (fixed)</td></tr>
+                            <tr><td>1.1.1 Non-text content</td><td>Text alternatives</td><td>Artwork has alt text on this page, and decorative icons are hidden from assistive tech. Some in-app icons still lack labels.</td><td class="part">Partial</td></tr>
+                            <tr><td>4.1.2 Name, role, value</td><td>Custom widgets expose role and state</td><td>About 70 aria attributes in the code, but only 2 explicit roles. Many custom controls are div-based and need roles.</td><td class="part">Partial</td></tr>
+                            <tr><td>1.4.4 Resize text</td><td>Readable at 200%</td><td>Layouts use rem and flex/grid. Not yet tested at 200% on every screen.</td><td class="todo">To do</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="seo" aria-labelledby="seo-h">
+            <div class="wrap">
+                <h2 id="seo-h">Search and sharing</h2>
+                <p class="intro">Every public page declares its language, a unique title and description, a canonical address, and Open Graph tags for link previews.</p>
+                <div class="table-wrap">
+                    <table class="checks">
+                        <thead><tr><th scope="col">Item</th><th scope="col">Where</th><th scope="col">Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Language and title</td><td>This page: lang="en", one title under 70 characters</td><td class="ok">Met</td></tr>
+                            <tr><td>Description</td><td>Under 160 characters, unique to the page</td><td class="ok">Met</td></tr>
+                            <tr><td>Canonical and Open Graph</td><td>https://www.hooktv.online/design</td><td class="ok">Met</td></tr>
+                            <tr><td>One h1, ordered headings</td><td>This page</td><td class="ok">Met</td></tr>
+                            <tr><td>Robots and sitemap</td><td>robots.txt allows crawling; sitemap.xml lists titles</td><td class="ok">Met</td></tr>
+                            <tr><td>Structured data</td><td>WebPage on this page</td><td class="ok">Met</td></tr>
+                            <tr><td>Per-language home page</td><td>Home declares uk; the other 39 languages are chosen in the app, not by URL</td><td class="part">Partial</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="rules" aria-labelledby="rules-h">
+            <div class="wrap">
+                <h2 id="rules-h">How this page stays true</h2>
+                <ul class="muted" style="padding-left:1.25rem;margin:0;max-width:48rem">
+                    <li>Tokens are defined once, in <code class="code">src/sass/brand.scss</code>. When a token changes, change it here too.</li>
+                    <li>Every new game needs a title and hint in all 40 language packs. A test fails when one is missing or still English.</li>
+                    <li>Every change to a component or a token is checked for contrast, focus and reduced motion before it ships.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">HOOK TV design · last reviewed for this page · colours and ratios computed from the tokens above.</div>
+    </footer>
+</body>
+</html>

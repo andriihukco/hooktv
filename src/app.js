@@ -809,6 +809,9 @@ function loadTask(){
 function loadLang(){
     let code = window.localStorage.getItem('language') || 'en'
 
+    // WCAG 3.1.1: screen readers and hyphenation follow the language on screen
+    document.documentElement.setAttribute('lang', code)
+
     // HOOK TV: TMDB speaks the interface language; there is no separate setting for it
     if(Storage.get('tmdb_lang', '') !== code) Storage.set('tmdb_lang', code, true)
 
