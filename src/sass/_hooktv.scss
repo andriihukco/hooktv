@@ -3799,17 +3799,34 @@ body.minimal--ui{
             display: none;
         }
 
+        // the current section, hover and focus show the name next to the icon as a capsule
         &.menu__item--current,
         &.focus,
         &.hover,
         &.traverse,
         &.active{
+            width: auto;
+            flex: 0 0 auto;
+            gap: 0.45em;
+            padding: 0 0.85em 0 0.7em !important;
+            border-radius: 999px;
+
             .navigation-bar__glyph--outline{
                 display: none;
             }
 
             .navigation-bar__glyph--filled{
                 display: inline;
+            }
+
+            .menu__text{
+                position: static;
+                width: auto;
+                height: auto;
+                overflow: visible;
+                clip: auto;
+                font-size: 0.9em;
+                font-weight: 500;
             }
         }
     }
