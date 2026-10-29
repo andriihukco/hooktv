@@ -52,3 +52,12 @@ body.platform--netcast{
         }
     }
 }
+// a category's title in the all-games grid: a full-width row above its games
+.games-group{
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 1.2em 0.5em 0.4em;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #fff;
+}

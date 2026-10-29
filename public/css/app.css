@@ -9718,6 +9718,16 @@ body.platform--netcast .category-full:after {
   clear: both;
 }
 
+.games-group {
+  width: 100% !important;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 1.2em 0.5em 0.4em;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #fff;
+}
+
 @-webkit-keyframes animation-search-input-line {
   0% {
     opacity: 1;
