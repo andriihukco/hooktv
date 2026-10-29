@@ -989,3 +989,90 @@
     82%{ opacity: 1; }
     100%{ opacity: 0; }
 }
+
+// the menu button in the player's bar: the one control that opens everything else (leave, settings, scores, rules)
+.games__menu-btn{
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    flex: none;
+    height: 2.6em;
+    padding: 0 0.9em 0 0.75em;
+    border-radius: 99em;
+    background: var(--hk-glass, rgba(30, 30, 32, 0.62));
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+
+    &:active{
+        transform: scale(0.94);
+    }
+}
+
+// the menu panel and its pages (scores, hints, rules, instructions)
+.games__sheet-card--menu{
+    width: min(26em, 92%);
+    text-align: center;
+
+    .games__sheet-t{
+        font-size: 1.5em;
+    }
+
+    .games__menu{
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+.games__award{
+    display: inline-block;
+    margin: 0.2em 0 1em;
+    padding: 0.35em 1em;
+    border-radius: 99em;
+    background: var(--accent, #C8F542);
+    color: var(--accent-contrast, #0B0F00);
+    font-size: 0.8em;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.games__scores{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5em;
+    margin-bottom: 1em;
+}
+
+.games__score-card{
+    display: flex;
+    flex-direction: column;
+    padding: 0.7em 0.2em;
+    border-radius: 0.8em;
+    background: rgba(255, 255, 255, 0.06);
+
+    b{
+        font-size: 1.25em;
+        font-variant-numeric: tabular-nums;
+    }
+
+    span{
+        margin-top: 0.2em;
+        font-size: 0.6em;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.55;
+    }
+}
+
+.games__sheet-card--menu .games__runs{
+    margin: 0 auto;
+    text-align: left;
+}
+
+@media (max-width: 520px){
+    .games__menu-btn span{
+        display: none;
+    }
+}

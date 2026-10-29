@@ -508,12 +508,24 @@ function open(id){
     window.addEventListener('resize', fit)
     // the screen belongs to the game while it is open: the screensaver waits for the player to leave
     Screensaver.suspend()
+    goFullscreen(true)
     launch(game)
+}
+
+// the browser's own full screen while a game is open (where the browser allows it); the page is full-screen either way
+function goFullscreen(on){
+    try {
+        let el = document.documentElement
+
+        if(on && !document.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(()=>{})
+        if(!on && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{})
+    } catch(e){}
 }
 
 function close(){
     teardown()
     Screensaver.resume()
+    goFullscreen(false)
     Object.assign(C, basePalette)
     window.removeEventListener('resize', fit)
     root.removeClass('games--on').detach()
