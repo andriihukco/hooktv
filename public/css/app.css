@@ -22573,6 +22573,258 @@ body.minimal--ui .menu__item {
   }
 }
 /**
+ * What's new (interaction/release_notes.js): a frosted sheet over the app with no close button.
+ */
+.release-notes {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  backdrop-filter: blur(24px) saturate(1.3);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #fff;
+  -webkit-animation: release-notes-fade 0.3s ease-out both;
+          animation: release-notes-fade 0.3s ease-out both;
+}
+.release-notes__card {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+  max-height: min(640px, 100%);
+  padding: 28px 22px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-border-radius: 28px;
+          border-radius: 28px;
+  background: rgba(28, 28, 30, 0.92);
+  -webkit-box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
+          box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
+  -webkit-animation: release-notes-rise 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+          animation: release-notes-rise 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+.release-notes__head {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+}
+.release-notes__icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 14px;
+  -webkit-border-radius: 16px;
+          border-radius: 16px;
+  -webkit-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.release-notes__heading {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.release-notes__lead {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.62);
+}
+.release-notes__list {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+  min-height: 0;
+  margin: 20px 0 0;
+  padding: 0 14px;
+  overflow-y: auto;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
+  list-style: none;
+  -webkit-border-radius: 16px;
+          border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.release-notes__item {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+.release-notes__item + .release-notes__item {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.release-notes__text {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.release-notes__area {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c8f542;
+}
+.release-notes__title {
+  font-size: 15px;
+  line-height: 1.35;
+}
+.release-notes__date {
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+.release-notes__update {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 20px;
+  border: 0;
+  -webkit-border-radius: 14px;
+          border-radius: 14px;
+  background: #c8f542;
+  color: #0b0f00;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-transition: opacity 0.2s ease, -webkit-transform 0.15s ease;
+  transition: opacity 0.2s ease, -webkit-transform 0.15s ease;
+  -o-transition: transform 0.15s ease, opacity 0.2s ease;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  transition: transform 0.15s ease, opacity 0.2s ease, -webkit-transform 0.15s ease;
+}
+.release-notes__update:active {
+  -webkit-transform: scale(0.98);
+      -ms-transform: scale(0.98);
+          transform: scale(0.98);
+}
+.release-notes__update:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.release-notes__update:focus-visible {
+  outline: 3px solid rgba(200, 245, 66, 0.45);
+  outline-offset: 2px;
+}
+.release-notes__note {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+@media (max-width: 480px) {
+  .release-notes {
+    -webkit-box-align: end;
+    -webkit-align-items: flex-end;
+        -ms-flex-align: end;
+            align-items: flex-end;
+    padding: 0;
+  }
+  .release-notes__card {
+    max-width: none;
+    max-height: 88%;
+    -webkit-border-radius: 28px 28px 0 0;
+            border-radius: 28px 28px 0 0;
+    padding-bottom: -webkit-calc(20px + env(safe-area-inset-bottom));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+}
+
+@-webkit-keyframes release-notes-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes release-notes-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes release-notes-rise {
+  from {
+    opacity: 0;
+    -webkit-transform: translateY(24px) scale(0.97);
+            transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+@keyframes release-notes-rise {
+  from {
+    opacity: 0;
+    -webkit-transform: translateY(24px) scale(0.97);
+            transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+/**
  * Install suggestion (interaction/install_app.js): platform tabs and the steps for each.
  */
 .install-app {

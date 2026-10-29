@@ -22,6 +22,9 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # full history: the "what's new" list is built from the commits on main
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22

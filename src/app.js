@@ -78,6 +78,7 @@ import Color from './utils/color'
 import Cache from './utils/cache'
 import Demo from './core/demo'
 import Torrent from './interaction/torrent'
+import ReleaseNotes from './interaction/release_notes'
 import Torserver from './interaction/torserver'
 import Speedtest from './interaction/speedtest'
 import VPN from './core/vpn'
@@ -720,6 +721,8 @@ function showApp(){
         Keypad.enable()
 
         Screensaver.enable()
+
+        ReleaseNotes.init()
 
         // the app rises into view as the splash fades (welcome.scss); the class goes once it ends,
         // so the transform does not stay on #app and break position: fixed children

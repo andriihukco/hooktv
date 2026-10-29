@@ -202,6 +202,13 @@ function build_web(){
     return bundle.pipe(dest(bulFolder+'web/'));
 }
 
+/** Release: the list of recent commits the app shows as "what's new" after a deploy **/
+function write_releases(done){
+    require('./scripts/releases').write(bulFolder + 'web')
+
+    done()
+}
+
 function write_manifest(done){
     var manifest = fs.readFileSync(srcFolder+'core/manifest.js', 'utf8')
     var hash     = getFileHash(dstFolder + '/app.js')
@@ -458,7 +465,7 @@ function buildDoc(done){
 exports.pack_webos   = series(sync_webos, uglify_task, public_webos, index_webos);
 exports.pack_tizen   = series(sync_tizen, uglify_task, public_tizen, index_tizen);
 exports.pack_github  = series(sync_github, uglify_task, public_github, write_manifest, index_github);
-exports.pack_web     = series(merge, sass_task, lang_task, sync_web, parallel(minify_web_js, minify_web_css), build_web);
+exports.pack_web     = series(merge, sass_task, lang_task, sync_web, parallel(minify_web_js, minify_web_css), build_web, write_releases);
 exports.pack_plugins = series(plugins);
 exports.test         = series(test);
 // Updated default task to build the app before starting watch and browser sync
