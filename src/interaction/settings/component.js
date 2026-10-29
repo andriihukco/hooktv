@@ -164,20 +164,6 @@ function Component(name, component_params = {}){
     }
     
     /**
-     * Вход в аккаунт: отдельная ячейка в самом конце, открывает панель аккаунта справа
-     */
-    function addAccount(){
-        if(!window.lampa_settings.account_use) return
-
-        comp.append(`<div class="settings-folder selector settings-account" data-component="account">
-            <div class="settings-folder__icon">
-                ${Material.icon('person')}
-            </div>
-            <div class="settings-folder__name">${Lang.translate('settings_login')}</div>
-        </div>`)
-    }
-
-    /**
      * HOOK TV: rows and headings the flat page drops, by param name and title
      */
     function hideRows(){
@@ -220,8 +206,9 @@ function Component(name, component_params = {}){
 
         let components = Api.allComponents()
 
-        // sources pick themselves and remote setup is for developers: neither is a choice to offer
-        let hidden = ['hook_online', 'remote_configuration', 'content_rows']
+        // sources pick themselves, remote setup is for developers and the BWA plugin's own
+        // options are not ours to offer: none of them is a choice for the viewer
+        let hidden = ['hook_online', 'remote_configuration', 'content_rows', 'bwa']
 
         for(let key in components){
             if(key == name || hidden.indexOf(key) >= 0) continue
@@ -241,8 +228,6 @@ function Component(name, component_params = {}){
         addParams()
 
         if(name == 'interface') addSections()
-
-        if(name == 'interface') addAccount()
 
         buildEvents()
 
