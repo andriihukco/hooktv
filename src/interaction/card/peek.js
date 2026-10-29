@@ -35,6 +35,11 @@ function el(tag, cls, text){
     return node
 }
 
+// Watch Now for a title, Play Game for a game
+function playLabel(data){
+    pane.querySelector('.card-peek__play span').textContent = Lang.translate(data.game ? 'hooktv_play_game' : 'hooktv_watch_now')
+}
+
 function listLabel(data){
     let added = Favorite.check(data).book
 
@@ -81,18 +86,22 @@ function fill(card){
         // three genres at most: the row never wraps, so the pane keeps its height
         let genres = (extra && extra.genres.length ? extra.genres : (meta ? meta.textContent.replace(/^\d{4}\s·\s/, '').split(' · ').filter(Boolean) : [])).slice(0, 3)
 
+        // a game has no rating or year: its kind and the ways to play it take their place
+        if(data.game) genres = [Lang.translate('hooktv_game_' + data.kind), Lang.translate('hooktv_game_inputs')]
+
         info.innerHTML = ''
         info.appendChild(title)
-        info.appendChild(facts(data))
 
+        if(!data.game) info.appendChild(facts(data))
         if(genres.length) info.appendChild(chips(genres))
         if(text) info.appendChild(el('div', 'card-peek__descr', text.textContent))
     }
 
     render(null)
 
-    Extra.get(data).then(extra=>extra && current === card && render(extra))
+    if(!data.game) Extra.get(data).then(extra=>extra && current === card && render(extra))
 
+    playLabel(data)
     listLabel(data)
 }
 
@@ -206,7 +215,9 @@ function open(card){
         card.style.setProperty('--card-w', card.getBoundingClientRect().width + 'px')
         card.style.setProperty('--view-h', view.offsetHeight + 'px')
         // container corners follow the poster's, so the ring is even on every corner
-        card.style.setProperty('--view-r', getComputedStyle(view).borderTopLeftRadius)
+        let radius = getComputedStyle(view).borderTopLeftRadius
+
+        card.style.setProperty('--view-r', radius.slice(-1) == '%' ? parseFloat(radius) / 100 * view.offsetWidth + 'px' : radius)
         card.classList.add('card--peek')
         card.appendChild(pane)
 
@@ -281,7 +292,8 @@ function init(){
         leave()
         close()
 
-        if(card) Watch.start(card.hooktvData, 'content')
+        if(card && card.hooktvData.game && window.HookGames) window.HookGames.open(card.hooktvData.game)
+        else if(card) Watch.start(card.hooktvData, 'content')
     })
 
     action('.card-peek__list', ()=>{

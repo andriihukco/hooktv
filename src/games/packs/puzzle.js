@@ -181,7 +181,7 @@ export default [
             if(!dead && shown.filter(Boolean).length == N * N - M){ env.score(Math.max(1, 999 - ((Date.now() - t0) / 1000 | 0))); env.over('Field cleared!', true) }
         }
         function pick2(j){ reveal(j); if(mines[j]){ dead = true; mines.forEach((m, k) => m && (shown[k] = 1)); draw(); env.after(() => env.over('Boom!'), 500) } else env.sfx('tap') }
-        env.on('key', e => { if([70, 403, 404, 405, 406, 16].includes(e.keyCode)){ flagMode = !flagMode; head() } })
+        env.on('key', e => { if([70, 406, 16].includes(e.keyCode)){ flagMode = !flagMode; head() } })
         let hold
         g.cells.forEach((c, i) => { c.onpointerdown = () => { hold = setTimeout(() => { hold = 0; g.focus(i); if(!shown[i] && !dead){ flag[i] ^= 1; env.sfx('pop'); head(); draw() } }, 450) }; c.onpointerup = c.onpointerleave = () => clearTimeout(hold); c.onclick = () => { if(hold === 0){ hold = null; return } g.focus(i); pick(i) } })
         head()

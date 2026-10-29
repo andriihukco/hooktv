@@ -366,12 +366,17 @@ function clear(){
     network.clear()
 }
 
+function uaTv(params = {}, oncomplite, onerror){
+    return TMDB.uaTv(params, Tastes.filtered(oncomplite), onerror)
+}
+
 function img(){
     return TMDB.img.apply(TMDB, arguments)
 }
 
 export default {
     main,
+    uaTv,
     img,
     full,
     list,

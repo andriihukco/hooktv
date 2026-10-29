@@ -5,6 +5,7 @@ import Arrays from './arrays'
 import Timer from '../core/timer'
 
 let card_fields = [
+    'game',
     'poster_path',
     'overview',
     'release_date',

@@ -22,6 +22,9 @@ class Router {
     }
 
     call(name, data) {
+        // a game (from the Games row, My List or the bookmarks) opens its player, not a title page
+        if(data && data.game && window.HookGames) return window.HookGames.open(data.game)
+
         const route = this.get(name)
 
         if (route) {

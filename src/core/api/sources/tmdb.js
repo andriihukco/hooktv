@@ -17,7 +17,7 @@ import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
 import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
-import games from '../../../games/catalog'
+import games, {cardData} from '../../../games/catalog'
 
 
 let network   = new Reguest()
@@ -315,13 +315,7 @@ function partProviders(params, call){
  * Carousel of playable games; a tile opens the game full-screen.
  */
 function partGames(params, call){
-    let results = games.map((g, i)=>({
-        id: -(1000 + i),
-        title: g.title,
-        emoji: g.emoji,
-        c1: g.c1,
-        c2: g.c2,
-        game: g.id,
+    let results = games.map(g=>Object.assign(cardData(g), {
         params: {
             style: {name: 'game'},
             module: CardModule.only('Card', 'Style', 'Callback')
@@ -333,6 +327,26 @@ function partGames(params, call){
         results: results,
         params: {items: {view: 7}}
     })
+}
+
+// Ukrainian-language series, films and shows from TMDB, for the UA TV tab
+let uaContent = [
+    {url: 'discover/tv?with_original_language=uk&sort_by=popularity.desc', title: 'title_ua_series'},
+    {url: 'discover/movie?with_original_language=uk&sort_by=popularity.desc', title: 'title_ua_films'},
+    // talk shows and reality programmes
+    {url: 'discover/tv?with_original_language=uk&with_genres=10767|10764&sort_by=popularity.desc', title: 'title_ua_shows'}
+]
+
+function uaTv(params = {}, oncomplite, onerror){
+    let parts_data = uaContent.map(item=>(call)=>{
+        get(item.url, params, (json)=>{
+            json.title = Lang.translate(item.title)
+
+            call(json)
+        }, call, {life: day * 3})
+    })
+
+    Api.partNext(parts_data, parts_data.length, oncomplite, onerror)
 }
 
 function main(params = {}, oncomplite, onerror){
@@ -1335,6 +1349,7 @@ function clear(){
 
 export default {
     main,
+    uaTv,
     menu,
     img,
     full,

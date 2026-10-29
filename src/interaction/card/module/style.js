@@ -1,4 +1,6 @@
 import Template from '../../template'
+import Lang from '../../../core/lang'
+import {iconHTML} from '../../../games/icons'
 
 export default {
     onCreate: function(){
@@ -18,13 +20,14 @@ export default {
             if(this.data.brand) this.html.style.setProperty('--brand-bg', this.data.brand)
         }
 
-        // a game: a rounded app-icon tile with its own gradient and glyph, the title stays below
+        // a game: an app-store icon, its name below and a Play Game label where there is no hover pane (phones, touch)
         if(this.params.style.name == 'game'){
             this.html.addClass('card--game')
 
             this.html.find('.card__age').remove()
 
-            this.html.find('.card__view').append($('<div class="card__game"></div>').css('background', `linear-gradient(145deg, ${this.data.c1}, ${this.data.c2})`).append($('<span class="card__game-glyph"></span>').text(this.data.emoji)))
+            this.html.find('.card__view').append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+            this.html.append($('<div class="card__game-play"></div>').text(Lang.translate('hooktv_play_game')))
         }
 
         if(this.params.style.name == 'collection'){

@@ -13,6 +13,7 @@ import bookmarks from '../components/bookmarks'
 import episodes from '../components/episodes'
 import recomend from '../components/recomend'
 import ua_tv from '../components/ua_tv'
+import ua_tv_grid from '../components/ua_tv_grid'
 
 let component = {
     main,
@@ -29,7 +30,8 @@ let component = {
     bookmarks,
     episodes,
     recomend,
-    ua_tv
+    ua_tv,
+    ua_tv_grid
 }
 
 /**
