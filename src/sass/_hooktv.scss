@@ -327,9 +327,9 @@ body.minimal--ui .navigation-bar--tabs{
             z-index: 30;
             transform: translate3d(-50%, 0, 0);
             will-change: transform;
-            // slide in on a spring (bezier fallback for engines without linear()); visibility flips instantly
-            transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.25s ease, visibility 0s linear 0s;
-            transition: transform 0.6s linear(0, 0.18 7%, 0.61 17%, 0.92 26%, 1.05 34%, 1.07 40%, 1.04 49%, 1 60%, 0.99 74%, 1), opacity 0.25s ease, visibility 0s linear 0s;
+            // slide in with an ease-out (no overshoot); visibility flips instantly
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, visibility 0s linear 0s;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, visibility 0s linear 0s;
 
             .navigation-bar__body{
                 box-sizing: border-box;
@@ -614,7 +614,7 @@ body.minimal--ui.full--page .background{
         overflow: hidden;
         opacity: 0;
         transform: translateY(20px) scale(0.98);
-        transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
     }
 
     &--loaded &__title{
@@ -639,7 +639,7 @@ body.minimal--ui.full--page .background{
         color: rgba(255, 255, 255, 0.75);
         opacity: 0;
         transform: translateY(15px);
-        transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
     }
 
     &--loaded &__meta{
@@ -659,7 +659,7 @@ body.minimal--ui.full--page .background{
         overflow: hidden;
         opacity: 0;
         transform: translateY(15px);
-        transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
     }
 
     &--loaded &__descr{
@@ -671,7 +671,7 @@ body.minimal--ui.full--page .background{
         max-width: min(42em, 52vw);
         opacity: 0;
         transform: translateY(15px);
-        transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
 
         &:empty{
             display: none;
@@ -692,7 +692,7 @@ body.minimal--ui.full--page .background{
         pointer-events: auto;
         opacity: 0;
         transform: translateY(15px);
-        transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
     }
 
     &--loaded &__buttons{
@@ -718,12 +718,12 @@ body.minimal--ui.full--page .background{
         background: $hk-glass;
         backdrop-filter: blur(30px) saturate(1.4);
         -webkit-backdrop-filter: blur(30px) saturate(1.4);
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
         svg{
             width: $hk-action-icon;
             height: $hk-action-icon;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         &--watch{
@@ -1340,8 +1340,8 @@ body.minimal--ui.full--page .background{
     }
 }
 
-// soft spring (about 1% overshoot) shared by the pane and the cards it moves, so they travel together
-$hk-spring-soft: linear(0, 0.25 10%, 0.62 22%, 0.86 35%, 0.97 50%, 1.01 65%, 1);
+// soft ease-out (no overshoot) shared by the pane and the cards it moves, so they travel together
+$hk-spring-soft: cubic-bezier(0.22, 1, 0.36, 1); // no overshoot: elegant ease-out
 $hk-spring-time: 0.5s;
 
 // grids (peek.js float/shift): the card keeps its slot, the pane takes whole columns and
@@ -1541,7 +1541,7 @@ $hk-spring-time: 0.5s;
         backdrop-filter: blur(30px) saturate(1.4);
         -webkit-backdrop-filter: blur(30px) saturate(1.4);
         cursor: pointer;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s;
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s;
 
         svg{
             flex-shrink: 0;

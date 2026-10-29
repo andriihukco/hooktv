@@ -224,8 +224,12 @@
             color: #fff;
         }
 
-        &.focus,
-        &.hover{
+        .card__view{
+            transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        // mouse hover also sets .focus in the app, so hover and remote focus show the same white ring
+        &.focus{
             .card__view{
                 box-shadow: 0 0 0 0.2em #fff;
             }
