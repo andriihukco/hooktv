@@ -9,7 +9,6 @@ const categories = {
     all: '',
     focus: 'subject:Instrumental',
     chill: 'subject:Ambient',
-    uplifting: 'subject:Electronic',
     classical: 'subject:Classical',
     jazz: 'subject:Jazz',
     electronic: 'subject:Electronic'
@@ -78,7 +77,8 @@ export async function searchAlbums(category = 'all', search = ''){
         artist: normalizeText(item.creator) || 'Unknown artist',
         subjects: Array.isArray(item.subject) ? item.subject : item.subject ? [item.subject] : [],
         licenseUrl: item.licenseurl,
-        archiveUrl: `${archive}/details/${encodeURIComponent(item.identifier)}`
+        archiveUrl: `${archive}/details/${encodeURIComponent(item.identifier)}`,
+        cover: `${archive}/services/img/${encodeURIComponent(item.identifier)}`
     }))
 }
 
@@ -137,6 +137,7 @@ export async function albumTracks(album){
             licenseUrl,
             license: licenseName(licenseUrl),
             archiveUrl: album.archiveUrl,
+            cover: `${archive}/services/img/${encodeURIComponent(album.identifier)}`,
             stream: fileUrl(album.identifier, file.name),
             lyricsUrl: lyrics ? fileUrl(album.identifier, lyrics.name) : '',
             duration: Number.isFinite(length) ? Math.round(length) : 0,
