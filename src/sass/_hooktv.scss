@@ -4143,3 +4143,10 @@ body.page--empty .library-filter-pill{
     margin-top: 1.6em;
     border-top: 0;
 }
+
+// closed side panels wait just past the right edge; their shadow would still darken the last column of every page
+body:not(.selectbox--open) .selectbox__content,
+body:not(.settings--open) .settings__content,
+body:not(.library-filter--open) .library-filter__content{
+    box-shadow: none;
+}

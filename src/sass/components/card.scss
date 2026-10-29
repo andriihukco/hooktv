@@ -228,6 +228,19 @@
         font-weight: 700;
         text-align: center;
         color: var(--text-media);
+
+        // a page tile: the icon over its title
+        &--icon{
+            flex-direction: column;
+            gap: 0.35em;
+            color: #fff;
+
+            .material-icon{
+                width: 1.9em;
+                height: 1.9em;
+                flex: none;
+            }
+        }
     }
 
     &__promo{

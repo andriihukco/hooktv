@@ -4260,6 +4260,23 @@ body.settings--open .settings__layer {
   text-align: center;
   color: var(--text-media);
 }
+.card__provider-name--icon {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 0.35em;
+  color: #fff;
+}
+.card__provider-name--icon .material-icon {
+  width: 1.9em;
+  height: 1.9em;
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+      -ms-flex: none;
+          flex: none;
+}
 .card__promo {
   position: absolute;
   left: 0;
@@ -5301,6 +5318,37 @@ body.platform--netcast .card__title {
     min-width: 2.6em;
   }
 }
+.card__folder {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  -webkit-align-content: center;
+      -ms-flex-line-pack: center;
+          align-content: center;
+  gap: 6%;
+  padding: 12%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-border-radius: inherit;
+          border-radius: inherit;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.16)), color-stop(60%, rgba(255, 255, 255, 0))), var(--tile);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 60%), var(--tile);
+  background: -o-linear-gradient(top, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 60%), var(--tile);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 60%), var(--tile);
+}
+.card__folder .game-icon {
+  --tile: var(--inner) !important;
+  background: var(--tile);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  padding-bottom: 100%;
+  -webkit-border-radius: 22%;
+          border-radius: 22%;
+}
+
 /**
  * Modern Card Component
  * Netflix-inspired card design with smooth animations and hover effects
@@ -22964,24 +23012,11 @@ body.page--empty .library-filter-pill {
 .settings-folder.settings-account {
   margin-top: 1.6em;
   border-top: 0;
-}.card__folder {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-content: center;
-  gap: 6%;
-  padding: 12%;
-  box-sizing: border-box;
-  border-radius: inherit;
-  background: linear-gradient(150deg, var(--tile), rgba(0, 0, 0, 0.85));
 }
-.card__folder .game-icon {
-  position: relative;
-  inset: auto;
-  width: 100%;
-  height: auto;
-  padding-bottom: 100%;
-  border-radius: 22%;
+
+body:not(.selectbox--open) .selectbox__content,
+body:not(.settings--open) .settings__content,
+body:not(.library-filter--open) .library-filter__content {
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }

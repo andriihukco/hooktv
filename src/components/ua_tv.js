@@ -7,13 +7,13 @@ import Player from '../interaction/player'
 import CardModule from '../interaction/card/module/module'
 import Prefs from '../core/ua_tv_prefs'
 
-// Pages opened from the tab; each one is a grid of its channels
+// Pages opened from the tab; each one is a grid of its channels. Badge colours keep white text at WCAG AA (4.5:1 or more)
 const pages = [
-    {id: 'suspilne', title: 'title_ua_group_suspilne', brand: '#3a2e6b'},
-    {id: 'news',     title: 'title_ua_group_news',     brand: '#8a1c1c'},
-    {id: 'sport',    title: 'title_ua_group_sport',    brand: '#1f6f3a'},
-    {id: 'movies',   title: 'title_ua_group_movies',   brand: '#5a3a8a'},
-    {id: 'regional', title: 'title_ua_group_regional', brand: '#1d4f6b'}
+    {id: 'suspilne', title: 'title_ua_group_suspilne', brand: '#6155E8', icon: 'live_tv'},
+    {id: 'news',     title: 'title_ua_group_news',     brand: '#D93025', icon: 'newspaper'},
+    {id: 'sport',    title: 'title_ua_group_sport',    brand: '#188038', icon: 'sports_soccer'},
+    {id: 'movies',   title: 'title_ua_group_movies',   brand: '#9334E6', icon: 'theaters'},
+    {id: 'regional', title: 'title_ua_group_regional', brand: '#0B72C9', icon: 'location_on'}
 ]
 
 /**
@@ -42,12 +42,14 @@ function tile(channel, id){
  * @param {string} title translation key
  * @param {string} brand badge colour
  * @param {number} tile_id unique negative id for the row
+ * @param {string} icon Material icon name shown above the title
  */
-function pageTile(id, title, brand, tile_id){
+function pageTile(id, title, brand, tile_id, icon){
     return {
         id: tile_id,
         title: Lang.translate(title),
         brand: brand,
+        icon: icon,
         page: id,
         params: {
             style: {name: 'provider'},
@@ -73,9 +75,9 @@ function popularRow(){
  * Row of page tiles: the groups, then all channels
  */
 function pagesRow(){
-    let results = pages.map((page, i)=>pageTile(page.id, page.title, page.brand, -(100 + i)))
+    let results = pages.map((page, i)=>pageTile(page.id, page.title, page.brand, -(100 + i), page.icon))
 
-    results.push(pageTile('all', 'title_ua_group_all', '#2a2a2e', -200))
+    results.push(pageTile('all', 'title_ua_group_all', '#5F6368', -200, 'apps'))
 
     return {
         title: '',

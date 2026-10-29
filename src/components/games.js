@@ -12,7 +12,8 @@ import {categories, categoryById, categoryCardId, cardData} from '../games/catal
  * @return {object} component instance
  */
 function component(object){
-    let comp = Utils.createInstance(Category, object)
+    // the folders share one row across the whole screen; a folder's games keep the usual grid
+    let comp = Utils.createInstance(Category, object, object.category ? {} : {items: {cols: 5}})
     let folder = object.category && categoryById(object.category)
 
     comp.use({

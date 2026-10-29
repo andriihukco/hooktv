@@ -2,9 +2,9 @@ import {describe, it, expect} from 'vitest'
 import catalog from '../src/games/catalog'
 
 describe('games catalog', ()=>{
-    it('lists all 50 games once each', ()=>{
-        expect(catalog.length).toBe(50)
-        expect(new Set(catalog.map(g=>g.id)).size).toBe(50)
+    it('lists all 54 games once each', ()=>{
+        expect(catalog.length).toBe(54)
+        expect(new Set(catalog.map(g=>g.id)).size).toBe(54)
     })
 
     it('gives every game what the row and the player need', ()=>{

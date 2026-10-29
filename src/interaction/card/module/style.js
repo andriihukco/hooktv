@@ -1,6 +1,15 @@
 import Template from '../../template'
 import Lang from '../../../core/lang'
 import {iconHTML} from '../../../games/icons'
+import Material from '../../../utils/material'
+
+// a colour darkened toward black: `keep` is how much of it stays (0..1)
+function shade(hex, keep){
+    let n = parseInt(hex.replace('#', ''), 16)
+    let c = [n >> 16, (n >> 8) & 255, n & 255].map(v=>Math.round(v * keep))
+
+    return 'rgb(' + c.join(', ') + ')'
+}
 
 export default {
     onCreate: function(){
@@ -13,7 +22,14 @@ export default {
             let badge = $('<div class="card__provider"></div>')
 
             if(this.data.logo) badge.append($('<img class="card__provider-logo">').attr({src: this.data.logo, alt: this.data.title || ''}))
-            else badge.append(Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''}))
+            else{
+                let name = Template.elem('div', {class: 'card__provider-name', text: this.data.title || ''})
+
+                // a page tile: its Material icon above the title
+                if(this.data.icon) $(name).addClass('card__provider-name--icon').prepend(Material.icon(this.data.icon))
+
+                badge.append(name)
+            }
 
             this.html.find('.card__view').append(badge)
             // the service's brand colour is the round background behind its logo
@@ -28,7 +44,8 @@ export default {
 
             // a category: a folder showing the first four of its game icons, with its game count below
             if(this.data.category){
-                let folder = $('<div class="card__game card__folder"></div>').css('--tile', this.data.c1 || '#111113')
+                let tile   = this.data.c1 || '#3E91FF'
+                let folder = $('<div class="card__game card__folder"></div>').css({'--tile': tile, '--inner': shade(tile, 0.62)})
 
                 ;(this.data.games || []).slice(0, 4).forEach(id=>folder.append($(iconHTML(id))))
                 this.html.find('.card__view').append(folder)
