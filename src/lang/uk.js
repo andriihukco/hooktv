@@ -1429,7 +1429,6 @@ export default {
     hooktv_in_list: 'У списку',
     hooktv_play_game: 'Грати',
     hooktv_games_count: 'ігор',
-    hooktv_game_inputs: 'Клавіатура · Дотик · Пульт',
     hooktv_game_arcade: 'Аркада',
     hooktv_game_puzzle: 'Головоломка',
     hooktv_game_words: 'Словесна гра',

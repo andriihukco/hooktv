@@ -2,6 +2,7 @@ import Utils from '../../utils/utils'
 import Timer from '../../core/timer'
 import Storage from '../../core/storage/storage'
 import photos from './photos'
+import weather from './weather'
 
 /**
  * HOOK TV screensaver: a rotation of 4K Ukrainian landscapes. Slow Ken Burns slides with
@@ -49,6 +50,7 @@ class Ukraine{
                 <div class="screensaver__datetime-time"><span class="time--clock"></span></div>
                 <div class="screensaver__datetime-date"><span class="time--full"></span></div>
             </div>
+            <div class="screensaver__weather"></div>
         </div>`)
 
         this.timer = ()=>this.next()
@@ -56,6 +58,11 @@ class Ukraine{
         Timer.add(25000, this.timer)
 
         this.time = Utils.time(this.html)
+
+        // offline the strip stays empty, the photos and the clock carry on
+        weather.load()
+            .then(list => this.html.find('.screensaver__weather').html(weather.render(list)))
+            .catch(()=>{})
 
         this.next()
     }
