@@ -22700,6 +22700,106 @@ body.minimal--ui .menu__item {
   background: #c8f542;
 }
 
+.whats-new-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99998;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: min(420px, 92vw);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 28px 22px 22px;
+  color: #fff;
+  background: rgba(28, 28, 30, 0.94);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  backdrop-filter: blur(24px) saturate(1.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-box-shadow: -24px 0 60px rgba(0, 0, 0, 0.45);
+          box-shadow: -24px 0 60px rgba(0, 0, 0, 0.45);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-animation: whats-new-slide 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+          animation: whats-new-slide 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.whats-new-panel__head {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+.whats-new-panel__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.whats-new-panel__close {
+  min-height: 40px;
+  padding: 0 1em;
+  border: 0;
+  -webkit-border-radius: 999px;
+          border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.whats-new-panel__close.focus {
+  outline: 2px solid #c8f542;
+  outline-offset: 2px;
+}
+.whats-new-panel__list {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
+}
+
+@-webkit-keyframes whats-new-slide {
+  from {
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+  }
+  to {
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+
+@keyframes whats-new-slide {
+  from {
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+  }
+  to {
+    -webkit-transform: none;
+            transform: none;
+  }
+}
 /**
  * Install suggestion (interaction/install_app.js): platform tabs and the steps for each.
  */

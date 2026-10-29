@@ -1507,6 +1507,7 @@ export default {
     release_new: 'Нове',
     release_empty: 'Поки що немає змін',
     release_close: 'Закрити',
+    release_whats_new: 'Що нового',
     release_update: 'Оновити та перезавантажити',
     release_updating: 'Оновлюємо…',
     install_os_android: 'Android',

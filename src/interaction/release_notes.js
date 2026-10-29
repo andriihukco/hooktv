@@ -1,13 +1,15 @@
 import Storage from '../core/storage/storage'
 import Platform from '../core/platform'
 import Lang from '../core/lang'
+import Controller from '../core/controller'
 import Modal from './modal'
 import Releases from '../utils/releases'
 
 /**
  * HOOK TV: every push to main is a new deploy, but an open tab keeps running the old one.
- * releases.json lists the recent changes. They live under the Info row of the settings panel:
- * a dot on the row means this device is behind, and "Update" in the sheet reloads the app.
+ * releases.json lists the recent changes. The settings Info row opens a short sheet with the
+ * version and date, a "What's new" button above the update button, and "What's new" opens the
+ * list in a side panel. A dot on the Info row means this device is behind.
  */
 
 const SEEN = 'release_seen'
@@ -91,7 +93,50 @@ function hasNew(){
 }
 
 /**
- * The Info row: version and date of the latest release, what changed, and the update when there is one
+ * The side panel with the list of updates. Back or Close returns to where the user was.
+ */
+function openPanel(){
+    let previous = Controller.enabled().name || 'content'
+
+    let panel = document.createElement('div')
+
+    panel.className = 'whats-new-panel'
+    panel.innerHTML = `
+        <div class="whats-new-panel__head">
+            <h2 class="whats-new-panel__title">${escape(Lang.translate('release_info'))}</h2>
+            <button class="whats-new-panel__close selector" type="button">${escape(Lang.translate('release_close'))}</button>
+        </div>
+        <ul class="whats-new__list whats-new-panel__list">${releases.length ? rows() : `<li class="whats-new__empty">${escape(Lang.translate('release_empty'))}</li>`}</ul>
+    `
+
+    let list = panel.querySelector('.whats-new-panel__list')
+    let close = panel.querySelector('.whats-new-panel__close')
+
+    let shut = ()=>{
+        panel.remove()
+
+        Controller.toggle(previous)
+    }
+
+    close.addEventListener('click', shut)
+
+    document.body.appendChild(panel)
+
+    Controller.add('whats_new', {
+        toggle: ()=>{
+            Controller.collectionSet(panel)
+            Controller.collectionFocus(close, panel)
+        },
+        up: ()=>{ list.scrollTop -= 80 },
+        down: ()=>{ list.scrollTop += 80 },
+        back: shut
+    })
+
+    Controller.toggle('whats_new')
+}
+
+/**
+ * The Info sheet: version and date of the latest release, What's new above the update button
  */
 function open(){
     load().then(()=>{
@@ -111,16 +156,26 @@ function open(){
                         <span>${latest ? escape(date(latest.date)) : '—'}</span>
                     </div>
                 </div>
-                <ul class="whats-new__list">${releases.length ? rows() : `<li class="whats-new__empty">${escape(Lang.translate('release_empty'))}</li>`}</ul>
             </div>
         `)
 
+        let whatsNew = {
+            name: Lang.translate('release_whats_new'),
+            onSelect: ()=>{
+                Modal.close()
+
+                openPanel()
+            }
+        }
+
         let buttons = pending.length ? [
+            whatsNew,
             {
                 name: Lang.translate('release_update'),
                 onSelect: ()=>update()
             }
         ] : [
+            whatsNew,
             {
                 name: Lang.translate('release_close'),
                 onSelect: ()=>Modal.close()

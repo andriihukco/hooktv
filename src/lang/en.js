@@ -1530,6 +1530,7 @@ export default {
     release_new: 'New',
     release_empty: 'Nothing to show yet',
     release_close: 'Close',
+    release_whats_new: 'What\'s new',
     release_update: 'Update and reload',
     release_updating: 'Updating…',
     install_os_android: 'Android',

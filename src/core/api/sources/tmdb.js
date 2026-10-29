@@ -336,7 +336,7 @@ function studios(params = {}, oncomplite, onerror){
             return {
                 id: -(i + 1),
                 title: json.name,
-                logo: json.logo_path ? TMDB.img(json.logo_path, 'w185') : '',
+                logo: json.logo_path ? img(json.logo_path, 'w185') : '',
                 // every logo is drawn white on the same dark circle, so they all read alike
                 brand: '#1c1c1e',
                 mono: true,
