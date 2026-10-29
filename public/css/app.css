@@ -18338,7 +18338,11 @@ body.minimal--ui .navigation-bar--tabs {
   body.minimal--ui .head__logo-icon {
     margin-right: 0;
   }
-  body.minimal--ui .head .open--history {
+  body.minimal--ui .head .open--search {
+    display: -webkit-box !important;
+    display: -webkit-flex !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
     -webkit-box-ordinal-group: 2;
     -webkit-order: 1;
         -ms-flex-order: 1;
@@ -18354,11 +18358,7 @@ body.minimal--ui .navigation-bar--tabs {
         -ms-flex-order: 2;
             order: 2;
   }
-  body.minimal--ui .head .open--search {
-    display: -webkit-box !important;
-    display: -webkit-flex !important;
-    display: -ms-flexbox !important;
-    display: flex !important;
+  body.minimal--ui .head .open--history {
     -webkit-box-ordinal-group: 4;
     -webkit-order: 3;
         -ms-flex-order: 3;
@@ -18374,9 +18374,12 @@ body.minimal--ui .navigation-bar--tabs {
     display: -ms-flexbox !important;
     display: flex !important;
   }
+  body.minimal--ui .head .open--search svg,
+  body.minimal--ui .head .open--favorite svg,
+  body.minimal--ui .head .open--history svg,
   body.minimal--ui .head .open--settings svg {
-    width: 2.6em !important;
-    height: 2.6em !important;
+    width: 1.6em !important;
+    height: 1.6em !important;
   }
   body.minimal--ui .head .head__actions > :not(.open--history):not(.open--favorite):not(.open--search):not(.open--settings) {
     display: none !important;
@@ -19875,6 +19878,12 @@ body.true--mobile .card.card--details-overlay.focus .card__hover-info, body.true
           flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
+}
+.card-peek__button span {
+  min-width: 0;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
 }
 .card-peek__button span {
   min-width: 0;
@@ -22876,4 +22885,9 @@ body.minimal--ui .menu__item {
 /* an empty page has nothing to filter: the Filters pill stays away */
 body.page--empty .library-filter-pill {
   display: none !important;
+}
+
+.settings-folder.settings-account {
+  margin-top: 1.6em;
+  border-top: 0;
 }

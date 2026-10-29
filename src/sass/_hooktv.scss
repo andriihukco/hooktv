@@ -280,8 +280,9 @@ body.minimal--ui .navigation-bar--tabs{
             margin-right: 0;
         }
 
-        // top bar order: history, favorites, search, settings (the tab bar holds the sections)
-        .head .open--history{
+        // top bar order: search, bookmarks, history, more (same as the web header; the tab bar holds the sections)
+        .head .open--search{
+            display: flex !important;
             order: 1;
         }
 
@@ -290,20 +291,23 @@ body.minimal--ui .navigation-bar--tabs{
             order: 2;
         }
 
-        .head .open--search{
-            display: flex !important;
+        .head .open--history{
             order: 3;
         }
 
         .head .open--settings{
             order: 4;
             display: flex !important;
+        }
 
-            // material glyph fills its 24px box; this matches the history sprite's visual weight
-            svg{
-                width: 2.6em !important;
-                height: 2.6em !important;
-            }
+        // all four glyphs share one optical size: the sprite history icon and the material icons draw
+        // their shapes at different scales inside the 24-unit box, so they are sized together here
+        .head .open--search svg,
+        .head .open--favorite svg,
+        .head .open--history svg,
+        .head .open--settings svg{
+            width: 1.6em !important;
+            height: 1.6em !important;
         }
 
         // phones keep history, favorites, search and the settings button: the side menu is hidden
