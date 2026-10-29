@@ -344,6 +344,7 @@ export default {
     title_new_episodes: 'Нові серії',
     title_streaming: 'Стрімінгові сервіси',
     title_ua_tv: 'Українське ТБ',
+    title_games: 'Ігри',
     title_popular: 'Популярне',
     title_popular_movie: 'Популярні фільми',
     title_popular_tv: 'Популярні серіали',

@@ -366,6 +366,7 @@ export default {
     title_new_episodes: 'New episodes',
     title_streaming: 'Streaming services',
     title_ua_tv: 'Ukrainian TV',
+    title_games: 'Games',
     title_popular: 'Popular',
     title_popular_movie: 'Popular films',
     title_popular_tv: 'Popular TV shows',

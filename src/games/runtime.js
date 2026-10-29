@@ -67,7 +67,7 @@ function launch(game){
     fit()
 
     let listeners = [], rafs = 0, held = {}, dead = false, score = 0, paused = false, loopFn, last = 0
-    let handlers = {press: [], key: [], resize: []}
+    let handlers = {press: [], key: [], resize: []}, modal = null
 
     let env = {
         el: play, held, game,
@@ -121,7 +121,7 @@ function launch(game){
                 el, cells, cols, rows, at: () => at,
                 focus(i){ cells[at].classList.remove('focus'); at = i; cells[at].classList.add('focus') }
             }
-            cells[at].classList.add('focus')
+            if(!opts.static) cells[at].classList.add('focus')
             ;(opts.parent || play).appendChild(el)
             if(!opts.static) handlers.press.push(k => {
                 if(opts.off && opts.off()) return
@@ -143,21 +143,33 @@ function launch(game){
                 let b = document.createElement('div'); b.className = 'games__btn'; b.innerHTML = t; b.onclick = () => { api.focus(i); pick(i) }
                 el.appendChild(b); bs.push(b)
             })
-            const api = {el, bs, focus(i){ bs[at].classList.remove('focus'); at = i; bs[at].classList.add('focus') }, hide(v){ el.style.display = v ? 'none' : '' }}
+            const api = {el, bs, focus(i){ bs[at].classList.remove('focus'); at = i; bs[at].classList.add('focus') }, close(){ el.style.display = 'none'; if(modal === api) modal = null }, remove(){ api.close(); el.remove(); modal = modal === api ? null : modal; handlers.press = handlers.press.filter(f => f !== api.key) }}
             bs[0].classList.add('focus')
             ;(opts.parent || play).appendChild(el)
-            handlers.press.push(k => {
-                if(el.style.display == 'none') return
+            // modal buttons take every key until closed (a start menu); others only react to touch / mouse
+            if(opts.modal) modal = api
+            api.key = k => {
                 if(k == 'left' || k == 'up') api.focus((at + bs.length - 1) % bs.length)
                 else if(k == 'right' || k == 'down') api.focus((at + 1) % bs.length)
                 else if(k == 'ok') pick(at)
-            })
+            }
+            if(!opts.nokeys && !opts.modal) handlers.press.push(api.key)
             return api
+        },
+        // a text field for typing games: always focused on desktop, tap to open the keyboard on phones
+        input(placeholder){
+            let i = document.createElement('input')
+            i.className = 'games__input'; i.placeholder = placeholder || ''
+            i.autocomplete = 'off'; i.autocapitalize = 'off'; i.spellcheck = false
+            play.appendChild(i)
+            let fine = window.matchMedia('(pointer: fine)').matches
+            if(fine){ i.onblur = () => setTimeout(() => !dead && i.isConnected && i.focus(), 30); i.focus() }
+            return i
         },
         // ends the round: shows the result and a Play again button
         over(text, win){
             if(dead) return
-            paused = true
+            paused = true; modal = null
             sfx(win ? 'win' : 'bad')
             let card = document.createElement('div')
             card.className = 'games__over'
@@ -171,19 +183,20 @@ function launch(game){
         resize: fn => handlers.resize.push(fn)
     }
 
-    const press = k => { if(!dead) handlers.press.slice().forEach(f => f(k)) }
+    const press = k => { if(dead) return; if(modal) modal.key(k); else handlers.press.slice().forEach(f => f(k)) }
     const down = e => {
         if(BACK.indexOf(e.keyCode) > -1) return
         e.stopImmediatePropagation()
+        // typing in a text field: the field keeps the key; the game only sees it
+        if(e.target && e.target.tagName == 'INPUT'){ handlers.key.forEach(f => f(e)); return }
         let k = KEYS[e.keyCode]
-        if(game.typing && e.keyCode != 13) { handlers.key.forEach(f => f(e)); if(!(e.ctrlKey || e.metaKey)) e.preventDefault(); return }
         if(e.keyCode == 32 || k) e.preventDefault()
         if(k) held[k] = 1
         if(k && !e.repeat) press(k)
         else if(k && e.repeat && game.repeat !== false) press(k)
         handlers.key.forEach(f => f(e))
     }
-    const up = e => { if(BACK.indexOf(e.keyCode) > -1) return; e.stopImmediatePropagation(); let k = KEYS[e.keyCode]; if(k) held[k] = 0 }
+    const up = e => { if(BACK.indexOf(e.keyCode) > -1) return; e.stopImmediatePropagation(); if(e.target && e.target.tagName == 'INPUT') return; let k = KEYS[e.keyCode]; if(k) held[k] = 0 }
     window.addEventListener('keydown', down, true)
     window.addEventListener('keyup', up, true)
     listeners.push(() => { window.removeEventListener('keydown', down, true); window.removeEventListener('keyup', up, true) })
@@ -240,4 +253,9 @@ function close(){
     Controller.toggle(prev || 'content')
 }
 
-export default {open, close, best}
+const api = {open, close, best, ids: catalog.map(g => g.id)}
+
+// handy for the console and smoke tests: HookGames.open('snake')
+window.HookGames = api
+
+export default api
