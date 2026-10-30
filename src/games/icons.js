@@ -96,4 +96,7 @@ export function iconHTML(id){
     return `<span class="game-icon"><svg viewBox="0 0 100 100" aria-hidden="true">${glyph(id)}</svg></span>`
 }
 
+// a small Material Rounded glyph for the console's buttons (lobby, menu), tinted by the text colour
+export const uiIcon = name => `<svg class="games__ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${material[name] || ''}</svg>`
+
 export const ids = Object.keys(glyphs)

@@ -34,7 +34,7 @@ export function featuredGame(now = Date.now()){
  * @returns {Array} rows for the Main component
  */
 export function rows(now, module){
-    const heroes = [0, 1, 2, 3].map(i => tile(cardData(featuredGame(now + i * DAY)), 'feature', module))
+    const heroes = [0, 1, 2, 3].map(i => tile(Object.assign(cardData(featuredGame(now + i * DAY)), {hero: i, heroes: 4}), 'feature', module))
 
     const top = games.slice(0, TOP).map((g, i) => tile(Object.assign(cardData(g), {rank: i + 1, best: history.stats(g.id).best}), 'list', module))
 

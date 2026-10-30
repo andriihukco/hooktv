@@ -88,6 +88,9 @@ export default {
                 text.append(Template.elem('div', {class: 'card__game-hint', text: this.data.overview || ''}))
                 text.append(Template.elem('div', {class: 'card__game-play', text: Lang.translate('hooktv_play_game')}))
                 view.append(text).append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+
+                // the indicator: one dot per hero, the lit one is this tile
+                if(this.data.heroes > 1) view.append($('<div class="card__dots"></div>').append(Array.from({length: this.data.heroes}, (_, i)=>$('<i></i>').toggleClass('is-on', i == this.data.hero))))
             }
 
             if(name == 'list'){
