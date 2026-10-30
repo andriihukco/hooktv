@@ -1,0 +1,166 @@
+// Apple player: a floating, glass-style control bar in the system manner.
+// Scoped to Apple platforms; the shared panel keeps every other platform.
+// Markup and classes are unchanged, so the remote, keyboard and touch logic
+// in panel.js keep working.
+
+body.platform--apple{
+    .player-panel{
+        left: 50%;
+        right: auto;
+        bottom: max(1.5em, env(safe-area-inset-bottom));
+        width: min(46em, calc(100% - 3em));
+        border-radius: 1.75em;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background-color: rgba(28, 28, 30, 0.7);
+        -webkit-backdrop-filter: blur(1.6em) saturate(180%);
+        backdrop-filter: blur(1.6em) saturate(180%);
+        box-shadow: 0 1em 3em rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        transform: translate(-50%, 150%);
+        transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s;
+
+        @media screen and (max-width: $media_xm) {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            transform: translateY(150%);
+            border-radius: 1.75em 1.75em 0 0;
+        }
+
+        &.panel--visible{
+            transform: translate(-50%, 0);
+
+            @media screen and (max-width: $media_xm) {
+                transform: translateY(0);
+            }
+        }
+
+        &.panel--footer-open{
+            transform: translate(-50%, -150%);
+
+            @media screen and (max-width: $media_xm) {
+                transform: translateY(-150%);
+            }
+        }
+    }
+
+    .player-panel__body{
+        padding: 1.25em 1.5em 1em;
+    }
+
+    // timeline: a thin track that grows when focused; the thumb is the only white dot
+    .player-panel__timeline{
+        height: 0.3em;
+        margin-bottom: 0.9em;
+        background-color: rgba(255, 255, 255, 0.22);
+        transition: height 0.2s ease;
+
+        &.focus{
+            box-shadow: 0 0 0 0.15em #fff;
+        }
+    }
+
+    .player-panel__timeline:hover{
+        height: 0.45em;
+    }
+
+    .player-panel__peding{
+        background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .player-panel__position{
+        background-color: #fff;
+
+        > div:after{
+            width: 1.1em;
+            height: 1.1em;
+            background-color: #fff;
+            box-shadow: 0 0.1em 0.4em rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    // times sit under the bar in secondary text with fixed digit widths
+    .player-panel__line-one{
+        font-size: 0.8em;
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .player-panel__line-two{
+        margin-top: 0.6em;
+    }
+
+    .player-panel__center{
+        gap: 0.5em;
+    }
+
+    // round glass buttons, at least 44px for touch and remote targets
+    .player-panel__prev,
+    .player-panel__next,
+    .player-panel__rprev,
+    .player-panel__rnext,
+    .player-panel__tstart,
+    .player-panel__tend{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.75em;
+        min-height: 2.75em;
+        border-radius: 50%;
+        color: var(--text-primary);
+        background-color: rgba(255, 255, 255, 0.12);
+
+        svg{
+            width: 1.5em;
+            height: 1.5em;
+        }
+    }
+
+    .player-panel__playpause{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.5em;
+        height: 3.5em;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 50%;
+        color: #000;
+        background-color: #fff;
+
+        svg{
+            width: 1.9em;
+            height: 1.9em;
+        }
+    }
+
+    .player-panel__quality{
+        display: flex;
+        align-items: center;
+        height: 2.2em;
+        padding: 0 0.9em;
+        border-radius: 1.1em;
+        font-size: 0.8em;
+        font-weight: 600;
+        color: var(--text-primary);
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    // focus for remote and keyboard: a white ring on every control
+    .player-panel .selector:focus-visible,
+    .player-panel .selector.focus{
+        outline: 0.15em solid #fff;
+        outline-offset: 0.2em;
+    }
+
+    .player-panel .button.selector.focus{
+        background-color: rgba(255, 255, 255, 0.28);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+        .player-panel,
+        .player-panel__timeline{
+            transition: none;
+        }
+    }
+}
