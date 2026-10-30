@@ -1,0 +1,138 @@
+// Desktop web player: a full-width control strip over a soft gradient, shown
+// on mouse movement and kept for keyboard users. The picture stays the hero.
+// Scoped to desktop browsers; markup and classes are unchanged.
+
+body.platform--browser{
+    .player-panel{
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: auto;
+        border-radius: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0) 100%);
+        // the gradient is the surface; no blur over the picture
+        backdrop-filter: none;
+        transform: translateY(100%);
+        transition: transform 0.25s ease, opacity 0.25s ease;
+
+        &.panel--visible{
+            transform: translateY(0);
+        }
+
+        &.panel--footer-open{
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+    }
+
+    .player-panel__body{
+        padding: 2.5em 2em 1em;
+    }
+
+    // a 4px track that grows to 8px on hover; the handle appears only then
+    .player-panel__timeline{
+        height: 0.25em;
+        margin-bottom: 0.75em;
+        background-color: rgba(255, 255, 255, 0.28);
+        cursor: pointer;
+        transition: height 0.15s ease;
+
+        &:hover{
+            height: 0.5em;
+        }
+
+        &.focus{
+            box-shadow: 0 0 0 0.12em var(--brand-primary);
+        }
+    }
+
+    .player-panel__peding{
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .player-panel__position{
+        background-color: var(--brand-primary);
+
+        > div:after{
+            width: 0.9em;
+            height: 0.9em;
+            background-color: var(--brand-primary);
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+    }
+
+    .player-panel__timeline:hover .player-panel__position > div:after,
+    .player-panel__timeline.focus .player-panel__position > div:after{
+        opacity: 1;
+    }
+
+    .player-panel__line-one{
+        font-size: 0.9em;
+        color: var(--brand-text-secondary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .player-panel__line-two{
+        margin-top: 0.5em;
+    }
+
+    // icon buttons are 44px targets with a clear hover and focus state
+    .player-panel__prev,
+    .player-panel__next,
+    .player-panel__rprev,
+    .player-panel__rnext,
+    .player-panel__tstart,
+    .player-panel__tend,
+    .player-panel__playpause{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 0.5em;
+        color: var(--brand-text-primary);
+
+        svg{
+            width: 1.6em;
+            height: 1.6em;
+        }
+
+        &:hover{
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+    }
+
+    .player-panel__playpause svg{
+        width: 2em;
+        height: 2em;
+    }
+
+    .player-panel__quality{
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 0.75em;
+        border-radius: 0.5em;
+        font-size: 0.9em;
+        color: var(--brand-text-primary);
+
+        &:hover{
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+    }
+
+    .player-panel .selector:focus-visible,
+    .player-panel .selector.focus{
+        outline: 0.15em solid var(--brand-primary);
+        outline-offset: 0.1em;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+        .player-panel,
+        .player-panel__timeline,
+        .player-panel__position > div:after{
+            transition: none;
+        }
+    }
+}
