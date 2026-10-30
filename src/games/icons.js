@@ -41,6 +41,9 @@ const glyphs = {
     bubbles: () => md('bubble_chart'),
     slicer: () => md('restaurant'),
     tower: () => md('layers'),
+    astray: () => md('explore'),
+    racer: () => md('rocket_launch'),
+    duel: () => md('sports_mma'),
     memory: () => md('psychology'),
     battleship: () => md('directions_boat'),
     sliding: () => md('dashboard'),
@@ -66,7 +69,7 @@ const glyphs = {
 // gradient top → bottom: saturated, a touch deeper at the bottom, like the App Store's game icons
 const tints = {
     '2048': ['#FFC247', '#FF6A2B'], snake: ['#4ADE80', '#0E9F78'], tetris: ['#8B7BFF', '#3B6DF0'], pacman: ['#FFD93D', '#FF9500'],
-    flappy: ['#5EDBFF', '#1F8BFF'], chess: ['#6B6B76', '#1D1D23'], candy: ['#FF7EB3', '#B04BEA'], wordle: ['#58E08A', '#12915A'],
+    flappy: ['#8E8E93', '#2C2C2E'], astray: ['#8E8E93', '#2C2C2E'], racer: ['#C8F542', '#2C2C2E'], duel: ['#F2F2F7', '#48484A'], chess: ['#6B6B76', '#1D1D23'], candy: ['#FF7EB3', '#B04BEA'], wordle: ['#58E08A', '#12915A'],
     breakout: ['#FF6B8B', '#FF8A1F'], doodle: ['#B7F04E', '#2DBF64'], crossy: ['#68E36F', '#19A19B'],
     sudoku: ['#4DA3FF', '#4C4BD6'], minesweeper: ['#8A8A94', '#2E2E36'], solitaire: ['#25B867', '#075E35'], blackjack: ['#3A3A44', '#14141A'],
     tictactoe: ['#5AB8FF', '#2563EB'], checkers: ['#FF6259', '#A81F2B'], reversi: ['#3FD07A', '#0B6B3A'],

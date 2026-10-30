@@ -1176,43 +1176,61 @@
     }
 }
 
-// hero: the colour runs across the tile, the copy sits at the bottom left, the icon on the right
+// hero: a dark banner like the other tabs' heroes. The game's colour is only a soft glow behind its icon,
+// the copy sits at the bottom left and Play is the lime pill
 .card.card--feature{
     width: min(100%, 90em);
 
     .card__view{
+        position: relative;
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
         height: 26em;
-        padding: 2em 2.4em;
-        background: linear-gradient(120deg, var(--c1), var(--c2));
+        padding: 2.4em 3em;
+        background:
+            radial-gradient(60% 120% at 82% 40%, color-mix(in srgb, var(--c1) 38%, transparent), transparent 70%),
+            linear-gradient(90deg, #000 0%, #0d0d10 55%, #17171b 100%);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
     .card__game-text{
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.4em;
+        gap: 0.6em;
         min-width: 0;
-        max-width: 60%;
+        max-width: 55%;
     }
 
     .card__game-title{
-        font-size: 2.2em;
+        font-size: 3em;
+        line-height: 1.05;
         white-space: normal;
     }
 
     .card__game-hint{
-        font-size: 1.1em;
+        font-size: 1.2em;
+        white-space: normal;
+    }
+
+    .card__game-play{
+        margin-top: 0.5em;
+        padding: 0.7em 1.8em;
+        background: #C8F542;
+        font-size: 1em;
     }
 
     .card__game{
-        position: relative;
-        inset: auto;
-        width: 9em;
-        height: 9em;
-        flex: 0 0 auto;
+        position: absolute;
+        inset: 50% 4em auto auto;
+        width: 15em;
+        height: 15em;
+        margin-top: -7.5em;
+        border-radius: 3em;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2em 4em rgba(0, 0, 0, 0.6);
     }
 }
 

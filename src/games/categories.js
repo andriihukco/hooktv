@@ -6,7 +6,7 @@ export default [
         title: 'Arcade',
         overview: 'Reflex and action',
         c1: '#FF5A4D', c2: '#FF9F0A',
-        games: ['snake', 'flappy', 'pacman', 'tetris', 'breakout', 'pong', 'crossy', 'doodle', 'bubbles', 'slicer', 'tower', 'mole']
+        games: ['snake', 'flappy', 'pacman', 'tetris', 'breakout', 'pong', 'crossy', 'doodle', 'bubbles', 'slicer', 'tower', 'mole', 'racer', 'astray', 'duel']
     },
     {
         id: 'puzzle',

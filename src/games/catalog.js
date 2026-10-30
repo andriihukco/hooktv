@@ -1,5 +1,6 @@
 import arcade from './packs/arcade'
 import arcade2 from './packs/arcade2'
+import arcade3 from './packs/arcade3'
 import boards from './packs/boards'
 import cards from './packs/cards'
 import logic from './packs/logic'
@@ -14,9 +15,9 @@ export {setTranslator, gameTitle, gameHint, categoryTitle, categoryOverview} fro
 import {gameTitle, gameHint} from './i18n'
 
 // Every playable game, in the order the home row shows them: the most inviting first.
-const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot']
+const order = ['2048', 'snake', 'tetris', 'pacman', 'racer', 'flappy', 'astray', 'duel', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot']
 
-const packs = {arcade: [...arcade, ...arcade2], puzzle, words: [...words, ...quiz, ...party], logic, board: boards, cards}
+const packs = {arcade: [...arcade, ...arcade2, ...arcade3], puzzle, words: [...words, ...quiz, ...party], logic, board: boards, cards}
 const all = []
 
 for(let kind in packs) packs[kind].forEach(g => all.push(Object.assign({}, g, {kind, c1: tint(g.id)[0], c2: tint(g.id)[1]})))

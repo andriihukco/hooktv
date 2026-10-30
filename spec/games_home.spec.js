@@ -1,7 +1,7 @@
 import {describe, it, expect} from 'vitest'
 import fs from 'fs'
 import path from 'path'
-import {categories} from '../src/games/catalog'
+import games, {categories} from '../src/games/catalog'
 import {rows, featuredGame} from '../src/games/home'
 
 const DAY = 864e5
@@ -11,15 +11,19 @@ describe('games home rows', ()=>{
     const list = rows(0, MODULE)
     const types = list.map(r => r.params.type)
 
-    it('starts with the hero, then the ranked list, then the folders, then one shelf per folder', ()=>{
-        expect(types.slice(0, 3)).toEqual(['feature', 'list', 'folders'])
-        expect(types.slice(3)).toEqual(categories.map(() => 'shelf'))
+    it('starts with the heroes, then the ranked list, then one shelf per folder and a shelf of all games', ()=>{
+        expect(types.slice(0, 2)).toEqual(['feature', 'list'])
+        expect(types.slice(2)).toEqual([...categories.map(() => 'shelf'), 'shelf'])
+        expect(types).not.toContain('folders')
     })
 
-    it('the hero is one featured game, shown as a feature tile', ()=>{
-        expect(list[0].results.length).toBe(1)
-        expect(list[0].results[0].params.style.name).toBe('feature')
-        expect(list[0].results[0].game).toBe(featuredGame(0).id)
+    it('the heroes are four different featured games, shown as feature tiles', ()=>{
+        const heroes = list[0].results
+
+        expect(heroes.length).toBe(4)
+        expect(new Set(heroes.map(h => h.game)).size).toBe(4)
+        heroes.forEach(h => expect(h.params.style.name).toBe('feature'))
+        expect(heroes[0].game).toBe(featuredGame(0).id)
     })
 
     it('the ranked list numbers its games from 1 with their best score', ()=>{
@@ -33,22 +37,18 @@ describe('games home rows', ()=>{
         })
     })
 
-    it('the folders row ends with All games, which opens every game', ()=>{
-        const folders = list[2].results
-
-        expect(folders.length).toBe(categories.length + 1)
-        expect(folders[folders.length - 1].all).toBe(true)
-        folders.slice(0, -1).forEach(f => expect(f.category).toBeTruthy())
-    })
-
     it('every tile carries the card module it was built with', ()=>{
         list.forEach(r => r.results.forEach(t => expect(t.params.module).toBe(MODULE)))
     })
 
     it('a shelf lists the games of its folder in order', ()=>{
         categories.forEach((c, i) => {
-            expect(list[3 + i].results.map(t => t.game)).toEqual(c.games.map(g => g.id))
+            expect(list[2 + i].results.map(t => t.game)).toEqual(c.games.map(g => g.id))
         })
+    })
+
+    it('the last shelf holds every game', ()=>{
+        expect(list[list.length - 1].results.length).toBe(games.length)
     })
 })
 
