@@ -24,6 +24,7 @@ src/utils/api/okko.js
 # Local and pulled environment files (keys): never commit
 .env
 .env.*
+!.env.example
 
 # Local tool state, worktrees and session notes
 .freebuff/
