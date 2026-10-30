@@ -1,0 +1,167 @@
+// Android player: a Material 3 control panel. A solid tonal surface with
+// elevation (no blur, which is costly on many Android TV and phone GPUs), a
+// thin primary-coloured slider, and 48dp touch targets. Scoped to Android;
+// markup and classes are unchanged, so the input logic in panel.js still works.
+
+body.platform--android{
+    .player-panel{
+        left: 50%;
+        right: auto;
+        bottom: max(1em, env(safe-area-inset-bottom));
+        width: min(35em, calc(100% - 1.5em));
+        border-radius: 1.75em;
+        background-color: #1E1E21;
+        box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.3), 0 0.4em 1em rgba(0, 0, 0, 0.3);
+        transform: translate(-50%, 150%);
+        transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s;
+
+        @media screen and (max-width: $media_xm) {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            transform: translateY(150%);
+            border-radius: 1.75em 1.75em 0 0;
+        }
+
+        &.panel--visible{
+            transform: translate(-50%, 0);
+
+            @media screen and (max-width: $media_xm) {
+                transform: translateY(0);
+            }
+        }
+
+        &.panel--footer-open{
+            transform: translate(-50%, -150%);
+
+            @media screen and (max-width: $media_xm) {
+                transform: translateY(-150%);
+            }
+        }
+    }
+
+    .player-panel__body{
+        padding: 1em 1.25em 0.75em;
+    }
+
+    // slider: 4px track, primary-coloured progress, a narrow pill as the handle
+    .player-panel__timeline{
+        height: 0.25em;
+        margin-bottom: 0.75em;
+        background-color: rgba(255, 255, 255, 0.24);
+        transition: height 0.2s ease;
+
+        &.focus{
+            box-shadow: 0 0 0 0.12em var(--brand-primary);
+        }
+    }
+
+    .player-panel__timeline:hover{
+        height: 0.35em;
+    }
+
+    .player-panel__peding{
+        background-color: rgba(255, 255, 255, 0.38);
+    }
+
+    .player-panel__position{
+        background-color: var(--brand-primary);
+
+        > div:after{
+            width: 0.3em;
+            height: 1.25em;
+            border-radius: 0.15em;
+            background-color: var(--brand-primary);
+            box-shadow: none;
+        }
+    }
+
+    .player-panel__line-one{
+        font-size: 0.8em;
+        color: var(--brand-text-secondary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .player-panel__line-two{
+        margin-top: 0.5em;
+    }
+
+    .player-panel__center{
+        gap: 0.25em;
+    }
+
+    // icon buttons: 48dp targets, a state layer on focus and press
+    .player-panel__prev,
+    .player-panel__next,
+    .player-panel__rprev,
+    .player-panel__rnext,
+    .player-panel__tstart,
+    .player-panel__tend{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 3em;
+        min-height: 3em;
+        border-radius: 50%;
+        color: var(--brand-text-primary);
+
+        svg{
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        &:active{
+            background-color: rgba(255, 255, 255, 0.16);
+        }
+    }
+
+    // play is the one filled control, as on the Material floating button
+    .player-panel__playpause{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.5em;
+        height: 3.5em;
+        min-width: 48px;
+        min-height: 48px;
+        border-radius: 1em;
+        color: var(--brand-on-primary);
+        background-color: var(--brand-primary);
+
+        svg{
+            width: 1.9em;
+            height: 1.9em;
+        }
+    }
+
+    // quality is an outlined chip
+    .player-panel__quality{
+        display: flex;
+        align-items: center;
+        height: 2em;
+        padding: 0 0.75em;
+        border: 1px solid rgba(255, 255, 255, 0.36);
+        border-radius: 0.5em;
+        font-size: 0.8em;
+        font-weight: 500;
+        color: var(--brand-text-primary);
+    }
+
+    .player-panel .selector:focus-visible,
+    .player-panel .selector.focus{
+        outline: 0.15em solid var(--brand-primary);
+        outline-offset: 0.15em;
+    }
+
+    .player-panel .button.selector.focus{
+        background-color: rgba(255, 255, 255, 0.16);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+        .player-panel,
+        .player-panel__timeline{
+            transition: none;
+        }
+    }
+}
