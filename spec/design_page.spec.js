@@ -4,6 +4,7 @@ import path from 'path'
 
 const root = process.cwd()
 const page = fs.readFileSync(path.join(root, 'public/design.html'), 'utf8')
+const styles = fs.readFileSync(path.join(root, 'public/css/design.css'), 'utf8')
 const brand = fs.readFileSync(path.join(root, 'src/sass/brand.scss'), 'utf8')
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'))
 
@@ -62,7 +63,7 @@ describe('design page', ()=>{
         const pairs = {'brand-primary': '#C8F542', 'brand-on-primary': '#0B0F00', 'brand-background': '#000', 'surface-1': '#121214', 'surface-2': '#1C1C1F'}
         Object.keys(pairs).forEach(name => {
             expect(token(name), name).toBe(pairs[name])
-            expect(page, name).toContain(`--${name}: ${pairs[name]}`)
+            expect(styles, name).toContain(`--${name}: ${pairs[name]}`)
         })
     })
 
