@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Contrasenya d\'administrador',
     admin_login_failed: 'Contrasenya incorrecta',
     admin_login_locked: 'Massa intents. Torna-ho a provar d\'aquí a 15 minuts.',
+    settings_build: 'Compilació',
 }

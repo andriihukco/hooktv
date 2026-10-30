@@ -1552,4 +1552,5 @@ export default {
     admin_login_title: 'Hasło administratora',
     admin_login_failed: 'Błędne hasło',
     admin_login_locked: 'Zbyt wiele prób. Spróbuj ponownie za 15 minut.',
+    settings_build: 'Kompilacja',
 }

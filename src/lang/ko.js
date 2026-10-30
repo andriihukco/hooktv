@@ -182,4 +182,5 @@ export default {
     admin_login_title: '관리자 비밀번호',
     admin_login_failed: '비밀번호가 틀렸습니다',
     admin_login_locked: '시도 횟수가 너무 많습니다. 15분 후에 다시 시도하세요.',
+    settings_build: '빌드',
 }

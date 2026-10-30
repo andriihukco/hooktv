@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Admin-Passwuert',
     admin_login_failed: 'Falscht Passwuert',
     admin_login_locked: 'Ze vill Versich. Probéiert et a 15 Minutten nach eng Kéier.',
+    settings_build: 'Build',
 }

@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Administraatori parool',
     admin_login_failed: 'Vale parool',
     admin_login_locked: 'Liiga palju katseid. Proovi uuesti 15 minuti pärast.',
+    settings_build: 'Versioon',
 }

@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Fjalëkalimi i administratorit',
     admin_login_failed: 'Fjalëkalim i gabuar',
     admin_login_locked: 'Shumë përpjekje. Provoni përsëri pas 15 minutash.',
+    settings_build: 'Build',
 }

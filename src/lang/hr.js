@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Administratorska lozinka',
     admin_login_failed: 'Pogrešna lozinka',
     admin_login_locked: 'Previše pokušaja. Pokušajte ponovno za 15 minuta.',
+    settings_build: 'Verzija',
 }

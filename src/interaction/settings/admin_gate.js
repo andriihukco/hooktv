@@ -1,8 +1,8 @@
-import Input from '../settings/input'
+import Input from './input'
 import Controller from '../../core/controller'
 import Lang from '../../core/lang'
 import Noty from '../noty'
-import createTapCounter from './logo_taps'
+import createTapCounter from './tap_counter'
 
 const press = createTapCounter({taps: 5, windowMs: 3000})
 
@@ -39,14 +39,8 @@ function login(password){
 }
 
 /**
- * Called on every logo press. Returns true when the press should still go home.
- * Five presses in three seconds open the admin prompt instead.
- * @returns {boolean}
+ * Called on every press of the build row in settings. Five presses in three seconds open the admin prompt.
  */
 export default function tap(){
-    let result = press()
-
-    if(result.admin) prompt()
-
-    return result.home
+    if(press()) prompt()
 }

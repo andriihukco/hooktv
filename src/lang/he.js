@@ -1321,4 +1321,5 @@ export default {
     admin_login_title: 'סיסמת מנהל',
     admin_login_failed: 'סיסמה שגויה',
     admin_login_locked: 'יותר מדי ניסיונות. נסו שוב בעוד 15 דקות.',
+    settings_build: 'גרסת בנייה',
 }

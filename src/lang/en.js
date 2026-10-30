@@ -1779,4 +1779,5 @@ export default {
     admin_login_title: 'Admin password',
     admin_login_failed: 'Wrong password',
     admin_login_locked: 'Too many attempts. Try again in 15 minutes.',
+    settings_build: 'Build',
 }

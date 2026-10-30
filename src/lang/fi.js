@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Ylläpitäjän salasana',
     admin_login_failed: 'Väärä salasana',
     admin_login_locked: 'Liian monta yritystä. Yritä uudelleen 15 minuutin kuluttua.',
+    settings_build: 'Koontiversio',
 }

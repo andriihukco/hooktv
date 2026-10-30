@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Администраторска лозинка',
     admin_login_failed: 'Погрешна лозинка',
     admin_login_locked: 'Премногу обиди. Обидете се повторно за 15 минути.',
+    settings_build: 'Билд',
 }

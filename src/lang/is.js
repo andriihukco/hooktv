@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Stjórnandalykilorð',
     admin_login_failed: 'Rangt lykilorð',
     admin_login_locked: 'Of margar tilraunir. Reyndu aftur eftir 15 mínútur.',
+    settings_build: 'Smíði',
 }

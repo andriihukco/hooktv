@@ -7,7 +7,6 @@ import DeviceInput from '../device_input'
 import Menu from '../menu/menu'
 import Lang from '../../core/lang'
 import Storage from '../../core/storage/storage'
-import logoTap from './admin_gate'
 
 let html
 let last
@@ -74,9 +73,6 @@ function init(){
     // HOOK TV: the logo is the home button; the menu icon is the only thing that opens the menu
     // Controller turns a click on a selector into hover:enter, so one event covers mouse, touch and remote
     html.find('.head__logo-icon').addClass('selector').on('hover:enter',()=>{
-        // five quick presses open the admin prompt (admin_gate.js); the presses before that do not go home
-        if(!logoTap()) return
-
         Activity.push({
             url: '',
             title: Lang.translate('title_main') + ' - ' + Storage.field('source').toUpperCase(),

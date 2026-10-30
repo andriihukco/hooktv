@@ -182,4 +182,5 @@ export default {
     admin_login_title: '管理者パスワード',
     admin_login_failed: 'パスワードが違います',
     admin_login_locked: '試行回数が多すぎます。15分後にもう一度お試しください。',
+    settings_build: 'ビルド',
 }

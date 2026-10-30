@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Skrbniško geslo',
     admin_login_failed: 'Napačno geslo',
     admin_login_locked: 'Preveč poskusov. Poskusite znova čez 15 minut.',
+    settings_build: 'Gradnja',
 }

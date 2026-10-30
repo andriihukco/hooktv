@@ -1421,4 +1421,5 @@ export default {
     admin_login_title: 'Администраторска парола',
     admin_login_failed: 'Грешна парола',
     admin_login_locked: 'Твърде много опити. Опитайте след 15 минути.',
+    settings_build: 'Билд',
 }

@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Pasfhocal riarthóra',
     admin_login_failed: 'Pasfhocal mícheart',
     admin_login_locked: 'An iomarca iarrachtaí. Bain triail eile as ceann 15 nóiméad.',
+    settings_build: 'Tógáil',
 }

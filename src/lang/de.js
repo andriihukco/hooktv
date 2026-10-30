@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Admin-Passwort',
     admin_login_failed: 'Falsches Passwort',
     admin_login_locked: 'Zu viele Versuche. Versuche es in 15 Minuten erneut.',
+    settings_build: 'Build',
 }

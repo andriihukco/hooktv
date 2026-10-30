@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Administratoriaus slaptažodis',
     admin_login_failed: 'Neteisingas slaptažodis',
     admin_login_locked: 'Per daug bandymų. Bandykite po 15 minučių.',
+    settings_build: 'Versija',
 }

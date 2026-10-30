@@ -1405,4 +1405,5 @@ export default {
     admin_login_title: 'Palavra-passe de administrador',
     admin_login_failed: 'Palavra-passe incorreta',
     admin_login_locked: 'Demasiadas tentativas. Tente novamente daqui a 15 minutos.',
+    settings_build: 'Compilação',
 }

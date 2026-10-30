@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Password amministratore',
     admin_login_failed: 'Password errata',
     admin_login_locked: 'Troppi tentativi. Riprova tra 15 minuti.',
+    settings_build: 'Build',
 }

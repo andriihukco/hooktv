@@ -1431,4 +1431,5 @@ export default {
     admin_login_title: 'Пароль адміністратара',
     admin_login_failed: 'Няправільны пароль',
     admin_login_locked: 'Занадта шмат спроб. Паспрабуйце праз 15 хвілін.',
+    settings_build: 'Зборка',
 }

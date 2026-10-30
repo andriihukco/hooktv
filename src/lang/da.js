@@ -182,4 +182,5 @@ export default {
     admin_login_title: 'Administratoradgangskode',
     admin_login_failed: 'Forkert adgangskode',
     admin_login_locked: 'For mange forsøg. Prøv igen om 15 minutter.',
+    settings_build: 'Build',
 }
