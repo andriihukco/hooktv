@@ -57,6 +57,7 @@ const glyphs = {
     higher_lower: () => md('bubble_chart'),
     rps: () => md('content_cut'),
     mole: () => md('pest_control_rodent'),
+    duel: () => stroke('M28 28 L72 72', 7) + stroke('M72 28 L28 72', 7),
     typing: () => md('keyboard'),
     speedtype: () => md('bolt'),
     wordrain: () => md('water_drop'),
@@ -66,7 +67,7 @@ const glyphs = {
 // gradient top → bottom: saturated, a touch deeper at the bottom, like the App Store's game icons
 const tints = {
     '2048': ['#FFC247', '#FF6A2B'], snake: ['#4ADE80', '#0E9F78'], tetris: ['#8B7BFF', '#3B6DF0'], pacman: ['#FFD93D', '#FF9500'],
-    flappy: ['#5EDBFF', '#1F8BFF'], chess: ['#6B6B76', '#1D1D23'], candy: ['#FF7EB3', '#B04BEA'], wordle: ['#58E08A', '#12915A'],
+    flappy: ['#5EDBFF', '#1F8BFF'], duel: ['#FFFFFF', '#636366'], chess: ['#6B6B76', '#1D1D23'], candy: ['#FF7EB3', '#B04BEA'], wordle: ['#58E08A', '#12915A'],
     breakout: ['#FF6B8B', '#FF8A1F'], doodle: ['#B7F04E', '#2DBF64'], crossy: ['#68E36F', '#19A19B'],
     sudoku: ['#4DA3FF', '#4C4BD6'], minesweeper: ['#8A8A94', '#2E2E36'], solitaire: ['#25B867', '#075E35'], blackjack: ['#3A3A44', '#14141A'],
     tictactoe: ['#5AB8FF', '#2563EB'], checkers: ['#FF6259', '#A81F2B'], reversi: ['#3FD07A', '#0B6B3A'],

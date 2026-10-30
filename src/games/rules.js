@@ -22,6 +22,7 @@ export const RULES = {
     checkers: 'Move diagonally. Captures are mandatory. Reach the far row to crown a king.',
     reversi: 'Place a disc so it flanks the computer’s discs; those flip to yours. The most discs at the end wins.',
     pong: 'Keep the ball in play with your paddle. The first to 7 wins takes the match.',
+    duel: 'Walk up, punch with F or Enter, kick with G, jump with W, block with S. A block takes a quarter of the damage. Two round wins take the duel.',
     bubbles: 'Aim and shoot. Match three bubbles of one colour to pop them; anything left hanging falls.',
     slicer: 'Swipe through the fruit. Bombs end the round, and three missed fruit end it too.',
     tower: 'Drop each block so it lines up on the tower. Every block that lands is a point.',

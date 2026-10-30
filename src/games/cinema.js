@@ -43,6 +43,7 @@ const FILM = {
     tetris: ['Disaster movie', 'The ceiling is coming down. Stay calm.'],
     pacman: ['Chase thriller', 'Four ghosts. One corridor. No exit.'],
     flappy: ['Survival drama', 'One wingbeat from disaster.'],
+    duel: ['Western', 'Two fighters. One street. Nobody walks away clean.'],
     chess: ['Psychological thriller', 'Every move is a confession.'],
     candy: ['Fairy tale', 'A sweet town and a sticky plot.'],
     wordle: ['Mystery', 'Six chances to name the culprit.'],

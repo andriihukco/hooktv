@@ -190,7 +190,7 @@ function launch(game, cfg){
     fit()
 
     let listeners = [], rafs = 0, held = {}, dead = false, score = 0, paused = false, loopFn, last = 0, finished = false, overlay = null
-    let handlers = {press: [], key: [], resize: [], alt: []}, modal = null
+    let handlers = {press: [], key: [], keyup: [], resize: [], alt: []}, modal = null
     let ui = null, lobbyUi = null, began = false, started = 0, bestAtStart = best.get(game.id), stopFn, recorded = false, starting = false
 
     let env = {
@@ -410,7 +410,7 @@ function launch(game, cfg){
         else if(k && e.repeat && game.repeat !== false) press(k)
         handlers.key.forEach(f => f(e))
     }
-    const up = e => { if(BACK.indexOf(e.keyCode) > -1) return; e.stopImmediatePropagation(); if(e.target && e.target.tagName == 'INPUT') return; let k = KEYS[e.keyCode]; if(k) held[k] = 0 }
+    const up = e => { if(BACK.indexOf(e.keyCode) > -1) return; e.stopImmediatePropagation(); if(e.target && e.target.tagName == 'INPUT') return; let k = KEYS[e.keyCode]; if(k) held[k] = 0; handlers.keyup.forEach(f => f(e)) }
     window.addEventListener('keydown', down, true)
     window.addEventListener('keyup', up, true)
     listeners.push(() => { window.removeEventListener('keydown', down, true); window.removeEventListener('keyup', up, true) })

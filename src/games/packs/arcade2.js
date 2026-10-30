@@ -1,5 +1,7 @@
 // Real-time canvas games, part 2: jumpers, hoppers, pointers.
 import {C, rr, text, glow, noglow, stars} from '../draw'
+import {ARENA, MOVES, inReach, strike} from '../duel'
+import {t} from '../shell'
 
 const steer = (env, cv, w, fn) => { cv.addEventListener('pointermove', e => fn(cv.pt(e).x)); return dt => ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * w * dt }
 
@@ -228,6 +230,163 @@ export default [
             ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.moveTo(35, 93); ctx.lineTo(35 + Math.cos(ang) * 14, 93 + Math.sin(ang) * 14); ctx.stroke()
             let bub = (x, y, c) => { let g = ctx.createRadialGradient(x - 1, y - 1, .3, x, y, R); g.addColorStop(0, '#fff'); g.addColorStop(.25, COL[c]); g.addColorStop(1, COL[c]); ctx.fillStyle = g; glow(ctx, COL[c], 6); ctx.beginPath(); ctx.arc(x, y, R - .2, 0, 7); ctx.fill(); noglow(ctx) }
             if(shot) bub(shot.x, shot.y, shot.c); else bub(35, 93, cur); bub(8, 94, next); text(ctx, 'next', 8, 88, 2.4, C.dim)
+        })
+    }
+},
+{
+    // Duel: two fighters in black and white. The idea (two fighters, punch, kick, block, a life bar) comes from mk.js
+    // by mgechev (MIT); the art and the rules are our own. The rules live in ../duel so they can be tested on their own.
+    // Player 1: arrows or W A S D, F punch, G kick (Enter punches too). Player 2 (2 Players): I jump, J L move, K block, U punch, O kick.
+    id: 'duel', levels: true, repeat: false, modes: [{id: 'cpu'}, {id: 'two'}], title: 'Duel', emoji: '⚔', c1: '#FFFFFF', c2: '#636366', size: [120, 70], pad: true, hint: 'Punch, kick and block · first to 2 rounds wins',
+    start(env){
+        const {ctx} = env.canvas(), {w: W, h: H, ground: GY, wall: WALL} = ARENA
+        const two = env.mode == 'two'
+        const SPEED = 38, JUMP = 72, GRAVITY = 180, KO = 1.6
+        const keys = {}, want = [{}, {}], fx = [], ai = {t: 0, act: 'wait', block: false, last: null}
+        const P1 = {70: 'punch', 71: 'kick'}, P2 = {73: 'jump', 85: 'punch', 79: 'kick'}
+        const clamp = x => Math.max(WALL, Math.min(W - WALL, x))
+        const fighter = (x, dir) => ({x, dir, y: 0, vy: 0, hp: 100, stun: 0, guard: false, atk: null})
+        let fighters, wins = [0, 0], ko = 0
+
+        const spawn = () => { fighters = [fighter(30, 1), fighter(90, -1)] }
+        spawn()
+
+        env.on('press', k => { if(k == 'up') want[0].jump = true; if(k == 'ok') want[0].punch = true })
+        env.on('key', e => {
+            keys[e.keyCode] = true
+            if(e.repeat) return
+            if(P1[e.keyCode]) want[0][P1[e.keyCode]] = true
+            if(two && P2[e.keyCode]) want[1][P2[e.keyCode]] = true
+        })
+        env.on('keyup', e => { keys[e.keyCode] = false })
+
+        // what each player asks for this frame; the one-off presses (jump, punch, kick) are used once
+        const command = i => {
+            const w = want[i]
+
+            want[i] = {}
+            if(i == 1) return {vx: (keys[76] ? 1 : 0) - (keys[74] ? 1 : 0), guard: !!keys[75], jump: !!w.jump, punch: !!w.punch, kick: !!w.kick}
+            return {vx: (env.held.right ? 1 : 0) - (env.held.left ? 1 : 0), guard: !!env.held.down, jump: !!w.jump, punch: !!w.punch, kick: !!w.kick}
+        }
+
+        // the computer: picks a plan every few tenths of a second, and blocks some of the attacks that come at it
+        const brain = (f, o, dt) => {
+            const dist = Math.abs(o.x - f.x), dx = (o.x - f.x) * f.dir, c = {vx: 0, guard: false, jump: false, punch: false, kick: false}
+
+            if(o.atk !== ai.last){ ai.last = o.atk; ai.block = !!o.atk && Math.random() < .5 * env.mult }
+            c.guard = ai.block && !!o.atk && dist < 28
+            if((ai.t -= dt) <= 0){ ai.t = (.35 + Math.random() * .4) / env.mult; ai.act = env.pick(['advance', 'advance', 'retreat', 'wait', 'jump', 'punch', 'kick']) }
+            if(ai.act == 'advance') c.vx = dist > 14 ? f.dir : 0
+            if(ai.act == 'retreat') c.vx = -f.dir
+            if(ai.act == 'jump'){ c.jump = true; ai.act = 'wait' }
+            if(ai.act == 'punch' || ai.act == 'kick'){ if(inReach(ai.act, dx, o.y)){ c[ai.act] = true; ai.act = 'wait' } else c.vx = f.dir }
+            return c
+        }
+
+        function move(f, o, c, dt){
+            f.dir = o.x >= f.x ? 1 : -1
+            f.stun = Math.max(0, f.stun - dt)
+            if(f.atk && (f.atk.t += dt) >= MOVES[f.atk.k].dur) f.atk = null
+            const free = !f.stun && !f.atk
+            f.guard = free && c.guard && f.y == 0
+            if(free && !f.guard && f.y == 0 && (c.punch || c.kick)) f.atk = {k: c.kick ? 'kick' : 'punch', t: 0, hit: false}
+            if(free && !f.guard && f.y == 0 && c.jump) f.vy = JUMP
+            if(free && !f.guard) f.x += c.vx * SPEED * dt
+            if(f.y > 0 || f.vy > 0){ f.vy -= GRAVITY * dt; f.y = Math.max(0, f.y + f.vy * dt); if(f.y == 0) f.vy = 0 }
+            f.x = clamp(f.x)
+        }
+
+        // an attack lands once, while its active part lasts, if the other fighter is in reach
+        function hits(){
+            fighters.forEach((a, i) => {
+                const d = fighters[1 - i], m = a.atk && MOVES[a.atk.k]
+
+                if(!m || a.atk.hit || a.atk.t < m.start || a.atk.t > m.end || !inReach(a.atk.k, (d.x - a.x) * a.dir, d.y)) return
+                const s = strike(a.atk.k, d.guard)
+
+                a.atk.hit = true
+                d.hp = Math.max(0, d.hp - s.dmg)
+                d.stun = Math.max(d.stun, s.stun)
+                d.x = clamp(d.x + a.dir * s.push)
+                fx.push({x: (a.x + d.x) / 2, y: GY - 16, t: 0})
+                env.sfx(d.guard ? 'tap' : 'good')
+            })
+        }
+
+        function finish(w){
+            if(two) return env.over(t(w ? 'game_duel_over_p2' : 'game_duel_over_p1', w ? 'Player 2 wins' : 'Player 1 wins'), true)
+            if(w) return env.over(t('game_duel_over_cpu', 'Computer wins'), false)
+            env.over(t('game_duel_over_you', 'You win!'), true)
+        }
+
+        function nextRound(){
+            const decided = wins.findIndex(n => n >= 2)
+
+            if(decided >= 0) return finish(decided)
+            ko = 0; want[0] = {}; want[1] = {}; ai.last = null; ai.act = 'wait'
+            spawn()
+        }
+
+        // one fighter: a stick figure with a body, arms and legs; the pose follows its move and its guard
+        function figure(f, w, c, r){
+            const d = f.dir, x = f.x, base = GY - f.y, sx = x + (f.stun ? -d * 2 : 0)
+            const hipY = base - 12 + (f.guard ? 3 : 0), shY = base - 22 + (f.guard ? 2 : 0)
+            const a = f.atk, ext = a ? Math.sin(Math.PI * Math.min(1, a.t / MOVES[a.k].dur)) : 0
+            const airborne = f.y > 0
+            const front = a && a.k == 'kick' ? [x + d * (4 + 14 * ext), base - 12 * ext] : [x + d * 4, airborne ? base - 5 : base]
+            const rear = [x - d * 3, airborne ? base - 4 : base]
+            const hand = f.guard ? [sx + d * 6, shY - 4] : a && a.k == 'punch' ? [sx + d * (6 + 12 * ext), shY + 4 - 3 * ext] : [sx + d * 6, shY + 6]
+            const other = f.guard ? [sx + d * 2, shY - 5] : [sx - d * 2, shY + 6]
+
+            ctx.lineCap = 'round'
+            ctx.strokeStyle = c
+            ctx.lineWidth = w
+            ctx.beginPath()
+            ;[[[x, hipY], [sx, shY]], [[x, hipY], front], [[x, hipY], rear], [[sx, shY], hand], [[sx, shY], other]].forEach(([p, q]) => { ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]) })
+            ctx.stroke()
+            ctx.fillStyle = c
+            ctx.beginPath(); ctx.arc(sx + d * .5, shY - 5.5, r, 0, 7); ctx.fill()
+        }
+
+        function bar(x, v, flip){
+            ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(x, 4, 50, 3)
+            ctx.fillStyle = '#fff'; ctx.fillRect(flip ? x + 50 - v / 2 : x, 4, v / 2, 3)
+        }
+
+        function draw(){
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H)
+            ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(0, GY, W, H - GY)
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, GY, W, .6)
+            bar(4, fighters[0].hp, false); bar(W - 54, fighters[1].hp, true)
+            // round wins: a filled dot per round, outlined while the round is still to win
+            wins.forEach((n, p) => { for(let i = 0; i < 2; i++){ const x = p ? W - 6 - i * 4 : 6 + i * 4; ctx.beginPath(); ctx.arc(x, 11, 1.4, 0, 7); if(n > i){ ctx.fillStyle = '#fff'; ctx.fill() } else { ctx.strokeStyle = '#fff'; ctx.lineWidth = .4; ctx.stroke() } } })
+            fighters.forEach((f, i) => { if(i){ figure(f, 5.6, '#fff', 4.4); figure(f, 2.4, '#000', 2.6) } else figure(f, 3.2, '#fff', 3.8) })
+            fx.forEach(s => {
+                ctx.globalAlpha = 1 - s.t / .18; ctx.strokeStyle = '#fff'; ctx.lineWidth = .6; ctx.beginPath()
+                for(let k = 0; k < 6; k++){ const an = k * Math.PI / 3; ctx.moveTo(s.x + Math.cos(an) * 3, s.y + Math.sin(an) * 3); ctx.lineTo(s.x + Math.cos(an) * (3 + s.t * 30), s.y + Math.sin(an) * (3 + s.t * 30)) }
+                ctx.stroke(); ctx.globalAlpha = 1
+            })
+            if(ko) text(ctx, 'KO', W / 2, 24, 16, '#fff')
+        }
+
+        env.loop(dt => {
+            fx.forEach(s => s.t += dt)
+            while(fx.length && fx[0].t > .18) fx.shift()
+            if(ko){ if((ko -= dt) <= 0) nextRound(); return draw() }
+
+            const cs = [command(0), two ? command(1) : brain(fighters[1], fighters[0], dt)]
+
+            fighters.forEach((f, i) => move(f, fighters[1 - i], cs[i], dt))
+            hits()
+            const alive = fighters.map(f => f.hp > 0)
+
+            // a round ends when a fighter is down; a double KO ends it with no point for either
+            if(!alive[0] || !alive[1]){
+                ko = KO
+                if(alive[0] != alive[1]) wins[alive[0] ? 0 : 1]++
+                env.score(wins[0] * 10)
+            }
+            draw()
         })
     }
 },
