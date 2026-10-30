@@ -87,8 +87,10 @@ body.platform--android{
         margin-top: 0.5em;
     }
 
+    // the centre cluster sits above the slider; lift it so the play button clears the track
     .player-panel__center{
         gap: 0.25em;
+        margin-top: -0.8em;
     }
 
     // icon buttons: 48dp targets, a state layer on focus and press
@@ -117,17 +119,20 @@ body.platform--android{
     }
 
     // play is the one filled control, as on the Material floating button
+    // the shared panel makes play transparent with !important, so the fill is forced here
     .player-panel__playpause{
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 3.5em;
-        height: 3.5em;
+        width: 2.4em !important;
+        height: 2.4em !important;
         min-width: 48px;
         min-height: 48px;
+        margin: 0 0.5em !important;
+        padding: 0 !important;
         border-radius: 1em;
-        color: var(--brand-on-primary);
-        background-color: var(--brand-primary);
+        color: var(--brand-on-primary) !important;
+        background-color: var(--brand-primary) !important;
 
         svg{
             width: 1.9em;
