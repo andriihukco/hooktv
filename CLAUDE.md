@@ -12,6 +12,25 @@ Do not call a task finished until every step below has run and passed. Fix what 
 6. **SEO.** Public pages have a unique `<title>` (under 70 characters), a description (under 160), a canonical URL and Open Graph tags. Routes that should be public are listed in `vercel.json`.
 7. **Commit and push** when the user asks for it. Commit only the files of the task, never other people's uncommitted work.
 
+## File size (before every commit and push)
+
+Before each commit and each push, check the size of the files it changes:
+
+- Source files (`.js`, `.ts`, `.scss`, `.css`, `.html`) must stay at or under **400 lines**. Aim for **300**.
+- Exempt: language packs in `src/lang/` and `public/lang/` (data), vendor code in `public/vender/` and `build/`, minified files, and generated `public/css/app.css`.
+- Check with `wc -l` on the staged files (before a commit) or on the files in `git diff --name-only @{u}..HEAD` (before a push).
+- If a file is over the limit, split the code you touch into a new module in the same folder, then check again.
+- A file already over 400 lines must not grow. Do not add lines to it without moving existing code out of it in the same change.
+- Do not split files the task does not touch. Report any remaining oversized file in the final message.
+
+Enforced by git hooks in `.githooks/` (`pre-commit` and `pre-push`, both run `check-file-size.sh`). A commit or push fails only when a file is over the limit and is new to it, or grew. Run once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Do not use `--no-verify` to get past the check.
+
 ## Where things live
 
 - Game catalogue and folders: `src/games/`. Titles and hints come from `game_<id>_title` and `game_<id>_hint`; folders from `games_cat_<id>_*`.
