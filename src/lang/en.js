@@ -815,6 +815,7 @@ export default {
     music_open_player: 'Open full player',
     music_close_player: 'Close player',
     music_favorite: 'Save to favorites',
+    music_find_track: 'Find on platforms',
     menu_catalog: 'Catalog',
     menu_filter: 'Filter',
     menu_collections: 'Collections',

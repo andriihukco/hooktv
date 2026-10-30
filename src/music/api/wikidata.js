@@ -15,6 +15,44 @@ SELECT ?image ?award ?awardLabel ?year ?title WHERE {
 LIMIT 200`
 }
 
+// Image sizes come from Wikimedia Commons; a 400 px width keeps portraits light
+function thumb(url){
+    return `${url}${url.includes('?') ? '&' : '?'}width=400`
+}
+
+export function imagesQuery(ids){
+    let values = ids.map(id=>`"${String(id).replace(/[^a-f0-9-]/gi, '')}"`).join(' ')
+
+    return `
+SELECT ?mbid ?image WHERE {
+  VALUES ?mbid { ${values} }
+  ?item wdt:P434 ?mbid; wdt:P18 ?image.
+}`
+}
+
+// Portraits for many artists in one request, keyed by MusicBrainz ID
+export async function artistImages(ids){
+    let list = [...new Set(ids.filter(Boolean))].slice(0, 50)
+    let images = new Map()
+
+    if(!list.length) return images
+
+    let url = new URL(endpoint)
+
+    url.searchParams.set('format', 'json')
+    url.searchParams.set('query', imagesQuery(list))
+
+    let response = await fetch(url.toString(), {headers: {Accept: 'application/sparql-results+json'}})
+
+    if(!response.ok) throw new Error(`Wikidata request failed (${response.status})`)
+
+    ;(((await response.json()).results || {}).bindings || []).forEach(row=>{
+        if(!images.has(row.mbid.value)) images.set(row.mbid.value, thumb(row.image.value))
+    })
+
+    return images
+}
+
 async function summary(title){
     let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, '_'))}`)
 
@@ -41,7 +79,7 @@ export async function artistExtras(mbid){
     let title = ''
 
     rows.forEach(row=>{
-        if(row.image && !image) image = row.image.value
+        if(row.image && !image) image = thumb(row.image.value)
         if(row.title && !title) title = row.title.value
         if(row.award){
             let key = row.award.value

@@ -11,6 +11,7 @@ import CardModule from '../interaction/card/module/module'
 import EmptyRouter from '../interaction/empty/module/router'
 import ContentRows from '../core/content_rows'
 import LibraryFilter from '../utils/library_filter'
+import Storage from '../core/storage/storage'
 
 /**
  * Компонент "Избранное"
@@ -57,6 +58,17 @@ function component(object){
                     })
                 }
             })
+
+            // Saved music tracks live in the music tab's storage; the chip opens them there
+            let tracks = Storage.get('music_favorites', [])
+
+            if(Array.isArray(tracks) && tracks.length){
+                chips.push({
+                    title: Lang.translate('menu_music'),
+                    count: tracks.length,
+                    onSelect: Router.call.bind(Router, 'music', {favorites: true, title: Lang.translate('music_category_favorites')})
+                })
+            }
 
             LibraryHeader.mount(comp, chips)
 
@@ -128,7 +140,8 @@ function component(object){
             if(lines.length){
                 comp.build(lines)
             }
-            else comp.empty()
+            // a saved music track is still a favorite: the chip above is the way in, so no empty state
+            else if(!chips.length) comp.empty()
         }
     })
 

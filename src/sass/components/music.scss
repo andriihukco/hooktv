@@ -11,28 +11,6 @@
         cursor: pointer;
     }
 
-    &__hero{
-        min-height: 16em;
-        margin-bottom: 2.5em;
-        padding: 2.4em 3em;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 1px solid rgba(255,255,255,.1);
-        border-radius: 1.8em;
-        background:
-            radial-gradient(ellipse at 82% 55%, rgba(201,105,255,.35), transparent 34%),
-            linear-gradient(115deg, #19162d 0%, #27204a 52%, #183b52 100%);
-        box-shadow: 0 1.2em 3em rgba(0,0,0,.2);
-    }
-
-    &__hero-copy{
-        max-width: 62%;
-        z-index: 1;
-    }
-
     &__eyebrow,
     &__section-kicker{
         color: #b7aaff;
@@ -40,82 +18,6 @@
         font-weight: 700;
         letter-spacing: .16em;
         text-transform: uppercase;
-    }
-
-    &__hero h1{
-        margin: .35em 0;
-        font-size: 3.2em;
-        letter-spacing: -.05em;
-        line-height: 1;
-    }
-
-    &__hero p{
-        max-width: 40em;
-        margin: .8em 0 0;
-        color: rgba(255,255,255,.68);
-        font-size: 1.05em;
-        line-height: 1.45;
-    }
-
-    &__hero-art{
-        width: 14em;
-        height: 14em;
-        position: relative;
-        flex-shrink: 0;
-        border: 1px solid rgba(255,255,255,.28);
-        border-radius: 50%;
-        background:
-            radial-gradient(circle at center, #171526 0 18%, transparent 18.5%),
-            conic-gradient(from 25deg, #bba8ff, #f8a6e2, #76d6df, #7d78d7, #bba8ff);
-        box-shadow: 0 0 3em rgba(202,160,255,.32);
-        animation: music-orbit 16s linear infinite;
-    }
-
-    &__hero-orb{
-        position: absolute;
-        width: 18em;
-        height: 18em;
-        border-radius: 50%;
-        filter: blur(1px);
-        opacity: .16;
-        pointer-events: none;
-
-        &--one{
-            background: #d3a0ff;
-            right: 15%;
-            top: -13em;
-        }
-
-        &--two{
-            background: #63d8df;
-            right: -7em;
-            bottom: -16em;
-        }
-    }
-
-    &__equalizer,
-    &__player-bars{
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: .55em;
-    }
-
-    &__equalizer i,
-    &__player-bars i{
-        width: .32em;
-        height: 30%;
-        border-radius: 1em;
-        background: rgba(255,255,255,.9);
-        animation: music-wave 1.15s ease-in-out infinite alternate;
-
-        @for $i from 1 through 7{
-            &:nth-child(#{$i}){
-                animation-delay: $i * .11s;
-            }
-        }
     }
 
     &__section{
@@ -385,13 +287,66 @@
         color: #a7d7c5;
     }
 
-    &__track-heading,
-    &__track{
+    &__track-heading{
         display: grid;
         grid-template-columns: 3em minmax(0, 1fr) 8em 4em;
         align-items: center;
         gap: 1em;
     }
+
+    &__track{
+        display: flex;
+        align-items: center;
+        gap: .4em;
+        border-top: 1px solid rgba(255,255,255,.06) !important;
+
+        &-main{
+            flex: 1;
+            min-width: 0;
+            display: grid;
+            grid-template-columns: 3em minmax(0, 1fr) 8em;
+            align-items: center;
+            gap: 1em;
+            padding: .8em 1em;
+            text-align: left;
+            border-radius: .6em;
+            background: transparent;
+            transition: background .18s ease;
+
+            &.focus,
+            &.hover{
+                background: rgba(255,255,255,.09);
+            }
+        }
+
+        &-find{
+            flex: 0 0 auto;
+            width: 2.75em;
+            height: 2.75em;
+            margin-right: .6em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            color: rgba(255,255,255,.62);
+
+            svg{
+                width: 1.3em;
+                height: 1.3em;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+
+            &.focus,
+            &.hover{
+                color: var(--brand-text-primary);
+                background: rgba(255,255,255,.09);
+            }
+        }
 
     &__track-heading{
         padding: .8em 1em;
@@ -400,19 +355,6 @@
         letter-spacing: .1em;
         text-transform: uppercase;
     }
-
-    &__track{
-        width: 100%;
-        padding: .8em 1em;
-        text-align: left;
-        border-top: 1px solid rgba(255,255,255,.06) !important;
-        background: transparent;
-        transition: background .18s ease;
-
-        &.focus,
-        &.hover{
-            background: rgba(255,255,255,.09);
-        }
 
         &-index,
         &-license,
@@ -641,15 +583,6 @@
     }
 }
 
-@keyframes music-wave{
-    from{ transform: scaleY(.35); }
-    to{ transform: scaleY(1.4); }
-}
-
-@keyframes music-orbit{
-    to{ transform: rotate(360deg); }
-}
-
 @keyframes music-player-in{
     from{ opacity: 0; transform: translateY(1em) scale(.99); }
     to{ opacity: 1; transform: translateY(0) scale(1); }
@@ -663,49 +596,12 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        &__hero{
-            min-height: 13em;
-            padding: 1.8em;
-        }
-
-        &__hero-art{
-            width: 10em;
-            height: 10em;
-        }
-
-        &__player{
-            left: 1em;
-            right: 1em;
-        }
     }
 }
 
 @media screen and (max-width: 580px){
     .music-page{
         padding: 1em 1em 12em;
-
-        &__hero{
-            min-height: 12em;
-            padding: 1.4em;
-        }
-
-        &__hero h1{
-            font-size: 2.2em;
-        }
-
-        &__hero p{
-            font-size: .85em;
-        }
-
-        &__hero-art{
-            width: 6em;
-            height: 6em;
-            margin-right: -1em;
-        }
-
-        &__hero-copy{
-            max-width: 78%;
-        }
 
         &__section-head{
             align-items: flex-start;
@@ -743,47 +639,24 @@
         }
 
         &__track-heading,
-        &__track{
+        &__track-main{
             grid-template-columns: 2em minmax(0, 1fr) 3.5em;
             gap: .5em;
         }
 
         &__track-heading > :nth-child(3),
-        &__track > :nth-child(3){
+        &__track-main > :nth-child(3){
             display: none;
         }
 
         &__player{
-            left: .6em;
-            right: .6em;
-            bottom: .6em;
-            padding: .7em;
-            flex-wrap: wrap;
-            gap: .5em;
+            height: 4.6em;
+            padding: 0 1em;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: .6em;
         }
 
-        &__player-art{
-            width: 2.8em;
-            height: 2.8em;
-        }
-
-        &__player-meta{
-            min-width: 0;
-            max-width: calc(100% - 4em);
-            flex: 1;
-        }
-
-        &__player-center{
-            order: 3;
-            flex-basis: 100%;
-            max-width: none;
-        }
-
-        &__player-actions{
-            margin-left: 0;
-        }
-
-        &__player-license{
+        &__player-actions .music-page__lyrics-button{
             display: none;
         }
 
@@ -794,15 +667,7 @@
     }
 }
 
-@media (prefers-reduced-motion: reduce){
-    .music-page__hero-art,
-    .music-page__equalizer i,
-    .music-page__player-bars i{
-        animation: none !important;
-    }
-}
 
-// Hub homepage: chip groups, shelves, artist profile, mini player and full-page player
 .music-page{
     &__chips{
         display: flex;
@@ -864,7 +729,6 @@
         gap: .6em;
     }
 
-    &__saved,
     &__search{
         display: inline-flex;
         align-items: center;
@@ -980,7 +844,7 @@
 
     &__card--artist &__art{
         border-radius: 50%;
-        width: 8em;
+        width: 100%;
     }
 
     &__art-label{
@@ -1056,28 +920,100 @@
         }
     }
 
-    // Mini player: one slim bar, controls kept to play and next
+    // Bottom bar, pinned to the screen edge. Wide screens: track, transport, actions. Narrow: track and transport.
     &__player{
         position: fixed;
-        left: 1em;
-        right: 1em;
-        bottom: 1em;
+        left: 0;
+        right: 0;
+        bottom: 0;
         z-index: 20;
-        min-height: 4.5em;
-        padding: .5em .8em;
-        display: flex;
+        height: 5em;
+        padding: 0 1.5em;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
         align-items: center;
-        gap: .8em;
-        border: 1px solid rgba(255,255,255,.12);
-        border-radius: 1em;
-        background: rgba(24,24,32,.92);
-        box-shadow: 0 .6em 2em rgba(0,0,0,.35);
+        gap: 1.5em;
+        border-top: 1px solid rgba(255,255,255,.1);
+        background: rgba(14,14,18,.94);
+        box-shadow: 0 -.4em 1.6em rgba(0,0,0,.4);
         backdrop-filter: blur(22px);
         -webkit-backdrop-filter: blur(22px);
-        animation: none;
+        padding-bottom: env(safe-area-inset-bottom);
+        box-sizing: border-box;
 
         &.hide{
             display: none;
+        }
+    }
+
+    &__player-track{
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: .9em;
+    }
+
+    &__player-thumb{
+        flex: 0 0 auto;
+        width: 3.2em;
+        height: 3.2em;
+        border-radius: .5em;
+        overflow: hidden;
+
+        .music-page__art{
+            font-size: .6em;
+            border-radius: .5em;
+        }
+    }
+
+    &__player-actions{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: .4em;
+
+        .music-page__favorite,
+        .music-page__lyrics-button{
+            width: 2.75em;
+            height: 2.75em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--brand-text-primary);
+
+            svg{
+                width: 1.3em;
+                height: 1.3em;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+        }
+
+        .music-page__favorite--active svg{
+            fill: var(--brand-primary);
+            stroke: var(--brand-primary);
+        }
+    }
+
+    // Progress runs along the top edge of the bar
+    &__player .music-page__trackline{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3px;
+        background: rgba(255,255,255,.12);
+
+        span{
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--brand-primary);
         }
     }
 

@@ -1,14 +1,18 @@
 import Activity from '../interaction/activity/activity'
+import Android from '../core/android'
 import Controller from '../core/controller'
 import Input from '../interaction/settings/input'
 import Lang from '../core/lang'
 import Noty from '../interaction/noty'
+import Platform from '../core/platform'
 import Scroll from '../interaction/scroll'
+import Select from '../interaction/select'
 import Storage from '../core/storage/storage'
 import {albumTracks, searchAlbums} from '../music/catalog'
 import {albumsByTag, artistProfile, coverUrl, searchArtists} from '../music/api/musicbrainz'
-import {artistExtras} from '../music/api/wikidata'
+import {artistExtras, artistImages} from '../music/api/wikidata'
 import {defaultMix, findMix, mixGroups} from '../music/hub'
+import {listenLinks} from '../music/platforms'
 
 const group_labels = {
     mood: 'music_group_mood',
@@ -29,7 +33,8 @@ function icon(name){
         back: '<path d="m15 5-7 7 7 7"/>',
         lyrics: '<path d="M5 5h14M5 10h14M5 15h9M5 20h6"/>',
         up: '<path d="m6 15 6-6 6 6"/>',
-        down: '<path d="m6 9 6 6 6-6"/>'
+        down: '<path d="m6 9 6 6 6-6"/>',
+        listen: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
     }
 
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name] || ''}</svg>`
@@ -50,8 +55,8 @@ function archiveCover(identifier){
     return `https://archive.org/services/img/${encodeURIComponent(identifier)}`
 }
 
-function art(source, tone, label){
-    let box = $(`<span class="music-page__art music-page__art--tone-${tone}"><span class="music-page__art-label"></span></span>`)
+function art(source, tone, label, round = false){
+    let box = $(`<span class="music-page__art music-page__art--tone-${tone}${round ? ' music-page__art--artist' : ''}"><span class="music-page__art-label"></span></span>`)
 
     box.find('.music-page__art-label').text(label || '')
 
@@ -72,7 +77,6 @@ function component(object){
     let view = 'home'
     let currentMix = defaultMix
     let searchTerm = ''
-    let showFavorites = false
     let albums = []
     let queue = []
     let queueIndex = -1
@@ -84,6 +88,7 @@ function component(object){
     let lyricsRequest = 0
     let back = null
     let nowOpen = false
+    let shell = $('<div class="music-root"></div>')
 
     audio.preload = 'none'
 
@@ -105,9 +110,9 @@ function component(object){
         let active = Activity.active()
 
         if(!destroyed && instance.activity && active && active.activity === instance.activity){
-            Controller.collectionSet(scroll.render())
+            Controller.collectionSet(shell)
 
-            if(!last || !last.isConnected) Controller.collectionFocus(false, scroll.render())
+            if(!last || !last.isConnected) Controller.collectionFocus(false, shell)
         }
     }
 
@@ -165,10 +170,17 @@ function component(object){
         })
     }
 
+    // Portraits come from Wikidata; artists without one keep the initials tile
+    function withPortraits(load){
+        return load.then(list=>artistImages(list.map(artist=>artist.id))
+            .catch(()=>new Map())
+            .then(images=>list.map(artist=>({...artist, image: images.get(artist.id) || ''}))))
+    }
+
     function artistCard(artist){
         let card = $('<button class="music-page__card music-page__card--artist selector" type="button"></button>')
 
-        card.append(art('', artist.name.length % 5, initials(artist.name)))
+        card.append(art(artist.image, artist.name.length % 5, initials(artist.name), true))
         card.append($('<span class="music-page__card-title"></span>').text(artist.name))
         card.append($('<span class="music-page__card-sub"></span>').text(artist.tags.slice(0, 2).join(' · ') || artist.country))
         card.on('hover:enter click', ()=>openArtist(artist.id, artist.name))
@@ -242,9 +254,6 @@ function component(object){
         let mix = findMix(currentMix)
         let box = content()
 
-        html.find('.music-page__section-title').text(Lang.translate('music_mix_' + mix.id))
-        html.find('.music-page__section-kicker').text(Lang.translate(group_labels[mix.group]))
-
         box.append(chips())
 
         if(searchTerm){
@@ -252,7 +261,7 @@ function component(object){
             let releases = shelf('music_row_releases')
 
             box.append(artists, releases)
-            fill(artists, searchArtists({name: searchTerm, limit: 12}), artistCard, token)
+            fill(artists, withPortraits(searchArtists({name: searchTerm, limit: 12})), artistCard, token)
             fill(releases, searchAlbums('all', searchTerm), releaseCard, token)
         }
         else {
@@ -261,7 +270,7 @@ function component(object){
             let releases = shelf('music_row_releases')
 
             box.append(artists, albumsRow, releases)
-            fill(artists, searchArtists({tag: mix.tag, limit: 12}), artistCard, token)
+            fill(artists, withPortraits(searchArtists({tag: mix.tag, limit: 12})), artistCard, token)
             fill(albumsRow, albumsByTag(mix.tag, 12), albumCard, token)
             fill(releases, searchAlbums('all', ''), releaseCard, token)
         }
@@ -277,7 +286,7 @@ function component(object){
         let box = content()
         let list = favorites()
 
-        html.find('.music-page__section-title').text(Lang.translate('music_category_favorites'))
+        box.append($('<h2 class="music-page__shelf-title"></h2>').text(Lang.translate('music_category_favorites')))
 
         if(!list.length) box.append(message(Lang.translate('music_no_favorites')))
         else list.forEach((track, index)=>box.append(trackButton(track, list, index)))
@@ -287,19 +296,42 @@ function component(object){
     }
 
     function trackButton(track, tracks, index){
-        let row = $(`<button class="music-page__track selector" type="button">
-            <span class="music-page__track-index"></span>
-            <span class="music-page__track-name"><b></b><small></small></span>
-            <span class="music-page__track-duration"></span>
-        </button>`)
+        let row = $(`<div class="music-page__track">
+            <button class="music-page__track-main selector" type="button">
+                <span class="music-page__track-index"></span>
+                <span class="music-page__track-name"><b></b><small></small></span>
+                <span class="music-page__track-duration"></span>
+            </button>
+            <button class="music-page__track-find selector" type="button" aria-label="${Lang.translate('music_find_track')}" title="${Lang.translate('music_find_track')}">${icon('listen')}</button>
+        </div>`)
 
         row.find('.music-page__track-index').text(String(index + 1).padStart(2, '0'))
         row.find('.music-page__track-name b').text(track.title)
         row.find('.music-page__track-name small').text(track.artist)
         row.find('.music-page__track-duration').text(track.duration ? time(track.duration) : '—')
-        row.on('hover:enter click', ()=>playTrack(track, tracks, index))
+        row.find('.music-page__track-main').on('hover:enter click', ()=>playTrack(track, tracks, index))
+        row.find('.music-page__track-find').on('hover:enter click', ()=>listenOn(track))
 
         return row
+    }
+
+    // Free archive tracks are rarely on the big services, so offer a search there, as the movie sheet does
+    function listenOn(track){
+        Select.show({
+            title: Lang.translate('music_find_track'),
+            items: listenLinks(track).map(link=>({title: link.name, subtitle: Lang.translate('hooktv_where_search_on'), url: link.url})),
+            onSelect: (item)=>{
+                Controller.toggle('content')
+
+                if(item.url) openLink(item.url)
+            },
+            onBack: ()=>Controller.toggle('content')
+        })
+    }
+
+    function openLink(url){
+        if(Platform.is('android')) Android.openBrowser(url)
+        else window.open(url, '_blank')
     }
 
     function openArtist(id, name){
@@ -339,7 +371,7 @@ function component(object){
             page.find('.music-page__artist-name').text(profile.name)
             page.find('.music-page__artist-meta').text([profile.country, profile.type, profile.lifeSpan].filter(Boolean).join(' · '))
             page.find('.music-page__artist-bio').text(extras.bio || Lang.translate('music_bio_missing'))
-            page.find('.music-page__artist-portrait').append(art(extras.image, profile.name.length % 5, initials(profile.name)))
+            page.find('.music-page__artist-portrait').append(art(extras.image, profile.name.length % 5, initials(profile.name), true))
 
             page.append(awardsShelf(extras.awards), albumsShelf(profile.albums), freeShelf(own, id, name))
             box.empty().append(page)
@@ -466,8 +498,8 @@ function component(object){
     }
 
     function updatePlayer(){
-        let player = html.find('.music-page__player')
-        let now = html.find('.music-page__now')
+        let player = shell.find('.music-page__player')
+        let now = shell.find('.music-page__now')
 
         if(!activeTrack){
             player.addClass('hide')
@@ -487,13 +519,14 @@ function component(object){
             node.find('.music-page__play').html(icon(playing ? 'pause' : 'play'))
             node.find('.music-page__play').attr('aria-label', Lang.translate(playing ? 'music_pause' : 'music_play'))
             node.find('.music-page__eq').toggleClass('music-page__eq--playing', playing)
+            node.find('.music-page__favorite').toggleClass('music-page__favorite--active', isFavorite(activeTrack)).html(icon('heart'))
+            node.find('.music-page__lyrics-button').toggleClass('music-page__lyrics-button--active', Boolean(activeTrack.lyricsUrl))
         })
 
+        player.find('.music-page__player-thumb').empty().append(art(archiveCover(activeTrack.identifier), activeTrack.identifier.length % 5, initials(activeTrack.album)))
         now.find('.music-page__now-album').text(activeTrack.album)
         now.find('.music-page__now-license').text(activeTrack.license)
         now.find('.music-page__now-art').empty().append(art(archiveCover(activeTrack.identifier), activeTrack.identifier.length % 5, initials(activeTrack.album)))
-        now.find('.music-page__favorite').toggleClass('music-page__favorite--active', isFavorite(activeTrack)).html(icon('heart'))
-        now.find('.music-page__lyrics-button').toggleClass('music-page__lyrics-button--active', Boolean(activeTrack.lyricsUrl))
     }
 
     function playTrack(track, tracks, index){
@@ -574,7 +607,7 @@ function component(object){
     function showLyrics(){
         if(!activeTrack) return
 
-        let panel = html.find('.music-page__lyrics')
+        let panel = shell.find('.music-page__lyrics')
         let body = panel.find('.music-page__lyrics-body').empty()
 
         panel.removeClass('hide')
@@ -623,7 +656,6 @@ function component(object){
             nosave: true
         }, value=>{
             searchTerm = value.trim()
-            showFavorites = false
             renderHome()
         })
     }
@@ -637,19 +669,29 @@ function component(object){
         audio.currentTime = position * audio.duration
     }
 
+    // Bottom bar pinned to the screen edge: track, transport controls, then actions
     function miniPlayer(){
         return $(`<div class="music-page__player hide" role="region" aria-label="${Lang.translate('music_now_playing')}">
-            <button class="music-page__player-open selector" type="button" aria-label="${Lang.translate('music_open_player')}">
-                <span class="music-page__player-meta">
-                    <b class="music-page__title"></b>
-                    <span class="music-page__artist-line"></span>
-                </span>
-            </button>
+            <div class="music-page__player-track">
+                <button class="music-page__player-open selector" type="button" aria-label="${Lang.translate('music_open_player')}">
+                    <span class="music-page__player-thumb"></span>
+                    <span class="music-page__player-meta">
+                        <b class="music-page__title"></b>
+                        <span class="music-page__artist-line"></span>
+                    </span>
+                </button>
+                <div class="music-page__eq" aria-hidden="true">${'<i></i>'.repeat(eqBars)}</div>
+            </div>
             <div class="music-page__player-controls">
+                <button class="music-page__previous selector" type="button" aria-label="${Lang.translate('music_previous')}">${icon('previous')}</button>
                 <button class="music-page__play selector" type="button" aria-label="${Lang.translate('music_play')}"></button>
                 <button class="music-page__next selector" type="button" aria-label="${Lang.translate('music_next')}">${icon('next')}</button>
             </div>
-            <div class="music-page__eq" aria-hidden="true">${'<i></i>'.repeat(eqBars)}</div>
+            <div class="music-page__player-actions">
+                <button class="music-page__favorite selector" type="button" aria-label="${Lang.translate('music_favorite')}"></button>
+                <button class="music-page__lyrics-button selector" type="button" aria-label="${Lang.translate('music_show_lyrics')}">${icon('lyrics')}</button>
+            </div>
+            <div class="music-page__trackline"><span></span></div>
         </div>`)
     }
 
@@ -683,52 +725,31 @@ function component(object){
     }
 
     function build(){
-        html.append(`<div class="music-page__hero">
-            <div class="music-page__hero-orb music-page__hero-orb--one"></div>
-            <div class="music-page__hero-orb music-page__hero-orb--two"></div>
-            <div class="music-page__hero-copy">
-                <div class="music-page__eyebrow">${Lang.translate('music_eyebrow')}</div>
-                <h1>${Lang.translate('music_title')}</h1>
-                <p>${Lang.translate('music_intro')}</p>
-            </div>
-        </div>
-        <div class="music-page__section">
+        html.append(`<div class="music-page__section">
             <div class="music-page__section-head">
-                <div>
-                    <div class="music-page__section-kicker"></div>
-                    <h2 class="music-page__section-title"></h2>
-                </div>
-                <div class="music-page__head-actions">
-                    <button class="music-page__search selector" type="button">${icon('search')}<span>${Lang.translate('music_search')}</span></button>
-                    <button class="music-page__saved selector" type="button">${icon('heart')}<span>${Lang.translate('music_category_favorites')}</span></button>
-                </div>
+                <button class="music-page__search selector" type="button">${icon('search')}<span>${Lang.translate('music_search')}</span></button>
             </div>
             <div class="music-page__status"></div>
             <div class="music-page__content"></div>
         </div>`)
 
-        html.append(miniPlayer(), fullPlayer())
-        html.append(`<aside class="music-page__lyrics hide">
+        // Player and lyrics sit outside the scrolling body: Scroll transforms its body, which would pin them to the content
+        shell.append(miniPlayer(), fullPlayer())
+        shell.append(`<aside class="music-page__lyrics hide">
             <div class="music-page__lyrics-head"><b class="music-page__lyrics-title"></b><button class="music-page__lyrics-close selector" type="button">×</button></div>
             <div class="music-page__lyrics-body"></div>
         </aside>`)
 
         html.find('.music-page__search').on('hover:enter click', search)
-        html.find('.music-page__saved').on('hover:enter click', ()=>{
-            showFavorites = !showFavorites
-            if(showFavorites) renderFavorites()
-            else renderHome()
-        })
-
-        html.find('.music-page__play').on('hover:enter click', togglePlay)
-        html.find('.music-page__next').on('hover:enter click', ()=>stepTrack(1))
-        html.find('.music-page__previous').on('hover:enter click', ()=>stepTrack(-1))
-        html.find('.music-page__player-open').on('hover:enter click', ()=>openNow(true))
-        html.find('.music-page__now-close').on('hover:enter click', ()=>openNow(false))
-        html.find('.music-page__favorite').on('hover:enter click', toggleFavorite)
-        html.find('.music-page__lyrics-button').on('hover:enter click', showLyrics)
-        html.find('.music-page__lyrics-close').on('hover:enter click', ()=>html.find('.music-page__lyrics').addClass('hide'))
-        html.find('.music-page__timeline').on('click', seek)
+        shell.find('.music-page__play').on('hover:enter click', togglePlay)
+        shell.find('.music-page__next').on('hover:enter click', ()=>stepTrack(1))
+        shell.find('.music-page__previous').on('hover:enter click', ()=>stepTrack(-1))
+        shell.find('.music-page__player-open').on('hover:enter click', ()=>openNow(true))
+        shell.find('.music-page__now-close').on('hover:enter click', ()=>openNow(false))
+        shell.find('.music-page__favorite').on('hover:enter click', toggleFavorite)
+        shell.find('.music-page__lyrics-button').on('hover:enter click', showLyrics)
+        shell.find('.music-page__lyrics-close').on('hover:enter click', ()=>shell.find('.music-page__lyrics').addClass('hide'))
+        shell.find('.music-page__timeline').on('click', seek)
 
         html.on('hover:focus', '.selector', event=>{
             last = event.currentTarget
@@ -747,14 +768,17 @@ function component(object){
         audio.addEventListener('timeupdate', ()=>{
             if(!Number.isFinite(audio.duration)) return
 
-            html.find('.music-page__elapsed').text(time(audio.currentTime))
-            html.find('.music-page__duration').text(time(audio.duration))
-            html.find('.music-page__trackline span').css('width', `${audio.currentTime / audio.duration * 100}%`)
+            shell.find('.music-page__elapsed').text(time(audio.currentTime))
+            shell.find('.music-page__duration').text(time(audio.duration))
+            shell.find('.music-page__trackline span').css('width', `${audio.currentTime / audio.duration * 100}%`)
         })
 
         scroll.minus()
         scroll.append(html)
-        renderHome()
+        shell.prepend(scroll.render())
+
+        if(object && object.favorites) renderFavorites()
+        else renderHome()
     }
 
     this.create = function(){
@@ -768,8 +792,8 @@ function component(object){
         Controller.add('content', {
             link: this,
             toggle: ()=>{
-                Controller.collectionSet(scroll.render())
-                Controller.collectionFocus(last || false, scroll.render())
+                Controller.collectionSet(shell)
+                Controller.collectionFocus(last || false, shell)
             },
             left: ()=>{
                 if(Navigator.canmove('left')) Navigator.move('left')
@@ -800,7 +824,7 @@ function component(object){
     this.pause = function(){}
     this.stop = function(){}
     this.render = function(){
-        return scroll.render()
+        return shell
     }
 
     this.destroy = function(){
@@ -813,7 +837,7 @@ function component(object){
         audio.load()
 
         scroll.destroy()
-        html.remove()
+        shell.remove()
     }
 }
 
