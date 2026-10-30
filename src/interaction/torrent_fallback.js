@@ -6,6 +6,10 @@ import Controller from '../core/controller'
 import Platform from '../core/platform'
 import Lang from '../core/lang'
 import Utils from '../utils/utils'
+import Tmdb from '../core/tmdb/tmdb'
+import Request from '../utils/reguest'
+
+let network = new Request()
 
 /**
  * HOOK TV: when no online source can play a title, look for it among the
@@ -15,9 +19,32 @@ import Utils from '../utils/utils'
  */
 
 const LIMIT = 20
+const MAX_TITLES = 6
 
 function playable(){
     return Platform.is('android') || !!Torserver.url()
+}
+
+/**
+ * Titles the card is known by, in the order they are searched: original,
+ * local, then the alternative titles TMDB lists for every country
+ * (English, Ukrainian and others)
+ * @param {object} movie TMDB card
+ * @param {function} call receives the list of titles, the card's own first
+ */
+function titles(movie, call){
+    let own = [movie.original_title || movie.original_name, movie.title || movie.name]
+    let path = (movie.first_air_date || movie.original_name ? 'tv' : 'movie') + '/' + movie.id
+    let key = 'api_key=' + Tmdb.key()
+
+    network.silent(Tmdb.api(path + '/alternative_titles?' + key), (data)=>{
+        let alt = (data.titles || data.results || []).map(item=>item.title)
+
+        // The English main title is not in the alternative list, so it is fetched separately
+        network.silent(Tmdb.api(path + '?language=en-US&' + key), (english)=>{
+            call(own.concat([english.title || english.name], alt).filter(Boolean))
+        }, ()=>call(own.concat(alt).filter(Boolean)))
+    }, ()=>call(own.filter(Boolean)))
 }
 
 /**
@@ -50,13 +77,13 @@ function normal(text){
  * @param {object} movie TMDB card
  * @returns {array}
  */
-function rank(items, movie){
-    let titles = [movie.original_title || movie.original_name, movie.title || movie.name].map(normal).filter(Boolean)
+function rank(items, movie, extra = []){
+    let known = [movie.original_title || movie.original_name, movie.title || movie.name].concat(extra).map(normal).filter(Boolean)
     let year = parseInt(((movie.release_date || movie.first_air_date || '').slice(0, 4)), 10)
 
     return items.map(item=>{
         let name = ' ' + normal(item.Title || '') + ' '
-        let found = titles.some(title=>name.includes(' ' + title + ' '))
+        let found = known.some(title=>name.includes(' ' + title + ' '))
         let released = parseInt((item.Title || '').match(/\b(19|20)\d{2}\b/)?.[0], 10)
         let audio = (item.Title || '').split('|')[0]
         let ukrainian = /\b(ukr|ua)\b|укр/i.test(audio)
@@ -77,15 +104,45 @@ function rank(items, movie){
 function search(movie, call){
     if(!movie || !movie.id || !playable()) return call([])
 
-    Parser.get({
-        search: query(movie),
-        from_search: true,
-        public_indexer: true
-    }, (json)=>{
-        let items = (json.Results || []).filter(item=>item.MagnetUri || item.Link)
+    titles(movie, (all)=>{
+        let year = ((movie.release_date || movie.first_air_date || '').slice(0, 4))
+        let names = []
+        let seen = new Set()
 
-        call(rank(items, movie).slice(0, LIMIT))
-    }, ()=>call([]))
+        all.forEach(name=>{
+            let key = normal(name)
+
+            if(key && !seen.has(key) && names.length < MAX_TITLES){
+                seen.add(key)
+                names.push(name)
+            }
+        })
+
+        let found = new Map()
+        let pending = names.length
+
+        function done(){
+            let items = [...found.values()].filter(item=>item.MagnetUri || item.Link)
+
+            call(rank(items, movie, names).slice(0, LIMIT))
+        }
+
+        names.forEach(name=>{
+            Parser.get({
+                search: year ? name + ' ' + year : name,
+                from_search: true,
+                public_indexer: true
+            }, (json)=>{
+                (json.Results || []).forEach(item=>found.set(item.MagnetUri || item.Link || item.Title, item))
+
+                if(!--pending) done()
+            }, ()=>{
+                if(!--pending) done()
+            })
+        })
+
+        if(!pending) done()
+    })
 }
 
 /**

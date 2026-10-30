@@ -12,6 +12,10 @@ vi.mock('../src/core/controller', ()=>({default: {}}))
 vi.mock('../src/core/lang', ()=>({default: {translate: (k)=>k}}))
 vi.mock('../src/core/platform', ()=>({default: {is: (name)=>name == 'android' && platform.android}}))
 vi.mock('../src/utils/utils', ()=>({default: {shortText: (s)=>s, bytesToSize: ()=>'1 GB'}}))
+vi.mock('../src/core/tmdb/tmdb', ()=>({default: {api: (url)=>url, key: ()=>'k'}}))
+vi.mock('../src/utils/reguest', ()=>({default: class { silent(url, ok, fail){ alternatives.silent(url, ok, fail) } }}))
+
+let alternatives = {silent: (url, ok)=>ok({titles: []})}
 
 import TorrentFallback from '../src/interaction/torrent_fallback'
 
@@ -28,6 +32,7 @@ describe('TorrentFallback.search', () => {
         platform = {android: false}
         torserver = {url: 'http://torr.local'}
         parser.get = vi.fn((params, ok)=>ok({Results: []}))
+        alternatives.silent = (url, ok)=>ok({titles: []})
     })
 
     it('searches by original title and year, from the search endpoint', () => {
@@ -49,6 +54,36 @@ describe('TorrentFallback.search', () => {
         expect(items).toHaveLength(20)
         expect(items[0].Title).toBe('t24')
         expect(items.some(i=>i.Title == 'none')).toBe(false)
+    })
+
+    it('also searches the alternative titles TMDB lists, with the year', () => {
+        alternatives.silent = (url, ok)=>ok({titles: [{iso_3166_1: 'UA', title: 'Початок'}, {iso_3166_1: 'US', title: 'Inception'}]})
+
+        run(movie)
+
+        let searched = parser.get.mock.calls.map(call=>call[0].search)
+
+        expect(searched).toContain('Початок 2010')
+        expect(searched).toContain('Inception 2010')
+        expect(searched.filter(s=>s == 'Inception 2010')).toHaveLength(1)
+    })
+
+    it('searches the English main title, fetched in English', () => {
+        let ukrainianOnly = {id: 3, title: 'Початок', original_title: 'Початок', release_date: '2010-07-16'}
+        alternatives.silent = (url, ok)=>ok(url.includes('language=en-US') ? {title: 'Inception'} : {titles: []})
+
+        run(ukrainianOnly)
+
+        expect(parser.get.mock.calls.map(call=>call[0].search)).toContain('Inception 2010')
+    })
+
+    it('finds a Ukrainian-titled release through the alternative title', () => {
+        alternatives.silent = (url, ok)=>ok({titles: [{title: 'Початок'}]})
+        parser.get = vi.fn((params, ok)=>ok({Results: params.search == 'Початок 2010'
+            ? [{Title: 'Початок (2010) BDRip 1080p Ukr/Eng', Seeders: 2, MagnetUri: 'magnet:uk'}]
+            : []}))
+
+        expect(run(movie).map(i=>i.Title)).toEqual(['Початок (2010) BDRip 1080p Ukr/Eng'])
     })
 
     it('is empty when the indexer fails', () => {
