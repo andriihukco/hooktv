@@ -1,0 +1,45 @@
+// Desktop and TV: the number that jumps to each of the five filter tabs, drawn at the end of its menu item
+$tab-keys: (main: 1, movie: 2, tv: 3, favorite: 4, history: 5);
+
+body:not(.touch-device){
+    @each $tab, $key in $tab-keys{
+        .menu__item[data-action="#{$tab}"]::after{
+            content: "#{$key}";
+            flex: none;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.5em;
+            height: 1.5em;
+            margin-left: auto;
+            padding: 0 0.4em;
+            border: 1px solid currentColor;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            opacity: 0.6;
+        }
+    }
+}
+
+// the pill shows the key of the tab it sits on (desktop and TV only; empty elsewhere)
+.library-filter-pill__key{
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    height: 1.5em;
+    padding: 0 0.4em;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    font-size: 0.75em;
+    font-weight: 700;
+    opacity: 0.6;
+
+    &:empty{
+        display: none;
+    }
+}

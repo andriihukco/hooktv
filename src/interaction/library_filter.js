@@ -9,7 +9,7 @@ import Select from './select'
 import Search from './search/global'
 import Filter from '../utils/library_filter'
 import Extra from '../utils/tmdb_extra'
-import Platform from '../core/platform'
+import TabHotkeys from './tab_hotkeys'
 
 /**
  * HOOK TV: a "Filters" pill stays at the bottom of the top-level pages (Home,
@@ -476,6 +476,7 @@ function refresh(){
     pill.classList.toggle('library-filter-pill--show', Boolean(current))
     pill.classList.toggle('library-filter-pill--active', count > 0)
     pill.querySelector('.library-filter-pill__count').textContent = count || ''
+    pill.querySelector('.library-filter-pill__key').textContent = TabHotkeys.tabKey()
 
     place()
 }
@@ -486,6 +487,7 @@ function init(){
     pill = el('div', 'library-filter-pill selector', `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
         <span>${Lang.translate('hooktv_filters')}</span>
+        <b class="library-filter-pill__key"></b>
         <b class="library-filter-pill__count"></b>`)
 
     action(pill, open)
@@ -564,18 +566,8 @@ function init(){
         Controller.toggle('library_filter_pill')
     }, true)
 
-    // TV remote: the number 5 opens the filters from anywhere on the page, so the pill
-    // does not have to be reached by stepping down past the last row
-    window.addEventListener('keydown', (e)=>{
-        if((e.keyCode !== 53 && e.keyCode !== 101) || e.defaultPrevented || !Platform.tv()) return
-        if(!pill.classList.contains('library-filter-pill--show') || document.body.classList.contains('library-filter--open')) return
-        if(!['content', 'library_filter_pill'].includes(Controller.enabled().name)) return
-
-        e.stopPropagation()
-        e.preventDefault()
-
-        open()
-    }, true)
+    // desktop and TV: keys 1–5 switch tabs; the key of the tab you are on opens its filters
+    TabHotkeys.init(open)
 
     Lampa.Listener.follow('activity', (e)=>{
         if(e.type !== 'start') return
