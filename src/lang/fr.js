@@ -1465,4 +1465,5 @@ export default {
     admin_login_title: 'Mot de passe administrateur',
     admin_login_failed: 'Mot de passe incorrect',
     admin_login_locked: 'Trop de tentatives. Réessayez dans 15 minutes.',
+    settings_build: 'Version',
 }

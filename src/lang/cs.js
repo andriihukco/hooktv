@@ -1471,4 +1471,5 @@ export default {
     admin_login_title: 'Heslo správce',
     admin_login_failed: 'Špatné heslo',
     admin_login_locked: 'Příliš mnoho pokusů. Zkuste to znovu za 15 minut.',
+    settings_build: 'Sestavení',
 };

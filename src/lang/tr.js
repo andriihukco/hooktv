@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Yönetici parolası',
     admin_login_failed: 'Yanlış parola',
     admin_login_locked: 'Çok fazla deneme. 15 dakika sonra tekrar deneyin.',
+    settings_build: 'Derleme',
 }

@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Adminisztrátori jelszó',
     admin_login_failed: 'Hibás jelszó',
     admin_login_locked: 'Túl sok próbálkozás. Próbálja újra 15 perc múlva.',
+    settings_build: 'Build',
 }

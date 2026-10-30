@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Κωδικός διαχειριστή',
     admin_login_failed: 'Λάθος κωδικός',
     admin_login_locked: 'Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά σε 15 λεπτά.',
+    settings_build: 'Build',
 }

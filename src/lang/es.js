@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Contraseña de administrador',
     admin_login_failed: 'Contraseña incorrecta',
     admin_login_locked: 'Demasiados intentos. Vuelve a intentarlo en 15 minutos.',
+    settings_build: 'Compilación',
 }

@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Administratorpassord',
     admin_login_failed: 'Feil passord',
     admin_login_locked: 'For mange forsøk. Prøv igjen om 15 minutter.',
+    settings_build: 'Bygg',
 }

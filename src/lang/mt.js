@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Password tal-amministratur',
     admin_login_failed: 'Password ħażina',
     admin_login_locked: 'Tentattivi wisq. Erġa\' pprova wara 15-il minuta.',
+    settings_build: 'Build',
 }

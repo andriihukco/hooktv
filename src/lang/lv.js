@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Administratora parole',
     admin_login_failed: 'Nepareiza parole',
     admin_login_locked: 'Pārāk daudz mēģinājumu. Mēģiniet vēlreiz pēc 15 minūtēm.',
+    settings_build: 'Būvējums',
 }

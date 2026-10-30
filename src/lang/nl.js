@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'Beheerderswachtwoord',
     admin_login_failed: 'Verkeerd wachtwoord',
     admin_login_locked: 'Te veel pogingen. Probeer het over 15 minuten opnieuw.',
+    settings_build: 'Build',
 }

@@ -227,4 +227,5 @@ export default {
     admin_login_title: 'ადმინისტრატორის პაროლი',
     admin_login_failed: 'არასწორი პაროლი',
     admin_login_locked: 'ძალიან ბევრი მცდელობა. სცადეთ 15 წუთში.',
+    settings_build: 'ბილდი',
 }

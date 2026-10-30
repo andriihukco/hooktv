@@ -1465,4 +1465,5 @@ export default {
     admin_login_title: 'Parola de administrator',
     admin_login_failed: 'Parolă greșită',
     admin_login_locked: 'Prea multe încercări. Încercați din nou peste 15 minute.',
+    settings_build: 'Build',
 }
