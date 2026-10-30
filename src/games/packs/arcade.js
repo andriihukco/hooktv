@@ -31,7 +31,7 @@ export default [
     }
 },
 {
-    id: 'flappy', levels: true, title: 'Flappy Bird', emoji: '🐤', c1: '#64D2FF', c2: '#30D158', size: [60, 100], pad: true, hint: 'OK, tap or click to flap',
+    id: 'flappy', levels: true, title: 'Flappy Bird', emoji: '🐤', c1: '#F2F2F7', c2: '#48484A', size: [60, 100], pad: true, hint: 'OK, tap or click to flap',
     start(env){
         const {cv, ctx} = env.canvas()
         let b = {y: 45, v: 0}, pipes = [], t = 0, started = false, gap = [32, 26, 21][env.level]
@@ -48,12 +48,12 @@ export default [
                 let dead = b.y < 0 || b.y > 94 || pipes.some(p => 14 + 3 > p.x && 14 - 3 < p.x + 10 && (b.y - 3 < p.g || b.y + 3 > p.g + gap))
                 if(dead) return env.over('Crashed')
             } else b.y = 45 + Math.sin(performance.now() / 250) * 3
-            let g = ctx.createLinearGradient(0, 0, 0, 100); g.addColorStop(0, '#1b3a5c'); g.addColorStop(1, '#0c0c0f')
+            let g = ctx.createLinearGradient(0, 0, 0, 100); g.addColorStop(0, '#2c2c30'); g.addColorStop(1, '#0c0c0f')
             ctx.fillStyle = g; ctx.fillRect(0, 0, 60, 100); stars(ctx, 60, 100, t)
-            pipes.forEach(p => { ctx.fillStyle = '#30D158'; rr(ctx, p.x, -4, 10, p.g + 4, 1.5); ctx.fill(); rr(ctx, p.x, p.g + gap, 10, 100, 1.5); ctx.fill(); ctx.fillStyle = '#1f9a3f'; ctx.fillRect(p.x - 1, p.g - 4, 12, 4); ctx.fillRect(p.x - 1, p.g + gap, 12, 4) })
+            pipes.forEach(p => { ctx.fillStyle = '#d8d8dd'; rr(ctx, p.x, -4, 10, p.g + 4, 1.5); ctx.fill(); rr(ctx, p.x, p.g + gap, 10, 100, 1.5); ctx.fill(); ctx.fillStyle = '#8E8E93'; ctx.fillRect(p.x - 1, p.g - 4, 12, 4); ctx.fillRect(p.x - 1, p.g + gap, 12, 4) })
             ctx.save(); ctx.translate(14, b.y); ctx.rotate(Math.max(-.5, Math.min(1.1, b.v / 90)))
-            ctx.fillStyle = C.yellow; glow(ctx, C.yellow, 8); ctx.beginPath(); ctx.arc(0, 0, 3.4, 0, 7); ctx.fill(); noglow(ctx)
-            ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(1.4, -1, 1.2, 0, 7); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(1.7, -1, .5, 0, 7); ctx.fill(); ctx.fillStyle = C.orange; ctx.beginPath(); ctx.moveTo(3, 0); ctx.lineTo(6, .8); ctx.lineTo(3, 1.8); ctx.fill()
+            ctx.fillStyle = '#f2f2f7'; glow(ctx, '#fff', 8); ctx.beginPath(); ctx.arc(0, 0, 3.4, 0, 7); ctx.fill(); noglow(ctx)
+            ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(1.4, -1, 1.2, 0, 7); ctx.fill(); ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(1.7, -1, .5, 0, 7); ctx.fill(); ctx.fillStyle = '#8E8E93'; ctx.beginPath(); ctx.moveTo(3, 0); ctx.lineTo(6, .8); ctx.lineTo(3, 1.8); ctx.fill()
             ctx.restore()
             if(!started) text(ctx, 'Tap to start', 30, 70, 4, C.dim)
         })

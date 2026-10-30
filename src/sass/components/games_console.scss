@@ -1,0 +1,317 @@
+// ---- the console: lobby and menu ------------------------------------------------------------------------------
+// One calm hierarchy: the game (icon, name, kind, one line, record) and its few settings with a lime Play.
+// Icons carry the meaning, words are kept for the name, the hint and the focused control.
+.games__ico{
+    flex: none;
+    width: 1.3em;
+    height: 1.3em;
+}
+
+.games__pill{
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.9em;
+    border-radius: 99em;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.games__hero{
+    &-meta{
+        display: flex;
+        gap: 0.5em;
+    }
+
+    &-title{
+        font-size: 3em;
+    }
+
+    &-hint{
+        font-size: 1.15em;
+        opacity: 0.75;
+        max-width: 22em;
+    }
+}
+
+.games__stats{
+    display: flex;
+    gap: 1.4em;
+    margin-top: 0.4em;
+}
+
+.games__stat-i{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: 1.15em;
+    color: rgba(255, 255, 255, 0.85);
+
+    .games__ico{
+        color: var(--accent, #C8F542);
+    }
+
+    b{
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.games__row{
+    // game settings first and big, cinema options last and quiet
+    &--minor{
+        padding: 0.55em 1.1em;
+        background: transparent;
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+
+    &--first-minor{
+        margin-top: 0.6em;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        padding-top: 1em;
+    }
+}
+
+.games__play-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    margin-top: 0.8em;
+    background: rgba(200, 245, 66, 0.16);
+    color: var(--accent, #C8F542);
+
+    .games__ico{
+        width: 1.5em;
+        height: 1.5em;
+    }
+}
+
+// the menu card: the game's name and state on top, then the buttons
+.games__sheet-card--menu{
+    width: min(28em, 92%);
+    padding: 1.6em 1.6em 1.4em;
+}
+
+.games__phead{
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1.2em;
+    text-align: left;
+
+    &-icon{
+        position: relative;
+        flex: none;
+        width: 3.6em;
+        height: 3.6em;
+        border-radius: 0.9em;
+        overflow: hidden;
+    }
+
+    &-text{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35em;
+        min-width: 0;
+    }
+
+    &-t{
+        font-size: 1.5em;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+}
+
+.games__panel{
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+    margin-top: 0.4em;
+    min-width: 0;
+}
+
+.games__pbtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    cursor: pointer;
+    font-weight: 800;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.12s;
+    -webkit-tap-highlight-color: transparent;
+
+    &--primary{
+        margin-top: 0.2em;
+        height: 3.4em;
+        border-radius: 99em;
+        font-size: 1.1em;
+        background: rgba(200, 245, 66, 0.16);
+        color: var(--accent, #C8F542);
+
+        .games__ico{
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        &.focus{
+            background: var(--accent, #C8F542);
+            color: var(--accent-contrast, #0B0F00);
+        }
+    }
+
+    &--icon{
+        // 44 px at least on any screen: the buttons of a TV or a thumb
+        width: 3.6em;
+        height: 3.6em;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+
+        .games__ico{
+            width: 1.6em;
+            height: 1.6em;
+        }
+
+        &.focus{
+            background: #fff;
+            color: #000;
+            transform: scale(1.08);
+        }
+    }
+
+    &--ghost{
+        align-self: center;
+        padding: 0.6em 1.4em;
+        min-height: 44px;
+        border-radius: 99em;
+        font-size: 0.95em;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.6);
+
+        &.focus{
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+    }
+
+    &:focus-visible,
+    &.focus{
+        outline: none;
+    }
+}
+
+// the icon row: equal columns, one highlight under the focused icon and a tooltip above it, both placed by --n columns
+.games__prow{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--n, 5), 1fr);
+    justify-items: center;
+    margin-top: 2.2em;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.games__pind,
+.games__ptip{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% / var(--n, 5));
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.games__pind{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    z-index: 0;
+
+    b{
+        width: 3.6em;
+        height: 3.6em;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0.6em 1.6em rgba(0, 0, 0, 0.45);
+    }
+}
+
+// the label rides above the highlight, as a small bubble
+.games__ptip{
+    bottom: 100%;
+    top: auto;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 0.5em;
+    transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    span{
+        padding: 0.3em 0.9em;
+        border-radius: 99em;
+        background: rgba(255, 255, 255, 0.16);
+        font-size: 0.9em;
+        font-weight: 700;
+        white-space: nowrap;
+        color: #fff;
+    }
+}
+
+.games__prow--on .games__pind,
+.games__prow--on .games__ptip{
+    opacity: 1;
+}
+
+.games__prow .games__pbtn--icon{
+    position: relative;
+    z-index: 1;
+
+    &.focus{
+        background: transparent;
+        color: #000;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .games__ptip{
+        transition: opacity 0.1s;
+    }
+}
+
+.games__over .games__panel{
+    width: min(22em, 86%);
+}
+
+// the hero's indicator: one dot per hero, the lit one is the one on screen (like the Home hero)
+.card__dots{
+    position: absolute;
+    right: 3em;
+    bottom: 2.2em;
+    display: flex;
+    gap: 0.5em;
+    z-index: 1;
+
+    i{
+        width: 0.55em;
+        height: 0.55em;
+        border-radius: 99em;
+        background: rgba(255, 255, 255, 0.35);
+        transition: width 0.25s ease, background 0.25s ease;
+
+        &.is-on{
+            width: 2em;
+            background: #C8F542;
+        }
+    }
+}

@@ -1,0 +1,197 @@
+// Games home: one row per layout. A hero (the featured game), a ranked list, the folders as tiles, then a shelf of icons per folder.
+// Each row is an items-line of its own type; the colours come from the folder (--c1, --c2) or the game.
+.card.card--feature,
+.card.card--list,
+.card.card--folder{
+    // a game has no poster: the tile is its colour and its icon, never the image placeholder
+    .card__img{
+        display: none;
+    }
+
+    .card__view{
+        padding-bottom: 0;
+        border-radius: 1.2em;
+        box-shadow: none;
+        box-sizing: border-box;
+        overflow: hidden;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+    }
+
+    .card__game-title{
+        font-weight: 700;
+        font-size: 1em;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card__game-hint,
+    .card__game-best{
+        font-size: 0.85em;
+        color: rgba(255, 255, 255, 0.72);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card__game-play{
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45em 1.1em;
+        border-radius: 2em;
+        background: #fff;
+        color: #000;
+        font-size: 0.85em;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    &.focus .card__view,
+    &.hover .card__view{
+        transform: translate3d(0, -0.1em, 0) scale(1.02);
+        box-shadow: 0 0 0 0.14em #000, 0 0 0 0.3em #fff, 0 1.2em 2.4em rgba(0, 0, 0, 0.6);
+    }
+}
+
+// hero: a dark banner like the other tabs' heroes. The game's colour is only a soft glow behind its icon,
+// the copy sits at the bottom left and Play is the lime pill
+.card.card--feature{
+    width: min(100%, 90em);
+
+    .card__view{
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        box-sizing: border-box;
+        height: 26em;
+        padding: 3em 3.4em 3.6em;
+        background:
+            radial-gradient(60% 120% at 82% 40%, color-mix(in srgb, var(--c1) 38%, transparent), transparent 70%),
+            linear-gradient(90deg, #000 0%, #0d0d10 55%, #17171b 100%);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .card__game-text{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6em;
+        min-width: 0;
+        max-width: 55%;
+    }
+
+    .card__game-title{
+        font-size: 2.8em;
+        line-height: 1.05;
+        white-space: normal;
+    }
+
+    .card__game-hint{
+        font-size: 1.2em;
+        white-space: normal;
+    }
+
+    .card__game-play{
+        margin-top: 0.5em;
+        padding: 0.7em 1.8em;
+        background: #C8F542;
+        font-size: 1em;
+    }
+
+    .card__game{
+        position: absolute;
+        inset: 50% 4em auto auto;
+        width: 15em;
+        height: 15em;
+        margin-top: -7.5em;
+        border-radius: 3em;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2em 4em rgba(0, 0, 0, 0.6);
+    }
+}
+
+// ranked list: a row tile with the rank, the icon, the name and best score, and Play at the end
+.card.card--list{
+    width: 24em;
+
+    .card__view{
+        display: flex;
+        align-items: center;
+        gap: 0.7em;
+        height: 8.4em;
+        padding: 0 1em 0 0.6em;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .card__game-rank{
+        min-width: 1.2em;
+        font-size: 2em;
+        font-weight: 800;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .card__game{
+        position: relative;
+        inset: auto;
+        width: 5.6em;
+        height: 5.6em;
+        flex: 0 0 auto;
+    }
+
+    .card__game-text{
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1em;
+    }
+
+    .card__game-play{
+        flex: 0 0 auto;
+    }
+}
+
+// folder tile: its four icons in a small square, the name and game count under them, in the folder's colours
+.card.card--folder{
+    width: 26em;
+
+    .card__view{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 13em;
+        padding: 1.2em 1.4em;
+        background: linear-gradient(135deg, var(--c1), var(--c2));
+    }
+
+    .card__folder{
+        position: relative;
+        inset: auto;
+        width: 5.2em;
+        height: 5.2em;
+        padding: 0;
+        border-radius: 1.2em;
+    }
+
+    .card__game-text{
+        display: flex;
+        flex-direction: column;
+        gap: 0.2em;
+    }
+
+    .card__game-title{
+        font-size: 1.5em;
+    }
+}
+
+// the row layouts: the hero is one tile, the list shows three rows' worth of tiles, folders take two per screen
+.items-line--type-feature .card--feature,
+.items-line--type-list .card--list,
+.items-line--type-folders .card--folder{
+    flex: 0 0 auto;
+}

@@ -54,3 +54,22 @@ describe('games localisation rule', ()=>{
         }
     })
 })
+
+describe('games console strings', ()=>{
+    const keys = ['hooktv_game_resume', 'hooktv_game_settings', 'hooktv_game_scores', 'hooktv_game_instructions', 'hooktv_game_rules', 'hooktv_game_leave', 'hooktv_game_exit', 'hooktv_game_back', 'hooktv_game_play', 'hooktv_game_played', 'hooktv_game_wins', 'hooktv_game_level', 'hooktv_level_easy', 'hooktv_level_normal', 'hooktv_level_hard']
+
+    it('every language pack has the lobby and menu strings (English where a pack is still partial)', async ()=>{
+        for(const code of codes){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            keys.forEach(key => expect(pack[key], `${code}: ${key}`).toBeTruthy())
+        }
+    })
+
+    it('the Ukrainian pack has them translated, so the menu is not half English', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+        const uk = (await import(path.join(dir, 'uk.js'))).default
+
+        keys.forEach(key => expect(uk[key], `uk: ${key} is still English`).not.toBe(en[key]))
+    })
+})
