@@ -77,3 +77,54 @@ describe('TorrentFallback.search', () => {
         expect(parser.get).not.toHaveBeenCalled()
     })
 })
+
+describe('TorrentFallback.rank', () => {
+    const card = {id: 1, title: 'Початок', original_title: 'Inception', release_date: '2010-07-16'}
+
+    it('puts the matching title and year first, then Ukrainian audio, then seeders', () => {
+        let items = [
+            {Title: 'Other Movie 2010 1080p', Seeders: 99},
+            {Title: 'Inception (2010) BDRip 1080p Eng', Seeders: 5},
+            {Title: 'Inception (2010) BDRip 1080p Ukr/Eng | Sub Eng', Seeders: 1}
+        ]
+
+        let ranked = TorrentFallback.rank(items, card).map(i=>i.Title)
+
+        expect(ranked[0]).toBe('Inception (2010) BDRip 1080p Ukr/Eng | Sub Eng')
+        expect(ranked[1]).toBe('Inception (2010) BDRip 1080p Eng')
+    })
+
+    it('drops a remake from another year', () => {
+        let items = [{Title: 'Inception (2024) WEB-DL 1080p Ukr', Seeders: 50}]
+
+        expect(TorrentFallback.rank(items, card)).toEqual([])
+    })
+
+    it('keeps releases with no year, ranked lower', () => {
+        let items = [
+            {Title: 'Inception Ukr 1080p', Seeders: 1},
+            {Title: 'Inception (2010) 1080p', Seeders: 1}
+        ]
+
+        expect(TorrentFallback.rank(items, card).map(i=>i.Title)).toEqual(['Inception (2010) 1080p', 'Inception Ukr 1080p'])
+    })
+
+    it('matches whole words only, with accents and punctuation ignored', () => {
+        let amelie = {id: 2, original_title: 'Amélie', release_date: '2001-04-25'}
+        let items = [
+            {Title: 'Amelie 2001 BDRip Ukr', Seeders: 1},
+            {Title: 'Amelies 2001 BDRip Ukr', Seeders: 9}
+        ]
+
+        expect(TorrentFallback.rank(items, amelie)[0].Title).toBe('Amelie 2001 BDRip Ukr')
+    })
+
+    it('does not treat Ukrainian subtitles as Ukrainian audio', () => {
+        let items = [
+            {Title: 'Inception (2010) BDRip Eng | Sub Ukr', Seeders: 9},
+            {Title: 'Inception (2010) BDRip Ukr/Eng | Sub Eng', Seeders: 1}
+        ]
+
+        expect(TorrentFallback.rank(items, card)[0].Title).toBe('Inception (2010) BDRip Ukr/Eng | Sub Eng')
+    })
+})

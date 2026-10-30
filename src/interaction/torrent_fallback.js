@@ -33,7 +33,44 @@ function query(movie){
 }
 
 /**
- * Results that can be played, best seeded first
+ * Lower-case, accents and punctuation removed, so "Amélie: Co." matches "amelie co"
+ * @param {string} text
+ * @returns {string}
+ */
+function normal(text){
+    return (text + '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+}
+
+/**
+ * Ranks results against the TMDB card: the title must appear in the release
+ * name, the year must agree (a 1-year slack covers release lag), Ukrainian
+ * audio ranks higher, and seeders break ties. Titles do not carry a country,
+ * so country is not a signal here.
+ * @param {array} items results from the indexer
+ * @param {object} movie TMDB card
+ * @returns {array}
+ */
+function rank(items, movie){
+    let titles = [movie.original_title || movie.original_name, movie.title || movie.name].map(normal).filter(Boolean)
+    let year = parseInt(((movie.release_date || movie.first_air_date || '').slice(0, 4)), 10)
+
+    return items.map(item=>{
+        let name = ' ' + normal(item.Title || '') + ' '
+        let found = titles.some(title=>name.includes(' ' + title + ' '))
+        let released = parseInt((item.Title || '').match(/\b(19|20)\d{2}\b/)?.[0], 10)
+        let audio = (item.Title || '').split('|')[0]
+        let ukrainian = /\b(ukr|ua)\b|укр/i.test(audio)
+
+        if(released && year && Math.abs(released - year) > 1) return null
+
+        let score = (found ? 4 : 0) + (released && year ? 2 : 0) + (ukrainian ? 1 : 0)
+
+        return {item, score}
+    }).filter(Boolean).sort((a, b)=>(b.score - a.score) || ((b.item.Seeders || 0) - (a.item.Seeders || 0))).map(entry=>entry.item)
+}
+
+/**
+ * Results that can be played, best match first, then best seeded
  * @param {object} movie TMDB card
  * @param {function} call receives the list, empty when nothing was found
  */
@@ -47,9 +84,7 @@ function search(movie, call){
     }, (json)=>{
         let items = (json.Results || []).filter(item=>item.MagnetUri || item.Link)
 
-        items.sort((a, b)=>(b.Seeders || 0) - (a.Seeders || 0))
-
-        call(items.slice(0, LIMIT))
+        call(rank(items, movie).slice(0, LIMIT))
     }, ()=>call([]))
 }
 
@@ -85,5 +120,6 @@ function show(items, movie, back = 'content'){
 export default {
     search,
     show,
-    query
+    query,
+    rank
 }
