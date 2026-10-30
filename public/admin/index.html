@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Agent admin</title>
+<style>
+  :root { --bg: #0b0b0c; --panel: #161618; --line: #2a2a2e; --text: #f2f2f3; --muted: #a1a1a8; --accent: #c6ff3d; --warn: #ffb020; --ok: #7ee787; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --bg: #f5f5f7; --panel: #ffffff; --line: #d8d8de; --text: #111113; --muted: #55555c; --accent: #4a7a00; --warn: #8a5a00; --ok: #1f7a33; }
+  }
+  :root[data-theme="light"] { --bg: #f5f5f7; --panel: #ffffff; --line: #d8d8de; --text: #111113; --muted: #55555c; --accent: #4a7a00; --warn: #8a5a00; --ok: #1f7a33; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.4em; margin: 0 0 4px; }
+  h2 { font-size: 1.05em; margin: 28px 0 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .meta { color: var(--muted); font-size: .9em; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .card h3 { margin: 0 0 6px; font-size: 1em; word-break: break-word; }
+  .badge { display: inline-block; font-size: .78em; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); margin-left: 6px; vertical-align: middle; }
+  .badge.paused { color: var(--warn); border-color: var(--warn); }
+  .badge.done { color: var(--ok); border-color: var(--ok); }
+  .badge.active { color: var(--accent); border-color: var(--accent); }
+  pre { white-space: pre-wrap; word-break: break-word; margin: 8px 0 0; font: 13px/1.45 ui-monospace, monospace; color: var(--muted); }
+  button { font: inherit; padding: 8px 14px; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="row">
+    <div>
+      <h1>Agent admin</h1>
+      <div class="meta" id="stamp">Loading…</div>
+    </div>
+    <button id="refresh" type="button">Refresh</button>
+  </div>
+
+  <h2>Task ledgers</h2>
+  <div id="ledgers"></div>
+
+  <h2>Worktrees</h2>
+  <div id="worktrees"></div>
+</main>
+<script>
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]))
+  const stamp = document.getElementById('stamp')
+
+  function render(data){
+    stamp.textContent = data.pushed_at
+      ? 'Last pushed ' + new Date(data.pushed_at).toLocaleString()
+      : 'Nothing pushed yet. Run: node scripts/agent-admin/push.js'
+
+    document.getElementById('ledgers').innerHTML = data.ledgers && data.ledgers.length ? data.ledgers.map(l => `
+      <article class="card">
+        <h3>${esc(l.name)} <span class="badge ${esc(l.status)}">${esc(l.status)}</span></h3>
+        <pre>${l.tail.map(esc).join('\n')}</pre>
+      </article>`).join('') : '<p class="empty">No ledgers.</p>'
+
+    document.getElementById('worktrees').innerHTML = data.worktrees && data.worktrees.length ? data.worktrees.map(w => `
+      <article class="card">
+        <h3>${esc(w.branch)} <span class="badge ${w.changed ? 'paused' : 'done'}">${w.changed ? w.changed + ' changed' : 'clean'}</span></h3>
+        <div class="meta">${esc(w.path)}</div>
+        <pre>${esc(w.last)}</pre>
+      </article>`).join('') : '<p class="empty">No worktrees.</p>'
+  }
+
+  async function load(){
+    try {
+      const res = await fetch('/api/admin/agents', {cache: 'no-store', credentials: 'same-origin'})
+
+      if(res.status == 401){
+        stamp.textContent = 'Sign in with the admin password.'
+        return
+      }
+      if(!res.ok) throw new Error('HTTP ' + res.status)
+
+      render(await res.json())
+    } catch(e){
+      stamp.textContent = 'Could not load: ' + e.message
+    }
+  }
+
+  document.getElementById('refresh').addEventListener('click', load)
+  load()
+</script>
+</body>
+</html>
