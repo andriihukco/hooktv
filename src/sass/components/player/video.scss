@@ -17,6 +17,7 @@ video::-webkit-media-controls-panel-container {
         position: fixed;
         left: 50%;
         top: 50%;
+        box-sizing: border-box;
         width: 8em;
         height: 8em;
         border-radius: 100%;
@@ -219,6 +220,17 @@ video::-webkit-media-controls-panel-container {
 
 .player-video__paused{
     background-color: rgba(0,0,0,0.6);
+
+    // the play glyph sits in the middle of the circle; the nudge is optical,
+    // a triangle looks off-centre when its box is centred
+    svg{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 2.6em;
+        height: 2.6em;
+        transform: translate(-50%, -50%) translateX(0.08em);
+    }
 }
 
 .player.player--panel-visible .player-video__subtitles{

@@ -1392,7 +1392,7 @@ export default {
     hooktv_group_proxy: 'Proxy',
     hooktv_group_data: 'Dane',
     hooktv_dub_default: 'Domyślny język',
-    hooktv_dub_default_descr: 'Wybierany domyślnie w arkuszu Oglądaj',
+    hooktv_dub_default_descr: 'Ścieżka dźwiękowa, z którą startuje odtwarzacz. Do zmiany zgodna z językiem aplikacji',
     tastes_title: 'Gusta',
     tastes_genres: 'Gatunki',
     tastes_countries: 'Kraje',

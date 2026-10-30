@@ -90,6 +90,25 @@ function pickTrack(tracks, want){
     return index
 }
 
+/**
+ * Only the tracks that may reach the player menu. A Russian track or one that
+ * cannot be named is hidden, so the viewer never sees an audio they cannot use.
+ * @param {object[]} tracks player audio tracks (native or hls / dash)
+ */
+function playableTracks(tracks){
+    return tracks.filter(t=>allowedTrack([t.language, t.lang, t.label, t.name].filter(Boolean).join(' ')))
+}
+
+/**
+ * Audio the player starts on until the viewer picks one in Player settings:
+ * Ukrainian for a Ukrainian interface, otherwise the original (English) audio.
+ * @param {string} [lang] interface language code
+ * @returns {'uk'|'original'}
+ */
+function defaultAudio(lang){
+    return lang == 'uk' ? 'uk' : 'original'
+}
+
 function getYear(movie){
     return parseInt((movie.release_date || movie.first_air_date || '0000').slice(0, 4)) || 0
 }
@@ -156,6 +175,8 @@ export default {
     allowedTrack,
     pickVoices,
     pickTrack,
+    playableTracks,
+    defaultAudio,
     rankSimilar,
     pickSimilar,
     contentMatches

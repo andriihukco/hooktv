@@ -1430,6 +1430,19 @@ function autoProbe(key, movie, want) {
     })
 }
 
+// source keys that answered nothing for a title this session, per title
+var unavailable = {}
+
+function titleKey(movie) {
+    return (movie.name ? 'tv:' : 'movie:') + (movie.id || movie.title || movie.name)
+}
+
+function markUnavailable(movie, key) {
+    var id = titleKey(movie)
+    unavailable[id] = unavailable[id] || {}
+    unavailable[id][key] = true
+}
+
 /**
  * @param {object} movie TMDB card
  * @param {'uk'|'original'} want
@@ -1441,7 +1454,10 @@ function autoPlay(movie, want, done, only) {
 
     function start(keys) {
         var probes = keys.map(function(key) {
-            return autoProbe(key, movie, want)
+            return autoProbe(key, movie, want).then(function(found) {
+                if (!found) markUnavailable(movie, key)
+                return found
+            })
         })
         // public-domain classics play even when no balancer has the title
         if (!only) probes.push(Archive.probe(movie))
@@ -3366,7 +3382,12 @@ function init() {
  */
 function balancers(movie, call) {
     autoSources(movie, function(keys) {
-        call(keys.map(function(key) {
+        var failed = unavailable[titleKey(movie)] || {}
+
+        // a source that answered nothing for this title is not offered
+        call(keys.filter(function(key) {
+            return !failed[key]
+        }).map(function(key) {
             return { key: key, title: sourcesStore.getTitle(key) }
         }))
     })

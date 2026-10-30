@@ -6,6 +6,7 @@ import Select from '../select'
 import Controller from '../../core/controller'
 import Subscribe from '../../utils/subscribe'
 import Lang from '../../core/lang'
+import Dub from '../../utils/dub'
 
 let values   = {}
 let defaults = {}
@@ -461,7 +462,7 @@ select('navigation_type', {
 select('hooktv_dub',{
     'uk': 'Українська',
     'original': '#{hooktv_dub_original}'
-},'uk')
+}, Dub.defaultAudio(Storage.get('language','en')))
 
 select('interface_brightness',{
     'b100': '100%',

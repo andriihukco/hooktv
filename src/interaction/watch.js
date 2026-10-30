@@ -1,4 +1,3 @@
-import Select from './select'
 import Controller from '../core/controller'
 import Storage from '../core/storage/storage'
 import Lang from '../core/lang'
@@ -7,6 +6,7 @@ import WhereToWatch from './where_to_watch'
 import TorrentFallback from './torrent_fallback'
 import Player from './player'
 import Noty from './noty'
+import Dub from '../utils/dub'
 
 // services/online registers itself here on init; importing it directly would
 // pull it into the full-card import cycle before Storage is ready
@@ -17,31 +17,18 @@ function register(service){
 }
 
 /**
- * HOOK TV Watch: one question, "Українська or Оригінал", then the best source
- * plays at once. The source list only opens when nothing could start.
+ * HOOK TV Watch: the audio comes from Player settings (the app language by
+ * default), so the title plays at once with no sheet and no preselected choice.
+ * The source list only opens when nothing could start.
  * @param {object} movie TMDB card
  * @param {string} [back] controller to return to, 'content' by default
  */
 function start(movie, back = 'content'){
-    let last = Storage.get('hooktv_dub', 'uk')
+    let want = Storage.get('hooktv_dub', Dub.defaultAudio(Storage.get('language', 'en')))
 
-    Select.show({
-        title: Lang.translate('hooktv_watch_in'),
-        items: [
-            {title: 'Українська', subtitle: Lang.translate('hooktv_dub_uk_descr'), lang: 'uk', selected: last == 'uk'},
-            {title: Lang.translate('hooktv_dub_original'), subtitle: Lang.translate('hooktv_dub_original_descr'), lang: 'original', selected: last == 'original'}
-        ],
-        onSelect: (a)=>{
-            Controller.toggle(back)
+    Controller.toggle(back)
 
-            Storage.set('hooktv_dub', a.lang)
-
-            play(movie, a.lang, back)
-        },
-        onBack: ()=>{
-            Controller.toggle(back)
-        }
-    })
+    play(movie, want, back)
 }
 
 function play(movie, want, back = 'content'){

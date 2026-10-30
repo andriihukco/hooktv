@@ -1616,7 +1616,7 @@ export default {
     hooktv_group_proxy: 'Proxy',
     hooktv_group_data: 'Data',
     hooktv_dub_default: 'Default language',
-    hooktv_dub_default_descr: 'Preselected in the Watch sheet',
+    hooktv_dub_default_descr: 'Audio the player starts on. Follows the app language until you change it',
 
     tastes_title: 'Tastes',
     tastes_genres: 'Genres',

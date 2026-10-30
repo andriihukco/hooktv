@@ -586,9 +586,7 @@ function loaded(){
     else if(dash){
         tracks = dash.getTracksFor('audio')
 
-        tracks.forEach((track,i)=>{
-            if(i == 0) track.selected = true
-
+        tracks.forEach(track=>{
             track.language = (track.lang + '').replace(/\d+/g,'')
 
             Object.defineProperty(track, "enabled", {
@@ -611,7 +609,8 @@ function loaded(){
     } 
 
     if(tracks.length){
-        tracks = convertToArray(tracks)
+        // Russian and unnamed audio never reach the menu, so they cannot be picked
+        tracks = Dub.playableTracks(convertToArray(tracks))
 
         if(typeof params.track !== 'undefined' && tracks[params.track]){
             tracks.forEach(e=>{e.selected = false})
@@ -622,7 +621,7 @@ function loaded(){
             console.log('Player','enable track by default')
         }
         else{
-            // HOOK TV: start on the language picked in the Watch sheet
+            // HOOK TV: start on the language from Player settings; no track is preselected otherwise
             let index = want ? Dub.pickTrack(tracks, want) : -1
 
             if(index >= 0) tracks.forEach((e,i)=>{

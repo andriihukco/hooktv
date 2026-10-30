@@ -1474,7 +1474,7 @@ export default {
     hooktv_group_proxy: 'Проксі',
     hooktv_group_data: 'Дані',
     hooktv_dub_default: 'Мова за замовчуванням',
-    hooktv_dub_default_descr: 'Що обрано першим у вікні «Дивитися»',
+    hooktv_dub_default_descr: 'Аудіо, з яким починається перегляд. До зміни відповідає мові застосунку',
 
     tastes_title: 'Смаки',
     tastes_genres: 'Жанри',
