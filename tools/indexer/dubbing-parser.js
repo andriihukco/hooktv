@@ -11,7 +11,8 @@ const DUBBING_STUDIO_PATTERNS = [
     {studio: 'Tak Treba Production', pattern: word('tak[\\s._]*treba|так[\\s._]*треба')},
     {studio: 'Omikron', pattern: word('omikron|омікрон')},
     {studio: 'Unidub', pattern: word('unidub|юнідаб')},
-    {studio: 'Cikava Ideya', pattern: word('цікава[\\s._]*ідея')}
+    {studio: 'Cikava Ideya', pattern: word('цікава[\\s._]*ідея')},
+    {studio: 'Далі Буде', pattern: word('далі[\\s._]*буде')}
 ]
 
 const UA_TAG = word('ukr|ukrainian|ua')

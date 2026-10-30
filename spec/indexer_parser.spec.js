@@ -23,6 +23,7 @@ suite('release titles', ()=>{
         expect(parseMediaMetadata('Movie 2020 Омікрон 720p').dubbingStudio).toBe('Omikron')
         expect(parseMediaMetadata('Movie 2020 Unidub 720p').dubbingStudio).toBe('Unidub')
         expect(parseMediaMetadata('Фільм 2020 Цікава ідея 720p').dubbingStudio).toBe('Cikava Ideya')
+        expect(parseMediaMetadata('Ao no Hako (S2) (2026) WEB-DL 1080p Ukr/Jap [Далі Буде]').dubbingStudio).toBe('Далі Буде')
     })
 
     test('a studio tag alone counts as Ukrainian dubbing', ()=>{
