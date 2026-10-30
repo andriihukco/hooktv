@@ -814,6 +814,8 @@ export default {
     music_back: 'Back',
     music_open_player: 'Open full player',
     music_close_player: 'Close player',
+    music_seek_back: 'Back 10 seconds',
+    music_seek_forward: 'Forward 10 seconds',
     music_favorite: 'Save to favorites',
     music_find_track: 'Find on platforms',
     menu_catalog: 'Catalog',

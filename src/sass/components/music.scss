@@ -1271,6 +1271,36 @@
         }
     }
 
+    // round glass controls: the mini bar close and the ten-second seek buttons
+    &__player-close,
+    &__seek{
+        width: 2.75em;
+        height: 2.75em;
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,.08);
+        color: var(--brand-text-primary);
+
+        svg{
+            width: 1.4em;
+            height: 1.4em;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    }
+
+    &__now-controls{
+        gap: 1.4em;
+    }
+
     // Focus must be visible on every control, including on a dark background
     .selector:focus-visible,
     .selector.focus{

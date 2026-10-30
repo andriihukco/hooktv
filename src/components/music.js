@@ -9,6 +9,7 @@ import Scroll from '../interaction/scroll'
 import Select from '../interaction/select'
 import Storage from '../core/storage/storage'
 import {albumTracks, searchAlbums} from '../music/catalog'
+import {seekTime} from '../music/seek'
 import {albumsByTag, artistProfile, coverUrl, searchArtists} from '../music/api/musicbrainz'
 import {artistExtras, artistImages} from '../music/api/wikidata'
 import {defaultMix, findMix, mixGroups} from '../music/hub'
@@ -34,7 +35,10 @@ function icon(name){
         lyrics: '<path d="M5 5h14M5 10h14M5 15h9M5 20h6"/>',
         up: '<path d="m6 15 6-6 6 6"/>',
         down: '<path d="m6 9 6 6 6-6"/>',
-        listen: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
+        listen: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+        close: '<path d="m6 6 12 12M18 6 6 18"/>',
+        back10: '<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/><text x="12" y="15.2" font-size="6.5" text-anchor="middle" fill="currentColor" stroke="none">10</text>',
+        forward10: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/><text x="12" y="15.2" font-size="6.5" text-anchor="middle" fill="currentColor" stroke="none">10</text>'
     }
 
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name] || ''}</svg>`
@@ -583,6 +587,25 @@ function component(object){
         updatePlayer()
     }
 
+    function seekBy(delta){
+        if(!activeTrack) return
+
+        audio.currentTime = seekTime(audio.currentTime, delta, audio.duration)
+        updatePlayer()
+    }
+
+    // Stops the track and hides both player views until a new track is played
+    function closePlayer(){
+        audio.pause()
+        audio.removeAttribute('src')
+        audio.load()
+
+        activeTrack = false
+        nowOpen = false
+        updatePlayer()
+        refreshFocusable()
+    }
+
     function openNow(open){
         nowOpen = open && Boolean(activeTrack)
         updatePlayer()
@@ -690,6 +713,7 @@ function component(object){
             <div class="music-page__player-actions">
                 <button class="music-page__favorite selector" type="button" aria-label="${Lang.translate('music_favorite')}"></button>
                 <button class="music-page__lyrics-button selector" type="button" aria-label="${Lang.translate('music_show_lyrics')}">${icon('lyrics')}</button>
+                <button class="music-page__player-close selector" type="button" aria-label="${Lang.translate('music_close_player')}">${icon('close')}</button>
             </div>
             <div class="music-page__trackline"><span></span></div>
         </div>`)
@@ -714,7 +738,9 @@ function component(object){
             </div>
             <div class="music-page__now-controls">
                 <button class="music-page__previous selector" type="button" aria-label="${Lang.translate('music_previous')}">${icon('previous')}</button>
+                <button class="music-page__seek music-page__seek-back selector" type="button" aria-label="${Lang.translate('music_seek_back')}">${icon('back10')}</button>
                 <button class="music-page__play selector" type="button" aria-label="${Lang.translate('music_play')}"></button>
+                <button class="music-page__seek music-page__seek-forward selector" type="button" aria-label="${Lang.translate('music_seek_forward')}">${icon('forward10')}</button>
                 <button class="music-page__next selector" type="button" aria-label="${Lang.translate('music_next')}">${icon('next')}</button>
             </div>
             <div class="music-page__now-foot">
@@ -744,6 +770,9 @@ function component(object){
         shell.find('.music-page__play').on('hover:enter click', togglePlay)
         shell.find('.music-page__next').on('hover:enter click', ()=>stepTrack(1))
         shell.find('.music-page__previous').on('hover:enter click', ()=>stepTrack(-1))
+        shell.find('.music-page__seek-back').on('hover:enter click', ()=>seekBy(-10))
+        shell.find('.music-page__seek-forward').on('hover:enter click', ()=>seekBy(10))
+        shell.find('.music-page__player-close').on('hover:enter click', closePlayer)
         shell.find('.music-page__player-open').on('hover:enter click', ()=>openNow(true))
         shell.find('.music-page__now-close').on('hover:enter click', ()=>openNow(false))
         shell.find('.music-page__favorite').on('hover:enter click', toggleFavorite)
