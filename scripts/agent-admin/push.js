@@ -24,7 +24,7 @@ function env(){
 }
 
 async function main(){
-    const data = snapshot()
+    const data = {...snapshot(), roster: JSON.parse(fs.readFileSync(path.join(__dirname, 'roster.json'), 'utf8'))}
     const summary = `${data.ledgers.length} ledgers, ${data.worktrees.length} worktrees`
 
     if(process.argv.includes('--dry')){

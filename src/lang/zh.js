@@ -1367,4 +1367,7 @@ export default {
     hooktv_games_top: '热门游戏',
     hooktv_games_categories: '分类',
     hooktv_games_all: '全部游戏',
+    admin_login_title: '管理员密码',
+    admin_login_failed: '密码错误',
+    admin_login_locked: '尝试次数过多，请 15 分钟后再试。',
 }

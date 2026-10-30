@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Sám, vo dvojici alebo v tímoch',
     games_cat_more_title: 'Viac',
     games_cat_more_overview: 'Všetko ostatné',
+    admin_login_title: 'Heslo správcu',
+    admin_login_failed: 'Nesprávne heslo',
+    admin_login_locked: 'Príliš veľa pokusov. Skúste to znova o 15 minút.',
 }

@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Leat féin, i mbeirt nó i bhfoirne',
     games_cat_more_title: 'Níos mó',
     games_cat_more_overview: 'Gach rud eile',
+    admin_login_title: 'Pasfhocal riarthóra',
+    admin_login_failed: 'Pasfhocal mícheart',
+    admin_login_locked: 'An iomarca iarrachtaí. Bain triail eile as ceann 15 nóiméad.',
 }

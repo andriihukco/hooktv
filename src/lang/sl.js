@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Sam, v paru ali v ekipah',
     games_cat_more_title: 'Več',
     games_cat_more_overview: 'Vse ostalo',
+    admin_login_title: 'Skrbniško geslo',
+    admin_login_failed: 'Napačno geslo',
+    admin_login_locked: 'Preveč poskusov. Poskusite znova čez 15 minut.',
 }

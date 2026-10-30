@@ -1417,4 +1417,7 @@ export default {
     hooktv_games_top: 'Cele mai bune jocuri',
     hooktv_games_categories: 'Categorii',
     hooktv_games_all: 'Toate jocurile',
+    admin_login_title: 'Parola de administrator',
+    admin_login_failed: 'Parolă greșită',
+    admin_login_locked: 'Prea multe încercări. Încercați din nou peste 15 minute.',
 }

@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Tek başına, ikili veya takımlarla',
     games_cat_more_title: 'Daha fazla',
     games_cat_more_overview: 'Diğer her şey',
+    admin_login_title: 'Yönetici parolası',
+    admin_login_failed: 'Yanlış parola',
+    admin_login_locked: 'Çok fazla deneme. 15 dakika sonra tekrar deneyin.',
 }

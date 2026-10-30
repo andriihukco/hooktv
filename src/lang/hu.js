@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Egyedül, párban vagy csapatban',
     games_cat_more_title: 'Több',
     games_cat_more_overview: 'Minden más',
+    admin_login_title: 'Adminisztrátori jelszó',
+    admin_login_failed: 'Hibás jelszó',
+    admin_login_locked: 'Túl sok próbálkozás. Próbálja újra 15 perc múlva.',
 }

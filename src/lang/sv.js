@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Själv, i par eller i lag',
     games_cat_more_title: 'Mer',
     games_cat_more_overview: 'Allt annat',
+    admin_login_title: 'Administratörslösenord',
+    admin_login_failed: 'Fel lösenord',
+    admin_login_locked: 'För många försök. Försök igen om 15 minuter.',
 }

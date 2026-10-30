@@ -1423,4 +1423,7 @@ export default {
     hooktv_games_top: 'Nejlepší hry',
     hooktv_games_categories: 'Kategorie',
     hooktv_games_all: 'Všechny hry',
+    admin_login_title: 'Heslo správce',
+    admin_login_failed: 'Špatné heslo',
+    admin_login_locked: 'Příliš mnoho pokusů. Zkuste to znovu za 15 minut.',
 };

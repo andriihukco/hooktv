@@ -1318,4 +1318,7 @@ export default {
     hooktv_games_top: 'משחקים מובילים',
     hooktv_games_categories: 'קטגוריות',
     hooktv_games_all: 'כל המשחקים',
+    admin_login_title: 'סיסמת מנהל',
+    admin_login_failed: 'סיסמה שגויה',
+    admin_login_locked: 'יותר מדי ניסיונות. נסו שוב בעוד 15 דקות.',
 }

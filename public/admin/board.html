@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Agent board</title>
+<style>
+  /* Colours from src/core/brand.js (the TV app's tokens) */
+  :root { --bg: #000000; --surface-1: #121214; --surface-2: #1c1c1f; --border: rgba(255, 255, 255, 0.12);
+          --text: #ffffff; --muted: rgba(255, 255, 255, 0.62); --primary: #c8f542; --on-primary: #0b0f00; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, sans-serif; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px; }
+  h1 { font-size: 1.4em; margin: 0; }
+  .meta { color: var(--muted); font-size: .9em; }
+  button, .nav { min-height: 44px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2);
+                 color: var(--text); font: inherit; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; }
+  .nav:hover, button:hover { border-color: var(--primary); }
+  :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+  /* Team and column accordions: native details, so keyboard and screen readers work without script */
+  summary { cursor: pointer; list-style: none; min-height: 44px; display: flex; align-items: center; gap: 10px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸"; color: var(--primary); transition: transform .15s; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  .team { margin: 0 16px 24px; }
+  .team > summary { font-size: 1.1em; font-weight: 600; padding: 0 0 8px; }
+  .board { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 8px; scroll-snap-type: x proximity; }
+  .list { flex: 0 0 280px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; padding: 4px 12px 12px; scroll-snap-align: start; }
+  .list:not([open]) { flex-basis: 200px; }
+  .list > summary { font-weight: 600; font-size: .95em; padding: 8px 0; justify-content: flex-start; }
+  .count { color: var(--muted); font-weight: 400; margin-left: auto; }
+  .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+  .card h3 { font-size: 1em; margin: 0 0 2px; word-break: break-word; }
+  .role { color: var(--muted); font-size: .88em; margin: 0 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: .8em; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); }
+  .chip.hard { color: var(--primary); border-color: var(--primary); background: rgba(200, 245, 66, 0.12); }
+  .chip.soft { color: var(--text); background: transparent; }
+  .ledger { font-size: .8em; color: var(--muted); margin-top: 8px; word-break: break-all; }
+  .empty { color: var(--muted); font-size: .9em; padding: 6px; }
+  .legend { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: .9em; color: var(--muted); padding: 0 16px 16px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Agent board</h1>
+    <div class="meta" id="stamp">Loading…</div>
+  </div>
+  <div>
+    <a class="nav" href="/">Admin</a>
+    <button id="refresh" type="button">Refresh</button>
+  </div>
+</header>
+<div class="legend">
+  <span class="chip hard">Hard skill</span>
+  <span class="chip soft">Soft skill</span>
+</div>
+<main id="board" aria-live="polite"></main>
+<script>
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]))
+  const TITLES = {ready: 'Ready', working: 'Working', review: 'Review', blocked: 'Blocked', done: 'Done'}
+
+  function card(a){
+    const hard = a.hard.map(s => `<span class="chip hard">${esc(s)}</span>`).join('')
+    const soft = a.soft.map(s => `<span class="chip soft">${esc(s)}</span>`).join('')
+    return `
+      <article class="card">
+        <h3>${esc(a.name)}</h3>
+        ${a.role ? `<p class="role">${esc(a.role)}</p>` : ''}
+        <div class="chips">${hard}${soft}</div>
+        ${a.ledger ? `<div class="ledger">Ledger: ${esc(a.ledger)}</div>` : ''}
+      </article>`
+  }
+
+  function column(col){
+    return `
+      <details class="list" open>
+        <summary>${esc(TITLES[col.id])} <span class="count">${col.cards.length}</span></summary>
+        ${col.cards.length ? col.cards.map(card).join('') : '<p class="empty">No agents</p>'}
+      </details>`
+  }
+
+  function teamSection(team){
+    const total = team.columns.reduce((n, col) => n + col.cards.length, 0)
+
+    return `
+      <details class="team" open>
+        <summary>${esc(team.name)} <span class="count">${total} ${total == 1 ? 'agent' : 'agents'}</span></summary>
+        <div class="board">${team.columns.map(column).join('')}</div>
+      </details>`
+  }
+
+  function render(data){
+    document.getElementById('stamp').textContent = 'Updated ' + new Date().toLocaleTimeString()
+    document.getElementById('board').innerHTML = data.teams.map(teamSection).join('')
+  }
+
+  // Hosted at /admin/ it reads the signed-in API; the local server (/board) reads the files directly
+  const API = location.pathname.startsWith('/admin/') ? '/api/admin/board' : '/api/roster'
+
+  async function load(){
+    try {
+      const res = await fetch(API, {cache: 'no-store', credentials: 'same-origin'})
+
+      if(res.status == 401){
+        document.getElementById('stamp').textContent = 'Sign in first: tap the HOOK TV logo five times on the home page.'
+        return
+      }
+
+      if(!res.ok) throw new Error('HTTP ' + res.status)
+      render(await res.json())
+    } catch(e){
+      document.getElementById('stamp').textContent = 'Could not load: ' + e.message
+    }
+  }
+
+  document.getElementById('refresh').addEventListener('click', load)
+  load()
+</script>
+</body>
+</html>

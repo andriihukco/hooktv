@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: '혼자, 둘이서 또는 팀으로',
     games_cat_more_title: '더보기',
     games_cat_more_overview: '그 밖의 모든 게임',
+    admin_login_title: '관리자 비밀번호',
+    admin_login_failed: '비밀번호가 틀렸습니다',
+    admin_login_locked: '시도 횟수가 너무 많습니다. 15분 후에 다시 시도하세요.',
 }

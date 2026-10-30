@@ -1632,4 +1632,7 @@ export default {
     games_cat_party_overview: 'Наодинці, вдвох або командами',
     games_cat_more_title: 'Ще',
     games_cat_more_overview: 'Усе інше',
+    admin_login_title: 'Пароль адміністратора',
+    admin_login_failed: 'Невірний пароль',
+    admin_login_locked: 'Забагато спроб. Спробуйте знову через 15 хвилин.',
 }

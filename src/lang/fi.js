@@ -179,4 +179,7 @@ export default {
     games_cat_party_overview: 'Yksin, pareittain tai joukkueissa',
     games_cat_more_title: 'Lisää',
     games_cat_more_overview: 'Kaikki muu',
+    admin_login_title: 'Ylläpitäjän salasana',
+    admin_login_failed: 'Väärä salasana',
+    admin_login_locked: 'Liian monta yritystä. Yritä uudelleen 15 minuutin kuluttua.',
 }
