@@ -2511,6 +2511,8 @@ body.selectbox--open .selectbox__layer{
  * scrims (no boxes), a capsule scrubber, one centred transport row and
  * small round glass icons. Diagnostics and rarely used buttons are hidden.
  * ------------------------------------------------------------------- */
+// Apple only: other platforms have their own skins (components/player/android, web)
+body.platform--apple{
 .player-panel,
 .player-info{
     left: 0 !important;
@@ -2667,7 +2669,7 @@ body.selectbox--open .selectbox__layer{
 
 // touch screens: back 10 · play/pause · forward 10, plus quality, settings and fullscreen.
 // Episodes are picked before playing, audio too; iOS ignores volume set by the page
-body.true--mobile .player-panel{
+&.true--mobile .player-panel{
     .player-panel__prev,
     .player-panel__next,
     .player-panel__next-episode-name,
@@ -2846,6 +2848,8 @@ body.true--mobile .player-panel{
 .player-panel__rnext .material-icon{
     width: 2em;
     height: 2em;
+}
+
 }
 
 /* ---------------------------------------------------------------------
