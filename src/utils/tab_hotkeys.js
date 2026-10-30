@@ -1,36 +1,31 @@
 /**
- * Number keys for the five tabs that carry the Filters pill, in menu order.
- * Kept free of DOM code so the mapping can be tested on its own.
+ * Number keys on desktop and TV: 1–6 open the menu sections in menu order,
+ * 0 opens the Filters of the current page. Pure mapping, kept free of DOM code
+ * so it can be tested on its own.
  */
-export const TABS = ['main', 'movie', 'tv', 'favorite', 'history']
+export const TABS = ['main', 'movie', 'tv', 'ua_tv', 'games', 'music']
+
+export const FILTERS = 'filters'
 
 /**
- * Tab for a key code: 1–5 on the top row (49–53) or the numpad (97–101)
+ * Action for a key code: 1–6 on the top row (49–54) or the numpad (97–102),
+ * 0 on the top row (48) or the numpad (96)
  * @param {number} code keyCode of the keydown event
- * @returns {string} tab name, or '' when the key is not a tab key
+ * @returns {string} tab name, 'filters', or '' when the key is not a hotkey
  */
-export function tabForKey(code){
+export function actionForKey(code){
+    if(code == 48 || code == 96) return FILTERS
+
     let n = 0
 
-    if(code >= 49 && code <= 53) n = code - 48
-    else if(code >= 97 && code <= 101) n = code - 96
+    if(code >= 49 && code <= 54) n = code - 48
+    else if(code >= 97 && code <= 102) n = code - 96
 
     return n ? TABS[n - 1] : ''
 }
 
-/**
- * The number shown for a tab
- * @param {string} tab tab name
- * @returns {string} '1'…'5', or '' for a tab without a key
- */
-export function keyOf(tab){
-    let at = TABS.indexOf(tab)
-
-    return at < 0 ? '' : String(at + 1)
-}
-
 export default {
     TABS,
-    tabForKey,
-    keyOf
+    FILTERS,
+    actionForKey
 }
