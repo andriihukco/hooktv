@@ -16,6 +16,11 @@ let listener = Subscribe()
  * Запуск
  */
 function init(){
+    // read the language here, not at import: Storage is still loading when this module first runs
+    select('hooktv_dub',{
+        'uk': 'Українська',
+        'original': '#{hooktv_dub_original}'
+    }, Dub.defaultAudio(Storage.get('language','en')))
     if(Platform.is('tizen')){
         select('player',{
             'inner': '#{settings_param_player_inner}',
@@ -458,11 +463,6 @@ select('navigation_type', {
     'mouse': '#{settings_param_navigation_mouse}',
     'touch': '#{settings_param_navigation_touch}',
 }, 'controll')
-
-select('hooktv_dub',{
-    'uk': 'Українська',
-    'original': '#{hooktv_dub_original}'
-}, Dub.defaultAudio(Storage.get('language','en')))
 
 select('interface_brightness',{
     'b100': '100%',
