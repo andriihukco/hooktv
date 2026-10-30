@@ -3,7 +3,8 @@ import CardModule from '../interaction/card/module/module'
 import Utils from '../utils/utils'
 import Games from '../games/runtime'
 import Activity from '../interaction/activity/activity'
-import {categories, categoryById, categoryCardId, cardData, categoryTitle, categoryOverview} from '../games/catalog'
+import home from './games_home'
+import {categories, categoryById, cardData} from '../games/catalog'
 
 /**
  * Every game, category by category: each game carries its category's title as `group`
@@ -20,15 +21,18 @@ function allGames(){
 }
 
 /**
- * Games tab. The root shows the categories as folders; a folder opens the games in it.
+ * Games tab. A folder page shows the games in one folder; `all` is every game in one grid, with a header per category.
+ * The root (neither) is the home in games_home.js.
  * Enter on a game opens it full-screen; enter on a folder opens that folder.
- * `all` is the page More on the games row opens: every game in one grid, with a header per category.
  * @param {object} object activity; `category` set means a folder page
  * @return {object} component instance
  */
 function component(object){
-    // the folders share one row across the whole screen; a folder's games keep the usual grid
-    let comp = Utils.createInstance(Category, object, object.category || object.all ? {} : {items: {cols: 5}})
+    // the root (no folder, no all) is the home: a hero, rows and grids of its own
+    if(!object.category && !object.all) return home(object)
+
+    // a folder's games keep the usual grid
+    let comp = Utils.createInstance(Category, object, {items: {cols: 5}})
     let folder = object.category && categoryById(object.category)
     let group = ''
 
@@ -39,19 +43,7 @@ function component(object){
                     style: {name: 'game'},
                     module: CardModule.only('Card', 'Style', 'Callback')
                 }
-            })) : object.all ? allGames() : categories.map(c=>({
-                id: categoryCardId(c.id),
-                title: categoryTitle(c),
-                overview: categoryOverview(c),
-                category: c.id,
-                games: c.games.map(g=>g.id),
-                c1: c.c1,
-                c2: c.c2,
-                params: {
-                    style: {name: 'game'},
-                    module: CardModule.only('Card', 'Style', 'Callback')
-                }
-            }))
+            })) : allGames()
 
             this.build({results, page: 1, total_pages: 1})
         },

@@ -1358,4 +1358,7 @@ export default {
     games_cat_party_overview: '单人、双人或组队',
     games_cat_more_title: '更多',
     games_cat_more_overview: '其他全部',
+    hooktv_games_top: '热门游戏',
+    hooktv_games_categories: '分类',
+    hooktv_games_all: '全部游戏',
 }

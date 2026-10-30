@@ -1414,4 +1414,7 @@ export default {
     games_cat_party_overview: 'Sám, ve dvou nebo v týmech',
     games_cat_more_title: 'Více',
     games_cat_more_overview: 'Všechno ostatní',
+    hooktv_games_top: 'Nejlepší hry',
+    hooktv_games_categories: 'Kategorie',
+    hooktv_games_all: 'Všechny hry',
 };

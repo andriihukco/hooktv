@@ -1408,4 +1408,7 @@ export default {
     games_cat_party_overview: 'Seul, en duo ou en équipes',
     games_cat_more_title: 'Autres',
     games_cat_more_overview: 'Tout le reste',
+    hooktv_games_top: 'Meilleurs jeux',
+    hooktv_games_categories: 'Catégories',
+    hooktv_games_all: 'Tous les jeux',
 }

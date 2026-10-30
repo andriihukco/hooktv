@@ -1408,4 +1408,7 @@ export default {
     games_cat_party_overview: 'Singur, în doi sau pe echipe',
     games_cat_more_title: 'Mai multe',
     games_cat_more_overview: 'Tot restul',
+    hooktv_games_top: 'Cele mai bune jocuri',
+    hooktv_games_categories: 'Categorii',
+    hooktv_games_all: 'Toate jocurile',
 }

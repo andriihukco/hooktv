@@ -1409,4 +1409,7 @@ export default {
     games_cat_party_overview: 'Сам, на двойки или отбори',
     games_cat_more_title: 'Още',
     games_cat_more_overview: 'Всичко останало',
+    hooktv_games_top: 'Топ игри',
+    hooktv_games_categories: 'Категории',
+    hooktv_games_all: 'Всички игри',
 }

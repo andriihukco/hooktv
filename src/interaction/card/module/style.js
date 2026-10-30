@@ -71,6 +71,46 @@ export default {
             }
         }
 
+        // the games home: a hero with Play, a ranked list row with its best score, a folder tile in its colours
+        if(this.params.style.name == 'feature' || this.params.style.name == 'list' || this.params.style.name == 'folder'){
+            let name = this.params.style.name
+            let view = $(this.html.find('.card__view'))
+            let c1   = this.data.c1 || '#3E91FF'
+            let c2   = this.data.c2 || c1
+            let text = Template.elem('div', {class: 'card__game-text'})
+
+            this.html.addClass('card--' + name)
+            this.html.find('.card__title, .card__age').remove()
+            view.css({'--c1': c1, '--c2': c2})
+
+            if(name == 'feature'){
+                text.append(Template.elem('div', {class: 'card__game-title', text: this.data.title || ''}))
+                text.append(Template.elem('div', {class: 'card__game-hint', text: this.data.overview || ''}))
+                text.append(Template.elem('div', {class: 'card__game-play', text: Lang.translate('hooktv_play_game')}))
+                view.append(text).append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+            }
+
+            if(name == 'list'){
+                view.append(Template.elem('div', {class: 'card__game-rank', text: this.data.rank || ''}))
+                view.append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+                text.append(Template.elem('div', {class: 'card__game-title', text: this.data.title || ''}))
+                text.append(Template.elem('div', {class: 'card__game-hint', text: this.data.overview || ''}))
+                if(this.data.best) text.append(Template.elem('div', {class: 'card__game-best', text: Lang.translate('hooktv_best') + ' ' + this.data.best}))
+                view.append(text).append(Template.elem('div', {class: 'card__game-play', text: Lang.translate('hooktv_play_game')}))
+            }
+
+            if(name == 'folder'){
+                let folder = $('<div class="card__game card__folder"></div>').css({'--tile': c1, '--inner': shade(c1, 0.62)})
+
+                ;(this.data.games || []).slice(0, 4).forEach(id=>folder.append($(iconHTML(id))))
+                view.append(folder)
+                text.append(Template.elem('div', {class: 'card__game-title', text: this.data.title || ''}))
+                if(this.data.overview) text.append(Template.elem('div', {class: 'card__game-hint', text: this.data.overview}))
+                text.append(Template.elem('div', {class: 'card__game-best', text: (this.data.games || []).length + ' ' + Lang.translate('hooktv_games_count')}))
+                view.append(text)
+            }
+        }
+
         if(this.params.style.name == 'collection'){
             this.html.addClass('card--collection')
 

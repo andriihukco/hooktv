@@ -66,6 +66,9 @@ export function cardData(game){
 }
 
 /** fills in a stored game card (bookmarks keep little more than its id) and makes it a game tile */
+// the card styles of the games home (see games/home.js and interaction/card/module/style.js)
+const HOME_STYLES = ['feature', 'list', 'folder']
+
 export function hydrate(data){
     let game = data && data.game && games.find(g => g.id == data.game)
 
@@ -73,7 +76,10 @@ export function hydrate(data){
 
     Object.assign(data, cardData(game))
 
-    data.params = Object.assign({}, data.params, {style: {name: 'game'}})
+    // a game tile is drawn as a game tile, unless the games home picked one of its own layouts for it
+    const chosen = data.params && data.params.style && data.params.style.name
+
+    data.params = Object.assign({}, data.params, {style: {name: HOME_STYLES.includes(chosen) ? chosen : 'game'}})
 
     return data
 }

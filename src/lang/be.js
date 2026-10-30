@@ -1419,4 +1419,7 @@ export default {
     games_cat_party_overview: 'Адзін, удвух ці камандамі',
     games_cat_more_title: 'Яшчэ',
     games_cat_more_overview: 'Усё астатняе',
+    hooktv_games_top: 'Топ-гульні',
+    hooktv_games_categories: 'Катэгорыі',
+    hooktv_games_all: 'Усе гульні',
 }

@@ -1309,4 +1309,7 @@ export default {
     games_cat_party_overview: 'לבד, בזוגות או בקבוצות',
     games_cat_more_title: 'עוד',
     games_cat_more_overview: 'כל השאר',
+    hooktv_games_top: 'משחקים מובילים',
+    hooktv_games_categories: 'קטגוריות',
+    hooktv_games_all: 'כל המשחקים',
 }
