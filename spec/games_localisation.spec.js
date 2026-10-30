@@ -72,3 +72,56 @@ describe('games help and Settings → Controls strings', ()=>{
         }
     })
 })
+
+describe('games menu, rules and genre strings', ()=>{
+    // static t() strings, skin names, level and mode labels, award lines, and the per-game rules, genre and tagline
+    const keyRe = /^(hooktv_(award_|level_|mode_|skin_|on$|off$|game_)|game_.*_(rules|genre|tagline)$)/
+    // a few names are kept in English on purpose: the Roman numeral in "Episode I" is the same in every script
+    const sameAsEnglishOk = ['hooktv_skin_chapter_space']
+    const scriptRe = /[\p{Script=Cyrillic}\p{Script=Greek}\p{Script=Georgian}\p{Script=Hebrew}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u
+    const latinRe = /[A-Za-z]/
+
+    it('every language pack has every menu, rules, genre and tagline string', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+        const keys = Object.keys(en).filter(k => keyRe.test(k))
+
+        expect(keys.length).toBeGreaterThan(200)
+
+        for(const code of codes){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            keys.forEach(key => expect(pack[key], `${code}: ${key}`).toBeTruthy())
+        }
+    })
+
+    it('no multi-word games string is left in English', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+        const keys = Object.keys(en).filter(k => keyRe.test(k) && en[k].includes(' ') && !sameAsEnglishOk.includes(k))
+
+        for(const code of codes.filter(c => c !== 'en')){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            keys.forEach(key => expect(pack[key], `${code}: ${key} is still English`).not.toBe(en[key]))
+        }
+    })
+
+    it('no word mixes Latin letters with another script', async ()=>{
+        const en = (await import(path.join(dir, 'en.js'))).default
+        const keys = Object.keys(en).filter(k => keyRe.test(k))
+
+        const problems = []
+
+        for(const code of codes){
+            const pack = (await import(path.join(dir, code + '.js'))).default
+
+            keys.forEach(key => {
+                const words = (pack[key] || '').split(/[\s.,!?…:;()\/—–-]+/).filter(Boolean)
+                const mixed = words.filter(w => scriptRe.test(w) && latinRe.test(w))
+
+                mixed.forEach(w => problems.push(`${code}: ${key}: ${w}`))
+            })
+        }
+
+        expect(problems).toEqual([])
+    })
+})

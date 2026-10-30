@@ -91,7 +91,7 @@ export function film(game){
 }
 
 /** the closing line of a run in the skin's voice; empty for Classic */
-export const ending = (skin, win) => win ? skin.win : skin.lose
+export const ending = (skin, win) => win ? t('hooktv_skin_' + skin.id + '_win', skin.win) : t('hooktv_skin_' + skin.id + '_lose', skin.lose)
 
 /** the number of games that carry a poster line: every game in the catalog should be one of them */
 export const posters = () => Object.keys(FILM)
