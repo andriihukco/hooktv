@@ -1594,4 +1594,7 @@ export default {
     games_cat_party_overview: 'Solo, w duecie lub drużynami',
     games_cat_more_title: 'Więcej',
     games_cat_more_overview: 'Wszystko inne',
+    admin_login_title: 'Hasło administratora',
+    admin_login_failed: 'Błędne hasło',
+    admin_login_locked: 'Zbyt wiele prób. Spróbuj ponownie za 15 minut.',
 }

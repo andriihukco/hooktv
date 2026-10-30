@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Сами, во двајца или во тимови',
     games_cat_more_title: 'Повеќе',
     games_cat_more_overview: 'Сè друго',
+    admin_login_title: 'Администраторска лозинка',
+    admin_login_failed: 'Погрешна лозинка',
+    admin_login_locked: 'Премногу обиди. Обидете се повторно за 15 минути.',
 }

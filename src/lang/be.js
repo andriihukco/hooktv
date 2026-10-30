@@ -1473,4 +1473,7 @@ export default {
     hooktv_games_top: 'Топ-гульні',
     hooktv_games_categories: 'Катэгорыі',
     hooktv_games_all: 'Усе гульні',
+    admin_login_title: 'Пароль адміністратара',
+    admin_login_failed: 'Няправільны пароль',
+    admin_login_locked: 'Занадта шмат спроб. Паспрабуйце праз 15 хвілін.',
 }

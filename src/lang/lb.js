@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Eleng, zu zweet oder a Teams',
     games_cat_more_title: 'Méi',
     games_cat_more_overview: 'Alles anescht',
+    admin_login_title: 'Admin-Passwuert',
+    admin_login_failed: 'Falscht Passwuert',
+    admin_login_locked: 'Ze vill Versich. Probéiert et a 15 Minutten nach eng Kéier.',
 }

@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Allein, zu zweit oder im Team',
     games_cat_more_title: 'Mehr',
     games_cat_more_overview: 'Alles andere',
+    admin_login_title: 'Admin-Passwort',
+    admin_login_failed: 'Falsches Passwort',
+    admin_login_locked: 'Zu viele Versuche. Versuche es in 15 Minuten erneut.',
 }

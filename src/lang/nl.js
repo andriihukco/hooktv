@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Alleen, in tweetallen of in teams',
     games_cat_more_title: 'Meer',
     games_cat_more_overview: 'Al het andere',
+    admin_login_title: 'Beheerderswachtwoord',
+    admin_login_failed: 'Verkeerd wachtwoord',
+    admin_login_locked: 'Te veel pogingen. Probeer het over 15 minuten opnieuw.',
 }

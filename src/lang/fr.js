@@ -1462,4 +1462,7 @@ export default {
     hooktv_games_top: 'Meilleurs jeux',
     hooktv_games_categories: 'Catégories',
     hooktv_games_all: 'Tous les jeux',
+    admin_login_title: 'Mot de passe administrateur',
+    admin_login_failed: 'Mot de passe incorrect',
+    admin_login_locked: 'Trop de tentatives. Réessayez dans 15 minutes.',
 }

@@ -4,6 +4,7 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const {snapshot} = require('./collect.js')
+const {board} = require('./roster.js')
 
 const PORT = +process.env.AGENT_ADMIN_PORT || 4777
 
@@ -16,9 +17,26 @@ const server = http.createServer((req, res) => {
         return
     }
 
+    if(url.pathname == '/api/roster'){
+        try {
+            res.writeHead(200, {'Content-Type': 'application/json', 'Cache-Control': 'no-store'})
+            res.end(JSON.stringify({teams: board()}))
+        } catch(e){
+            res.writeHead(500, {'Content-Type': 'application/json'})
+            res.end(JSON.stringify({error: 'roster.json is missing or invalid'}))
+        }
+        return
+    }
+
     if(url.pathname == '/' || url.pathname == '/index.html'){
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'})
         res.end(fs.readFileSync(path.join(__dirname, 'index.html')))
+        return
+    }
+
+    if(url.pathname == '/board'){
+        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'})
+        res.end(fs.readFileSync(path.join(__dirname, '../../public/admin/board.html')))
         return
     }
 

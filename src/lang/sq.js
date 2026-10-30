@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Vetëm, në çift ose në ekipe',
     games_cat_more_title: 'Më shumë',
     games_cat_more_overview: 'Gjithçka tjetër',
+    admin_login_title: 'Fjalëkalimi i administratorit',
+    admin_login_failed: 'Fjalëkalim i gabuar',
+    admin_login_locked: 'Shumë përpjekje. Provoni përsëri pas 15 minutash.',
 }

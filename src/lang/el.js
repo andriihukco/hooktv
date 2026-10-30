@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Μόνοι, σε δυάδες ή ομάδες',
     games_cat_more_title: 'Περισσότερα',
     games_cat_more_overview: 'Όλα τα υπόλοιπα',
+    admin_login_title: 'Κωδικός διαχειριστή',
+    admin_login_failed: 'Λάθος κωδικός',
+    admin_login_locked: 'Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά σε 15 λεπτά.',
 }

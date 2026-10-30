@@ -1821,4 +1821,7 @@ export default {
     games_cat_party_overview: 'Solo, duo or teams',
     games_cat_more_title: 'More',
     games_cat_more_overview: 'Everything else',
+    admin_login_title: 'Admin password',
+    admin_login_failed: 'Wrong password',
+    admin_login_locked: 'Too many attempts. Try again in 15 minutes.',
 }

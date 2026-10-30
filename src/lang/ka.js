@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'მარტო, წყვილად ან გუნდებად',
     games_cat_more_title: 'მეტი',
     games_cat_more_overview: 'ყველა დანარჩენი',
+    admin_login_title: 'ადმინისტრატორის პაროლი',
+    admin_login_failed: 'არასწორი პაროლი',
+    admin_login_locked: 'ძალიან ბევრი მცდელობა. სცადეთ 15 წუთში.',
 }

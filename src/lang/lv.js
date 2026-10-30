@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Vieni, pa diviem vai komandās',
     games_cat_more_title: 'Vairāk',
     games_cat_more_overview: 'Viss pārējais',
+    admin_login_title: 'Administratora parole',
+    admin_login_failed: 'Nepareiza parole',
+    admin_login_locked: 'Pārāk daudz mēģinājumu. Mēģiniet vēlreiz pēc 15 minūtēm.',
 }

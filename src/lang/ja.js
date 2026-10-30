@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: '1人、2人、またはチームで',
     games_cat_more_title: 'その他',
     games_cat_more_overview: '残りすべて',
+    admin_login_title: '管理者パスワード',
+    admin_login_failed: 'パスワードが違います',
+    admin_login_locked: '試行回数が多すぎます。15分後にもう一度お試しください。',
 }

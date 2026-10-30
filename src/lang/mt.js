@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Waħdek, f\'koppja jew f\'timijiet',
     games_cat_more_title: 'Aktar',
     games_cat_more_overview: 'Kollox ieħor',
+    admin_login_title: 'Password tal-amministratur',
+    admin_login_failed: 'Password ħażina',
+    admin_login_locked: 'Tentattivi wisq. Erġa\' pprova wara 15-il minuta.',
 }

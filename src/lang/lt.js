@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Vieni, poromis ar komandomis',
     games_cat_more_title: 'Daugiau',
     games_cat_more_overview: 'Visa kita',
+    admin_login_title: 'Administratoriaus slaptažodis',
+    admin_login_failed: 'Neteisingas slaptažodis',
+    admin_login_locked: 'Per daug bandymų. Bandykite po 15 minučių.',
 }

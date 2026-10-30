@@ -1,0 +1,37 @@
+{
+  "_note": "SAMPLE entries. Replace with your real agents. id must be unique; team must be one of teams[].id; ledger must match a folder name in .superpowers/sdd, or be left out.",
+  "teams": [
+    {"id": "engineering", "name": "Engineering"},
+    {"id": "design", "name": "Design"},
+    {"id": "marketing", "name": "Marketing"}
+  ],
+  "agents": [
+    {
+      "id": "planner",
+      "name": "Planner",
+      "team": "engineering",
+      "role": "Breaks a request into ordered tasks",
+      "column": "ready",
+      "hard": ["Task decomposition", "Dependency mapping"],
+      "soft": ["Clear writing", "Asks before guessing"]
+    },
+    {
+      "id": "implementer",
+      "name": "Implementer",
+      "team": "engineering",
+      "role": "Writes code for one task at a time",
+      "column": "ready",
+      "hard": ["JavaScript", "Unit tests", "Git"],
+      "soft": ["Follows the house style", "Reports partial results honestly"]
+    },
+    {
+      "id": "reviewer",
+      "name": "Reviewer",
+      "team": "engineering",
+      "role": "Checks a finished change against the spec",
+      "column": "review",
+      "hard": ["Code review", "Security checks"],
+      "soft": ["Direct feedback", "Patient with rework"]
+    }
+  ]
+}

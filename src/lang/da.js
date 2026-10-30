@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Alene, i par eller på hold',
     games_cat_more_title: 'Mere',
     games_cat_more_overview: 'Alt andet',
+    admin_login_title: 'Administratoradgangskode',
+    admin_login_failed: 'Forkert adgangskode',
+    admin_login_locked: 'For mange forsøg. Prøv igen om 15 minutter.',
 }

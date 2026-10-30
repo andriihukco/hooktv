@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Da solo, in coppia o a squadre',
     games_cat_more_title: 'Altro',
     games_cat_more_overview: 'Tutto il resto',
+    admin_login_title: 'Password amministratore',
+    admin_login_failed: 'Password errata',
+    admin_login_locked: 'Troppi tentativi. Riprova tra 15 minuti.',
 }

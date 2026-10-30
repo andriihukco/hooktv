@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Alene, to og to eller i lag',
     games_cat_more_title: 'Mer',
     games_cat_more_overview: 'Alt annet',
+    admin_login_title: 'Administratorpassord',
+    admin_login_failed: 'Feil passord',
+    admin_login_locked: 'For mange forsøk. Prøv igjen om 15 minutter.',
 }

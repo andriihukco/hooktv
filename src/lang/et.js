@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Üksi, paarikaupa või meeskondadena',
     games_cat_more_title: 'Veel',
     games_cat_more_overview: 'Kõik muu',
+    admin_login_title: 'Administraatori parool',
+    admin_login_failed: 'Vale parool',
+    admin_login_locked: 'Liiga palju katseid. Proovi uuesti 15 minuti pärast.',
 }

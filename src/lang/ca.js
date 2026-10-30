@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Sol, en parella o per equips',
     games_cat_more_title: 'Més',
     games_cat_more_overview: 'Tot la resta',
+    admin_login_title: 'Contrasenya d\'administrador',
+    admin_login_failed: 'Contrasenya incorrecta',
+    admin_login_locked: 'Massa intents. Torna-ho a provar d\'aquí a 15 minuts.',
 }

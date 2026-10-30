@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Einn, tvö saman eða í liðum',
     games_cat_more_title: 'Meira',
     games_cat_more_overview: 'Allt annað',
+    admin_login_title: 'Stjórnandalykilorð',
+    admin_login_failed: 'Rangt lykilorð',
+    admin_login_locked: 'Of margar tilraunir. Reyndu aftur eftir 15 mínútur.',
 }

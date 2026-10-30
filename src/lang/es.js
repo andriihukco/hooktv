@@ -224,4 +224,7 @@ export default {
     games_cat_party_overview: 'Solo, en pareja o por equipos',
     games_cat_more_title: 'Más',
     games_cat_more_overview: 'Todo lo demás',
+    admin_login_title: 'Contraseña de administrador',
+    admin_login_failed: 'Contraseña incorrecta',
+    admin_login_locked: 'Demasiados intentos. Vuelve a intentarlo en 15 minutos.',
 }
