@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics — HookTV Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="admin">
+  <header class="admin__header">
+    <nav class="admin__nav">
+      <a href="index.html" class="admin__nav-item">Dashboard</a>
+      <a href="kanban.html" class="admin__nav-item">Kanban</a>
+    </nav>
+  </header>
+
+  <main class="dashboard">
+    <div class="dashboard__top">
+      <h1>Analytics</h1>
+      <div class="dashboard__controls">
+        <select id="timeRange" class="select select--sm">
+          <option value="today">Today</option>
+          <option value="week" selected>This Week</option>
+          <option value="month">This Month</option>
+          <option value="7days">Last 7 Days</option>
+          <option value="30days">Last 30 Days</option>
+        </select>
+        <button id="refreshBtn" class="button button--sm">Refresh</button>
+      </div>
+    </div>
+
+    <div class="dashboard__grid">
+      <!-- Summary cards -->
+      <section class="stat-card">
+        <div class="stat-card__label">Sessions (Today)</div>
+        <div class="stat-card__value" id="sessionsToday">—</div>
+        <div class="stat-card__meta" id="sessionsWeek"></div>
+      </section>
+
+      <section class="stat-card">
+        <div class="stat-card__label">Active Users (Today)</div>
+        <div class="stat-card__value" id="usersToday">—</div>
+        <div class="stat-card__meta" id="usersWeek"></div>
+      </section>
+
+      <section class="stat-card">
+        <div class="stat-card__label">Watch Time (Today)</div>
+        <div class="stat-card__value" id="watchToday">—</div>
+        <div class="stat-card__meta" id="watchWeek"></div>
+      </section>
+
+      <section class="stat-card">
+        <div class="stat-card__label">Active Devices</div>
+        <div class="stat-card__value" id="activeDevices">—</div>
+        <div class="stat-card__meta">Last 24h</div>
+      </section>
+
+      <!-- Charts -->
+      <section class="chart-container">
+        <h2>Games Played</h2>
+        <div class="chart" id="gamesChart"></div>
+      </section>
+
+      <section class="chart-container">
+        <h2>Watch Time by Type</h2>
+        <div class="chart" id="watchTypeChart"></div>
+      </section>
+
+      <section class="chart-container full-width">
+        <h2>Trending Games (7 days)</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th align="right">Plays</th>
+              <th align="right">Unique Users</th>
+            </tr>
+          </thead>
+          <tbody id="trendingGamesBody">
+            <tr><td colspan="3" class="text--muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chart-container full-width">
+        <h2>Top Rated Content (7 days)</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th align="right">Likes</th>
+              <th align="right">Dislikes</th>
+              <th align="right">Ratio</th>
+            </tr>
+          </thead>
+          <tbody id="topReactionsBody">
+            <tr><td colspan="4" class="text--muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <footer class="dashboard__footer">
+      <p class="text--small text--muted">Last updated: <span id="lastUpdate">—</span></p>
+    </footer>
+  </main>
+
+  <script src="js/admin-common.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
