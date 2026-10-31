@@ -1,0 +1,142 @@
+.dashboard {
+  padding-top: 0;
+}
+
+.dashboard__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.dashboard__controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* Stat cards */
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-card__label {
+  font-size: 0.85em;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card__meta {
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+/* Chart containers */
+.chart-container {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  overflow: auto;
+  min-height: 320px;
+}
+
+.chart-container h2 {
+  margin: 0 0 16px;
+  font-size: 1em;
+}
+
+.chart-container.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+
+canvas {
+  max-width: 100%;
+}
+
+/* Footer */
+.dashboard__footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  margin-top: 32px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card__value {
+    font-size: 1.4em;
+  }
+
+  .chart {
+    height: 250px;
+  }
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(80px, 160px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.bar-row__track {
+  height: 10px;
+  background: var(--admin-track, #e5e7eb);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-row__fill {
+  display: block;
+  height: 100%;
+  background: var(--admin-accent, #2563eb);
+}
+
+.bar-row__label,
+.bar-row__value {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

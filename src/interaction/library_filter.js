@@ -476,7 +476,6 @@ function refresh(){
     pill.classList.toggle('library-filter-pill--show', Boolean(current))
     pill.classList.toggle('library-filter-pill--active', count > 0)
     pill.querySelector('.library-filter-pill__count').textContent = count || ''
-    pill.querySelector('.library-filter-pill__key').textContent = TabHotkeys.tabKey()
 
     place()
 }
@@ -487,7 +486,6 @@ function init(){
     pill = el('div', 'library-filter-pill selector', `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
         <span>${Lang.translate('hooktv_filters')}</span>
-        <b class="library-filter-pill__key"></b>
         <b class="library-filter-pill__count"></b>`)
 
     action(pill, open)
@@ -566,7 +564,7 @@ function init(){
         Controller.toggle('library_filter_pill')
     }, true)
 
-    // desktop and TV: keys 1–5 switch tabs; the key of the tab you are on opens its filters
+    // desktop and TV: keys 1–6 open the sections, 0 opens these filters
     TabHotkeys.init(open)
 
     Lampa.Listener.follow('activity', (e)=>{

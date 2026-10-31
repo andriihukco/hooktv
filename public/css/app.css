@@ -8342,6 +8342,43 @@ body.platform--netcast .card__title {
   fill: var(--brand-primary);
   stroke: var(--brand-primary);
 }
+.music-page__player-close, .music-page__seek {
+  width: 2.75em;
+  height: 2.75em;
+  min-width: 44px;
+  min-height: 44px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--brand-text-primary);
+}
+.music-page__player-close svg, .music-page__seek svg {
+  width: 1.4em;
+  height: 1.4em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.music-page__now-controls {
+  gap: 1.4em;
+}
 .music-page .selector:focus-visible,
 .music-page .selector.focus {
   outline: 3px solid var(--brand-primary);
@@ -10651,6 +10688,8 @@ video::-webkit-media-controls-panel-container {
   position: fixed;
   left: 50%;
   top: 50%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   width: 8em;
   height: 8em;
   -webkit-border-radius: 100%;
@@ -10834,6 +10873,16 @@ video::-webkit-media-controls-panel-container {
 
 .player-video__paused {
   background-color: rgba(0, 0, 0, 0.6);
+}
+.player-video__paused svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.6em;
+  height: 2.6em;
+  -webkit-transform: translate(-50%, -50%) translateX(0.08em);
+      -ms-transform: translate(-50%, -50%) translateX(0.08em);
+          transform: translate(-50%, -50%) translateX(0.08em);
 }
 
 .player.player--panel-visible .player-video__subtitles {
@@ -11706,6 +11755,383 @@ body.true--mobile.orientation--portrait .player-panel__quality {
           animation-direction: alternate;
   -webkit-animation-timing-function: linear;
           animation-timing-function: linear;
+}
+
+body.platform--android .player-panel {
+  left: 50%;
+  right: auto;
+  bottom: max(1em, env(safe-area-inset-bottom));
+  width: min(35em, 100% - 1.5em);
+  -webkit-border-radius: 1.75em;
+          border-radius: 1.75em;
+  background-color: #1E1E21;
+  -webkit-box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.3), 0 0.4em 1em rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.3), 0 0.4em 1em rgba(0, 0, 0, 0.3);
+  -webkit-transform: translate(-50%, 150%);
+      -ms-transform: translate(-50%, 150%);
+          transform: translate(-50%, 150%);
+  -webkit-transition: opacity 0.3s, -webkit-transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  transition: opacity 0.3s, -webkit-transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  -o-transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s, -webkit-transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+@media screen and (max-width: 480px) {
+  body.platform--android .player-panel {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    -webkit-transform: translateY(150%);
+        -ms-transform: translateY(150%);
+            transform: translateY(150%);
+    -webkit-border-radius: 1.75em 1.75em 0 0;
+            border-radius: 1.75em 1.75em 0 0;
+  }
+}
+body.platform--android .player-panel.panel--visible {
+  -webkit-transform: translate(-50%, 0);
+      -ms-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+@media screen and (max-width: 480px) {
+  body.platform--android .player-panel.panel--visible {
+    -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+body.platform--android .player-panel.panel--footer-open {
+  -webkit-transform: translate(-50%, -150%);
+      -ms-transform: translate(-50%, -150%);
+          transform: translate(-50%, -150%);
+}
+@media screen and (max-width: 480px) {
+  body.platform--android .player-panel.panel--footer-open {
+    -webkit-transform: translateY(-150%);
+        -ms-transform: translateY(-150%);
+            transform: translateY(-150%);
+  }
+}
+body.platform--android .player-panel__body {
+  padding: 1em 1.25em 0.75em;
+}
+body.platform--android .player-panel__timeline {
+  height: 0.25em;
+  margin-bottom: 0.75em;
+  background-color: rgba(255, 255, 255, 0.24);
+  -webkit-transition: height 0.2s ease;
+  -o-transition: height 0.2s ease;
+  transition: height 0.2s ease;
+}
+body.platform--android .player-panel__timeline.focus {
+  -webkit-box-shadow: 0 0 0 0.12em var(--brand-primary);
+          box-shadow: 0 0 0 0.12em var(--brand-primary);
+}
+body.platform--android .player-panel__timeline:hover {
+  height: 0.35em;
+}
+body.platform--android .player-panel__peding {
+  background-color: rgba(255, 255, 255, 0.38);
+}
+body.platform--android .player-panel__position {
+  background-color: var(--brand-primary);
+}
+body.platform--android .player-panel__position > div:after {
+  width: 0.3em;
+  height: 1.25em;
+  -webkit-border-radius: 0.15em;
+          border-radius: 0.15em;
+  background-color: var(--brand-primary);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+body.platform--android .player-panel__line-one {
+  font-size: 0.8em;
+  color: var(--brand-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+body.platform--android .player-panel__line-two {
+  margin-top: 0.5em;
+}
+body.platform--android .player-panel__center {
+  gap: 0.25em;
+  margin-top: -0.8em;
+}
+body.platform--android .player-panel__prev,
+body.platform--android .player-panel__next,
+body.platform--android .player-panel__rprev,
+body.platform--android .player-panel__rnext,
+body.platform--android .player-panel__tstart,
+body.platform--android .player-panel__tend {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-width: 3em;
+  min-height: 3em;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+  color: var(--brand-text-primary);
+}
+body.platform--android .player-panel__prev svg,
+body.platform--android .player-panel__next svg,
+body.platform--android .player-panel__rprev svg,
+body.platform--android .player-panel__rnext svg,
+body.platform--android .player-panel__tstart svg,
+body.platform--android .player-panel__tend svg {
+  width: 1.5em;
+  height: 1.5em;
+}
+body.platform--android .player-panel__prev:active,
+body.platform--android .player-panel__next:active,
+body.platform--android .player-panel__rprev:active,
+body.platform--android .player-panel__rnext:active,
+body.platform--android .player-panel__tstart:active,
+body.platform--android .player-panel__tend:active {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+body.platform--android .player-panel__playpause {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 2.4em !important;
+  height: 2.4em !important;
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0 0.5em !important;
+  padding: 0 !important;
+  -webkit-border-radius: 1em;
+          border-radius: 1em;
+  color: var(--brand-on-primary) !important;
+  background-color: var(--brand-primary) !important;
+}
+body.platform--android .player-panel__playpause svg {
+  width: 1.9em;
+  height: 1.9em;
+}
+body.platform--android .player-panel__quality {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 2em;
+  padding: 0 0.75em;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  -webkit-border-radius: 0.5em;
+          border-radius: 0.5em;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--brand-text-primary);
+}
+body.platform--android .player-panel .selector:focus-visible,
+body.platform--android .player-panel .selector.focus {
+  outline: 0.15em solid var(--brand-primary);
+  outline-offset: 0.15em;
+}
+body.platform--android .player-panel .button.selector.focus {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+@media (prefers-reduced-motion: reduce) {
+  body.platform--android .player-panel,
+  body.platform--android .player-panel__timeline {
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+  }
+}
+
+body.platform--browser .player-panel {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  -webkit-border-radius: 0;
+          border-radius: 0;
+  background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.88)), color-stop(55%, rgba(0, 0, 0, 0.6)), to(rgba(0, 0, 0, 0)));
+  background: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0) 100%);
+  background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0) 100%);
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  -webkit-transform: translateY(100%);
+      -ms-transform: translateY(100%);
+          transform: translateY(100%);
+  -webkit-transition: opacity 0.25s ease, -webkit-transform 0.25s ease;
+  transition: opacity 0.25s ease, -webkit-transform 0.25s ease;
+  -o-transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease, -webkit-transform 0.25s ease;
+}
+body.platform--browser .player-panel.panel--visible {
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+}
+body.platform--browser .player-panel.panel--footer-open {
+  -webkit-transform: translateY(-100%);
+      -ms-transform: translateY(-100%);
+          transform: translateY(-100%);
+  opacity: 0;
+}
+body.platform--browser .player-panel__body {
+  padding: 2.5em 2em 1em;
+}
+body.platform--browser .player-panel__timeline {
+  height: 0.25em;
+  margin-bottom: 0.75em;
+  background-color: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  -webkit-transition: height 0.15s ease;
+  -o-transition: height 0.15s ease;
+  transition: height 0.15s ease;
+}
+body.platform--browser .player-panel__timeline:hover {
+  height: 0.5em;
+}
+body.platform--browser .player-panel__timeline.focus {
+  -webkit-box-shadow: 0 0 0 0.12em var(--brand-primary);
+          box-shadow: 0 0 0 0.12em var(--brand-primary);
+}
+body.platform--browser .player-panel__peding {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+body.platform--browser .player-panel__position {
+  background-color: var(--brand-primary);
+}
+body.platform--browser .player-panel__position > div:after {
+  width: 0.9em;
+  height: 0.9em;
+  background-color: var(--brand-primary);
+  opacity: 0;
+  -webkit-transition: opacity 0.15s ease;
+  -o-transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease;
+}
+body.platform--browser .player-panel__timeline:hover .player-panel__position > div:after,
+body.platform--browser .player-panel__timeline.focus .player-panel__position > div:after {
+  opacity: 1;
+}
+body.platform--browser .player-panel__line-one {
+  font-size: 0.9em;
+  color: var(--brand-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+body.platform--browser .player-panel__line-two {
+  margin-top: 0.5em;
+}
+body.platform--browser .player-panel__prev,
+body.platform--browser .player-panel__next,
+body.platform--browser .player-panel__rprev,
+body.platform--browser .player-panel__rnext,
+body.platform--browser .player-panel__tstart,
+body.platform--browser .player-panel__tend,
+body.platform--browser .player-panel__playpause {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-border-radius: 0.5em;
+          border-radius: 0.5em;
+  color: var(--brand-text-primary);
+}
+body.platform--browser .player-panel__prev svg,
+body.platform--browser .player-panel__next svg,
+body.platform--browser .player-panel__rprev svg,
+body.platform--browser .player-panel__rnext svg,
+body.platform--browser .player-panel__tstart svg,
+body.platform--browser .player-panel__tend svg,
+body.platform--browser .player-panel__playpause svg {
+  width: 1.6em;
+  height: 1.6em;
+}
+body.platform--browser .player-panel__prev:hover,
+body.platform--browser .player-panel__next:hover,
+body.platform--browser .player-panel__rprev:hover,
+body.platform--browser .player-panel__rnext:hover,
+body.platform--browser .player-panel__tstart:hover,
+body.platform--browser .player-panel__tend:hover,
+body.platform--browser .player-panel__playpause:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+body.platform--browser .player-panel__playpause {
+  width: 3em !important;
+  height: 3em !important;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0 0.5em !important;
+  padding: 0 !important;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+body.platform--browser .player-panel__playpause svg {
+  width: 1.9em;
+  height: 1.9em;
+}
+body.platform--browser .player-panel__quality {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  min-height: 44px;
+  padding: 0 0.75em;
+  -webkit-border-radius: 0.5em;
+          border-radius: 0.5em;
+  font-size: 0.9em;
+  color: var(--brand-text-primary);
+}
+body.platform--browser .player-panel__quality:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+body.platform--browser .player-panel .selector:focus-visible,
+body.platform--browser .player-panel .selector.focus {
+  outline: 0.15em solid var(--brand-primary);
+  outline-offset: 0.1em;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.platform--browser .player-panel,
+  body.platform--browser .player-panel__timeline,
+  body.platform--browser .player-panel__position > div:after {
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+  }
 }
 
 .player-info {
@@ -24412,8 +24838,8 @@ body.selectbox--open .selectbox__layer {
  * scrims (no boxes), a capsule scrubber, one centred transport row and
  * small round glass icons. Diagnostics and rarely used buttons are hidden.
  * ------------------------------------------------------------------- */
-.player-panel,
-.player-info {
+body.platform--apple .player-panel,
+body.platform--apple .player-info {
   left: 0 !important;
   right: 0 !important;
   -webkit-border-radius: 0 !important;
@@ -24421,19 +24847,18 @@ body.selectbox--open .selectbox__layer {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-
-.player-panel {
+body.platform--apple .player-panel {
   bottom: 0 !important;
   background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.82)), color-stop(55%, rgba(0, 0, 0, 0.45)), to(rgba(0, 0, 0, 0))) !important;
   background: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%) !important;
   background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%) !important;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%) !important;
 }
-.player-panel .player-panel__body {
+body.platform--apple .player-panel .player-panel__body {
   padding: 4em 3em -webkit-calc(2em + env(safe-area-inset-bottom)) !important;
   padding: 4em 3em calc(2em + env(safe-area-inset-bottom)) !important;
 }
-.player-panel .player-panel__timeline {
+body.platform--apple .player-panel .player-panel__timeline {
   height: 0.42em;
   margin-bottom: 0.7em;
   -webkit-border-radius: 1em;
@@ -24444,21 +24869,21 @@ body.selectbox--open .selectbox__layer {
   -o-transition: height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   transition: height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.player-panel .player-panel__timeline.focus {
+body.platform--apple .player-panel .player-panel__timeline.focus {
   height: 0.75em;
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
 }
-.player-panel .player-panel__timeline.focus .player-panel__position > div::after {
+body.platform--apple .player-panel .player-panel__timeline.focus .player-panel__position > div::after {
   opacity: 1;
 }
-.player-panel .player-panel__peding {
+body.platform--apple .player-panel .player-panel__peding {
   background: rgba(255, 255, 255, 0.35) !important;
 }
-.player-panel .player-panel__position {
+body.platform--apple .player-panel .player-panel__position {
   background: #fff !important;
 }
-.player-panel .player-panel__position > div::after {
+body.platform--apple .player-panel .player-panel__position > div::after {
   width: 1.1em;
   height: 1.1em;
   opacity: 0;
@@ -24468,17 +24893,17 @@ body.selectbox--open .selectbox__layer {
   -webkit-box-shadow: 0 0 0 0.25em rgba(200, 245, 66, 0.5);
           box-shadow: 0 0 0 0.25em rgba(200, 245, 66, 0.5);
 }
-.player-panel .player-panel__timenow,
-.player-panel .player-panel__timeend {
+body.platform--apple .player-panel .player-panel__timenow,
+body.platform--apple .player-panel .player-panel__timeend {
   font-size: 0.95em;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
   font-variant-numeric: tabular-nums;
 }
-.player-panel .player-panel__line-two {
+body.platform--apple .player-panel .player-panel__line-two {
   margin-top: 1.4em !important;
 }
-.player-panel .button {
+body.platform--apple .player-panel .button {
   width: 2.6em;
   height: 2.6em;
   padding: 0.65em;
@@ -24505,30 +24930,30 @@ body.selectbox--open .selectbox__layer {
       -ms-flex-pack: center;
           justify-content: center;
 }
-.player-panel .button svg {
+body.platform--apple .player-panel .button svg {
   width: 1.4em;
   height: 1.4em;
 }
-.player-panel .button.focus {
+body.platform--apple .player-panel .button.focus {
   background: #fff !important;
   color: #000 !important;
   -webkit-transform: scale(1.12);
       -ms-transform: scale(1.12);
           transform: scale(1.12);
 }
-.player-panel .button.focus svg {
+body.platform--apple .player-panel .button.focus svg {
   width: 1.4em;
   height: 1.4em;
 }
-.player-panel .player-panel__right .button + .button,
-.player-panel .player-panel__left .button + .button {
+body.platform--apple .player-panel .player-panel__right .button + .button,
+body.platform--apple .player-panel .player-panel__left .button + .button {
   margin-left: 0.7em;
 }
-.player-panel.panel--single .player-panel__left {
+body.platform--apple .player-panel.panel--single .player-panel__left {
   visibility: hidden;
 }
-.player-panel .player-panel__rprev,
-.player-panel .player-panel__rnext {
+body.platform--apple .player-panel .player-panel__rprev,
+body.platform--apple .player-panel .player-panel__rnext {
   display: -webkit-box !important;
   display: -webkit-flex !important;
   display: -ms-flexbox !important;
@@ -24540,7 +24965,7 @@ body.selectbox--open .selectbox__layer {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-.player-panel .player-panel__playpause {
+body.platform--apple .player-panel .player-panel__playpause {
   width: 4.4em;
   height: 4.4em;
   padding: 1.25em;
@@ -24548,7 +24973,7 @@ body.selectbox--open .selectbox__layer {
   font-size: 1em;
   background: rgba(255, 255, 255, 0.18);
 }
-.player-panel .player-panel__quality {
+body.platform--apple .player-panel .player-panel__quality {
   width: auto !important;
   min-width: 4.2em;
   height: 2.6em !important;
@@ -24580,33 +25005,31 @@ body.selectbox--open .selectbox__layer {
       -ms-flex-pack: center;
           justify-content: center;
 }
-.player-panel .player-panel__tstart,
-.player-panel .player-panel__tend,
-.player-panel .player-panel__pip,
-.player-panel .player-panel__flow {
+body.platform--apple .player-panel .player-panel__tstart,
+body.platform--apple .player-panel .player-panel__tend,
+body.platform--apple .player-panel .player-panel__pip,
+body.platform--apple .player-panel .player-panel__flow {
   display: none !important;
 }
-
-body.true--mobile .player-panel .player-panel__prev,
-body.true--mobile .player-panel .player-panel__next,
-body.true--mobile .player-panel .player-panel__next-episode-name,
-body.true--mobile .player-panel .player-panel__tracks,
-body.true--mobile .player-panel .player-panel__volume {
+body.platform--apple.true--mobile .player-panel .player-panel__prev,
+body.platform--apple.true--mobile .player-panel .player-panel__next,
+body.platform--apple.true--mobile .player-panel .player-panel__next-episode-name,
+body.platform--apple.true--mobile .player-panel .player-panel__tracks,
+body.platform--apple.true--mobile .player-panel .player-panel__volume {
   display: none !important;
 }
-
-.player-info {
+body.platform--apple .player-info {
   top: 0 !important;
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.7)), to(rgba(0, 0, 0, 0))) !important;
   background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%) !important;
   background: -o-linear-gradient(top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%) !important;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%) !important;
 }
-.player-info .player-info__body {
+body.platform--apple .player-info .player-info__body {
   padding: -webkit-calc(2em + env(safe-area-inset-top)) 3em 4em !important;
   padding: calc(2em + env(safe-area-inset-top)) 3em 4em !important;
 }
-.player-info .player-info__line {
+body.platform--apple .player-info .player-info__line {
   position: relative;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
@@ -24618,18 +25041,18 @@ body.true--mobile .player-panel .player-panel__volume {
           align-items: center;
   gap: 0.8em;
 }
-.player-info .player-info__time {
+body.platform--apple .player-info .player-info__time {
   position: absolute;
   right: 0;
 }
-.player-info .player-info__name {
+body.platform--apple .player-info .player-info__name {
   font-size: 1.9em !important;
   font-weight: 800 !important;
   letter-spacing: -0.02em;
   word-break: normal !important;
   text-shadow: 0 0.05em 0.5em rgba(0, 0, 0, 0.4);
 }
-.player-info .head-backward {
+body.platform--apple .player-info .head-backward {
   margin: 0;
   padding: 0 0 0 5em;
   min-height: 2.8em;
@@ -24642,7 +25065,7 @@ body.true--mobile .player-panel .player-panel__volume {
       -ms-flex-align: center;
           align-items: center;
 }
-.player-info .head-backward__button {
+body.platform--apple .player-info .head-backward__button {
   top: 50%;
   left: 1.2em;
   -webkit-transform: translateY(-50%);
@@ -24669,15 +25092,15 @@ body.true--mobile .player-panel .player-panel__volume {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
-.player-info .head-backward__button > svg {
+body.platform--apple .player-info .head-backward__button > svg {
   width: 1.3em !important;
   height: 1.3em !important;
 }
-.player-info .head-backward.focus .head-backward__button, .player-info .head-backward__button:hover {
+body.platform--apple .player-info .head-backward.focus .head-backward__button, body.platform--apple .player-info .head-backward__button:hover {
   background: #fff;
   color: #000;
 }
-.player-info .head-backward__title {
+body.platform--apple .player-info .head-backward__title {
   font-size: 1.9em;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -24685,92 +25108,92 @@ body.true--mobile .player-panel .player-panel__volume {
   padding: 0;
   min-height: 0;
 }
-.player-info .player-info__time,
-.player-info .player-info__values {
+body.platform--apple .player-info .player-info__time,
+body.platform--apple .player-info .player-info__values {
   display: none !important;
 }
-
 @media (max-width: 580px) {
-  .player-panel .player-panel__body {
+  body.platform--apple .player-panel .player-panel__body {
     padding: 3em 1.2em -webkit-calc(1.2em + env(safe-area-inset-bottom)) !important;
     padding: 3em 1.2em calc(1.2em + env(safe-area-inset-bottom)) !important;
   }
-  .player-info .player-info__body {
+  body.platform--apple .player-info .player-info__body {
     padding: -webkit-calc(1.2em + env(safe-area-inset-top)) 1.2em 3em !important;
     padding: calc(1.2em + env(safe-area-inset-top)) 1.2em 3em !important;
   }
-  .player-panel .player-panel__playpause {
+  body.platform--apple .player-panel .player-panel__playpause {
     margin: 0 0.8em;
   }
 }
 @media (max-width: 767px) {
-  .player-panel .button {
+  body.platform--apple .player-panel .button {
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
     min-width: 44px;
     min-height: 44px;
   }
-  .player-panel .player-panel__playpause {
+  body.platform--apple .player-panel .player-panel__playpause {
     min-width: 56px;
     min-height: 56px;
   }
-  .player-panel .player-panel__quality {
+  body.platform--apple .player-panel .player-panel__quality {
     min-height: 44px !important;
   }
-  .player-panel .button .material-icon,
-  .player-panel .button svg {
+  body.platform--apple .player-panel .button .material-icon,
+  body.platform--apple .player-panel .button svg {
     width: 24px !important;
     height: 24px !important;
   }
-  .player-panel .player-panel__rprev,
-  .player-panel .player-panel__rnext {
+  body.platform--apple .player-panel .player-panel__rprev,
+  body.platform--apple .player-panel .player-panel__rnext {
     width: 56px !important;
     height: 56px !important;
   }
-  .player-panel .player-panel__rprev .material-icon,
-  .player-panel .player-panel__rprev svg,
-  .player-panel .player-panel__rnext .material-icon,
-  .player-panel .player-panel__rnext svg {
+  body.platform--apple .player-panel .player-panel__rprev .material-icon,
+  body.platform--apple .player-panel .player-panel__rprev svg,
+  body.platform--apple .player-panel .player-panel__rnext .material-icon,
+  body.platform--apple .player-panel .player-panel__rnext svg {
     width: 40px !important;
     height: 40px !important;
   }
-  .player-panel .player-panel__playpause {
+  body.platform--apple .player-panel .player-panel__playpause {
     width: 72px;
     height: 72px;
     padding: 18px;
   }
-  .player-panel .player-panel__playpause .material-icon,
-  .player-panel .player-panel__playpause svg {
+  body.platform--apple .player-panel .player-panel__playpause .material-icon,
+  body.platform--apple .player-panel .player-panel__playpause svg {
     width: 36px !important;
     height: 36px !important;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-tv__backdrop img {
+  body.platform--apple .hero-tv__backdrop img {
     -webkit-transform: none !important;
         -ms-transform: none !important;
             transform: none !important;
   }
-  .navigation-bar--tabs,
-  .hero-tv__dot {
+  body.platform--apple .navigation-bar--tabs,
+  body.platform--apple .hero-tv__dot {
     -webkit-transition: none !important;
     -o-transition: none !important;
     transition: none !important;
   }
-  .hero-tv__dot.active::after {
+  body.platform--apple .hero-tv__dot.active::after {
     -webkit-animation: none;
             animation: none;
     width: 28px;
   }
 }
-/* player controls use Material Rounded glyphs (inline svg, see templates/player/panel.js) */
-.player-panel .material-icon {
+body.platform--apple {
+  /* player controls use Material Rounded glyphs (inline svg, see templates/player/panel.js) */
+}
+body.platform--apple .player-panel .material-icon {
   width: 1.6em;
   height: 1.6em;
 }
-
-.player-panel__rprev .material-icon,
-.player-panel__rnext .material-icon {
+body.platform--apple .player-panel__rprev .material-icon,
+body.platform--apple .player-panel__rnext .material-icon {
   width: 2em;
   height: 2em;
 }
