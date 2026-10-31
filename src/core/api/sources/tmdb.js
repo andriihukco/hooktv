@@ -17,7 +17,6 @@ import Keys from '../../tmdb/keys'
 import Ratings from './ratings'
 import Reactions from './reactions'
 import LibraryFilter from '../../../utils/library_filter'
-import games, {cardData} from '../../../games/catalog'
 
 
 let network   = new Reguest()
@@ -423,29 +422,6 @@ function services(params = {}, oncomplite, onerror){
 
     tiles(params, (results)=>oncomplite({results: results, page: 1, total_pages: 1}), onerror)
 }
-
-/**
- * Carousel of playable games; a tile opens the game full-screen.
- */
-function partGames(params, call){
-    // home shows the featured few; the Games tab has them all
-    let results = games.slice(0, 8).map(g=>Object.assign(cardData(g), {
-        params: {
-            style: {name: 'game'},
-            module: CardModule.only('Card', 'Style', 'Callback')
-        }
-    }))
-
-    call({
-        title: Lang.translate('title_games'),
-        results: results,
-        params: {items: {view: 8}},
-        // More opens every game on its own page
-        total_pages: 2,
-        morePage: {name: 'games', params: {title: Lang.translate('title_games'), all: true}}
-    })
-}
-
 // Ukrainian-language series, films and shows from TMDB, for the UA TV tab
 let uaContent = [
     {url: 'discover/tv?with_original_language=uk&sort_by=popularity.desc', title: 'title_ua_series'},
@@ -520,7 +496,6 @@ function main(params = {}, oncomplite, onerror){
 
     Arrays.insert(parts_data, 1, (call)=>partServices(params, call))
     Arrays.insert(parts_data, 1, (call)=>partChips(params, call))
-    Arrays.insert(parts_data, 3, (call)=>partGames(params, call))
 
     ContentRows.call('main', params, parts_data)
 

@@ -46,7 +46,7 @@ function component(object){
             let lines    = []
             let chips    = []
             let folders  = ['book','like','wath', 'viewed','scheduled','thrown']
-            let media    = ['movies','tv','games']
+            let media    = ['movies','tv']
 
             // Шапка: каждая полка одним чипом с количеством, ведет на свою страницу
             category.forEach(a=>{
@@ -58,17 +58,6 @@ function component(object){
                     })
                 }
             })
-
-            // Saved music tracks live in the music tab's storage; the chip opens them there
-            let tracks = Storage.get('music_favorites', [])
-
-            if(Array.isArray(tracks) && tracks.length){
-                chips.push({
-                    title: Lang.translate('menu_music'),
-                    count: tracks.length,
-                    onSelect: Router.call.bind(Router, 'music', {favorites: true, title: Lang.translate('music_category_favorites')})
-                })
-            }
 
             LibraryHeader.mount(comp, chips)
 
