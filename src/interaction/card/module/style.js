@@ -41,11 +41,13 @@ export default {
             if(this.data.brand) this.html.style.setProperty('--brand-bg', this.data.brand)
         }
 
-        // a services chip (home): a plain pill with its name; no fill or other highlight on the one that is picked
+        // a services chip (home): a pill with its name, filled white while it is the one picked
         if(this.params.style.name == 'chip'){
             this.html.addClass('card--chip')
 
             this.html.find('.card__title, .card__age').remove()
+
+            if(this.data.selected) this.html.addClass('card--chip-on')
 
             this.html.find('.card__view').append($('<div class="card__chip-label"></div>').text(this.data.title || ''))
         }

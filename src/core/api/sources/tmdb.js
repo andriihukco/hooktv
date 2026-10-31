@@ -309,11 +309,11 @@ function providerTiles(params, oncomplite, onerror){
 }
 
 // Production companies on the studios page, in the order they are shown.
-// Logos come from TMDB (logo_path); a few studios have none and show their name.
-const studioIds = [3, 127928, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
+// Logos come from TMDB (logo_path); a studio without one is left out.
+const studioIds = [3, 25, 43, 41077, 2, 420, 1, 174, 33, 4, 5, 1632, 521, 12, 923, 3172, 6704, 3268, 21]
 
-// logos drawn in several colours (Warner, MGM, Marvel, 20th Century Studios): shown as they are
-const colourLogos = [174, 21, 420, 127928]
+// logos drawn in several colours (Warner, MGM, Marvel): shown as they are
+const colourLogos = [174, 21, 420]
 
 /**
  * The big studios as round tiles, each one opens its movies. Logos come from TMDB.
@@ -328,15 +328,15 @@ function studioTiles(params, oncomplite, onerror){
         let results = studioIds.map((id, i)=>{
             let json = data[i]
 
-            if(!json || !json.name) return null
+            if(!json || !json.name || !json.logo_path) return null
 
             return {
                 id: -(i + 1),
                 title: json.name,
-                logo: json.logo_path ? img(json.logo_path, 'w185') : '',
+                logo: img(json.logo_path, 'w185'),
                 // most logos are one ink, drawn white on the dark circle so they read alike;
-                // the colour ones keep their colours, and the 20th Century box keeps its black
-                brand: id == 127928 ? '#000000' : '#1c1c1e',
+                // the colour ones keep their colours
+                brand: '#1c1c1e',
                 mono: colourLogos.indexOf(id) < 0,
                 params: {
                     style: {name: 'provider'},
@@ -400,7 +400,7 @@ function partChips(params, call){
             id: -(300 + i),
             title: Lang.translate(kind == 'studios' ? 'title_studios' : 'title_streaming'),
             kind: kind,
-            chip: true,
+            chip: true, selected: kind == 'streaming',
             load: (done)=>servicesRow(kind, params, done),
             params: {
                 style: {name: 'chip'},

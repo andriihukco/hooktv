@@ -4211,54 +4211,6 @@ body.settings--open .settings__layer {
 .card.card--provider.focus .card__view::after, .card.card--provider.hover .card__view::after {
   display: none;
 }
-.card.card--chip .card__img,
-.card.card--chip .card__age,
-.card.card--chip .card__title {
-  display: none !important;
-}
-.card.card--chip .card__view {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  height: 3em;
-  padding-bottom: 0 !important;
-  -webkit-border-radius: 999px;
-          border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-}
-.card.card--chip .card__chip-label {
-  padding: 0 1em;
-  font-size: 1.1em;
-  font-weight: 700;
-  white-space: nowrap;
-  color: #fff;
-}
-.card.card--chip .card__view {
-  -webkit-transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  -o-transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.card.card--chip.focus .card__view {
-  -webkit-box-shadow: 0 0 0 0.2em #fff;
-          box-shadow: 0 0 0 0.2em #fff;
-}
-body.input--pointer .card.card--chip.focus .card__view {
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  background: rgba(255, 255, 255, 0.2);
-}
 .card.card--mono .card__provider-logo {
   -webkit-filter: brightness(0) invert(1);
           filter: brightness(0) invert(1);
@@ -4576,6 +4528,61 @@ body.platform--netcast .card__title {
   -webkit-line-clamp: 1;
   line-clamp: 1;
   height: 1.4em;
+}
+
+.card.card--chip .card__img,
+.card.card--chip .card__age,
+.card.card--chip .card__title {
+  display: none !important;
+}
+.card.card--chip .card__view {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 3em;
+  padding-bottom: 0 !important;
+  -webkit-border-radius: 999px;
+          border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.card.card--chip .card__chip-label {
+  padding: 0 1em;
+  font-size: 1.1em;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #fff;
+}
+.card.card--chip.card--chip-on .card__view {
+  background: #fff;
+}
+.card.card--chip.card--chip-on .card__chip-label {
+  color: #000;
+}
+.card.card--chip .card__view {
+  -webkit-transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  -o-transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1), -webkit-box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card.card--chip.focus .card__view {
+  -webkit-box-shadow: 0 0 0 0.2em #fff;
+          box-shadow: 0 0 0 0.2em #fff;
+}
+body.input--pointer .card.card--chip.focus .card__view {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /**
