@@ -194,7 +194,8 @@ function Component(name, component_params = {}){
         sections.forEach(([key, title])=>{
             let section = Template.get('settings_' + key)
 
-            section.find('.settings-folder').remove()
+            // the screensaver keeps its own page, so its folder stays on the flat list
+            section.find('.settings-folder').not('[data-component="screensaver"]').remove()
 
             if(title) comp.append(`<div class="settings-param-title"><span>${Lang.translate(title)}</span></div>`)
             comp.append(section.children())
