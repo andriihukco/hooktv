@@ -16,6 +16,7 @@ import ua_tv from '../components/ua_tv'
 import ua_tv_grid from '../components/ua_tv_grid'
 import games from '../components/games'
 import music from '../components/music'
+import video from '../components/videos/index'
 import services from '../components/studios'
 
 let component = {
@@ -37,6 +38,7 @@ let component = {
     ua_tv_grid,
     games,
     music,
+    video,
     services
 }
 

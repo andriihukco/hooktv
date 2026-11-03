@@ -1,0 +1,284 @@
+.videos-root{
+    min-height: 100%;
+    background: var(--brand-background);
+    color: var(--text-primary);
+}
+
+.videos-page{
+    min-height: 100%;
+    padding: 1.2em 0 11em;
+    box-sizing: border-box;
+
+    :where(button){
+        border: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    &__tabs{
+        display: flex;
+        gap: .6em;
+        padding: 0 3em 1.6em;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    &__tab{
+        flex: 0 0 auto;
+        min-height: 44px;
+        padding: .5em 1.2em;
+        border-radius: var(--radius-full);
+        background: var(--surface-2);
+        color: var(--text-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+
+        &.active{
+            background: var(--text-primary);
+            color: var(--brand-background);
+        }
+
+        &.focus{
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+    }
+
+    &__content{
+        min-height: 40vh;
+    }
+
+    &__status{
+        padding: 0 3em;
+        color: var(--brand-text-muted);
+        font-size: var(--font-size-base);
+
+        &:empty{
+            display: none;
+        }
+    }
+
+    &__grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+        gap: 2.2em 1.6em;
+        padding: 0 3em;
+    }
+
+    &__connect{
+        min-height: 44px;
+        margin: 0 3em;
+        padding: .6em 1.4em;
+        border-radius: var(--radius-full);
+        background: var(--brand-primary);
+        color: var(--brand-on-primary);
+        font-weight: var(--font-weight-semibold);
+
+        &.focus{
+            outline: 2px solid var(--text-primary);
+            outline-offset: 2px;
+        }
+    }
+
+    &__profile{
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        flex-wrap: wrap;
+        margin: 0 3em;
+        padding: 1.2em;
+        border-radius: var(--radius-xl);
+        background: var(--surface-1);
+    }
+
+    &__profile-name{
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+    }
+}
+
+// Featured banner: artwork fills the box, the title sits over a dark gradient
+.videos-hero{
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 46vh;
+    min-height: 260px;
+    margin: 0 3em 2.4em;
+    padding: 2em;
+    border-radius: 1.2em;
+    overflow: hidden;
+    background: var(--surface-2) center / cover no-repeat;
+    box-sizing: border-box;
+
+    &::before{
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(0, 0, 0, .9) 0%, rgba(0, 0, 0, .25) 60%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    &__body{
+        position: relative;
+        max-width: 42em;
+    }
+
+    &__title{
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: clamp(1.4em, 3vw, 2.6em);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: -.02em;
+    }
+
+    &__meta{
+        margin: .5em 0 1em;
+        color: var(--text-secondary);
+        font-size: var(--font-size-base);
+    }
+
+    &__play{
+        min-height: 44px;
+        padding: .6em 1.8em;
+        border-radius: var(--radius-full);
+        background: var(--brand-primary);
+        color: var(--brand-on-primary);
+        font-weight: var(--font-weight-semibold);
+
+        &.focus{
+            outline: 2px solid var(--text-primary);
+            outline-offset: 3px;
+        }
+    }
+}
+
+// Horizontal shelf of tiles, like the rows on Apple TV and YouTube TV
+.videos-shelf{
+    margin-bottom: 2.4em;
+
+    &__title{
+        margin: 0 3em .6em;
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -.02em;
+    }
+
+    &__items{
+        display: flex;
+        gap: 1.2em;
+        padding: .6em 3em 1em;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    &__status{
+        padding: 0 3em;
+        color: var(--brand-text-muted);
+
+        &:empty{
+            display: none;
+        }
+    }
+}
+
+.videos-card{
+    min-width: 0;
+    border-radius: var(--radius-lg);
+    outline: 2px solid transparent;
+    outline-offset: 4px;
+    transition: outline-color var(--transition-fast), transform var(--transition-fast);
+
+    &--wide{
+        flex: 0 0 24em;
+    }
+
+    &__thumb{
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        background: var(--surface-2);
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__time{
+        position: absolute;
+        right: .5em;
+        bottom: .5em;
+        padding: .15em .45em;
+        border-radius: var(--radius-sm);
+        background: rgba(0, 0, 0, .8);
+        color: #fff;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    &__title{
+        margin-top: .7em;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+    }
+
+    &__meta{
+        margin-top: .35em;
+        color: var(--brand-text-muted);
+        font-size: var(--font-size-sm);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &.focus{
+        outline-color: var(--brand-primary);
+        transform: scale(1.03);
+    }
+}
+
+@media (max-width: 768px){
+    .videos-page__tabs,
+    .videos-page__status,
+    .videos-page__grid,
+    .videos-page__connect,
+    .videos-page__profile,
+    .videos-shelf__title,
+    .videos-shelf__items,
+    .videos-shelf__status{
+        padding-left: 16px;
+        padding-right: 16px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .videos-hero{
+        margin: 0 16px 1.6em;
+        height: 40vh;
+    }
+
+    .videos-card--wide{
+        flex-basis: 78vw;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .videos-card{
+        transition: none;
+    }
+
+    .videos-card.focus{
+        transform: none;
+    }
+}

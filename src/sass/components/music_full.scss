@@ -1,0 +1,100 @@
+// Full-width music home, in the style of Spotify: a tinted header, wide shelves and large artwork.
+// Loaded after music.scss, so these rules override the page layout without touching that file.
+
+.music-page{
+    padding: 1.2em 0 11em;
+    background: linear-gradient(180deg, #2b2050 0%, var(--brand-background) 460px);
+
+    &__section{
+        margin: 0;
+    }
+
+    &__section-head{
+        padding: 0 3em;
+        margin-bottom: 1em;
+    }
+
+    &__chips{
+        display: flex;
+        gap: 1em;
+        padding: 0 3em 1.4em;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    &__chip-row{
+        display: flex;
+        align-items: center;
+        gap: .8em;
+        flex: 0 0 auto;
+    }
+
+    &__chip-list{
+        display: flex;
+        gap: .6em;
+    }
+
+    &__shelf{
+        margin: 0 0 2.4em;
+    }
+
+    &__shelf-title{
+        margin: 0 3em .6em;
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -.02em;
+    }
+
+    &__shelf-items{
+        gap: 1.4em;
+        padding: .6em 3em 1em;
+    }
+
+    &__shelf-status{
+        padding: 0 3em;
+    }
+
+    &__card{
+        flex: 0 0 12.5em;
+        border-radius: 1.2em;
+        transition: background var(--transition-fast), transform var(--transition-fast);
+
+        &.focus{
+            background: rgba(255, 255, 255, .08);
+            transform: scale(1.03);
+        }
+    }
+
+    &__art{
+        border-radius: 1.2em;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    }
+
+    &__card--artist &__art{
+        border-radius: 50%;
+    }
+}
+
+@media (max-width: 768px){
+    .music-page{
+        padding-top: 0.6em;
+
+        &__section-head,
+        &__chips,
+        &__shelf-title,
+        &__shelf-items,
+        &__shelf-status{
+            padding-left: 16px;
+            padding-right: 16px;
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .music-page__card{
+        transition: none;
+        transform: none !important;
+    }
+}

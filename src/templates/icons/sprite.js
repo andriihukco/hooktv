@@ -28,6 +28,10 @@ let html = `
         <path fill="currentColor" fill-rule="evenodd" d="M8.2 6h7.6a5.8 5.8 0 0 1 5.6 4.2l1.1 4.1a3.7 3.7 0 0 1-6.3 3.4L14.6 16H9.4l-1.6 1.7a3.7 3.7 0 0 1-6.3-3.4l1.1-4.1A5.8 5.8 0 0 1 8.2 6zM7.25 9v1.5h-1.5a.75.75 0 0 0 0 1.5h1.5v1.5a.75.75 0 0 0 1.5 0V12h1.5a.75.75 0 0 0 0-1.5h-1.5V9a.75.75 0 0 0-1.5 0zM16 11.2a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-1.9 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
     </symbol>
 
+    <symbol id="sprite-video" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M3 5.5A2.5 2.5 0 0 1 5.5 3h13A2.5 2.5 0 0 1 21 5.5v10a2.5 2.5 0 0 1-2.5 2.5H13v2h3v1.5H8V20h3v-2H5.5A2.5 2.5 0 0 1 3 15.5v-10zm7 3.2v5.6l4.8-2.8L10 8.7z"/>
+    </symbol>
+
     <symbol id="sprite-music" viewBox="0 0 24 24">
         <path fill="currentColor" d="M21 3v13.2a4 4 0 1 1-2-3.46V8.56L10 10.9v8.3a4 4 0 1 1-2-3.46V5.8L21 3z"/>
     </symbol>

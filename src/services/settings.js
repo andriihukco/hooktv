@@ -4,12 +4,15 @@ import Platform from '../core/platform'
 import Lang from '../core/lang'
 import Controller from '../core/controller'
 import LangChoice from '../interaction/lang'
+import {registerSettings as registerVideos} from '../videos/settings'
 
 /**
  * Инициализация дополнительных настроек
  * @returns {void}
  */
 function init(){
+    registerVideos()
+
     Settings.listener.follow('open', function (e){
         if(e.name == 'more' && window.location.protocol == 'https:'){
             $('[data-name="protocol"]',e.body).remove()
