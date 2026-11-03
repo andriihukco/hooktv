@@ -14,7 +14,7 @@ const SHELF_SIZE = 20
  */
 export function home(box, {region, isCurrent, onPlay, onDone}){
     let top = $('<div class="videos-hero-slot"></div>')
-    let rows = [{label: 'videos_row_trending', yt: ''}].concat(enabledCategories().map(item=>({label: item.label, yt: item.yt})))
+    let rows = [{label: 'videos_row_trending', query: ''}].concat(enabledCategories().map(item=>({label: item.label, query: item.query})))
     let left = rows.length
 
     box.append(top)
@@ -32,7 +32,9 @@ export function home(box, {region, isCurrent, onPlay, onDone}){
         let status = shelf.find('.videos-shelf__status')
         let items = shelf.find('.videos-shelf__items')
 
-        Client.trending(region, row.yt).then(json=>{
+        let load = row.query ? Client.search(row.query, region) : Client.trending(region)
+
+        load.then(json=>{
             if(!isCurrent()) return
 
             if(index == 0 && json.items.length) top.empty().append(hero(json.items[0], onPlay))

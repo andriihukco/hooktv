@@ -73,7 +73,7 @@ function cached(key, load){
 export default {
     call,
 
-    trending: (region, category)=> cached('trending:' + region + ':' + category, ()=> call('GET', 'trending', {region: region, category: category})),
+    trending: (region)=> cached('trending:' + region, ()=> call('GET', 'trending', {region: region})),
     search: (query, region)=> cached('search:' + region + ':' + query, ()=> call('GET', 'search', {q: query, region: region})),
     feed: (token)=> call('GET', 'feed', {}, token),
     me: (token)=> call('GET', 'me', {}, token)

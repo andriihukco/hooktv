@@ -1,8 +1,11 @@
-// YouTube proxy for the Videos tab. Keeps the Google API key and the OAuth
-// client secret on the server, caches public lists to save quota, and forwards
-// account calls with the user's own access token.
+// YouTube proxy for the Video tab. Trending and search come from public Piped instances,
+// so no API key is needed. Account data (subscriptions, profile) uses the user's own
+// Google token, and the server keeps the OAuth client secret.
 //
-// Secrets (supabase secrets set): YOUTUBE_API_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+// Secrets (supabase secrets set): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+// Optional: PIPED_INSTANCES (comma-separated base URLs, tried in order)
+
+import {normalize, normalizeList, pipedGet, Video} from './piped.ts'
 
 const API = 'https://www.googleapis.com/youtube/v3'
 const DEVICE_URL = 'https://oauth2.googleapis.com/device/code'
@@ -10,7 +13,8 @@ const TOKEN_URL = 'https://oauth2.googleapis.com/token'
 const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly'
 const TTL_MS = 15 * 60 * 1000
 
-const KEY = Deno.env.get('YOUTUBE_API_KEY') ?? ''
+const PIPED = (Deno.env.get('PIPED_INSTANCES') ?? 'https://api.piped.private.coffee,https://pipedapi.adminforge.de')
+    .split(',').map(s => s.trim()).filter(Boolean)
 const CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID') ?? ''
 const CLIENT_SECRET = Deno.env.get('GOOGLE_CLIENT_SECRET') ?? ''
 
@@ -39,95 +43,30 @@ function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
     })
 }
 
-// Calls the Data API with the server key, or with the user's token for account data
-async function yt(path: string, params: Record<string, string>, token = '') {
-    const query = new URLSearchParams(params)
-    const headers: Record<string, string> = {}
-
-    if (token) headers.authorization = 'Bearer ' + token
-    else query.set('key', KEY)
-
-    const res = await fetch(`${API}/${path}?${query}`, { headers })
-    const body = await res.json()
-
-    if (!res.ok) throw new Error(body?.error?.message || 'youtube ' + res.status)
-
-    return body
-}
-
-// PT1H2M3S -> 1:02:03
-function duration(iso = '') {
-    const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso)
-    if (!m) return ''
-
-    const pad = (n: number) => String(n).padStart(2, '0')
-    const h = Number(m[1] || 0), min = Number(m[2] || 0), sec = Number(m[3] || 0)
-
-    return h ? `${h}:${pad(min)}:${pad(sec)}` : `${min}:${pad(sec)}`
-}
-
-function normalize(item: any) {
-    const snippet = item.snippet || {}
-    const thumbs = snippet.thumbnails || {}
-
-    return {
-        id: typeof item.id === 'string' ? item.id : item.id?.videoId || '',
-        title: snippet.title || '',
-        channel: snippet.channelTitle || '',
-        channel_id: snippet.channelId || '',
-        published: snippet.publishedAt || '',
-        thumb: (thumbs.medium || thumbs.high || thumbs.default || {}).url || '',
-        duration: duration(item.contentDetails?.duration),
-        views: Number(item.statistics?.viewCount || 0)
-    }
-}
-
-// Fills duration and views for video ids, 50 per request
-async function details(ids: string[]) {
-    const map = new Map<string, any>()
-
-    for (let i = 0; i < ids.length; i += 50) {
-        const chunk = ids.slice(i, i + 50).join(',')
-        const body = await yt('videos', { part: 'snippet,contentDetails,statistics', id: chunk, maxResults: '50' })
-
-        body.items.forEach((item: any) => map.set(item.id, normalize(item)))
-    }
-
-    return map
-}
-
-function trending(region: string, category: string) {
-    return cached(`trending:${region}:${category}`, async () => {
-        const params: Record<string, string> = {
-            part: 'snippet,contentDetails,statistics',
-            chart: 'mostPopular',
-            regionCode: region,
-            maxResults: '24'
-        }
-        if (category) params.videoCategoryId = category
-
-        const body = await yt('videos', params)
-
-        return { items: body.items.map(normalize) }
+function trending(region: string) {
+    return cached(`trending:${region}`, async () => {
+        const list = await pipedGet(PIPED, `/trending?region=${region}`)
+        return { items: normalizeList(list).slice(0, 24) }
     })
 }
 
 function search(query: string, region: string) {
     return cached(`search:${region}:${query}`, async () => {
-        const body = await yt('search', {
-            part: 'snippet',
-            type: 'video',
-            q: query,
-            regionCode: region,
-            maxResults: '24',
-            safeSearch: 'moderate'
-        })
-
-        const ids = body.items.map((item: any) => item.id?.videoId).filter(Boolean)
-        const map = await details(ids)
-
-        return { items: ids.map((id: string) => map.get(id)).filter(Boolean) }
+        const body = await pipedGet(PIPED, `/search?q=${encodeURIComponent(query)}&filter=videos&region=${region}`)
+        return { items: normalizeList(body).slice(0, 24) }
     })
+}
+
+// Account calls go to the YouTube Data API with the user's token; no API key is sent
+async function yt(path: string, params: Record<string, string>, token: string) {
+    const res = await fetch(`${API}/${path}?${new URLSearchParams(params)}`, {
+        headers: { authorization: 'Bearer ' + token }
+    })
+    const body = await res.json()
+
+    if (!res.ok) throw new Error(body?.error?.message || 'youtube ' + res.status)
+
+    return body
 }
 
 // Latest uploads from subscribed channels, newest first (one playlist call per channel)
@@ -149,10 +88,35 @@ async function feed(token: string) {
         list.items.forEach((item: any) => ids.push(item.snippet.resourceId.videoId))
     }))
 
-    const map = await details([...new Set(ids)])
-    const items = [...map.values()].sort((a, b) => b.published.localeCompare(a.published))
+    const items: Video[] = []
+    for (let i = 0; i < ids.length; i += 50) {
+        const body = await yt('videos', { part: 'snippet,contentDetails,statistics', id: ids.slice(i, i + 50).join(',') }, token)
+        items.push(...body.items.map(videoFromYouTube))
+    }
+
+    items.sort((a, b) => b.published.localeCompare(a.published))
 
     return { items: items.slice(0, 48) }
+}
+
+// Maps a videos.list item from the Data API to the app shape
+function videoFromYouTube(item: any): Video {
+    const snippet = item.snippet || {}
+    const thumbs = snippet.thumbnails || {}
+    const iso = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(item.contentDetails?.duration || '')
+    const seconds = iso ? Number(iso[1] || 0) * 3600 + Number(iso[2] || 0) * 60 + Number(iso[3] || 0) : 0
+
+    return normalize({
+        url: '/watch?v=' + item.id,
+        type: 'stream',
+        title: snippet.title,
+        uploaderName: snippet.channelTitle,
+        uploaderUrl: '/channel/' + snippet.channelId,
+        uploaded: Date.parse(snippet.publishedAt || '') || undefined,
+        thumbnail: (thumbs.medium || thumbs.high || thumbs.default || {}).url || '',
+        duration: seconds,
+        views: Number(item.statistics?.viewCount || 0)
+    }) as Video
 }
 
 async function me(token: string) {
@@ -183,10 +147,7 @@ async function handle(req: Request) {
     const token = req.headers.get('x-yt-token') || ''
     const region = /^[A-Z]{2}$/.test(params.region || '') ? params.region : 'US'
 
-    if (action === 'trending') {
-        const category = /^\d{1,3}$/.test(params.category || '') ? params.category : ''
-        return json({ ok: true, ...(await trending(region, category)) })
-    }
+    if (action === 'trending') return json({ ok: true, ...(await trending(region)) })
 
     if (action === 'search') {
         const query = (params.q || '').trim().slice(0, 100)

@@ -193,7 +193,7 @@
     transition: outline-color var(--transition-fast), transform var(--transition-fast);
 
     &--wide{
-        flex: 0 0 24em;
+        flex: 0 0 28em;
     }
 
     &__thumb{
@@ -244,7 +244,8 @@
 
     &.focus{
         outline-color: var(--brand-primary);
-        transform: scale(1.03);
+        transform: scale(1.04);
+        box-shadow: 0 1em 2em rgba(0, 0, 0, .55);
     }
 }
 

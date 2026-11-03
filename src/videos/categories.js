@@ -1,17 +1,17 @@
 import Storage from '../core/storage/storage'
 
 /**
- * Categories shown as chips on the Videos page. `yt` is the YouTube videoCategoryId
- * used for the most-popular chart. Each one can be switched off in Settings → Videos.
+ * Categories shown as shelves on the Home page. `query` is the search the shelf runs
+ * (the keyless source has no category charts). Each one can be switched off in Settings → Interface.
  */
 export const CATEGORIES = [
-    {id: 'music', yt: '10', label: 'videos_cat_music'},
-    {id: 'gaming', yt: '20', label: 'videos_cat_gaming'},
-    {id: 'movies', yt: '1', label: 'videos_cat_movies'},
-    {id: 'news', yt: '25', label: 'videos_cat_news'},
-    {id: 'sports', yt: '17', label: 'videos_cat_sports'},
-    {id: 'science', yt: '28', label: 'videos_cat_science'},
-    {id: 'comedy', yt: '23', label: 'videos_cat_comedy'}
+    {id: 'music', query: 'music video', label: 'videos_cat_music'},
+    {id: 'gaming', query: 'gaming', label: 'videos_cat_gaming'},
+    {id: 'movies', query: 'movie trailer', label: 'videos_cat_movies'},
+    {id: 'news', query: 'news today', label: 'videos_cat_news'},
+    {id: 'sports', query: 'sports highlights', label: 'videos_cat_sports'},
+    {id: 'science', query: 'science explained', label: 'videos_cat_science'},
+    {id: 'comedy', query: 'comedy sketch', label: 'videos_cat_comedy'}
 ]
 
 /**

@@ -30,9 +30,8 @@ describe('videos categories', () => {
         expect(ids).toContain('sports')
     })
 
-    it('keeps the YouTube category ids used for the trending chart', () => {
-        expect(CATEGORIES.find(item => item.id == 'gaming').yt).toBe('20')
-        expect(CATEGORIES.find(item => item.id == 'news').yt).toBe('25')
-        expect(CATEGORIES.find(item => item.id == 'sports').yt).toBe('17')
+    it('gives every category a search query for its shelf', () => {
+        CATEGORIES.forEach(item => expect(item.query.length).toBeGreaterThan(0))
+        expect(CATEGORIES.find(item => item.id == 'gaming').query).toBe('gaming')
     })
 })
