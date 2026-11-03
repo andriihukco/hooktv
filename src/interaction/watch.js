@@ -47,9 +47,27 @@ function play(movie, want, back = 'content'){
             LoadingProgress.destroy()
 
             if(items.length) TorrentFallback.show(items, movie, back)
-            else WhereToWatch.show(movie, back)
+            else WhereToWatch.show(movie, back, (key)=>playSource(movie, want, key))
         })
     })
+}
+
+/**
+ * The viewer picked a source from the sheet: play the title through it alone
+ */
+function playSource(movie, want, key){
+    LoadingProgress.watch()
+
+    Online.autoPlay(movie, want, (ok, next)=>{
+        if(ok){
+            LoadingProgress.zoom()
+
+            return offerBalancers(movie, want, next)
+        }
+
+        LoadingProgress.destroy()
+        Noty.show(Lang.translate('online_nolink'))
+    }, [key])
 }
 
 /**

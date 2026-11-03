@@ -57,6 +57,20 @@ suite('online sources', ()=>{
         expect(Sources.getHidden()).toEqual([])
     })
 
+    test('the title sheet lists switched-on sources first, each group in the saved order', ()=>{
+        Sources.saveAvailable([
+            {key: 'krasview', enabled: true},
+            {key: 'kodik', enabled: true},
+            {key: 'vibix', enabled: true},
+            {key: 'hdrezka', enabled: true}
+        ])
+        Sources.saveHidden(['krasview'])
+        Sources.saveSorted(['vibix', 'kodik'])
+
+        expect(Sources.ordered().map(s=>s.key)).toEqual(['vibix', 'kodik', 'krasview'])
+        expect(Sources.ordered().map(s=>s.active)).toEqual([true, true, false])
+    })
+
     test('a stored value that is not a list falls back to the defaults', ()=>{
         saved.HOOK_ONLINE_SOURCES_HIDE = 'broken'
 

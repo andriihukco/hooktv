@@ -91,6 +91,39 @@ var SourcesStore = function() {
         }
         return result
     }
+    /**
+     * Sources for the title sheet: switched-on ones first, each group in the user's order
+     * @returns {{key:string, title:string, quality:string, active:boolean}[]}
+     */
+    SourcesStore.prototype.ordered = function() {
+        var _this = this
+        var hidden = this.getHidden()
+        var sorted = this.getSorted()
+        var list = this.settingsList().filter(function(item) {
+            return item && item.enabled !== false
+        }).map(function(item) {
+            var key = _this.normalizeName(item.key || item.name)
+            return {
+                key: key,
+                title: _this.getTitle(key),
+                quality: _this.getQuality(key),
+                active: hidden.indexOf(key) === -1
+            }
+        }).filter(function(item) {
+            return item.key && item.key !== 'hdrezka'
+        })
+        return list.map(function(item, index) {
+            return {item: item, index: index}
+        }).sort(function(a, b) {
+            if (a.item.active !== b.item.active) return a.item.active ? -1 : 1
+            var ka = sorted.indexOf(a.item.key)
+            var kb = sorted.indexOf(b.item.key)
+            if (ka !== kb) return ka < 0 ? 1 : kb < 0 ? -1 : ka - kb
+            return a.index - b.index
+        }).map(function(entry) {
+            return entry.item
+        })
+    }
     SourcesStore.prototype.getTitle = function(key) {
         return this.titles[this.normalizeName(key)] || key
     }
