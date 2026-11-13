@@ -168,7 +168,7 @@ function renderPanel(root, state){
             role: 'button',
             title: adminText(code === 'en' ? 'english' : 'ukrainian', locale),
             pressed: selected,
-            ariaLabel: adminText(code === 'en' ? 'english' : 'ukrainian', locale) + (selected ? ', selected' : '')
+            ariaLabel: adminText(code === 'en' ? 'english' : 'ukrainian', locale) + (selected ? ', ' + adminText('selected', locale) : '')
         }).attr('data-admin-locale', code)
 
         row.toggleClass('hooktv-admin-row--selected', selected)
