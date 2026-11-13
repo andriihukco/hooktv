@@ -86,16 +86,6 @@ const TAB_ICONS = {
             `<circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="${dish}"/>`
         )
     })(),
-    games: (()=>{
-        let pad = 'M8.2 7h7.6a4.8 4.8 0 0 1 4.6 3.4l1.1 4.1a2.7 2.7 0 0 1-4.6 2.5L15 15H9l-1.9 2a2.7 2.7 0 0 1-4.6-2.5l1.1-4.1A4.8 4.8 0 0 1 8.2 7z'
-        let keys = 'M8 9.6v3.2M6.4 11.2h3.2M15.6 10.6v.01M17.4 12.2v.01'
-
-        return tabIcon(
-            `<path d="${pad}"/><path d="${keys}"/>`,
-            `<path d="${pad}" fill="currentColor" mask="url(#navigation-bar-mask-games)"/>`,
-            `<mask id="navigation-bar-mask-games" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="${keys}" stroke="#000" stroke-width="1.8"/></mask>`
-        )
-    })(),
     video: (()=>{
         let play = 'M10 8.5v5l4-2.5z'
 
@@ -104,14 +94,6 @@ const TAB_ICONS = {
             `<rect x="2.5" y="4.5" width="19" height="13" rx="2.5" fill="currentColor"/><path d="M8 21h8" stroke-width="2.2"/><path d="${play}" fill="#000" stroke="none"/>`
         )
     })(),
-    music: (()=>{
-        let note = 'M9 18V5l12-2v13M9 10l12-2'
-
-        return tabIcon(
-            `<path d="${note}"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="18" cy="16" rx="3" ry="2.5"/>`,
-            `<path d="${note}" stroke-width="2.2"/><ellipse cx="6" cy="18" rx="3" ry="2.5" fill="currentColor"/><ellipse cx="18" cy="16" rx="3" ry="2.5" fill="currentColor"/>`
-        )
-    })()
 }
 
 // Top bar sections on desktop use the same icons; their masks get own ids so the two bars never share one
@@ -126,8 +108,6 @@ function tabs(){
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
         ['ua_tv', 'menu_ua_tv'],
-        ['games', 'menu_games'],
-        ['music', 'menu_music'],
         ['video', 'menu_video']
     ].map(([action, title])=>[action, title, TAB_ICONS[action]])
 

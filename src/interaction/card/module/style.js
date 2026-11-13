@@ -41,11 +41,13 @@ export default {
             if(this.data.brand) this.html.style.setProperty('--brand-bg', this.data.brand)
         }
 
-        // a services chip (home): a plain pill with its name; no fill or other highlight on the one that is picked
+        // a services chip (home): a pill with its name, filled white while it is the one picked
         if(this.params.style.name == 'chip'){
             this.html.addClass('card--chip')
 
             this.html.find('.card__title, .card__age').remove()
+
+            if(this.data.selected) this.html.addClass('card--chip-on')
 
             this.html.find('.card__view').append($('<div class="card__chip-label"></div>').text(this.data.title || ''))
         }
@@ -88,6 +90,9 @@ export default {
                 text.append(Template.elem('div', {class: 'card__game-hint', text: this.data.overview || ''}))
                 text.append(Template.elem('div', {class: 'card__game-play', text: Lang.translate('hooktv_play_game')}))
                 view.append(text).append($('<div class="card__game"></div>').append($(iconHTML(this.data.game))))
+
+                // the indicator: one dot per hero, the lit one is this tile
+                if(this.data.heroes > 1) view.append($('<div class="card__dots"></div>').append(Array.from({length: this.data.heroes}, (_, i)=>$('<i></i>').toggleClass('is-on', i == this.data.hero))))
             }
 
             if(name == 'list'){

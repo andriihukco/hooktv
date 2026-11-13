@@ -7,8 +7,6 @@ export const menu_items = [
     {action: 'cartoon', title: 'menu_multmovie', sprite: 'cartoon'},
     {action: 'tv', title: 'menu_tv', sprite: 'tv'},
     {action: 'ua_tv', title: 'menu_ua_tv', sprite: 'live_tv'},
-    {action: 'games', title: 'menu_games', sprite: 'games'},
-    {action: 'music', title: 'menu_music', sprite: 'music'},
     {action: 'video', title: 'menu_video', sprite: 'video'},
     {action: 'catalog', title: 'menu_catalog', sprite: 'catalog'},
     {action: 'filter', title: 'menu_filter', sprite: 'filter'},
@@ -21,4 +19,4 @@ export const menu_items = [
 /**
  * Sections kept in minimal UI (the top tab bar)
  */
-export const minimalActions = ['main', 'movie', 'tv', 'ua_tv', 'games', 'music', 'video']
+export const minimalActions = ['main', 'movie', 'tv', 'ua_tv', 'video']

@@ -1,7 +1,7 @@
-import {iconHTML} from './icons'
+import {iconHTML, uiIcon} from './icons'
 import {t, gameTitle, gameHint} from './i18n'
 import {config, history, duration, ago} from './store'
-import {SKINS, skinName, film} from './cinema'
+import {SKINS, skinName} from './cinema'
 
 // The console around a game: the lobby before it starts (mode, difficulty, options, your history),
 // and the small menus on the pause and result cards. Everything here is DOM + a key handler;
@@ -42,10 +42,10 @@ export function rows(game, cfg){
     }))
 
     list.push({
-        id: 'skin', label: t('hooktv_game_skin', 'Cinema style'),
+        id: 'skin', minor: true, label: t('hooktv_game_skin', 'Cinema style'),
         values: SKINS.map(s => ({id: s.id, text: skinName(s)}))
     }, {
-        id: 'intro', label: t('hooktv_game_intro', 'Title card'),
+        id: 'intro', minor: true, label: t('hooktv_game_intro', 'Title card'),
         values: [{id: 'on', text: t('hooktv_on', 'On')}, {id: 'off', text: t('hooktv_off', 'Off')}]
     })
 
@@ -55,47 +55,42 @@ export function rows(game, cfg){
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]))
 
 /**
- * The lobby: hero with the game's record on the left, its settings and Play on the right.
+ * The lobby: the game on the left (icon, name, its kind, the record), its settings and Play on the right.
  * Arrows move between rows and change values, OK on a row steps to its next value, OK on Play starts.
  * @param {object} game
  * @param {function} start called with the chosen settings
+ * @param {{category: string, reset: boolean, change: function}} extra the folder's name, a reset link, a change listener
  * @returns {{el: HTMLElement, key: function, destroy: function}}
  */
 export function lobby(game, start, extra = {}){
-    let poster = film(game)
     let cfg = config.get(game)
     let all = rows(game, cfg), list = all
     // a row can depend on another one's value (the number of teams only matters in Teams mode)
     const visible = () => all.filter(r => !r.when || cfg[r.when.id] === r.when.value)
-    let at = all.length, stats = history.stats(game.id), runs = history.of(game.id, 5)
+    let at = all.length, stats = history.stats(game.id)
     let el = document.createElement('div')
 
     el.className = 'games__lobby'
 
-    const statChip = (label, value) => `<div class="games__chip"><b>${esc(value)}</b><span>${esc(label)}</span></div>`
-    const runRow = r => `<div class="games__run${r.win ? ' games__run--win' : ''}"><b>${esc(r.score)}</b><span>${esc(levelName(r.level == null ? 1 : r.level))}${r.mode && r.mode != 'solo' ? ' · ' + esc(modeName(r.mode)) : ''}</span><i>${esc(ago(r.at))}</i></div>`
+    // the record, no labels: a star for the best score, a play mark for rounds played, a cup for wins (the words are the tooltip)
+    const stat = (icon, label, value) => `<div class="games__stat-i" title="${esc(label)}" aria-label="${esc(label)}: ${esc(value)}">${uiIcon(icon)}<b>${esc(value)}</b></div>`
 
     el.innerHTML = `
         <div class="games__hero">
             <div class="games__hero-icon">${iconHTML(game.id)}</div>
             <div class="games__hero-title">${esc(gameTitle(game))}</div>
-            <div class="games__hero-genre">${esc(poster.genre)}</div>
-            <div class="games__hero-tag">${esc(poster.line)}</div>
+            ${extra.category ? `<div class="games__hero-meta"><span class="games__pill">${esc(extra.category)}</span></div>` : ''}
             <div class="games__hero-hint">${esc(gameHint(game))}</div>
-            <div class="games__chips">
-                ${statChip(t('hooktv_best', 'Best'), stats.best)}
-                ${statChip(t('hooktv_game_played', 'Played'), stats.plays)}
-                ${statChip(t('hooktv_game_wins', 'Wins'), stats.wins)}
-                ${statChip(t('hooktv_game_time', 'Time'), duration(stats.ms))}
-            </div>
-            <div class="games__runs">
-                <div class="games__runs-t">${t('hooktv_game_recent', 'Recent runs')}</div>
-                ${runs.length ? runs.map(runRow).join('') : `<div class="games__runs-none">${t('hooktv_game_no_runs', 'No runs yet — go set the first score')}</div>`}
+            <div class="games__stats">
+                ${stat('star', t('hooktv_best', 'Best'), stats.best)}
+                ${stats.plays ? stat('play_arrow', t('hooktv_game_played', 'Played'), stats.plays) : ''}
+                ${stats.wins ? stat('emoji_events', t('hooktv_game_wins', 'Wins'), stats.wins) : ''}
+                ${stats.ms ? stat('schedule', t('hooktv_game_time', 'Time'), duration(stats.ms)) : ''}
             </div>
         </div>
         <div class="games__side">
             <div class="games__settings"></div>
-            <div class="games__play-btn" data-i="play">${t('hooktv_game_play', 'Play')}</div>
+            <div class="games__play-btn" data-i="play">${uiIcon('play_arrow')}<span>${t('hooktv_game_play', 'Play')}</span></div>
             ${extra.reset ? `<div class="games__link" data-i="reset">${t('hooktv_game_reset', 'Reset history')}</div>` : ''}
         </div>`
 
@@ -104,7 +99,7 @@ export function lobby(game, start, extra = {}){
     const paint = () => {
         list = visible()
         at = Math.min(at, list.length)
-        box.innerHTML = list.map((r, i) => `<div class="games__row${i == at ? ' focus' : ''}" data-i="${i}">
+        box.innerHTML = list.map((r, i) => `<div class="games__row${i == at ? ' focus' : ''}${r.minor ? ' games__row--minor' : ''}${r.minor && (i == 0 || !list[i - 1].minor) ? ' games__row--first-minor' : ''}" data-i="${i}">
             <span>${esc(r.label)}</span>
             <div class="games__row-v"><i data-step="-1">‹</i><b>${esc(r.values.find(v => v.id === r.value).text)}</b><i data-step="1">›</i></div>
         </div>`).join('')
@@ -173,6 +168,128 @@ export function menu(items, pick){
         key(k){
             if(k == 'up' || k == 'left') focus((at + items.length - 1) % items.length)
             else if(k == 'down' || k == 'right') focus((at + 1) % items.length)
+            else if(k == 'ok') pick(at)
+        }
+    }
+}
+
+
+/**
+ * The console's panel of buttons (pause menu, result card): a row of round icon buttons with no labels, then one wide
+ * primary button and a quiet ghost button. The icon row has one highlight that glides (and stretches) to the focused
+ * icon, and a tooltip above it that names it. A finger can rest on the row and slide: the label follows, lifting the
+ * finger picks. Up / down move between the rows, left / right inside the icons, OK / tap picks.
+ * @param {Array<{id: string, icon: string, label: string, kind: 'primary'|'icon'|'ghost'}>} items
+ * @param {function} pick called with the item's index
+ * @returns {{el: HTMLElement, key: function}}
+ */
+export function panel(items, pick){
+    let el = document.createElement('div')
+    let icons = items.map((it, i) => it.kind == 'icon' ? i : -1).filter(i => i >= 0)
+    let rest = items.map((it, i) => it.kind == 'icon' ? -1 : i).filter(i => i >= 0)
+    // the visual order is the key order: icons, then the primary button, then the ghost one
+    let lines = [icons, ...rest.sort((a, b) => (items[a].kind == 'primary' ? 0 : 1) - (items[b].kind == 'primary' ? 0 : 1)).map(i => [i])].filter(l => l.length)
+    let at = rest.find(i => items[i].kind == 'primary')
+
+    if(at === undefined) at = lines[0][0]
+
+    let still = 0, lastTouch = 0, dragging = false
+    const btn = (it, i) => `<div class="games__pbtn games__pbtn--${it.kind}" data-i="${i}" title="${esc(it.label)}" aria-label="${esc(it.label)}">${uiIcon(it.icon)}${it.kind == 'icon' ? '' : `<span>${esc(it.label)}</span>`}</div>`
+
+    el.className = 'games__panel'
+    el.innerHTML = lines.map(line => items[line[0]].kind == 'icon'
+        ? `<div class="games__prow" style="--n:${line.length}"><i class="games__pind"><b></b></i><div class="games__ptip"><span></span></div>${line.map(i => btn(items[i], i)).join('')}</div>`
+        : btn(items[line[0]], line[0])).join('')
+
+    const row = el.querySelector('.games__prow'), ind = el.querySelector('.games__pind'), tip = el.querySelector('.games__ptip')
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let col = -1
+
+    // the highlight slides to the new column, stretching into a pill half way (the morph), then settles
+    const glide = to => {
+        if(!row) return
+
+        if(to < 0){ row.classList.remove('games__prow--on'); col = -1; return }
+
+        let from = col, at2 = `translateX(${to * 100}%)`
+
+        row.classList.add('games__prow--on')
+        tip.style.transform = at2
+        tip.firstElementChild.textContent = items[icons[to]].label
+
+        if(from >= 0 && from != to && !calm && ind.animate) ind.animate([
+            {transform: `translateX(${from * 100}%) scaleX(1)`},
+            {transform: `translateX(${(from + to) / 2 * 100}%) scaleX(${1 + Math.min(1.2, Math.abs(to - from) * .5)})`, offset: .5},
+            {transform: `translateX(${to * 100}%) scaleX(1)`}
+        ], {duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)'})
+
+        ind.style.transform = at2
+        col = to
+    }
+    const focus = i => {
+        at = i
+        el.querySelectorAll('.games__pbtn').forEach(b => b.classList.toggle('focus', +b.dataset.i == i))
+        glide(icons.indexOf(i))
+    }
+    const lineOf = i => lines.findIndex(l => l.includes(i))
+    const under = e => {
+        let r = row.getBoundingClientRect()
+
+        return icons[Math.max(0, Math.min(icons.length - 1, Math.floor((e.clientX - r.left) / r.width * icons.length)))]
+    }
+
+    el.addEventListener('click', e => {
+        let b = e.target.closest('.games__pbtn')
+
+        // a finger already picked on lift: the click that follows must not pick twice
+        if(b && Date.now() - lastTouch > 500) pick(+b.dataset.i)
+    })
+    el.addEventListener('pointerover', e => {
+        let b = e.target.closest('.games__pbtn')
+
+        if(b && e.pointerType == 'mouse' && +b.dataset.i != at) focus(+b.dataset.i)
+    })
+
+    if(row){
+        row.addEventListener('pointerdown', e => {
+            if(e.pointerType == 'mouse') return
+
+            dragging = true
+            try { row.setPointerCapture(e.pointerId) } catch(err){}
+            focus(under(e))
+        })
+        row.addEventListener('pointermove', e => {
+            if(!dragging || e.pointerType == 'mouse') return
+
+            let i = under(e)
+
+            if(i != at) focus(i)
+        })
+        const lift = e => {
+            if(!dragging) return
+
+            dragging = false
+            lastTouch = Date.now()
+            if(e.type == 'pointerup') pick(at)
+        }
+        row.addEventListener('pointerup', lift)
+        row.addEventListener('pointercancel', lift)
+    }
+
+    // the highlight needs the row on screen to show where it is; it starts where focus starts, without a slide
+    focus(at)
+
+    return {
+        el,
+        key(k){
+            let n = lineOf(at), line = lines[n]
+
+            if(k == 'up' || k == 'down'){
+                let next = lines[(n + (k == 'down' ? 1 : lines.length - 1)) % lines.length]
+
+                focus(next[Math.min(line.indexOf(at), next.length - 1)])
+            }
+            else if((k == 'left' || k == 'right') && line.length > 1) focus(line[(line.indexOf(at) + (k == 'right' ? 1 : line.length - 1)) % line.length])
             else if(k == 'ok') pick(at)
         }
     }

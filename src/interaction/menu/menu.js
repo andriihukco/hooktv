@@ -278,17 +278,7 @@ function ready(){
             })
         }
 
-        if(prepared(action,['games'])){
-            Router.call('games', {
-                title: Lang.translate('title_games')
-            })
-        }
 
-        if(prepared(action,['music'])){
-            Router.call('music', {
-                title: Lang.translate('menu_music')
-            })
-        }
 
         if(prepared(action,['video'])){
             Router.call('video', {

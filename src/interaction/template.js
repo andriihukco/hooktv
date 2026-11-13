@@ -1,4 +1,5 @@
 import Lang from '../core/lang'
+import settings_templates from './template_settings'
 
 import head from '../templates/head'
 import wrap from '../templates/wrap'
@@ -7,16 +8,6 @@ import activitys from '../templates/activitys'
 import activity from '../templates/activity'
 import activity_wait_refresh from '../templates/activity_wait_refresh'
 import scroll from '../templates/scroll'
-import settings from '../templates/settings'
-import settings_main from '../templates/settings/main'
-import settings_interface from '../templates/settings/interface'
-import settings_parser from '../templates/settings/parser'
-import settings_server from '../templates/settings/server'
-import settings_player from '../templates/settings/player'
-import settings_more from '../templates/settings/more'
-import settings_tmdb from '../templates/settings/tmdb'
-import settings_plugins from '../templates/settings/plugins'
-import settings_account from '../templates/settings/account'
 import items_line from '../templates/items/line'
 import card from '../templates/card'
 import card_modern from '../templates/card_modern'
@@ -41,7 +32,6 @@ import info from '../templates/info_old'
 import filter from '../templates/filter'
 import more from '../templates/more'
 import search from '../templates/search/main'
-import settings_input from '../templates/settings/input'
 import modal from '../templates/modal'
 import company from '../templates/company'
 import modal_loading from '../templates/modal_loading'
@@ -144,16 +134,7 @@ let templates = {
     activitys,
     activity,
     activity_wait_refresh,
-    settings,
-    settings_main,
-    settings_interface,
-    settings_parser,
-    settings_server,
-    settings_player,
-    settings_more,
-    settings_tmdb,
-    settings_plugins,
-    settings_account,
+    ...settings_templates,
     scroll,
     items_line,
     card,
@@ -177,7 +158,6 @@ let templates = {
     info,
     more,
     search,
-    settings_input,
     modal,
     company,
     modal_loading,

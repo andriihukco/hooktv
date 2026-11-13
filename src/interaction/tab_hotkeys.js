@@ -4,7 +4,7 @@ import Hotkeys from '../utils/tab_hotkeys'
 
 /**
  * HOOK TV: on desktop and TV the number keys open the menu sections (1 Home,
- * 2 Movies, 3 Series, 4 TV, 5 Games, 6 Music) and 0 opens the Filters of the
+ * 2 Movies, 3 Series, 4 TV) and 0 opens the Filters of the
  * current page. The keys are silent: no hints are drawn. Phones get no keys.
  */
 

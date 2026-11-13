@@ -1,0 +1,55 @@
+.card{
+    // a services chip above a home row: a pill, filled white while its row is on
+    &.card--chip{
+        .card__img,
+        .card__age,
+        .card__title{
+            display: none !important;
+        }
+
+        .card__view{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 3em;
+            padding-bottom: 0 !important;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .card__chip-label{
+            padding: 0 1em;
+            font-size: 1.1em;
+            font-weight: 700;
+            white-space: nowrap;
+            color: #fff;
+        }
+
+        // the picked chip: white pill, black name
+        &.card--chip-on .card__view{
+            background: #fff;
+        }
+
+        &.card--chip-on .card__chip-label{
+            color: #000;
+        }
+
+        .card__view{
+            transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        // remote / keyboard focus: the white ring
+        &.focus{
+            .card__view{
+                box-shadow: 0 0 0 0.2em #fff;
+            }
+        }
+
+        // mouse hover also sets .focus, so with the pointer the ring stays off and the pill lightens instead
+        body.input--pointer &.focus .card__view{
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+}

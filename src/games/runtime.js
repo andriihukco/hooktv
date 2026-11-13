@@ -1,12 +1,12 @@
 import Controller from '../core/controller'
 import Lang from '../core/lang'
-import Platform from '../core/platform'
-import catalog, {gameTitle, gameHint, setTranslator} from './catalog'
+import catalog, {gameTitle, gameHint, setTranslator, categories, categoryTitle} from './catalog'
 import {iconHTML} from './icons'
-import {best, history, sound, config, duration, ago} from './store'
-import {lobby, menu, t, levelName, levelMult, modeName} from './shell'
+import {best, history, sound, config} from './store'
+import {lobby, panel, t, levelName, levelMult, modeName} from './shell'
 import {C} from './draw'
-import {SKINS, skinById, skinName, ending, film, award} from './cinema'
+import {SKINS, skinById, skinName, ending, film} from './cinema'
+import {mode, helpHTML, scoresHTML, keysHTML, esc} from './pages'
 import {rulesOf} from './rules'
 import Screensaver from '../interaction/screensaver'
 
@@ -53,75 +53,6 @@ function sfx(kind){
         g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + d)
         o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime + d)
     } catch(e){}
-}
-
-// how this device is played: a phone / tablet (touch), a TV (remote) or a computer (keyboard and mouse)
-function mode(){
-    // a finger on the glass first: some phones' user agents look like a TV box
-    if(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return 'touch'
-    if(Platform.tv()) return 'tv'
-
-    return 'desk'
-}
-
-const cap = t => `<kbd>${t}</kbd>`
-const dot = c => `<i class="games__dot games__dot--${c}"></i>`
-
-// the instructions page: one row per thing the player can do, with the keys for the device in hand
-function helpHTML(game, kind){
-    let rows = {
-        desk: [
-            ['move', cap('←') + cap('↑') + cap('↓') + cap('→') + `<span>/</span>` + cap('W') + cap('A') + cap('S') + cap('D')],
-            ['action', cap('Enter') + cap('Space') + `<span>/ ${Lang.translate('hooktv_help_click')}</span>`],
-            ['restart', cap('R')], ['pause', cap('P')], ['help', cap('H') + cap('?')], ['mute', cap('M')], ['back', cap('Esc')]
-        ],
-        tv: [
-            ['move', cap('◀') + cap('▲') + cap('▼') + cap('▶')],
-            ['action', cap('OK')],
-            ['restart', dot('red')], ['pause', dot('green')], ['help', dot('yellow')], ['alt', dot('blue')], ['back', cap('Back')]
-        ],
-        touch: [
-            ['move', `<span>${Lang.translate(game.swipe ? 'hooktv_help_swipe' : 'hooktv_help_tap')}</span>` + (game.pad ? cap('✥') : '')],
-            ['action', `<span>${Lang.translate('hooktv_help_tap')}</span>`],
-            ['restart', cap('↻')], ['pause', cap('❚❚')], ['help', cap('?')], ['back', cap('‹')]
-        ]
-    }[kind]
-
-    return `<div class="games__sheet-t">${gameTitle(game)}</div>
-        <div class="games__sheet-s">${gameHint(game)}</div>
-        <div class="games__sheet-h">${Lang.translate('hooktv_help_title')} · ${Lang.translate('hooktv_help_' + (kind == 'tv' ? 'remote' : kind == 'touch' ? 'touch' : 'keyboard'))}</div>
-        ${rows.map(([name, keys]) => `<div class="games__sheet-r"><span>${Lang.translate('hooktv_help_' + name)}</span><div>${keys}</div></div>`).join('')}`
-}
-
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]))
-
-// the scores page: the award won so far, the record and the latest runs
-function scoresHTML(game){
-    let s = history.stats(game.id), runs = history.of(game.id, 6)
-    let stat = (label, value) => `<div class="games__score-card"><b>${esc(value)}</b><span>${esc(label)}</span></div>`
-    const runRow = r => `<div class="games__run${r.win ? ' games__run--win' : ''}"><b>${esc(r.score)}</b><span>${esc(levelName(r.level == null ? 1 : r.level))}${r.mode && r.mode != 'solo' ? ' · ' + esc(modeName(r.mode)) : ''}</span><i>${esc(ago(r.at))}</i></div>`
-
-    return `<div class="games__sheet-t">${t('hooktv_game_scores', 'Scores')}</div>
-        <div class="games__award">${esc(award(s.plays, s.wins))}</div>
-        <div class="games__scores">
-            ${stat(t('hooktv_best', 'Best'), s.best)}
-            ${stat(t('hooktv_game_played', 'Played'), s.plays)}
-            ${stat(t('hooktv_game_wins', 'Wins'), s.wins)}
-            ${stat(t('hooktv_game_time', 'Time'), duration(s.ms))}
-        </div>
-        <div class="games__runs">
-            <div class="games__runs-t">${t('hooktv_game_recent', 'Recent runs')}</div>
-            ${runs.length ? runs.map(runRow).join('') : `<div class="games__runs-none">${t('hooktv_game_no_runs', 'No runs yet — go set the first score')}</div>`}
-        </div>`
-}
-
-// the strip under the board: keycaps for the device in hand
-function keysHTML(kind){
-    if(kind == 'touch') return ''
-
-    if(kind == 'tv') return `${cap('◀▲▼▶')} ${Lang.translate('hooktv_help_move')} ${cap('OK')} ${Lang.translate('hooktv_help_action')} ${dot('red')} ${Lang.translate('hooktv_help_restart')} ${dot('green')} ${Lang.translate('hooktv_help_pause')} ${dot('yellow')} ${Lang.translate('hooktv_help_help')}`
-
-    return `${cap('←↑↓→')} ${Lang.translate('hooktv_help_move')} ${cap('Space')} ${Lang.translate('hooktv_help_action')} ${cap('R')} ${Lang.translate('hooktv_help_restart')} ${cap('P')} ${Lang.translate('hooktv_help_pause')} ${cap('H')} ${Lang.translate('hooktv_help_help')}`
 }
 
 function build(){
@@ -301,7 +232,12 @@ function launch(game, cfg){
             let card = document.createElement('div')
             card.className = 'games__over'
             card.innerHTML = `${ending(skinById(settings.skin), win) ? `<div class="games__end">${ending(skinById(settings.skin), win)}</div>` : ''}<div class="games__over-t">${text || Lang.translate('hooktv_game_over')}</div><div class="games__over-s">${Lang.translate('hooktv_score')} ${score} · ${Lang.translate('hooktv_best')} ${best.get(game.id)}</div>${fresh ? `<div class="games__badge">${t('hooktv_game_new_best', 'New best!')}</div>` : ''}`
-            let m = menu([Lang.translate('hooktv_play_again'), t('hooktv_game_settings', 'Settings'), t('hooktv_game_exit', 'Exit')], i => i == 0 ? launch(game, settings) : i == 1 ? launch(game) : close())
+            let m = panel([
+                {id: 'again', icon: 'replay', label: Lang.translate('hooktv_play_again'), kind: 'primary'},
+                {id: 'settings', icon: 'tune', label: t('hooktv_game_settings', 'Settings'), kind: 'icon'},
+                {id: 'scores', icon: 'emoji_events', label: t('hooktv_game_scores', 'Scores'), kind: 'icon'},
+                {id: 'exit', icon: 'logout', label: t('hooktv_game_exit', 'Exit'), kind: 'ghost'}
+            ], i => i == 0 ? launch(game, settings) : i == 1 ? launch(game) : i == 2 ? openMenu('scores') : close())
             card.appendChild(m.el)
             play.appendChild(card)
             handlers.press.length = 0; handlers.key.length = 0
@@ -315,22 +251,20 @@ function launch(game, cfg){
     // rules open their own page with a Back button; while the menu is up, the keys and taps go to it, not the game
     let view = 'main', saved = null
     const MAIN = [
-        ['resume', t('hooktv_game_resume', 'Resume')],
-        ['restart', Lang.translate('hooktv_help_restart')],
-        ['settings', t('hooktv_game_settings', 'Settings')],
-        ['scores', t('hooktv_game_scores', 'Scores')],
-        ['hints', t('hooktv_game_hints', 'Hints')],
-        ['help', t('hooktv_game_instructions', 'Instructions')],
-        ['rules', t('hooktv_game_rules', 'Rules')],
-        ['exit', t('hooktv_game_leave', 'Leave game')]
+        {id: 'resume', icon: 'play_arrow', label: t('hooktv_game_resume', 'Resume'), kind: 'primary'},
+        {id: 'restart', icon: 'replay', label: Lang.translate('hooktv_help_restart'), kind: 'icon'},
+        {id: 'settings', icon: 'tune', label: t('hooktv_game_settings', 'Settings'), kind: 'icon'},
+        {id: 'scores', icon: 'emoji_events', label: t('hooktv_game_scores', 'Scores'), kind: 'icon'},
+        {id: 'help', icon: 'sports_esports', label: t('hooktv_game_instructions', 'Controls'), kind: 'icon'},
+        {id: 'rules', icon: 'menu_book', label: t('hooktv_game_rules', 'Rules'), kind: 'icon'},
+        {id: 'exit', icon: 'logout', label: t('hooktv_game_leave', 'Leave game'), kind: 'ghost'}
     ]
     const page = name => {
         if(name == 'scores') return scoresHTML(game)
-        if(name == 'hints') return `<div class="games__sheet-t">${t('hooktv_game_hints', 'Hints')}</div><div class="games__sheet-s">${gameHint(game)}</div><div class="games__sheet-s">${film(game).line}</div>`
-        if(name == 'rules') return `<div class="games__sheet-t">${t('hooktv_game_rules', 'Rules')}</div><div class="games__sheet-s">${rulesOf(game)}</div>`
+        if(name == 'rules') return `<div class="games__sheet-t">${t('hooktv_game_rules', 'Rules')}</div><div class="games__sheet-s">${gameHint(game)}</div><div class="games__sheet-s">${rulesOf(game)}</div>`
         if(name == 'help') return helpHTML(game, mode())
 
-        return `<div class="games__sheet-t">${gameTitle(game)}</div><div class="games__sheet-s">${film(game).genre} · ${Lang.translate('hooktv_paused')}</div>`
+        return `<div class="games__phead"><div class="games__phead-icon">${iconHTML(game.id)}</div><div class="games__phead-text"><div class="games__phead-t">${esc(gameTitle(game))}</div></div></div>`
     }
     const openMenu = (name = 'main') => {
         let el = root.find('.games__sheet')
@@ -343,11 +277,11 @@ function launch(game, cfg){
         el.empty()
 
         let card = $('<div class="games__sheet-card games__sheet-card--menu"></div>').html(page(name))
-        let items = name == 'main' ? MAIN.map(([, label]) => label) : [t('hooktv_game_back', 'Back')]
-        let m = menu(items, i => {
-            if(view != 'main') return openMenu('main')
+        let items = name == 'main' ? MAIN : [{id: 'back', icon: 'arrow_back', label: t('hooktv_game_back', 'Back'), kind: 'ghost'}]
+        let m = panel(items, i => {
+            if(view != 'main') return finished ? hideSheet() : openMenu('main')
 
-            let id = MAIN[i][0]
+            let id = MAIN[i].id
 
             if(id == 'resume') hideSheet()
             else if(id == 'restart') launch(game, settings)
@@ -439,7 +373,7 @@ function launch(game, cfg){
     session = {
         act,
         // Back: a menu page goes back to the menu, the menu closes, and only then does the game get left
-        back: () => { if(overlay && view != 'main'){ openMenu('main'); return true } return hideSheet() },
+        back: () => { if(overlay && view != 'main'){ finished ? hideSheet() : openMenu('main'); return true } return hideSheet() },
         resize: () => handlers.resize.forEach(f => f()),
         stop(){
             if(began && !finished && score > 0 && Date.now() - started > 5000) record(false)
@@ -484,7 +418,7 @@ function launch(game, cfg){
         let skin = skinById(chosen.skin), poster = film(game)
 
         card.className = 'games__card'
-        card.innerHTML = `<i class="games__card-bar"></i><div class="games__card-c">${t('hooktv_skin_chapter_' + skin.id, skin.chapter)}</div><div class="games__card-t">${gameTitle(game)}</div><div class="games__card-s">${poster.line}</div><i class="games__card-bar"></i>`
+        card.innerHTML = `<i class="games__card-bar"></i>${skin.id == 'classic' ? '' : `<div class="games__card-c">${t('hooktv_skin_chapter_' + skin.id, skin.chapter)}</div>`}<div class="games__card-t">${gameTitle(game)}</div>${skin.id == 'classic' ? '' : `<div class="games__card-s">${poster.line}</div>`}<i class="games__card-bar"></i>`
         card.addEventListener('click', go)
         play.appendChild(card)
         starting = true
@@ -495,7 +429,9 @@ function launch(game, cfg){
 
     if(cfg) begin(cfg)
     else {
-        lobbyUi = lobby(game, begin, {change: c => applySkin(c.skin)})
+        const folder = categories.find(c => c.games.some(g => g.id == game.id))
+
+        lobbyUi = lobby(game, begin, {change: c => applySkin(c.skin), category: folder ? categoryTitle(folder) : ''})
         ui = lobbyUi
         root.find('.games__bar').after(lobbyUi.el)
     }
@@ -518,6 +454,10 @@ function open(id){
     // the screen belongs to the game while it is open: the screensaver waits for the player to leave
     Screensaver.suspend()
     goFullscreen(true)
+    // a browser only grants full screen on a fresh key press or tap: if the first request was refused, the next one inside the game gets it
+    const again = () => { root[0].removeEventListener('pointerdown', again, true); document.removeEventListener('keydown', again, true); if(current) goFullscreen(true) }
+    root[0].addEventListener('pointerdown', again, true)
+    document.addEventListener('keydown', again, true)
     launch(game)
 }
 

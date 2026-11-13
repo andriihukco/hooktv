@@ -15,14 +15,17 @@ import Line from '../interaction/items/line/line'
  */
 function swapServices(main, chip){
     // some home items (the hero, the placeholders) carry no data: only rows with data can be a services row
-    let row = main.items.find(item=>item.data && (item.data.kind == 'streaming' || item.data.kind == 'studios'))
+    let chips = main.items.find(item=>item.data && item.data.kind == 'chips')
+    let row   = main.items.find(item=>item.data && (item.data.kind == 'streaming' || item.data.kind == 'studios'))
 
-    if(!row || row.data.kind == chip.kind) return
+    if(!chips || !row || row.data.kind == chip.kind) return
 
     chip.load((data)=>{
         if(!data || row.data.kind == data.kind) return
 
         replaceRow(main, row, data)
+
+        chips.items.forEach(item=>item.render(true).toggleClass('card--chip-on', item.data.kind == data.kind))
     })
 }
 
