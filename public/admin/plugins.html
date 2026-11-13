@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Manage HOOK TV plugins and system settings.">
+  <title>Sources &amp; plugins — HOOK TV Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/plugins.css">
+</head>
+<body class="admin admin-system">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="admin__header">
+    <div class="admin__header-inner">
+      <a class="admin-brand" href="dashboard.html" aria-label="HOOK TV admin home">
+        <img src="../img/logo.svg" width="118" height="28" alt="HOOK TV">
+        <span>CONTROL ROOM</span>
+      </a>
+      <nav class="admin__nav" aria-label="Admin" data-i18n-aria="adminNav">
+        <a class="admin__nav-item" href="dashboard.html" data-i18n="dashboard">Dashboard</a>
+        <a class="admin__nav-item" href="plugins.html" aria-current="page" data-i18n="sourcesAndPlugins">Sources &amp; plugins</a>
+        <a class="admin__nav-item" href="board.html" data-i18n="agentBoard">Agent board</a>
+      </nav>
+      <label class="admin-locale" for="admin-locale">
+        <span data-i18n="language">Admin language</span>
+        <select id="admin-locale" class="select" aria-label="Admin language" data-i18n-aria="language">
+          <option value="en">English</option>
+          <option value="uk">Українська</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="main" class="system-admin">
+    <section class="system-intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow" data-i18n="systemConfiguration">SYSTEM CONFIGURATION</p>
+        <h1 id="page-title" data-i18n="sourcesAndPlugins">Sources &amp; plugins</h1>
+        <p class="intro-copy" data-i18n="intro">Choose which media sections, local bundles and online providers are available to every HOOK TV device.</p>
+      </div>
+      <div class="intro-actions">
+        <span id="revision" class="revision">Loading configuration</span>
+        <button id="refresh" class="button" type="button" data-i18n="reload">Reload</button>
+        <button id="save" class="button button--primary" type="button" disabled data-i18n="save">Save changes</button>
+      </div>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite">Checking admin access…</div>
+
+    <section id="login-panel" class="login-panel" aria-labelledby="login-title" hidden>
+      <div>
+        <p class="eyebrow" data-i18n="adminAccess">ADMIN ACCESS</p>
+        <h2 id="login-title" data-i18n="signInTitle">Sign in to manage this system</h2>
+        <p class="text--muted" data-i18n="signInDescription">Your credentials are sent to the HOOK TV admin endpoint and are not stored in this browser.</p>
+      </div>
+      <form id="login-form">
+        <label for="admin-username" data-i18n="username">Admin username</label>
+        <div class="login-controls">
+          <input id="admin-username" name="username" type="text" autocomplete="username" required>
+        </div>
+        <label for="admin-password" data-i18n="password">Admin password</label>
+        <div class="login-controls">
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" required>
+          <button class="button button--primary" type="submit" data-i18n="signIn">Sign in</button>
+        </div>
+        <p id="login-error" class="field-error" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <div id="workspace" hidden>
+      <section class="metrics" aria-label="Registry counts" data-i18n-aria="registryCounts">
+        <article class="metric"><span id="metric-bundles" class="metric__value">—</span><span class="metric__label" data-i18n="localBundles">local bundles</span></article>
+        <article class="metric"><span id="metric-sources" class="metric__value">—</span><span class="metric__label" data-i18n="onlineProviders">online providers</span></article>
+        <article class="metric"><span id="metric-audit" class="metric__value">—</span><span class="metric__label" data-i18n="communityPlugins">community plugins</span></article>
+      </section>
+
+      <div class="tabbar" role="tablist" aria-label="System areas" data-i18n-aria="systemAreas">
+        <button role="tab" id="tab-plugins" aria-controls="panel-plugins" aria-selected="true" tabindex="0" data-tab="plugins" data-i18n="installedPlugins">Installed plugins</button>
+        <button role="tab" id="tab-sources" aria-controls="panel-sources" aria-selected="false" tabindex="-1" data-tab="sources" data-i18n="onlineSources">Online sources</button>
+        <button role="tab" id="tab-external" aria-controls="panel-external" aria-selected="false" tabindex="-1" data-tab="external" data-i18n="communityPlugins">Community plugins</button>
+        <button role="tab" id="tab-features" aria-controls="panel-features" aria-selected="false" tabindex="-1" data-tab="features" data-i18n="systemFlags">System flags</button>
+      </div>
+
+      <section id="panel-plugins" class="tab-panel" role="tabpanel" aria-labelledby="tab-plugins" data-panel="plugins">
+        <div class="section-heading"><div><h2 data-i18n="localPluginBundles">Local plugin bundles</h2><p data-i18n="localPluginDescription">Only bundles shipped with HOOK TV can be enabled here.</p></div><input id="plugin-search" class="search" type="search" placeholder="Filter plugins" aria-label="Filter plugins" data-i18n-placeholder="filterPlugins" data-i18n-aria="filterPlugins"></div>
+        <div id="plugin-list" class="managed-list"></div>
+      </section>
+
+      <section id="panel-sources" class="tab-panel" role="tabpanel" aria-labelledby="tab-sources" data-panel="sources" hidden>
+        <div class="section-heading"><div><h2 data-i18n="onlineProvidersTitle">Online providers</h2><p data-i18n="onlineProvidersDescription">These switches apply globally. A device can still hide any provider in its own settings.</p></div><input id="source-search" class="search" type="search" placeholder="Filter providers" aria-label="Filter online providers" data-i18n-placeholder="filterProviders" data-i18n-aria="filterProviders"></div>
+        <div id="source-list" class="managed-list"></div>
+      </section>
+
+      <section id="panel-external" class="tab-panel" role="tabpanel" aria-labelledby="tab-external" data-panel="external" hidden>
+        <div class="section-heading"><div><h2 data-i18n="communityPluginsTitle">Community plugins</h2><p data-i18n="communityPluginsDescription">Each external plugin is off by default. Enabling one allows its remote script to run on HOOK TV devices.</p></div><input id="external-search" class="search" type="search" placeholder="Filter plugins" aria-label="Filter community plugins" data-i18n-placeholder="filterPlugins" data-i18n-aria="filterCommunityPlugins"></div>
+        <div id="external-list" class="managed-list managed-list--external"></div>
+      </section>
+
+      <section id="panel-features" class="tab-panel" role="tabpanel" aria-labelledby="tab-features" data-panel="features" hidden>
+        <div class="section-heading"><div><h2 data-i18n="systemFlagsTitle">System flags</h2><p data-i18n="systemFlagsDescription">Control which sections and integrations the app exposes on launch.</p></div></div>
+        <div id="feature-list" class="feature-grid"></div>
+      </section>
+      <p class="apply-note" data-i18n="applyNote">Saved changes reach devices the next time they launch or reload HOOK TV.</p>
+    </div>
+  </main>
+  <script src="js/plugins-admin.js" defer></script>
+</body>
+</html>

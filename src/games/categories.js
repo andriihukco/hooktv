@@ -6,14 +6,14 @@ export default [
         title: 'Arcade',
         overview: 'Reflex and action',
         c1: '#FF5A4D', c2: '#FF9F0A',
-        games: ['snake', 'flappy', 'pacman', 'tetris', 'breakout', 'pong', 'crossy', 'doodle', 'bubbles', 'slicer', 'tower', 'mole', 'racer', 'astray', 'duel']
+        games: ['snake', 'flappy', 'pacman', 'tetris', 'breakout', 'pong', 'duel', 'crossy', 'doodle', 'bubbles', 'slicer', 'tower', 'mole', 'beatrun', 'neonlanes', 'fruitcatch']
     },
     {
         id: 'puzzle',
         title: 'Puzzle & Logic',
         overview: 'Think it through',
         c1: '#3E91FF', c2: '#A55CEB',
-        games: ['2048', 'candy', 'sudoku', 'sliding', 'memory', 'minesweeper']
+        games: ['2048', 'candy', 'sudoku', 'sliding', 'memory', 'minesweeper', 'flipgrid', 'dialescape', 'skyhop']
     },
     {
         id: 'board',

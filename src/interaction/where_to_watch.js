@@ -3,36 +3,31 @@ import Controller from '../core/controller'
 import Lang from '../core/lang'
 import Platform from '../core/platform'
 import Android from '../core/android'
+import sourcesStore from '../services/online_sources_store'
 
 /**
- * HOOK TV: when no source can play a title, say where it can be watched
- * legally instead of leaving the viewer on an empty source list.
- * TMDB (JustWatch data) knows which services carry it in Ukraine; the rest
- * are offered as a search. Ukrainian services search by the title on the
- * card, international ones by the English title.
+ * HOOK TV: when no source can play a title, the sheet lists where it streams
+ * legally (TMDB / JustWatch data for Ukraine), then the HOOK TV online sources.
+ * Switched-on sources come first; a switched-off one is listed after them.
  */
 
 let region = 'UA'
 
 /**
- * Services with a search page, so the viewer lands on the title, not a home page.
- * ids are TMDB provider ids, to match what watch/providers returns.
- * note: the service is not sold in Ukraine
+ * Services that stream titles, matched by TMDB provider id to what watch/providers returns.
  */
 let services = [
-    {name: 'Megogo',      local: true, url: (q)=>'https://megogo.net/ua/search-extended?q=' + q},
-    {name: 'Sweet.tv',    local: true, url: (q)=>'https://sweet.tv/search?q=' + q},
-    // Takflix only carries Ukrainian cinema
-    {name: 'Takflix',     local: true, only: 'uk', url: (q)=>'https://takflix.com/uk/search?query=' + q},
+    {name: 'Megogo',      url: ()=>'https://megogo.net/ua', always: true},
+    {name: 'Sweet.tv',    url: ()=>'https://sweet.tv/ua-en', always: true},
     {name: 'Netflix',     ids: [8, 1796], url: (q)=>'https://www.netflix.com/search?q=' + q},
     {name: 'Apple TV',    ids: [2, 350], url: (q)=>'https://tv.apple.com/ua/search?term=' + q},
     {name: 'Prime Video', ids: [9, 119], url: (q)=>'https://www.primevideo.com/search?phrase=' + q},
     {name: 'HBO Max',     ids: [1899, 384], url: (q)=>'https://play.hbomax.com/search?q=' + q},
-    {name: 'Disney+',     ids: [337], note: 'hooktv_where_not_ua', url: (q)=>'https://www.disneyplus.com/search?q=' + q},
-    {name: 'Hulu',        ids: [15], note: 'hooktv_where_us_only', url: (q)=>'https://www.hulu.com/search?q=' + q},
-    {name: 'MUBI',        ids: [11], hidden: true, url: (q)=>'https://mubi.com/uk/search/films?query=' + q},
-    {name: 'Crunchyroll', ids: [283], hidden: true, url: (q)=>'https://www.crunchyroll.com/search?q=' + q},
-    {name: 'Plex',        ids: [538], hidden: true, url: (q)=>'https://watch.plex.tv/search?q=' + q}
+    {name: 'Disney+',     ids: [337], url: (q)=>'https://www.disneyplus.com/search?q=' + q},
+    {name: 'Hulu',        ids: [15], url: (q)=>'https://www.hulu.com/search?q=' + q},
+    {name: 'MUBI',        ids: [11], url: (q)=>'https://mubi.com/uk/search/films?query=' + q},
+    {name: 'Crunchyroll', ids: [283], url: (q)=>'https://www.crunchyroll.com/search?q=' + q},
+    {name: 'Plex',        ids: [538], url: (q)=>'https://watch.plex.tv/search?q=' + q}
 ]
 
 function open(url){
@@ -104,25 +99,26 @@ function available(found){
 }
 
 /**
- * Rows of the sheet: where it streams, then where to look for it
+ * Rows of the sheet: where it streams, then the HOOK TV online sources
  * @param {object} movie TMDB card
  * @param {object|null} found TMDB watch/providers entry for the region
  * @param {string} title English title
  */
 function rows(movie, found, title){
-    let local = encodeURIComponent(movie.title || movie.name || title)
     let world = encodeURIComponent(title)
     let items = []
-    let shown = {}
 
     let list = found ? available(found) : []
+
+    // Services listed on every title, even when TMDB does not list them for the region
+    services.filter(s=>s.always && !list.some(p=>p.name == s.name)).forEach(s=>{
+        list.push({id: null, name: s.name, label: 'hooktv_where_subscription', known: s})
+    })
 
     if(list.length) items.push({title: Lang.translate('hooktv_where_available'), separator: true})
 
     list.forEach(p=>{
-        let known = service(p.id)
-
-        shown[p.name] = true
+        let known = p.known || service(p.id)
 
         items.push({
             title: p.name,
@@ -131,13 +127,15 @@ function rows(movie, found, title){
         })
     })
 
-    items.push({title: Lang.translate('hooktv_where_search'), separator: true})
+    let sources = sourcesStore.ordered()
 
-    services.filter(s=>!s.hidden && !shown[s.name] && (!s.only || s.only == (movie.original_language || ''))).forEach(s=>{
+    if(sources.length) items.push({title: Lang.translate('hook_online_settings_sources'), separator: true})
+
+    sources.forEach(s=>{
         items.push({
-            title: s.name,
-            subtitle: Lang.translate(s.note || 'hooktv_where_search_on'),
-            url: s.url(s.local ? local : world)
+            title: s.quality ? s.title + ' · ' + s.quality : s.title,
+            subtitle: Lang.translate(s.active ? 'hook_online_sources_enabled' : 'hook_online_sources_disabled'),
+            source: s.key
         })
     })
 
@@ -147,17 +145,19 @@ function rows(movie, found, title){
 /**
  * @param {object} movie TMDB card
  * @param {string} [back] controller to return to
+ * @param {function(string)} [onSource] called with a source key when the viewer picks one
  */
-function show(movie, back = 'content'){
+function show(movie, back = 'content', onSource = ()=>{}){
     providers(movie, (found)=>{
         english(movie, (title)=>{
             Select.show({
-                title: Lang.translate('hooktv_where_title'),
+                title: Lang.translate('hook_online_settings_sources'),
                 items: rows(movie, found, title),
                 onSelect: (a)=>{
                     Controller.toggle(back)
 
-                    if(a.url) open(a.url)
+                    if(a.source) onSource(a.source)
+                    else if(a.url) open(a.url)
                 },
                 onBack: ()=>{
                     Controller.toggle(back)

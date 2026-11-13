@@ -99,7 +99,7 @@ function bubbleFile(name){
         presets: ['@babel/preset-env']
     }), commonjs, nodeResolve()]
 
-    rollup({
+    return rollup({
         input: plgFolder+name,
         plugins: plug,
         output: {
@@ -127,16 +127,39 @@ function getFileHash(path) {
     return hashSum.digest('hex');
 }
 
-function plugins(done) {
+function plugins() {
+    var pending = [];
+
+    function track(stream){
+        if(!stream) return;
+
+        pending.push(new Promise(function(resolve, reject) {
+            var settled = false;
+            var finish = function() {
+                if(settled) return;
+                settled = true;
+                resolve();
+            };
+            var fail = function(error) {
+                if(settled) return;
+                settled = true;
+                reject(error);
+            };
+
+            stream.once('finish', finish);
+            stream.once('end', finish);
+            stream.once('error', fail);
+        }));
+    }
+
     fs.readdirSync(plgFolder).filter(function (file) {
         return fs.statSync(plgFolder+'/'+file).isDirectory();
     }).forEach(folder => {
-        bubbleFile(folder+'/'+folder+'.js')
-
-        plugin_sass(plgFolder+'/'+folder)
+        track(bubbleFile(folder+'/'+folder+'.js'));
+        track(plugin_sass(plgFolder+'/'+folder));
     });
-      
-    done();
+
+    return Promise.all(pending);
 }
 
 function plugin_sass(plugin_src){
@@ -465,7 +488,7 @@ function buildDoc(done){
 exports.pack_webos   = series(sync_webos, uglify_task, public_webos, index_webos);
 exports.pack_tizen   = series(sync_tizen, uglify_task, public_tizen, index_tizen);
 exports.pack_github  = series(sync_github, uglify_task, public_github, write_manifest, index_github);
-exports.pack_web     = series(merge, sass_task, lang_task, sync_web, parallel(minify_web_js, minify_web_css), build_web, write_releases);
+exports.pack_web     = series(merge, plugins, sass_task, lang_task, sync_web, parallel(minify_web_js, minify_web_css), build_web, write_releases);
 exports.pack_plugins = series(plugins);
 exports.test         = series(test);
 // Updated default task to build the app before starting watch and browser sync

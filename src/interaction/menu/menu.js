@@ -16,6 +16,8 @@ import Utils from '../../utils/utils'
 import Router from '../../core/router'
 import Head from '../head/head'
 import {sectionIcon} from '../navigation_bar'
+import {menu_items, minimalActions} from './items'
+import {menuActionEnabled} from '../../core/system'
 
 let html
 let last
@@ -26,19 +28,6 @@ function menuAlwaysVisible(){
     return Platform.screen('tv') && Storage.field('menu_always')
 }
 
-let menu_items = [
-    {action: 'main', title: 'menu_main', sprite: 'home'},
-    {action: 'movie', title: 'menu_movies', sprite: 'movie'},
-    {action: 'cartoon', title: 'menu_multmovie', sprite: 'cartoon'},
-    {action: 'tv', title: 'menu_tv', sprite: 'tv'},
-    {action: 'ua_tv', title: 'menu_ua_tv', sprite: 'live_tv'},
-    {action: 'catalog', title: 'menu_catalog', sprite: 'catalog'},
-    {action: 'filter', title: 'menu_filter', sprite: 'filter'},    
-    {action: 'favorite', title: 'settings_input_links', sprite: 'favorite'},
-    {action: 'history', title: 'menu_history', sprite: 'history'},
-    {action: 'timetable', title: 'menu_timeline', sprite: 'calendar'},
-    {action: 'mytorrents', title: 'menu_torrents', sprite: 'torrent'},
-]
 
 /**
  * Инициализация меню
@@ -52,8 +41,9 @@ function init(){
     if(window.lampa_settings.minimal_ui) html.find('.menu__case.nosort, .menu__split').remove()
 
     // Фильтрация пунктов меню в зависимости от настроек
-    menu_items = menu_items.filter(item=>{
-        if(window.lampa_settings.minimal_ui) return ['main','movie','tv','ua_tv'].indexOf(item.action) >= 0
+    const visible = menu_items.filter(item=>{
+        if(!menuActionEnabled(item.action)) return false
+        if(window.lampa_settings.minimal_ui) return minimalActions.indexOf(item.action) >= 0
 
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false
 
@@ -64,7 +54,7 @@ function init(){
     if(window.lampa_settings.minimal_ui) Head.addIcon(Template.string('icon_bookmark'), openBookmarks).addClass('open--favorite')
 
     // Добавление кнопок меню
-    menu_items.forEach((item)=>{
+    visible.forEach((item)=>{
         let svg_icon = window.lampa_settings.minimal_ui ? sectionIcon(item.action) : `<svg><use xlink:href="#sprite-${item.sprite}"></use></svg>`
 
         addButton(svg_icon, Lang.translate(item.title)).attr({'data-action': item.action, title: Lang.translate(item.title)})
@@ -175,6 +165,8 @@ function section(object){
     if(object.component == 'category' && (object.url == 'movie' || object.url == 'tv')) return object.url
     if(object.component == 'bookmarks') return 'favorite'
     if(object.component == 'ua_tv') return 'ua_tv'
+    // the Games tab is a root section; a folder or the All page opened from it is deeper, so it shows Back
+    if(object.component == 'games' && !object.category && !object.all) return 'games'
 
     return ''
 }
@@ -285,6 +277,14 @@ function ready(){
         if(prepared(action,['ua_tv'])){
             Router.call('ua_tv', {
                 title: Lang.translate('title_ua_tv')
+            })
+        }
+
+
+
+        if(prepared(action,['video'])){
+            Router.call('video', {
+                title: Lang.translate('menu_video')
             })
         }
 

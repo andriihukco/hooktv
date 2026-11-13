@@ -19,6 +19,7 @@ import Noty from '../interaction/noty'
 import Modal from '../interaction/modal'
 import Platform from '../core/platform'
 import SettingsApi from '../interaction/settings/settings'
+import SettingsRegistry from '../interaction/settings/api'
 import Manifest from '../core/manifest'
 import TMDB from '../core/tmdb/tmdb'
 import Loading from '../interaction/loading'
@@ -26,6 +27,7 @@ import Input from '../interaction/settings/input'
 import Dub from '../utils/dub'
 import Watch from '../interaction/watch'
 import Archive from './archive'
+import sourcesStore from './online_sources_store'
 
 /**
  * HOOK TV Inbuilt Online Balancers Service
@@ -208,86 +210,6 @@ var APIClient = function() {
     }
     return APIClient
 }()
-
-var SourcesStore = function() {
-    function SourcesStore() {
-        this.sources_key = 'HOOK_ONLINE_SOURCES'
-        this.sources_sort_key = 'HOOK_ONLINE_SOURCES_SORT'
-        this.sources_hide_key = 'HOOK_ONLINE_SOURCES_HIDE'
-        
-        var legacySources = Storage.get(this.sources_key, null) || Storage.get('BO_SOURCES', [])
-        this.available_sources = Array.isArray(legacySources) ? legacySources : []
-        this.titles = {}
-        this.applyTitles(this.available_sources)
-    }
-    SourcesStore.prototype.normalizeName = function(name) {
-        return (name || '').toString().trim().toLowerCase()
-    }
-    SourcesStore.prototype.applyTitles = function(list) {
-        var _this = this
-        if (!Array.isArray(list)) return
-        list.forEach(function(item) {
-            if (!item) return
-            var key = _this.normalizeName(item.key || item.name)
-            var title = item.display_name || item.displayName || item.display || item.title || item.label || item.name || ''
-            if (key && title) _this.titles[key] = title
-        })
-    }
-    SourcesStore.prototype.getSorted = function() {
-        var sorted = Storage.get(this.sources_sort_key, null) || Storage.get('BO_SOURCES_SORT', [])
-        return Array.isArray(sorted) ? sorted.map(this.normalizeName).filter(Boolean) : []
-    }
-    SourcesStore.prototype.getHidden = function() {
-        var hidden = Storage.get(this.sources_hide_key, null) || Storage.get('BO_SOURCES_HIDE', [])
-        return Array.isArray(hidden) ? hidden.map(this.normalizeName).filter(Boolean) : []
-    }
-    SourcesStore.prototype.saveAvailable = function(list) {
-        this.available_sources = list
-        this.applyTitles(list)
-        Storage.set(this.sources_key, list)
-    }
-    SourcesStore.prototype.saveSorted = function(list) {
-        Storage.set(this.sources_sort_key, list)
-    }
-    SourcesStore.prototype.saveHidden = function(list) {
-        Storage.set(this.sources_hide_key, list)
-    }
-    SourcesStore.prototype.getEnabledKeys = function() {
-        var _this = this
-        return this.available_sources.filter(function(item) {
-            return item && item.enabled !== false
-        }).map(function(item) {
-            return _this.normalizeName(item.key || item.name)
-        }).filter(Boolean)
-    }
-    SourcesStore.prototype.applyUserFilters = function(list) {
-        var hidden = this.getHidden()
-        var sorted = this.getSorted()
-        var result = list.slice(0)
-        if (sorted.length) {
-            var ordered = []
-            sorted.forEach(function(key) {
-                if (result.indexOf(key) !== -1) ordered.push(key)
-            })
-            result.forEach(function(key) {
-                if (ordered.indexOf(key) === -1) ordered.push(key)
-            })
-            result = ordered
-        }
-        if (hidden.length) {
-            result = result.filter(function(name) {
-                return hidden.indexOf(name) === -1
-            })
-        }
-        return result
-    }
-    SourcesStore.prototype.getTitle = function(key) {
-        return this.titles[this.normalizeName(key)] || key
-    }
-    return SourcesStore
-}()
-
-var sourcesStore = new SourcesStore()
 
 function getFileId(movie) {
     if (!movie) return ''
@@ -2755,10 +2677,7 @@ function resetFilmixAuth() {
 
 // Sources Settings Modal
 function buildSourcesList() {
-    var sources = sourcesStore.available_sources
-    if (!sources.length) {
-        return $('<div class="settings-param-text">' + Lang.translate('hook_online_sources_empty') + '</div>')
-    }
+    var sources = sourcesStore.settingsList()
     var hidden = sourcesStore.getHidden()
     var sorted = sourcesStore.getSorted()
     var items = sources.map(function(item) {
@@ -2766,10 +2685,11 @@ function buildSourcesList() {
         return {
             key: key,
             title: sourcesStore.getTitle(key),
+            quality: sourcesStore.getQuality(key),
             enabled: item.enabled !== false
         }
     }).filter(function(item) {
-        return item.key && item.key !== 'hdrezka' && item.enabled
+        return !!item.key && item.enabled
     })
 
     if (sorted.length) {
@@ -2786,13 +2706,11 @@ function buildSourcesList() {
 
     var list = $('<div class="menu-edit-list"></div>')
     items.forEach(function(item) {
-        var status_key = item.enabled ? 'hook_online_sources_enabled' : 'hook_online_sources_disabled'
-        var status = Lang.translate(status_key)
         var row = $(`
             <div class="menu-edit-list__item hook-online-sources__item" data-key="${item.key}">
                 <div class="menu-edit-list__title hook-online-sources__title selector">
-                    <span class="hook-online-sources__name">${item.title || item.key}</span>
-                    <span class="hook-online-sources__status ${item.enabled ? 'is-enabled' : 'is-disabled'}">${status}</span>
+                    <span class="hook-online-sources__name">${item.title || item.key}${item.quality ? ' · ' + item.quality : ''}</span>
+                    <span class="hook-online-sources__status"></span>
                 </div>
                 <div class="menu-edit-list__move move-up selector">
                     <svg width="22" height="14" viewBox="0 0 22 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2812,8 +2730,17 @@ function buildSourcesList() {
                 </div>
             </div>
         `)
+        // the status pill follows the toggle, so a switched-off source never reads "enabled"
+        function paint() {
+            var off = row.hasClass('hidden')
+            row.find('.dot').attr('opacity', off ? 0 : 1)
+            row.find('.hook-online-sources__status')
+                .text(Lang.translate(off ? 'hook_online_sources_disabled' : 'hook_online_sources_enabled'))
+                .toggleClass('is-enabled', !off)
+                .toggleClass('is-disabled', off)
+        }
         row.toggleClass('hidden', hidden.indexOf(item.key) !== -1)
-        row.find('.dot').attr('opacity', row.hasClass('hidden') ? 0 : 1)
+        paint()
         row.find('.move-up').on('hover:enter', function() {
             var prev = row.prev()
             if (prev.length) row.insertBefore(prev)
@@ -2824,7 +2751,7 @@ function buildSourcesList() {
         })
         row.find('.toggle').on('hover:enter', function() {
             row.toggleClass('hidden')
-            row.find('.dot').attr('opacity', row.hasClass('hidden') ? 0 : 1)
+            paint()
         })
         list.append(row)
     })
@@ -2845,9 +2772,9 @@ function saveSourcesSettings(list) {
 
 function resetPluginStorage() {
     Storage.set('HOOK_ONLINE_SOURCES_SORT', [])
-    Storage.set('HOOK_ONLINE_SOURCES_HIDE', [])
+    Storage.set('HOOK_ONLINE_SOURCES_HIDE', sourcesStore.defaultHidden())
     Storage.set('BO_SOURCES_SORT', [])
-    Storage.set('BO_SOURCES_HIDE', [])
+    Storage.set('BO_SOURCES_HIDE', sourcesStore.defaultHidden())
     SettingsApi.update()
     Noty.show(Lang.translate('hook_online_sources_reset_done'))
 }
@@ -2916,16 +2843,17 @@ function openSourcesModal() {
 }
 
 function initSettings() {
-    if (!SettingsApi || !SettingsApi.addComponent) return
+    if (!SettingsRegistry || !SettingsRegistry.addComponent) return
 
-    SettingsApi.addComponent({
+    SettingsRegistry.addComponent({
         component: 'hook_online',
         name: Lang.translate('hook_online_settings_title'),
         icon: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="currentColor"/></svg>'
     })
 
-    SettingsApi.addParam({
-        component: 'hook_online',
+    // the flat Settings page has no sub-page for this component, so the sources cell lives on it
+    SettingsRegistry.addParam({
+        component: 'interface',
         param: {
             name: 'hook_online_sources',
             type: 'button'
@@ -2938,7 +2866,7 @@ function initSettings() {
         }
     })
 
-    SettingsApi.addParam({
+    SettingsRegistry.addParam({
         component: 'hook_online',
         param: {
             type: 'title'
@@ -2951,7 +2879,7 @@ function initSettings() {
         }
     })
 
-    SettingsApi.addParam({
+    SettingsRegistry.addParam({
         component: 'hook_online',
         param: {
             name: 'hook_online_filmix_auth_start',
@@ -2965,7 +2893,7 @@ function initSettings() {
         }
     })
 
-    SettingsApi.addParam({
+    SettingsRegistry.addParam({
         component: 'hook_online',
         param: {
             name: 'hook_online_filmix_auth_token',
@@ -2982,7 +2910,7 @@ function initSettings() {
         }
     })
 
-    SettingsApi.addParam({
+    SettingsRegistry.addParam({
         component: 'hook_online',
         param: {
             name: 'hook_online_filmix_auth_check',
@@ -2996,7 +2924,7 @@ function initSettings() {
         }
     })
 
-    SettingsApi.addParam({
+    SettingsRegistry.addParam({
         component: 'hook_online',
         param: {
             name: 'hook_online_filmix_auth_reset',

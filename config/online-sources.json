@@ -1,0 +1,301 @@
+[
+  {
+    "key": "krasview",
+    "display_name": "krasview",
+    "quality": "FHD",
+    "off": true
+  },
+  {
+    "key": "collaps-dash",
+    "display_name": "collaps-dash",
+    "quality": "FHD",
+    "off": true
+  },
+  {
+    "key": "fancdn",
+    "display_name": "fancdn",
+    "quality": "FHD",
+    "off": true
+  },
+  {
+    "key": "kinogo",
+    "display_name": "kinogo",
+    "quality": "FHD",
+    "off": true
+  },
+  {
+    "key": "kbteam",
+    "display_name": "kbteam",
+    "quality": "FHD",
+    "off": true
+  },
+  {
+    "key": "iremux",
+    "display_name": "iRemux",
+    "quality": "SD",
+    "off": true
+  },
+  {
+    "key": "kubikvkube",
+    "display_name": "kubikvkube",
+    "quality": "FHD"
+  },
+  {
+    "key": "uaflix",
+    "display_name": "uaflix",
+    "quality": "FHD"
+  },
+  {
+    "key": "kinotochka",
+    "display_name": "kinotochka",
+    "quality": "4K"
+  },
+  {
+    "key": "zetflixdb",
+    "display_name": "ZetflixDB",
+    "quality": "4K"
+  },
+  {
+    "key": "videodb",
+    "display_name": "videodb",
+    "quality": "4K"
+  },
+  {
+    "key": "xsmart",
+    "display_name": "XSmart",
+    "quality": "4K"
+  },
+  {
+    "key": "kinoc",
+    "display_name": "Kinoc",
+    "quality": "4K"
+  },
+  {
+    "key": "rudub",
+    "display_name": "RuDub",
+    "quality": "FHD"
+  },
+  {
+    "key": "cdnvideohub",
+    "display_name": "cdnvideohub",
+    "quality": "FHD"
+  },
+  {
+    "key": "zetflix",
+    "display_name": "zetflix",
+    "quality": "FHD"
+  },
+  {
+    "key": "hdvb",
+    "display_name": "hdvb",
+    "quality": "FHD"
+  },
+  {
+    "key": "vibix",
+    "display_name": "vibix",
+    "quality": "FHD"
+  },
+  {
+    "key": "videoseed",
+    "display_name": "videoseed",
+    "quality": "FHD"
+  },
+  {
+    "key": "kodik",
+    "display_name": "kodik",
+    "quality": "FHD"
+  },
+  {
+    "key": "sakhtv",
+    "display_name": "sakhtv",
+    "quality": "FHD"
+  },
+  {
+    "key": "femd",
+    "display_name": "femd",
+    "quality": "FHD"
+  },
+  {
+    "key": "kinobadi",
+    "display_name": "kinobadi",
+    "quality": "FHD"
+  },
+  {
+    "key": "kinorulet",
+    "display_name": "Kinorulet",
+    "quality": "FHD"
+  },
+  {
+    "key": "flixcdn",
+    "display_name": "flixcdn",
+    "quality": "FHD"
+  },
+  {
+    "key": "scts",
+    "display_name": "scts",
+    "quality": "FHD"
+  },
+  {
+    "key": "anwap",
+    "display_name": "Anwap",
+    "quality": "SD"
+  },
+  {
+    "key": "ahuerezka",
+    "display_name": "AhueRezka",
+    "quality": "HD"
+  },
+  {
+    "key": "hdrezka",
+    "display_name": "HDRezka",
+    "quality": "HD"
+  },
+  {
+    "key": "zagonka",
+    "display_name": "Zagonka",
+    "quality": "HD"
+  },
+  {
+    "key": "anidub",
+    "display_name": "AniDUB",
+    "quality": "FHD"
+  },
+  {
+    "key": "moonanime",
+    "display_name": "moonanime",
+    "quality": "FHD"
+  },
+  {
+    "key": "anilibria",
+    "display_name": "anilibria",
+    "quality": "FHD"
+  },
+  {
+    "key": "animebesst",
+    "display_name": "animebesst",
+    "quality": "FHD"
+  },
+  {
+    "key": "animedia",
+    "display_name": "animedia",
+    "quality": "FHD"
+  },
+  {
+    "key": "animego",
+    "display_name": "animego",
+    "quality": "FHD"
+  },
+  {
+    "key": "animelib",
+    "display_name": "animelib",
+    "quality": "FHD"
+  },
+  {
+    "key": "animevost",
+    "display_name": "animevost",
+    "quality": "SD"
+  },
+  {
+    "key": "aniliberty",
+    "display_name": "aniliberty"
+  },
+  {
+    "key": "kinoukr",
+    "display_name": "kinoukr",
+    "quality": "FHD"
+  },
+  {
+    "key": "ashdi",
+    "display_name": "ashdi",
+    "quality": "FHD"
+  },
+  {
+    "key": "eneyida",
+    "display_name": "eneyida",
+    "quality": "FHD"
+  },
+  {
+    "key": "bamboo",
+    "display_name": "bamboo",
+    "quality": "FHD"
+  },
+  {
+    "key": "unimay",
+    "display_name": "unimay",
+    "quality": "FHD"
+  },
+  {
+    "key": "starlight",
+    "display_name": "starlight",
+    "quality": "FHD"
+  },
+  {
+    "key": "klonfun",
+    "display_name": "klonfun",
+    "quality": "FHD"
+  },
+  {
+    "key": "animeon",
+    "display_name": "animeon",
+    "quality": "FHD"
+  },
+  {
+    "key": "mikai",
+    "display_name": "mikai",
+    "quality": "FHD"
+  },
+  {
+    "key": "gencit",
+    "display_name": "gencit",
+    "quality": "FHD"
+  },
+  {
+    "key": "uakino",
+    "display_name": "UaKino (Українською)",
+    "quality": "FHD"
+  },
+  {
+    "key": "vkmovie",
+    "display_name": "vkmovie",
+    "quality": "4K"
+  },
+  {
+    "key": "rutubemovie",
+    "display_name": "rutubemovie",
+    "quality": "FHD"
+  },
+  {
+    "key": "getstv",
+    "display_name": "getstv",
+    "quality": "FHD"
+  },
+  {
+    "key": "veoveo",
+    "display_name": "veoveo"
+  },
+  {
+    "key": "vidlink",
+    "display_name": "vidlink",
+    "quality": "FHD"
+  },
+  {
+    "key": "videasy",
+    "display_name": "videasy",
+    "quality": "FHD"
+  },
+  {
+    "key": "twoembed",
+    "display_name": "twoembed",
+    "quality": "FHD"
+  },
+  {
+    "key": "uafilmme",
+    "display_name": "uafilmme",
+    "quality": "FHD"
+  },
+  {
+    "key": "kinoteatrkg",
+    "display_name": "kinoteatrkg",
+    "quality": "1080p"
+  }
+]

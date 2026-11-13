@@ -4,6 +4,7 @@ import Activity from './activity/activity'
 import Lang from '../core/lang'
 import Storage from '../core/storage/storage'
 import Controller from '../core/controller'
+import {menuActionEnabled} from '../core/system'
 
 /**
  * Инициализирует навигационную панель (только для мобильных устройств)
@@ -85,7 +86,15 @@ const TAB_ICONS = {
             `<circle cx="12" cy="12" r="2"/><path d="${dish}"/>`,
             `<circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="${dish}"/>`
         )
-    })()
+    })(),
+    video: (()=>{
+        let play = 'M10 8.5v5l4-2.5z'
+
+        return tabIcon(
+            `<rect x="2.5" y="4.5" width="19" height="13" rx="2.5"/><path d="M8 21h8"/><path d="${play}"/>`,
+            `<rect x="2.5" y="4.5" width="19" height="13" rx="2.5" fill="currentColor"/><path d="M8 21h8" stroke-width="2.2"/><path d="${play}" fill="#000" stroke="none"/>`
+        )
+    })(),
 }
 
 // Top bar sections on desktop use the same icons; their masks get own ids so the two bars never share one
@@ -99,8 +108,9 @@ function tabs(){
         ['main', 'menu_main'],
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
-        ['ua_tv', 'menu_ua_tv']
-    ].map(([action, title])=>[action, title, TAB_ICONS[action]])
+        ['ua_tv', 'menu_ua_tv'],
+        ['video', 'menu_video']
+    ].filter(([action])=>menuActionEnabled(action)).map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')
 

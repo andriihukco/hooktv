@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "flags": {
+    "movies": true,
+    "series": true,
+    "live_tv": true,
+    "music": true,
+    "games": true,
+    "videos": true,
+    "online_sources": true,
+    "plugins": true
+  },
+  "plugins": {
+    "hooktv_core": true,
+    "hooktv_registry": true,
+    "collections": false,
+    "dlna": false,
+    "etor": false,
+    "halloween": false,
+    "iptv": false,
+    "logo_plugin": false,
+    "online": false,
+    "online_prestige": false,
+    "radio": false,
+    "record": false,
+    "snow": false,
+    "tmdb_proxy": false,
+    "tracks": false,
+    "twolines": false,
+    "view_plugin": false,
+    "womens-day": false,
+    "zen_mode": false
+  },
+  "onlineSourceOverrides": {},
+  "externalPlugins": {}
+}

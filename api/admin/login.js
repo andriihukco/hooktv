@@ -1,7 +1,8 @@
 /**
- * POST /api/admin/login with JSON {password}: sets the admin session cookie.
+ * POST /api/admin/login with JSON {username, password}: sets the admin session cookie.
  * Five wrong passwords lock login for 15 minutes. The counter is a row in agent_snapshots (id admin_login),
- * so it holds across serverless instances. Needs SUPABASE_URL, SUPABASE_SERVICE_KEY and ADMIN_PASSWORD.
+ * so it holds across serverless instances. Needs SUPABASE_URL, SUPABASE_SERVICE_KEY,
+ * ADMIN_USERNAME and ADMIN_PASSWORD.
  */
 
 const {samePassword} = require('./agents.js')
@@ -60,18 +61,28 @@ module.exports = async function handler(req, res){
         return
     }
 
-    const expected = process.env.ADMIN_PASSWORD
+    const expectedUsername = process.env.ADMIN_USERNAME
+    const expectedPassword = process.env.ADMIN_PASSWORD
     const base = process.env.SUPABASE_URL
     const key = process.env.SUPABASE_SERVICE_KEY
 
     // Without Supabase the lockout cannot be kept, so login stays closed
-    if(!expected || !base || !key){
+    if(!expectedUsername || !expectedPassword || !base || !key){
         res.status(503).json({error: 'Admin login is not configured'})
         return
     }
 
-    const body = typeof req.body == 'string' ? JSON.parse(req.body || '{}') : (req.body || {})
-    const given = typeof body.password == 'string' ? body.password : ''
+    let body
+
+    try {
+        body = typeof req.body == 'string' ? JSON.parse(req.body || '{}') : (req.body || {})
+    } catch(error){
+        res.status(400).json({error: 'Request body must be valid JSON'})
+        return
+    }
+
+    const givenUsername = typeof body.username == 'string' ? body.username : ''
+    const givenPassword = typeof body.password == 'string' ? body.password : ''
 
     let state
 
@@ -87,7 +98,10 @@ module.exports = async function handler(req, res){
         return
     }
 
-    if(!samePassword(given, expected)){
+    const usernameMatches = samePassword(givenUsername, expectedUsername)
+    const passwordMatches = samePassword(givenPassword, expectedPassword)
+
+    if(!usernameMatches || !passwordMatches){
         const fails = state.fails + 1
         const locked = fails >= MAX_FAILS
 
@@ -109,7 +123,7 @@ module.exports = async function handler(req, res){
         // A successful login still goes through; only the counter reset failed
     }
 
-    const session = issue(expected)
+    const session = issue(expectedPassword)
 
     res.setHeader('Set-Cookie', cookie(session.value, session.maxAge))
     res.setHeader('Cache-Control', 'no-store')

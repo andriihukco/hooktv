@@ -29,9 +29,11 @@ function Main(){
         comp.find('[data-component="whats_new"] .whats-new-dot').toggleClass('hide', !ReleaseNotes.hasNew())
         comp.find('[data-component="whats_new"]').on('hover:enter', ()=>ReleaseNotes.open())
 
-        // The build row ends the list; five presses on it open the admin login
+        // The build row ends the list; five presses on it open the admin login.
         let build = Brand.getConfig().app
-        comp.find('[data-build] .settings-folder__value').text(build.display_version + ' (' + build.build_number + ')')
+        let buildValue = build.display_version + ' (' + build.build_number + ') · ' + '{__APP_BUILD__}'
+        comp.find('[data-build] .settings-folder__value').text(buildValue)
+        comp.find('[data-build]').attr('aria-label', buildValue)
         comp.find('[data-build]').on('hover:enter', ()=> adminTap())
 
         scrl.render().css('max-height', window.innerWidth <= 480 ? window.innerHeight * 0.6 : 'unset')
