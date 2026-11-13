@@ -1,41 +1,60 @@
 import Input from './input'
 import Controller from '../../core/controller'
-import Lang from '../../core/lang'
 import Noty from '../noty'
 import createTapCounter from './tap_counter'
+import AdminPanel from './admin'
+import {adminText} from './admin_locale'
 
 const press = createTapCounter({taps: 5, windowMs: 3000})
 
 /**
- * Opens the admin password prompt. It uses the TV keyboard, as the account password does.
+ * Opens the username and password prompts using the existing TV keyboard.
  */
 function prompt(){
+    promptField('username', false, username=>{
+        promptField('password', true, password=>{
+            if(username && password) login(username, password)
+        })
+    })
+}
+
+function promptField(field, password, call){
     let enabled = Controller.enabled().name
 
-    Input.edit({title: Lang.translate('admin_login_title'), value: '', free: true, nosave: true, nomic: true, password: true}, (v)=>{
+    Input.edit({
+        title: adminText(field),
+        value: '',
+        free: true,
+        nosave: true,
+        nomic: true,
+        password
+    }, value=>{
         Controller.toggle(enabled)
 
-        if(v) login(String(v))
+        if(value) call(String(value))
     })
 }
 
 /**
- * Sends the password to the server; on success the admin board opens.
- * The password goes in the request body, never in the URL.
+ * Sends credentials in the request body; on success the admin panel opens in Settings.
+ * @param {string} username
  * @param {string} password
  */
-function login(password){
+function login(username, password){
     fetch('/api/admin/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({password}),
+        body: JSON.stringify({username, password}),
         credentials: 'same-origin',
         cache: 'no-store'
     }).then(res => {
-        if(res.ok) return window.location.assign('/admin/board.html')
+        if(res.ok){
+            AdminPanel.open()
+            return
+        }
 
-        Noty.show(Lang.translate(res.status == 429 ? 'admin_login_locked' : 'admin_login_failed'))
-    }).catch(()=> Noty.show(Lang.translate('network_error')))
+        Noty.show(adminText(res.status == 429 ? 'loginLocked' : 'loginFailed'))
+    }).catch(()=> Noty.show(adminText('networkError')))
 }
 
 /**

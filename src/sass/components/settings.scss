@@ -286,6 +286,120 @@
     }
 }
 
+body.hooktv-admin-open .settings__content{
+    width: min(88vw, 1100px);
+}
+
+.hooktv-admin-settings{
+    padding: var(--space-md) 0 var(--space-xl);
+    color: var(--text-primary);
+}
+
+.hooktv-admin__intro{
+    padding: var(--space-md) var(--space-lg) var(--space-sm);
+}
+
+.hooktv-admin__eyebrow{
+    color: var(--brand-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.12em;
+}
+
+.hooktv-admin__heading{
+    margin: var(--space-xs) 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+}
+
+.hooktv-admin__revision,
+.hooktv-admin__status{
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+}
+
+.hooktv-admin__status{
+    min-height: 1.5em;
+    padding: 0 var(--space-lg) var(--space-sm);
+}
+
+.hooktv-admin__status[data-state='success']{
+    color: var(--success);
+}
+
+.hooktv-admin__status[data-state='warning']{
+    color: var(--warning);
+}
+
+.hooktv-admin__status[data-state='error']{
+    color: var(--danger);
+}
+
+.hooktv-admin-row{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.hooktv-admin-row__copy{
+    min-width: 0;
+}
+
+.hooktv-admin-row__name{
+    margin-bottom: 0;
+    line-height: var(--line-height-tight);
+}
+
+.hooktv-admin-row__description,
+.hooktv-admin-row__meta{
+    overflow-wrap: anywhere;
+    font-size: var(--font-size-sm);
+}
+
+.hooktv-admin-row__original{
+    margin-top: var(--space-xs);
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-normal);
+}
+
+.hooktv-admin-row__state{
+    flex-shrink: 0;
+    min-width: 6em;
+    text-align: right;
+    font-size: var(--font-size-sm);
+}
+
+.hooktv-admin-row--enabled .hooktv-admin-row__state{
+    color: var(--brand-primary);
+}
+
+.hooktv-admin-row--selected .hooktv-admin-row__state{
+    color: var(--brand-primary);
+}
+
+.hooktv-admin-row--disabled{
+    opacity: 0.55;
+}
+
+@media screen and (max-width: 480px){
+    body.hooktv-admin-open .settings__content{
+        width: 100%;
+    }
+
+    .hooktv-admin-row{
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: var(--space-sm);
+    }
+
+    .hooktv-admin-row__state{
+        min-width: 5em;
+    }
+}
+
 body.settings--open{
     .settings{
         &__layer{

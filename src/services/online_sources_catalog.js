@@ -34,6 +34,7 @@ const SOURCE_CATALOG = [
     {key: 'scts', display_name: 'scts', quality: 'FHD'},
     {key: 'anwap', display_name: 'Anwap', quality: 'SD'},
     {key: 'ahuerezka', display_name: 'AhueRezka', quality: 'HD'},
+    {key: 'hdrezka', display_name: 'HDRezka', quality: 'HD'},
     {key: 'zagonka', display_name: 'Zagonka', quality: 'HD'},
     {key: 'anidub', display_name: 'AniDUB', quality: 'FHD'},
     {key: 'moonanime', display_name: 'moonanime', quality: 'FHD'},

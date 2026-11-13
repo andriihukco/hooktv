@@ -4,6 +4,7 @@ import Activity from './activity/activity'
 import Lang from '../core/lang'
 import Storage from '../core/storage/storage'
 import Controller from '../core/controller'
+import {menuActionEnabled} from '../core/system'
 
 /**
  * Инициализирует навигационную панель (только для мобильных устройств)
@@ -109,7 +110,7 @@ function tabs(){
         ['tv', 'menu_tv'],
         ['ua_tv', 'menu_ua_tv'],
         ['video', 'menu_video']
-    ].map(([action, title])=>[action, title, TAB_ICONS[action]])
+    ].filter(([action])=>menuActionEnabled(action)).map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')
 

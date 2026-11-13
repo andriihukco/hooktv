@@ -1,218 +1,114 @@
-// Real-time canvas games, part 3: first-person and side-on action in the TV's black, white and lime.
-// Astray and Hook Racer draw their 3D with a raycaster and a projected road on a plain 2D canvas, so no engine or asset is loaded.
+// Real-time arcade games, part 3: a runner, a lane racer and a catcher. Our own rules and art;
+// the ideas come from the sample games list (Patel230/sample-games), not from their code.
 import {C, rr, text, glow, noglow} from '../draw'
-
-const W = 100, H = 56
-
-// a maze of n × n rooms as a grid of walls (1) and floor (0), carved by a depth-first walk
-export function maze(n, rnd = Math.random){
-    const size = n * 2 + 1, g = Array.from({length: size}, () => Array(size).fill(1)), stack = [[1, 1]]
-
-    g[1][1] = 0
-
-    while(stack.length){
-        const [x, y] = stack[stack.length - 1]
-        const next = [[2, 0], [-2, 0], [0, 2], [0, -2]].filter(([dx, dy]) => g[y + dy] && g[y + dy][x + dx] === 1).sort(() => rnd() - .5)
-
-        if(!next.length){ stack.pop(); continue }
-
-        const [dx, dy] = next[0]
-
-        g[y + dy / 2][x + dx / 2] = 0
-        g[y + dy][x + dx] = 0
-        stack.push([x + dx, y + dy])
-    }
-
-    return g
-}
 
 export default [
 {
-    id: 'astray', title: 'Astray', emoji: '🧭', c1: '#8E8E93', c2: '#2C2C2E', size: [W, H], pad: true, hint: 'Up / down to walk · left / right to turn · find the lime light',
+    id: 'beatrun', title: 'Beat Runner', emoji: '🏃', c1: '#64D2FF', c2: '#BF5AF2', size: [100, 60], pad: true, hint: 'OK or tap to jump · clear the blocks · the pace keeps rising',
     start(env){
-        const {ctx} = env.canvas()
-        let level = 0, grid, px, py, ang, goal, left, seen
-
-        const build = () => {
-            const n = 4 + level
-            grid = maze(n, Math.random)
-            px = 1.5; py = 1.5; ang = grid[2][1] === 0 ? Math.PI / 2 : 0
-            goal = {x: n * 2 - .5, y: n * 2 - .5}
-            seen = grid.map(r => r.map(() => 0))
-            left = 30 + n * 8
-        }
-        const solid = (x, y) => !grid[Math.floor(y)] || grid[Math.floor(y)][Math.floor(x)] !== 0
-        build()
-
+        const {cv, ctx} = env.canvas()
+        const GROUND = 48, GRAVITY = 150, JUMP = 62
+        let p, obs, speed, dist, next, t
+        const reset = () => { p = {y: GROUND, vy: 0}; obs = []; speed = 34; dist = 0; next = 30; t = 0 }
+        const jump = () => { if(p.y >= GROUND){ p.vy = -JUMP; env.sfx('tap') } }
+        reset()
+        env.on('press', k => { if(k == 'ok' || k == 'up') jump() })
+        cv.addEventListener('pointerdown', jump)
         env.loop(dt => {
-            left -= dt
-            if(left <= 0) return env.over(`${level} mazes`)
-
-            ang += ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * 2.2 * dt
-
-            const run = ((env.held.up ? 1 : 0) - (env.held.down ? 1 : 0)) * 2.6 * dt, nx = px + Math.cos(ang) * run, ny = py + Math.sin(ang) * run
-
-            if(!solid(nx + Math.sign(nx - px) * .3, py)) px = nx
-            if(!solid(px, ny + Math.sign(ny - py) * .3)) py = ny
-            seen[Math.floor(py)][Math.floor(px)] = 1
-
-            if(Math.hypot(goal.x - px, goal.y - py) < .6){
-                level++; env.score(1, 1); env.sfx('win'); build()
-            }
-
-            // ceiling and floor
-            let g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#050506'); g.addColorStop(.5, '#17171b'); g.addColorStop(.5, '#0c0c0f'); g.addColorStop(1, '#2a2a30')
-            ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
-
-            // walls, one column of the screen per ray
-            const cols = 200, fov = Math.PI / 3, goalDist = Math.hypot(goal.x - px, goal.y - py)
-
-            for(let i = 0; i < cols; i++){
-                const a = ang - fov / 2 + fov * i / cols, dx = Math.cos(a), dy = Math.sin(a)
-                let d = 0, side = 0, mx = Math.floor(px), my = Math.floor(py)
-                const ddx = Math.abs(1 / (dx || 1e-9)), ddy = Math.abs(1 / (dy || 1e-9))
-                let sx = dx < 0 ? -1 : 1, sy = dy < 0 ? -1 : 1
-                let tx = (dx < 0 ? px - mx : mx + 1 - px) * ddx, ty = (dy < 0 ? py - my : my + 1 - py) * ddy
-
-                for(let s = 0; s < 80; s++){
-                    if(tx < ty){ d = tx; tx += ddx; mx += sx; side = 0 } else { d = ty; ty += ddy; my += sy; side = 1 }
-                    if(!grid[my] || grid[my][mx] !== 0) break
-                }
-
-                d *= Math.cos(a - ang)
-                const h = Math.min(H * 1.4, H * .9 / Math.max(d, .1)), shade = Math.max(.04, 1 - d / 6) * (side ? .62 : .85) * .55, v = Math.round(255 * shade)
-
-                ctx.fillStyle = `rgb(${v},${v},${v + 6})`
-                ctx.fillRect(i * W / cols, (H - h) / 2, W / cols + .05, h)
-            }
-
-            // the lime light, a pillar that shows through the dark
-            let da = Math.atan2(goal.y - py, goal.x - px) - ang
-            da = Math.atan2(Math.sin(da), Math.cos(da))
-
-            if(Math.abs(da) < fov / 2 + .2){
-                const sxp = W / 2 + da / fov * W, hh = Math.min(H, H * .5 / Math.max(goalDist, .2))
-
-                glow(ctx, C.lime, 14); ctx.fillStyle = C.lime; ctx.globalAlpha = .85
-                ctx.fillRect(sxp - hh * .08, (H - hh) / 2, hh * .16, hh); ctx.globalAlpha = 1; noglow(ctx)
-            }
-
-            // the map in the corner: only rooms already walked
-            const cell = 1.4, ox = 3, oy = 3
-
-            ctx.fillStyle = 'rgba(0,0,0,.55)'; rr(ctx, ox - 1, oy - 1, grid.length * cell + 2, grid.length * cell + 2, 1); ctx.fill()
-            grid.forEach((r, y) => r.forEach((c, x) => { if(!c && seen[y][x]){ ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fillRect(ox + x * cell, oy + y * cell, cell, cell) } }))
-            ctx.fillStyle = C.lime; ctx.fillRect(ox + px * cell - .7, oy + py * cell - .7, 1.4, 1.4)
-            text(ctx, `${Math.ceil(left)}s`, W - 8, 5, 4, left < 10 ? C.red : '#fff', 'right')
+            t += dt
+            speed = Math.min(80, 34 + t * 1.2)
+            p.vy += GRAVITY * dt
+            p.y = Math.min(GROUND, p.y + p.vy * dt)
+            if(p.y >= GROUND) p.vy = 0
+            dist += speed * dt
+            next -= speed * dt
+            if(next <= 0){ obs.push({x: 104, w: env.rnd(4, 9), h: env.rnd(5, 11)}); next = env.rnd(46, 66) }
+            obs.forEach(o => o.x -= speed * dt)
+            obs = obs.filter(o => o.x + o.w > -2)
+            env.score(Math.floor(dist / 4))
+            // the player box is 6 wide and 8 tall, standing on the ground line
+            if(obs.some(o => o.x < 16 && o.x + o.w > 10 && p.y > GROUND - o.h)) return env.over('Crashed')
+            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 100, 60)
+            ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(0, GROUND, 100, 1)
+            ctx.fillStyle = 'rgba(255,255,255,.12)'
+            for(let i = 0; i < 8; i++) ctx.fillRect(((i * 15 - dist) % 120 + 120) % 120, GROUND + 4, 6, 1)
+            glow(ctx, C.pink, 8); ctx.fillStyle = C.pink
+            obs.forEach(o => rr(ctx, o.x, GROUND - o.h, o.w, o.h, 1)); ctx.fill(); noglow(ctx)
+            glow(ctx, C.teal, 10); ctx.fillStyle = C.teal; rr(ctx, 10, p.y - 8, 6, 8, 1.5); ctx.fill(); noglow(ctx)
+            text(ctx, String(Math.floor(dist / 4)), 92, 6, 5, C.dim, 'right')
         })
     }
 },
 {
-    id: 'racer', title: 'Hook Racer', emoji: '🚀', c1: '#C8F542', c2: '#2C2C2E', size: [W, H], pad: true, levels: true, hint: 'Left / right to steer · OK for turbo · stay on the track',
+    id: 'neonlanes', title: 'Neon Lanes', emoji: '🏎', c1: '#FF6AD5', c2: '#5E5CE6', size: [60, 100], pad: true, hint: 'Left / right or drag to switch lanes · dodge the traffic',
     start(env){
         const {cv, ctx} = env.canvas()
-        const SEG = 2, VIEW = 70, ROAD = 1.1
-        const segs = []
-        // a track of bends and hills, then repeated; pads (lime) boost, blocks (white) cost shield
-        for(let i = 0, bend = 0; i < 400; i++){
-            if(i % 20 == 0) bend = [0, 0, .5, -.5, 1, -1][Math.floor(Math.random() * 6)] * (1 + env.level * .35)
-            segs.push({curve: bend, pad: i % 37 == 11 ? Math.floor(Math.random() * 3) - 1 : null, block: i > 15 && i % 11 == 4 ? (Math.random() * 1.4 - .7) : null})
-        }
-        const speedMax = [1, 1.2, 1.4][env.level]
-        let z = 0, x = 0, speed = .3, shield = 100, turbo = 0, cool = 0, dist = 0
-
-        const go = () => { if(cool <= 0){ turbo = 1.2; cool = 4; env.sfx('win') } }
-        env.on('press', k => k == 'ok' && go())
-        cv.addEventListener('pointerdown', go)
-
+        const LANES = [15, 30, 45], CAR_Y = 86
+        let lane = 1, cx = 30, traffic, spawn, speed, dist, road
+        const reset = () => { lane = 1; cx = 30; traffic = []; spawn = 0.4; speed = 34; dist = 0; road = 0 }
+        const side = x => x < 22 ? 0 : x < 38 ? 1 : 2
+        reset()
+        env.on('press', k => { if(k == 'left') lane = Math.max(0, lane - 1); else if(k == 'right') lane = Math.min(2, lane + 1) })
+        const pointer = e => { lane = side(cv.pt(e).x) }
+        cv.addEventListener('pointerdown', pointer)
+        cv.addEventListener('pointermove', pointer)
         env.loop(dt => {
-            cool -= dt; turbo -= dt
-            const cap = (turbo > 0 ? speedMax * 1.7 : speedMax)
-            speed += (cap - speed) * Math.min(1, dt * .8)
-            const idx = Math.floor(z / SEG) % segs.length, cur = segs[idx]
-            const steer = (env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)
-
-            x += steer * 1.7 * dt * (.5 + speed) - cur.curve * speed * dt * .45
-            z += speed * 30 * dt
-            dist += speed * 30 * dt
-            env.score(Math.floor(dist / 3))
-
-            if(Math.abs(x) > ROAD){ shield -= 22 * dt; speed *= 1 - dt * 1.4; x = Math.max(-ROAD * 1.25, Math.min(ROAD * 1.25, x)) }
-
-            // the segment just passed: a pad speeds up, a block hits
-            const p = segs[Math.floor(Math.max(0, z - 1) / SEG) % segs.length], lap = Math.floor(z / (SEG * segs.length))
-
-            if(p.pad !== null && Math.abs(x - p.pad * .7) < .3 && p.done !== lap){ p.done = lap; speed = speedMax * 1.5; turbo = Math.max(turbo, .6); env.sfx('good') }
-            if(p.block !== null && Math.abs(x - p.block) < .22 && p.done !== lap){ p.done = lap; shield -= 26; speed *= .45; env.sfx('bad') }
-            if(shield <= 0) return env.over(`${Math.floor(dist / 3)} m`)
-
-            // sky
-            let g = ctx.createLinearGradient(0, 0, 0, H * .55); g.addColorStop(0, '#000'); g.addColorStop(1, '#202026')
-            ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
-            ctx.fillStyle = 'rgba(255,255,255,.6)'
-            for(let i = 0; i < 24; i++) ctx.fillRect((i * 37 - x * 8 - cur.curve * 3 + 400) % W, (i * 13) % (H * .45), .5, .5)
-
-            // road, drawn far to near; every segment is a strip that leans by the bends before it
-            const horizon = H * .42, S = 36, frac = z / SEG - Math.floor(z / SEG)
-            ctx.fillStyle = '#070709'; ctx.fillRect(0, horizon, W, H - horizon)
-            let hz = ctx.createLinearGradient(0, horizon - 6, 0, horizon); hz.addColorStop(0, 'rgba(200,245,66,0)'); hz.addColorStop(1, 'rgba(200,245,66,.18)'); ctx.fillStyle = hz; ctx.fillRect(0, horizon - 6, W, 6)
-            let bend = 0, off = 0
-            const strips = []
-
-            for(let n = 0; n < VIEW; n++){
-                const s = segs[(idx + n) % segs.length], d = n + 1 - frac, k = 1 / d
-
-                bend += s.curve * .012
-                off += bend
-                strips.push({s, n, k, y: horizon + (H - horizon) * k, cx: W / 2 + (off - x) * S * k, hw: ROAD * S * k})
-            }
-
-            for(let i = strips.length - 1; i > 0; i--){
-                const a = strips[i], b = strips[i - 1]
-
-                if(b.y <= a.y) continue
-                const stripe = (idx + a.n) % 6 < 3
-
-                ctx.fillStyle = stripe ? '#2b2b31' : '#35353c'
-                ctx.beginPath(); ctx.moveTo(a.cx - a.hw, a.y); ctx.lineTo(a.cx + a.hw, a.y); ctx.lineTo(b.cx + b.hw, b.y); ctx.lineTo(b.cx - b.hw, b.y); ctx.fill()
-                // the rails glow white, red when the craft is off the track
-                ctx.fillStyle = stripe ? '#fff' : '#8E8E93'
-                const r = Math.max(.2, a.hw * .06)
-                ctx.beginPath(); ctx.moveTo(a.cx - a.hw - r, a.y); ctx.lineTo(a.cx - a.hw, a.y); ctx.lineTo(b.cx - b.hw, b.y); ctx.lineTo(b.cx - b.hw - r * 1.4, b.y); ctx.fill()
-                ctx.beginPath(); ctx.moveTo(a.cx + a.hw, a.y); ctx.lineTo(a.cx + a.hw + r, a.y); ctx.lineTo(b.cx + b.hw + r * 1.4, b.y); ctx.lineTo(b.cx + b.hw, b.y); ctx.fill()
-
-                if(stripe){ ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(a.cx - a.hw * .02, a.y, a.hw * .04, b.y - a.y) }
-            }
-
-            // pads and blocks, far to near
-            for(let i = strips.length - 1; i > 0; i--){
-                const a = strips[i], s = a.s
-
-                if(s.pad !== null && s.done !== lap){
-                    ctx.fillStyle = C.lime; ctx.globalAlpha = .9
-                    ctx.fillRect(a.cx + s.pad * .7 * a.hw / ROAD - a.hw * .22, a.y, a.hw * .44, Math.max(.4, a.hw * .08)); ctx.globalAlpha = 1
+            speed = Math.min(90, speed + 1.5 * dt)
+            dist += speed * dt; road += speed * dt
+            cx += (LANES[lane] - cx) * Math.min(1, dt * 14)
+            spawn -= dt
+            if(spawn <= 0){ traffic.push({lane: env.rnd(3), y: -14}); spawn = env.rnd(.5, .95) * 34 / speed + .15 }
+            traffic.forEach(c => c.y += speed * dt)
+            traffic = traffic.filter(c => c.y < 110)
+            env.score(Math.floor(dist / 5))
+            // a car hits when it shares the player's lane and overlaps its box
+            if(traffic.some(c => Math.abs(LANES[c.lane] - cx) < 7 && c.y + 12 > CAR_Y && c.y < CAR_Y + 12)) return env.over('Crash')
+            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 60, 100)
+            ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(5, 0, 1, 100); ctx.fillRect(54, 0, 1, 100)
+            ctx.fillStyle = 'rgba(255,255,255,.22)'
+            for(let y = -12 + road % 12; y < 100; y += 12){ ctx.fillRect(22, y, 1, 6); ctx.fillRect(37, y, 1, 6) }
+            glow(ctx, C.pink, 8); ctx.fillStyle = C.pink
+            traffic.forEach(c => rr(ctx, LANES[c.lane] - 4, c.y, 8, 12, 2.5)); ctx.fill(); noglow(ctx)
+            glow(ctx, C.teal, 12); ctx.fillStyle = C.teal; rr(ctx, cx - 4, CAR_Y, 8, 12, 2.5); ctx.fill(); noglow(ctx)
+        })
+    }
+},
+{
+    id: 'fruitcatch', title: 'Fruit Catch', emoji: '🍎', c1: '#8BE35A', c2: '#1E9E4A', size: [60, 90], pad: true, hint: 'Left / right or drag to move the basket · catch the fruit, dodge the rotten ones',
+    start(env){
+        const {cv, ctx} = env.canvas()
+        const BASKET_Y = 80
+        let bx, target, items, spawn, speed, lives, points
+        const reset = () => { bx = 30; target = null; items = []; spawn = 0.8; speed = 22; lives = 3; points = 0 }
+        reset()
+        const aim = e => { target = Math.max(8, Math.min(52, cv.pt(e).x)) }
+        cv.addEventListener('pointerdown', aim)
+        cv.addEventListener('pointermove', aim)
+        env.loop(dt => {
+            if(target != null) bx += (target - bx) * Math.min(1, dt * 12)
+            else bx = Math.max(8, Math.min(52, bx + ((env.held.right ? 1 : 0) - (env.held.left ? 1 : 0)) * 70 * dt))
+            speed = Math.min(58, speed + 0.6 * dt)
+            spawn -= dt
+            if(spawn <= 0){ items.push({x: env.rnd(6, 54), y: -4, rotten: env.rnd(4) == 0, c: env.rnd(2)}); spawn = Math.max(.38, env.rnd(.6, 1.1) - points / 3000) }
+            items.forEach(it => it.y += speed * dt)
+            items = items.filter(it => {
+                let caught = it.y > BASKET_Y - 3 && it.y < BASKET_Y + 4 && Math.abs(it.x - bx) < 8
+                if(caught){
+                    if(it.rotten){ lives--; env.sfx('bad') } else { points += 10; env.score(points); env.sfx('good') }
+                    return false
                 }
-                if(s.block !== null && s.done !== lap){
-                    const bw = a.hw * .3, bh = a.hw * .3
-
-                    ctx.fillStyle = '#fff'; rr(ctx, a.cx + s.block * a.hw / ROAD - bw / 2, a.y - bh, bw, bh, bw * .15); ctx.fill()
-                }
-            }
-
-            // the craft: a sleek wedge that banks with the steering
-            ctx.save(); ctx.translate(W / 2, H - 9); ctx.rotate(steer * .16)
-            glow(ctx, turbo > 0 ? C.lime : '#fff', turbo > 0 ? 12 : 5)
-            ctx.fillStyle = '#f2f2f5'; ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(6, 4); ctx.lineTo(0, 2); ctx.lineTo(-6, 4); ctx.fill(); noglow(ctx)
-            ctx.fillStyle = '#2C2C2E'; ctx.beginPath(); ctx.moveTo(0, -2); ctx.lineTo(2, 1.5); ctx.lineTo(-2, 1.5); ctx.fill()
-            if(turbo > 0){ ctx.fillStyle = C.lime; ctx.fillRect(-1.4, 4, 2.8, 2 + Math.random() * 3) }
-            ctx.restore()
-
-            // shield and speed
-            ctx.fillStyle = 'rgba(255,255,255,.15)'; rr(ctx, 4, H - 5, 30, 2, 1); ctx.fill()
-            ctx.fillStyle = shield > 30 ? '#fff' : C.red; rr(ctx, 4, H - 5, Math.max(1, 30 * shield / 100), 2, 1); ctx.fill()
-            text(ctx, `${Math.round(speed * 200)} km/h`, W - 4, H - 4, 3.4, '#fff', 'right')
-            if(cool > 0) text(ctx, 'TURBO ' + Math.ceil(cool), W - 4, H - 9, 2.6, C.dim, 'right')
-            else text(ctx, 'TURBO READY', W - 4, H - 9, 2.6, C.lime, 'right')
+                if(it.y > 96){ if(!it.rotten) lives--; return false }
+                return true
+            })
+            if(lives <= 0) return env.over('Out of lives')
+            ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 60, 90)
+            items.forEach(it => {
+                ctx.fillStyle = it.rotten ? C.purple : it.c ? C.green : C.red
+                ctx.beginPath(); ctx.arc(it.x, it.y, 2.8, 0, 7); ctx.fill()
+            })
+            glow(ctx, C.lime, 10); ctx.fillStyle = C.lime; rr(ctx, bx - 8, BASKET_Y, 16, 5, 2); ctx.fill(); noglow(ctx)
+            for(let i = 0; i < 3; i++){ ctx.fillStyle = i < lives ? C.pink : 'rgba(255,255,255,.15)'; ctx.beginPath(); ctx.arc(50 - i * 5, 5, 1.6, 0, 7); ctx.fill() }
+            text(ctx, String(points), 6, 6, 5, C.dim, 'left')
         })
     }
 }

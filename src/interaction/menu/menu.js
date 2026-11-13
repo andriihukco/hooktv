@@ -17,6 +17,7 @@ import Router from '../../core/router'
 import Head from '../head/head'
 import {sectionIcon} from '../navigation_bar'
 import {menu_items, minimalActions} from './items'
+import {menuActionEnabled} from '../../core/system'
 
 let html
 let last
@@ -41,6 +42,7 @@ function init(){
 
     // Фильтрация пунктов меню в зависимости от настроек
     const visible = menu_items.filter(item=>{
+        if(!menuActionEnabled(item.action)) return false
         if(window.lampa_settings.minimal_ui) return minimalActions.indexOf(item.action) >= 0
 
         if(!window.lampa_settings.torrents_use && item.action == 'mytorrents') return false

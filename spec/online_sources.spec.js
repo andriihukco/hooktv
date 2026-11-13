@@ -1,4 +1,4 @@
-import {beforeEach, expect, suite, test, vi} from 'vitest'
+import {afterEach, beforeEach, expect, suite, test, vi} from 'vitest'
 
 const saved = vi.hoisted(()=>({}))
 
@@ -15,8 +15,11 @@ import Sources from '../src/services/online_sources_store.js'
 suite('online sources', ()=>{
     beforeEach(()=>{
         for(let key in saved) delete saved[key]
+        vi.stubGlobal('window', {lampa_settings: {}})
         Sources.saveAvailable([])
     })
+
+    afterEach(()=>vi.unstubAllGlobals())
 
     test('built-in catalog has unique keys, a title and a quality label where one is known', ()=>{
         let keys = Catalog.map(item=>item.key)
@@ -67,13 +70,34 @@ suite('online sources', ()=>{
         Sources.saveHidden(['krasview'])
         Sources.saveSorted(['vibix', 'kodik'])
 
-        expect(Sources.ordered().map(s=>s.key)).toEqual(['vibix', 'kodik', 'krasview'])
-        expect(Sources.ordered().map(s=>s.active)).toEqual([true, true, false])
+        expect(Sources.ordered().map(s=>s.key)).toEqual(['vibix', 'kodik', 'hdrezka', 'krasview'])
+        expect(Sources.ordered().map(s=>s.active)).toEqual([true, true, true, false])
+    })
+
+    test('HDRezka is listed as a source like the others', ()=>{
+        Sources.saveAvailable([{key: 'hdrezka', enabled: true}])
+
+        expect(Sources.ordered().map(s=>s.key)).toEqual(['hdrezka'])
     })
 
     test('a stored value that is not a list falls back to the defaults', ()=>{
         saved.HOOK_ONLINE_SOURCES_HIDE = 'broken'
 
         expect(Sources.getHidden()).toEqual(Sources.defaultHidden())
+    })
+
+    test('the system flag hides providers from settings and search results', ()=>{
+        window.lampa_settings.hooktv_system_flags = {online_sources: false}
+
+        expect(Sources.settingsList()).toEqual([])
+        expect(Sources.applyUserFilters(['kodik', 'vibix'])).toEqual([])
+    })
+
+    test('system source overrides hide a provider and can enable a default-off provider', ()=>{
+        window.lampa_settings.hooktv_system_source_overrides = {kodik: false, 'collaps-dash': true}
+
+        expect(Sources.settingsList().map(source=>source.key)).not.toContain('kodik')
+        expect(Sources.getHidden()).not.toContain('collaps-dash')
+        expect(Sources.applyUserFilters(['kodik', 'collaps-dash'])).toEqual(['collaps-dash'])
     })
 })

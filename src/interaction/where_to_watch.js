@@ -17,9 +17,8 @@ let region = 'UA'
  * Services that stream titles, matched by TMDB provider id to what watch/providers returns.
  */
 let services = [
-    {name: 'Megogo'},
-    {name: 'Sweet.tv'},
-    {name: 'Takflix'},
+    {name: 'Megogo',      url: ()=>'https://megogo.net/ua', always: true},
+    {name: 'Sweet.tv',    url: ()=>'https://sweet.tv/ua-en', always: true},
     {name: 'Netflix',     ids: [8, 1796], url: (q)=>'https://www.netflix.com/search?q=' + q},
     {name: 'Apple TV',    ids: [2, 350], url: (q)=>'https://tv.apple.com/ua/search?term=' + q},
     {name: 'Prime Video', ids: [9, 119], url: (q)=>'https://www.primevideo.com/search?phrase=' + q},
@@ -111,10 +110,15 @@ function rows(movie, found, title){
 
     let list = found ? available(found) : []
 
+    // Services listed on every title, even when TMDB does not list them for the region
+    services.filter(s=>s.always && !list.some(p=>p.name == s.name)).forEach(s=>{
+        list.push({id: null, name: s.name, label: 'hooktv_where_subscription', known: s})
+    })
+
     if(list.length) items.push({title: Lang.translate('hooktv_where_available'), separator: true})
 
     list.forEach(p=>{
-        let known = service(p.id)
+        let known = p.known || service(p.id)
 
         items.push({
             title: p.name,

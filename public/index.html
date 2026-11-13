@@ -106,6 +106,7 @@
             })
         }
     </script>
+    <script src="./js/hooktv-system.js"></script>
     <script>
         // loads the app in order once css/app.css is in (so it never lays out unstyled)
         // and the splash has painted (so the first paint never waits for app.js)
@@ -123,13 +124,18 @@
                 started = true
 
                 var scripts = ['./vender/jquery/jquery.js', './vender/notify/notify.js', './vender/scrollbar/jquery.scrollbar.js', './vender/navigator/navigator.js', './vender/keypad/keypad.js', 'app.js?v=2.97']
+                var loadScripts = function(){
+                    scripts.forEach(function(src){
+                        var script = document.createElement('script')
+                        script.src = src
+                        script.async = false
+                        document.body.appendChild(script)
+                    })
+                }
 
-                scripts.forEach(function(src){
-                    var script = document.createElement('script')
-                    script.src = src
-                    script.async = false
-                    document.body.appendChild(script)
-                })
+                if(window.hooktv_system_ready && typeof window.hooktv_system_ready.then == 'function'){
+                    window.hooktv_system_ready.then(loadScripts, loadScripts)
+                }else loadScripts()
             }
 
             requestAnimationFrame(function(){ setTimeout(start, 0) })

@@ -70,3 +70,19 @@ describe('WhereToWatch.rows', () => {
         expect(rows[rows.length - 1].source).toBe('krasview')
     })
 })
+
+describe('WhereToWatch.rows: always-listed services', () => {
+    let movie = {title: 'Початок', original_title: 'Inception', original_language: 'en'}
+    let rows  = WhereToWatch.rows(movie, {link: 'https://tmdb/watch', flatrate: []}, 'Inception')
+
+    it('lists Megogo and Sweet.tv with a link even when TMDB has no match', () => {
+        expect(rows.find(r=>r.title == 'Megogo').url).toBe('https://megogo.net/ua')
+        expect(rows.find(r=>r.title == 'Sweet.tv').url).toBe('https://sweet.tv/ua-en')
+    })
+
+    it('keeps each always-listed service once when TMDB also lists it', () => {
+        let withTmdb = WhereToWatch.rows(movie, {link: 'x', flatrate: [{provider_id: 999, provider_name: 'Megogo'}]}, 'Inception')
+
+        expect(withTmdb.filter(r=>r.title == 'Megogo')).toHaveLength(1)
+    })
+})

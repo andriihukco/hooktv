@@ -1,6 +1,7 @@
 import Controller from '../../../core/controller'
 import Lang from '../../../core/lang'
 import Watch from '../../../interaction/watch'
+import WhereToWatch from '../../../interaction/where_to_watch'
 import Bell from '../../../interaction/bell'
 import Template from '../../../interaction/template'
 import Timeline from '../../../interaction/timeline'
@@ -48,8 +49,18 @@ export default {
         let play = this.html.find('.button--play')
 
         // One tap: Українська / Оригінал, then the best source plays
-        play.unbind('hover:enter').on('hover:enter',()=>{
+        // Hold: every service and source, the viewer picks one
+        // The release after a hold also fires hover:enter, so ignore it for a moment
+        let held_at = 0
+
+        play.unbind('hover:enter hover:long').on('hover:enter',()=>{
+            if(Date.now() - held_at < 1000) return
+
             Watch.start(this.card)
+        }).on('hover:long',()=>{
+            held_at = Date.now()
+
+            WhereToWatch.show(this.card, 'content', (key)=>Watch.pick(this.card, key))
         }).on('hover:focus', ()=>{
             this.last = play[0]
         })

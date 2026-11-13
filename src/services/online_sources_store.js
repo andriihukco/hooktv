@@ -17,6 +17,12 @@ var SourcesStore = function() {
         this.applyTitles(SOURCE_CATALOG)
         this.applyTitles(this.available_sources)
     }
+    SourcesStore.prototype.systemFlags = function() {
+        return window.lampa_settings && window.lampa_settings.hooktv_system_flags || {}
+    }
+    SourcesStore.prototype.systemSourceOverrides = function() {
+        return window.lampa_settings && window.lampa_settings.hooktv_system_source_overrides || {}
+    }
     SourcesStore.prototype.normalizeName = function(name) {
         return (name || '').toString().trim().toLowerCase()
     }
@@ -32,7 +38,18 @@ var SourcesStore = function() {
     }
     /** What the Settings list shows: the server's sources, or the built-in catalog */
     SourcesStore.prototype.settingsList = function() {
-        return this.available_sources.length ? this.available_sources : SOURCE_CATALOG
+        if(this.systemFlags().online_sources === false) return []
+
+        var _this = this
+        var overrides = this.systemSourceOverrides()
+        var list = this.available_sources.length ? this.available_sources : SOURCE_CATALOG
+
+        if(!Object.keys(overrides).length) return list
+
+        return list.filter(function(item) {
+            var key = _this.normalizeName(item && (item.key || item.name))
+            return key && overrides[key] !== false
+        })
     }
     SourcesStore.prototype.getQuality = function(key) {
         var found = SOURCE_CATALOG.find(function(item) { return item.key === key })
@@ -48,7 +65,12 @@ var SourcesStore = function() {
     SourcesStore.prototype.getHidden = function() {
         var hidden = Storage.get(this.sources_hide_key, null) || Storage.get('BO_SOURCES_HIDE', null)
         // never saved yet: start from the catalog's default-off sources
-        if (!Array.isArray(hidden)) return this.defaultHidden()
+        if (!Array.isArray(hidden)) {
+            var overrides = this.systemSourceOverrides()
+            return this.defaultHidden().filter(function(key) {
+                return overrides[key] !== true
+            })
+        }
         return hidden.map(this.normalizeName).filter(Boolean)
     }
     SourcesStore.prototype.saveAvailable = function(list) {
@@ -71,9 +93,14 @@ var SourcesStore = function() {
         }).filter(Boolean)
     }
     SourcesStore.prototype.applyUserFilters = function(list) {
+        if(this.systemFlags().online_sources === false) return []
+
         var hidden = this.getHidden()
         var sorted = this.getSorted()
-        var result = list.slice(0)
+        var overrides = this.systemSourceOverrides()
+        var result = list.filter(function(key) {
+            return overrides[key] !== false
+        })
         if (sorted.length) {
             var ordered = []
             sorted.forEach(function(key) {
@@ -110,7 +137,7 @@ var SourcesStore = function() {
                 active: hidden.indexOf(key) === -1
             }
         }).filter(function(item) {
-            return item.key && item.key !== 'hdrezka'
+            return !!item.key
         })
         return list.map(function(item, index) {
             return {item: item, index: index}
@@ -130,4 +157,21 @@ var SourcesStore = function() {
     return SourcesStore
 }()
 
-export default new SourcesStore()
+// Created on first use, not at import: Storage can still be undefined while this module loads (circular imports via online.js)
+var instance = null
+function store() {
+    if (!instance) instance = new SourcesStore()
+    return instance
+}
+
+export default new Proxy({}, {
+    get: function(_, key) {
+        var s = store()
+        var value = s[key]
+        return typeof value === 'function' ? value.bind(s) : value
+    },
+    set: function(_, key, value) {
+        store()[key] = value
+        return true
+    }
+})

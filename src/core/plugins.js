@@ -14,12 +14,61 @@ let _blacklist = []
 let _awaits = []
 let _noload = []
 
-// HOOK TV sources, loaded even when user plugins are off.
-// Audited: the other scripts were dropped (see the blacklist in task()).
-const BUILTIN_SOURCES = [
-    'https://app.bwa.ad/online.js',
-    'https://lampame.github.io/main/bo.js'
-]
+// Only local bundles from the managed catalog run automatically. Third-party
+// source URLs remain in the audit registry and require a separate review.
+const SYSTEM_PLUGIN_BUNDLES = {
+    hooktv_core: './plugins/hooktv_core.js',
+    hooktv_registry: './plugins/hooktv_registry.js',
+    collections: './plugins/collections.js',
+    dlna: './plugins/dlna.js',
+    etor: './plugins/etor.js',
+    halloween: './plugins/halloween.js',
+    iptv: './plugins/iptv.js',
+    logo_plugin: './plugins/logo_plugin.js',
+    online: './plugins/online.js',
+    online_prestige: './plugins/online_prestige.js',
+    radio: './plugins/radio.js',
+    record: './plugins/record.js',
+    snow: './plugins/snow.js',
+    tmdb_proxy: './plugins/tmdb_proxy.js',
+    tracks: './plugins/tracks.js',
+    twolines: './plugins/twolines.js',
+    view_plugin: './plugins/view_plugin.js',
+    'womens-day': './plugins/womens-day.js',
+    zen_mode: './plugins/zen_mode.js'
+}
+
+const SYSTEM_PLUGIN_FEATURES = {
+    iptv: 'live_tv',
+    radio: 'music',
+    online: 'online_sources',
+    online_prestige: 'online_sources'
+}
+
+function systemPluginUrls(){
+    const settings = window.lampa_settings || {}
+    const flags = settings.hooktv_system_flags || {}
+    const enabled = Array.isArray(settings.hooktv_system_plugins)
+        ? settings.hooktv_system_plugins
+        : ['hooktv_core', 'hooktv_registry']
+
+    if(flags.plugins === false) return []
+
+    return enabled.filter(id=>{
+        const feature = SYSTEM_PLUGIN_FEATURES[id]
+        return Object.prototype.hasOwnProperty.call(SYSTEM_PLUGIN_BUNDLES, id) && (!feature || flags[feature] !== false)
+    }).map(id=>SYSTEM_PLUGIN_BUNDLES[id])
+}
+
+function systemExternalPluginUrls(){
+    const settings = window.lampa_settings || {}
+    const flags = settings.hooktv_system_flags || {}
+    const enabled = settings.hooktv_system_external_plugins || {}
+
+    if(flags.plugins === false) return []
+
+    return Object.keys(enabled).filter(url=>enabled[url] === true && /^https?:\/\//i.test(url))
+}
 
 /**
  * Запуск
@@ -182,14 +231,17 @@ function task(call){
 
     loadBlackList((black_list)=>{
         ((plugins)=>{
-            let puts = window.lampa_settings.plugins_use ? plugins.filter(plugin=>plugin.status).map(plugin=>plugin.url).concat(Storage.get('plugins','[]').filter(plugin=>plugin.status).map(plugin=>plugin.url)) : []
+            const approvedExternal = systemExternalPluginUrls()
+            const approvedExternalSet = new Set(approvedExternal)
+            let puts = window.lampa_settings.hooktv_system_flags && window.lampa_settings.hooktv_system_flags.plugins === false
+                ? []
+                : window.lampa_settings.plugins_use
+                    ? plugins.filter(plugin=>plugin.status).map(plugin=>plugin.url).concat(Storage.get('plugins','[]').filter(plugin=>plugin.status).map(plugin=>plugin.url))
+                    : []
 
-            puts = puts.concat(BUILTIN_SOURCES)
+            puts = puts.concat(systemPluginUrls())
+            puts = puts.concat(approvedExternal)
 
-            if(!window.lampa_settings.minimal_ui){
-                puts.push('./plugins/rando_dice.js')
-                puts.push('./plugins/swipe_match.js')
-            }
             puts.push('./plugins/modification.js')
 
             puts = puts.filter((element, index) => {
@@ -223,7 +275,7 @@ function task(call){
             console.log('Plugins','black list:', black_list)
 
             black_list.forEach(b=>{
-                puts = puts.filter(p=>p.toLowerCase().indexOf(b) == -1)
+                puts = puts.filter(p=>approvedExternalSet.has(p) || p.toLowerCase().indexOf(b) == -1)
             })
 
             console.log('Plugins','clear list:', puts)

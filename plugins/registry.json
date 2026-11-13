@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "updated": "2026-11-13",
+  "systemCatalog": "config/plugin-catalog.json",
+  "thirdPartyAudit": "docs/plugins/sources.json",
+  "plugins": [
+    {
+      "id": "hooktv_core",
+      "name": "HOOK TV Core",
+      "version": "1.0.0",
+      "category": "core",
+      "file": "plugins/hooktv_core/hooktv_core.js",
+      "licence": "Proprietary (HOOK TV)",
+      "status": "shipped",
+      "description": "Shared registry, config and error handling for HOOK TV plugins."
+    },
+    {
+      "id": "hooktv_registry",
+      "name": "HOOK TV Plugins",
+      "version": "1.0.0",
+      "category": "utilities",
+      "file": "plugins/hooktv_registry/hooktv_registry.js",
+      "licence": "Proprietary (HOOK TV)",
+      "status": "shipped",
+      "description": "Settings page listing the HOOK TV plugins loaded in this session."
+    }
+  ],
+  "excluded": [
+    { "name": "SkazTV Store", "url": "https://skaztv.online/store.js", "decision": "not_bundled", "reason": "No licence. Store loader that fetches more remote code." },
+    { "name": "Wtch Online", "url": "http://wtch.ch/online.js", "decision": "not_bundled", "reason": "No licence. Plain HTTP. Near-identical strings to Showy Online ('Showy PRO', showypro.com). Third-party video sources." },
+    { "name": "Showy Online", "url": "http://showy.online/online.js", "decision": "not_bundled", "reason": "No licence. Plain HTTP. Contacts a raw IP (87.120.126.125) and showypro.com." },
+    { "name": "Lumio", "url": "http://beta.mitsu.tv/plugins/lumio.js", "decision": "not_bundled", "reason": "No licence. Plain HTTP. 600 KB. Third-party video sources (mitsu.tv, gidonline)." },
+    { "name": "FX Store", "url": "https://lampaplugins.github.io/store/fx.js", "decision": "not_bundled", "reason": "No licence. Third-party catalogue sources (filmix.my, filmixapp.vip)." },
+    { "name": "Z01 Online", "url": "http://z01.online/online.js", "decision": "not_bundled", "reason": "No licence. Plain HTTP. Third-party video sources (z01.online)." },
+    { "name": "Kilkams Redirect", "url": "https://kilkams.github.io/lampa/redirect.js", "decision": "not_bundled", "reason": "No licence. Server redirect behavior is not implemented because supported hosts and account migration behavior are unknown." },
+    { "name": "Syvyj Studios", "url": "https://syvyj.github.io/studios_4lampa/studios.js", "decision": "not_bundled", "reason": "No licence. The existing app already provides a TMDB studios carousel and company-filmography route." },
+    { "name": "BWA Online", "url": "https://app.bwa.ad/online.js", "decision": "not_bundled", "reason": "No licence. 790 KB, heavily obfuscated (39,539 hex identifiers); removed from unconditional runtime loading." },
+    { "name": "Aartzz Films", "url": "https://films.aartzz.pp.ua/l", "decision": "not_bundled", "reason": "No licence. UAFilms source. Uses TMDB and a personal domain (.pp.ua)." },
+    { "name": "L-Vid Online", "url": "https://beta.l-vid.online/on.js", "decision": "not_bundled", "reason": "No licence. Beta host. Third-party video source." },
+    { "name": "Modss", "url": "https://lampa.stream/modss", "decision": "not_bundled", "reason": "No licence. Minified mod bundle (window.loaded_modss). Only compile-checked, not reviewed in full." },
+    { "name": "GPBX", "url": "https://gpbx.me/w", "decision": "not_bundled", "reason": "No licence. 295 KB. Filmix account connection and Google Tag Manager tracking." },
+    { "name": "Multiplugin", "url": "https://addonslmp.github.io/multiplugin.js", "decision": "not_bundled", "reason": "No licence. Loader that pulls in other remote plugins, so it hides what runs." },
+    { "name": "NetFix", "url": "https://netfix.cc/netfix.js", "decision": "not_bundled", "reason": "No licence. Obfuscated (4,653 hex identifiers), cannot be reviewed. Third-party video source (netfix.club, t.me links)." },
+    { "name": "Rootu TV", "url": "https://plugin.rootu.top/tv.js", "decision": "not_bundled", "reason": "Licence not stated. IPTV playlists from GitHub raw. Existing repo plugins/iptv covers this area." },
+    { "name": "Bandera Online", "url": "https://lampame.github.io/main/BanderaOnline/BanderaOnline.js", "decision": "not_bundled", "reason": "No licence. Third-party video sources (filmix.my, uakino worker)." },
+    { "name": "Community Watches", "url": "https://lampame.github.io/main/CommunityWatches/CommunityWatches.js", "decision": "not_bundled", "reason": "No licence. Fetches its data from a third-party API (wh.lme.isroot.in). Privacy review needed." },
+    { "name": "PubTorr", "url": "https://lampame.github.io/main/pubtorr/pubtorr.js", "decision": "not_bundled", "reason": "No licence. Torrent search. Torrent content is a copyright risk." },
+    { "name": "Tryzub TV", "url": "https://lampame.github.io/main/TryzubTV/TryzubTV.js", "decision": "not_bundled", "reason": "No licence. TV channel streams from third-party hosts (maincast.tv, isroot.in)." },
+    { "name": "Online Mod", "url": "https://nb557.github.io/plugins/online_mod.js", "decision": "not_bundled", "reason": "No licence. 600 KB. Scrapes third-party catalogues (kinobase, rezka, kvk.zone). Hides strings in atob-encoded tables. Size changed between two fetches in one session." },
+    { "name": "EasyTorrent", "url": "https://cevamnelampaplagin.github.io/plugins/easytorrent2.1.0.5.js", "decision": "not_bundled", "reason": "No licence. Torrent search. Uses a third-party Supabase backend with a hardcoded anon key (xozswg...supabase.co)." },
+    { "name": "Parsers LMP", "url": "https://ko31k.github.io/LMP/plugins/Parsers.js", "decision": "not_bundled", "reason": "No licence. Torrent parsers that use unknown third-party Jackett servers (tv.alcopa.cc, jackettua.mooo.com)." },
+    { "name": "Lampame BO loader (legacy built-in)", "url": "https://lampame.github.io/main/bo.js", "decision": "not_bundled", "reason": "Loads Bandera Online from a transitive URL. No licence found; removed from unconditional runtime loading." }
+  ]
+}

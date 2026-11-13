@@ -64,6 +64,24 @@ const glyphs = {
     speedtype: () => md('bolt'),
     wordrain: () => md('water_drop'),
     numtype: () => md('pin'),
+    beatrun: () => md('rocket_launch'),
+    neonlanes: () => md('route'),
+    fruitcatch: () => rect(20, 22, 60, 60, 30) + rect(47, 12, 6, 14, 3) + path('M53 24C60 10 74 10 78 14C72 26 64 30 53 24Z'),
+    flipgrid: () => md('lightbulb'),
+    dialescape: () => rect(26, 44, 48, 38, 8) + stroke('M36 44V34A14 14 0 0 1 64 34V44', 7),
+    skyhop: () => star(50, 50, 42, 18),
+}
+
+// a five-point star, outer radius R and inner radius r, centred on (cx, cy)
+function star(cx, cy, R, r){
+    let d = ''
+
+    for(let i = 0; i < 10; i++){
+        let a = -Math.PI / 2 + i * Math.PI / 5, k = i % 2 ? r : R
+        d += (i ? 'L' : 'M') + (cx + k * Math.cos(a)).toFixed(2) + ' ' + (cy + k * Math.sin(a)).toFixed(2)
+    }
+
+    return path(d + 'Z')
 }
 
 // gradient top → bottom: saturated, a touch deeper at the bottom, like the App Store's game icons
@@ -78,7 +96,8 @@ const tints = {
     poker: ['#FF4F78', '#5B4CE0'], hangman: ['#FFA52E', '#F0453A'], quiz: ['#FFD83D', '#FF9019'],
     rps: ['#FF5A7A', '#FF9A2E'], mole: ['#B38A5F', '#4C9A52'], typing: ['#6C63F0', '#38C8F0'], speedtype: ['#FFD93D', '#FF3B6B'], wordrain: ['#6AD6FF', '#5B55E6'], numtype: ['#62D6FF', '#1F7CF5'],
     alias: ['#FFA838', '#F0386B'], charades: ['#C378F5', '#F0386B'], higher_lower: ['#6FD8FF', '#5B55E6'], capitals: ['#3FD07A', '#1F7CF5'],
-    kahoot: ['#E21B3C', '#1368CE'], movie_quiz: ['#FF375F', '#5E5CE6'], flags: ['#0A84FF', '#FFD60A'], true_false: ['#30D158', '#64D2FF']
+    kahoot: ['#E21B3C', '#1368CE'], movie_quiz: ['#FF375F', '#5E5CE6'], flags: ['#0A84FF', '#FFD60A'], true_false: ['#30D158', '#64D2FF'],
+    beatrun: ['#64D2FF', '#BF5AF2'], neonlanes: ['#FF6AD5', '#5E5CE6'], fruitcatch: ['#8BE35A', '#1E9E4A'], flipgrid: ['#FFD60A', '#FF9F0A'], dialescape: ['#8E8E93', '#3A3A3C'], skyhop: ['#5EE6E0', '#1F6FB8']
 }
 
 export function glyph(id){

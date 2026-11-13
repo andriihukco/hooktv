@@ -2689,7 +2689,7 @@ function buildSourcesList() {
             enabled: item.enabled !== false
         }
     }).filter(function(item) {
-        return item.key && item.key !== 'hdrezka' && item.enabled
+        return !!item.key && item.enabled
     })
 
     if (sorted.length) {

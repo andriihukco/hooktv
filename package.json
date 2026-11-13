@@ -9,7 +9,8 @@
     "release": "gulp release",
     "test": "vitest run",
     "test:watch": "vitest",
-    "doc": "gulp doc"
+    "doc": "gulp doc",
+    "plugins:catalog": "node scripts/export-online-source-catalog.mjs"
   },
   "author": "HOOK TV",
   "license": "Proprietary",

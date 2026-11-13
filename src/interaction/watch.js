@@ -53,6 +53,17 @@ function play(movie, want, back = 'content'){
 }
 
 /**
+ * Long press on Watch: the viewer picked a source from the sheet, play through it alone
+ * @param {object} movie TMDB card
+ * @param {string} key source key from the sheet
+ */
+function pick(movie, key){
+    let want = Storage.get('hooktv_dub', Dub.defaultAudio(Storage.get('language', 'en')))
+
+    playSource(movie, want, key)
+}
+
+/**
  * The viewer picked a source from the sheet: play the title through it alone
  */
 function playSource(movie, want, key){
@@ -88,5 +99,6 @@ function offerBalancers(movie, want, current){
 
 export default {
     start,
+    pick,
     register
 }

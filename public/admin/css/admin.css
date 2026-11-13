@@ -1,36 +1,16 @@
 :root {
-  --bg: #0b0b0c;
-  --panel: #161618;
-  --line: #2a2a2e;
-  --text: #f2f2f3;
-  --muted: #a1a1a8;
-  --accent: #c6ff3d;
-  --warn: #ffb020;
-  --ok: #7ee787;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f5f5f7;
-    --panel: #ffffff;
-    --line: #d8d8de;
-    --text: #111113;
-    --muted: #55555c;
-    --accent: #4a7a00;
-    --warn: #8a5a00;
-    --ok: #1f7a33;
-  }
-}
-
-:root[data-theme="light"] {
-  --bg: #f5f5f7;
-  --panel: #ffffff;
-  --line: #d8d8de;
-  --text: #111113;
-  --muted: #55555c;
-  --accent: #4a7a00;
-  --warn: #8a5a00;
-  --ok: #1f7a33;
+  color-scheme: dark;
+  --bg: #000000;
+  --panel: #121214;
+  --panel-raised: #1c1c1f;
+  --line: rgba(255, 255, 255, 0.12);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.62);
+  --accent: #c8f542;
+  --accent-hover: #d6ff5c;
+  --warn: #ffd60a;
+  --ok: #30d158;
+  --danger: #ff453a;
 }
 
 * {
@@ -39,15 +19,20 @@
 
 body.admin {
   margin: 0;
-  background: var(--bg);
+  background: radial-gradient(ellipse at 8% -15%, rgba(200, 245, 66, 0.11), transparent 38rem), var(--bg);
   color: var(--text);
-  font: 15px/1.5 system-ui, sans-serif;
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .admin__header {
-  background: var(--panel);
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: rgba(18, 18, 20, 0.78);
   border-bottom: 1px solid var(--line);
   padding: 0 16px;
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
 }
 
 .admin__nav {
@@ -66,7 +51,7 @@ body.admin {
 }
 
 .admin__nav-item:hover {
-  color: var(--accent);
+  color: var(--accent-hover);
 }
 
 .admin__nav-item:focus-visible {
@@ -107,7 +92,7 @@ h3 {
   font: inherit;
   padding: 8px 14px;
   min-height: 44px;
-  border-radius: 10px;
+  border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--panel);
   color: var(--text);
@@ -171,6 +156,23 @@ h3 {
   border: 1px solid var(--line);
   margin-left: 6px;
   vertical-align: middle;
+}
+
+.admin__nav-item[aria-current="page"] {
+  color: #000;
+  background: #fff;
+  border-bottom-color: transparent;
+  border-radius: 999px;
+  padding-inline: 14px;
+}
+
+.admin__nav-item[aria-current="page"]:focus-visible {
+  outline-color: var(--accent);
+}
+
+::selection {
+  color: var(--brand-on-primary, #0b0f00);
+  background: var(--accent);
 }
 
 .badge.paused {
