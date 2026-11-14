@@ -95,6 +95,14 @@ const TAB_ICONS = {
             `<rect x="2.5" y="4.5" width="19" height="13" rx="2.5" fill="currentColor"/><path d="M8 21h8" stroke-width="2.2"/><path d="${play}" fill="#000" stroke="none"/>`
         )
     })(),
+    music: (()=>{
+        let note = 'M9 18V5l12-2v13M9 10l12-2'
+
+        return tabIcon(
+            `<path d="${note}"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="18" cy="16" rx="3" ry="2.5"/>`,
+            `<path d="${note}" stroke-width="2.2"/><ellipse cx="6" cy="18" rx="3" ry="2.5" fill="currentColor"/><ellipse cx="18" cy="16" rx="3" ry="2.5" fill="currentColor"/>`
+        )
+    })()
 }
 
 // Top bar sections on desktop use the same icons; their masks get own ids so the two bars never share one
@@ -109,7 +117,9 @@ function tabs(){
         ['movie', 'menu_movies'],
         ['tv', 'menu_tv'],
         ['ua_tv', 'menu_ua_tv'],
-        ['video', 'menu_video']
+        ['video', 'menu_video'],
+        ['games', 'menu_games'],
+        ['music', 'menu_music']
     ].filter(([action])=>menuActionEnabled(action)).map(([action, title])=>[action, title, TAB_ICONS[action]])
 
     let bar = $('<div class="navigation-bar navigation-bar--tabs"><div class="navigation-bar__body"></div></div>')
