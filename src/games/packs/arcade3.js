@@ -2,7 +2,14 @@
 // the ideas come from the sample games list (Patel230/sample-games), not from their code.
 import {C, rr, text, glow, noglow} from '../draw'
 
+import astray from './astray'
+import racer from './racer'
+
+export {maze} from './maze'
+
 export default [
+    astray,
+    racer,
 {
     id: 'beatrun', title: 'Beat Runner', emoji: '🏃', c1: '#64D2FF', c2: '#BF5AF2', size: [100, 60], pad: true, hint: 'OK or tap to jump · clear the blocks · the pace keeps rising',
     start(env){

@@ -2,19 +2,12 @@ import Template from '../template'
 import Params from './params'
 import {adminText, getAdminLocale, setAdminLocale} from './admin_locale'
 
+import {featureLabels} from './admin_labels'
+
 const COMPONENT = 'hooktv_admin'
 let templateReady = false
 let openListenerReady = false
 
-const featureLabels = {
-    movies: {en: 'Movies', uk: 'Фільми'},
-    series: {en: 'Series', uk: 'Серіали'},
-    live_tv: {en: 'Live TV', uk: 'Телебачення'},
-    music: {en: 'Music', uk: 'Музика'},
-    games: {en: 'Games', uk: 'Ігри'},
-    videos: {en: 'Videos', uk: 'Відео'},
-    online_sources: {en: 'Online sources', uk: 'Онлайн-джерела'},
-    plugins: {en: 'Plugin loading', uk: 'Завантаження плагінів'}
 }
 
 function cleanConfig(config){
@@ -33,6 +26,14 @@ function configChanged(state){
 
 function setStatus(root, message, kind = ''){
     root.find('.hooktv-admin__status').text(message).attr('data-state', kind)
+}
+
+function requestError(error, fallback){
+    if(error.status === 401) return adminText('signInAgain')
+    if(error.status === 409) return adminText('configConflict')
+    if(error.status >= 500) return adminText('serviceUnavailable')
+
+    return adminText(error.status ? fallback : 'networkError')
 }
 
 function section(root, title){
@@ -346,8 +347,7 @@ function loadConfig(root){
         state.catalog = data.catalog
         renderPanel(root, state)
     }).catch(error=>{
-        const message = error.status === 401 ? adminText('signInAgain') : (error.message || adminText('loadFailed'))
-        setStatus(root, message, 'error')
+        setStatus(root, requestError(error, 'loadFailed'), 'error')
     })
 }
 
@@ -374,7 +374,7 @@ function saveConfig(root, state){
         state.draft = JSON.parse(JSON.stringify(data.config))
         setStatus(root, adminText('saved'), 'success')
     }).catch(error=>{
-        setStatus(root, error.message || adminText('saveFailed'), 'error')
+        setStatus(root, requestError(error, 'saveFailed'), 'error')
     }).finally(()=>{
         state.saving = false
         syncFooter(root, state)

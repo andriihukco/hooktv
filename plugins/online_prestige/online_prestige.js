@@ -1,15 +1,19 @@
 import Online from './component'
+import canStart from './bootstrap'
+import settingsProxyTemplate from './settings_templates'
 
 
 function startPlugin() {
+    window.hooktv_online_prestige = true
     window.online_prestige = true
 
     let manifest = {
         type: 'video',
-        version: '1.0.9',
+        version: '1.1.0',
         name: 'Онлайн - Prestige',
         description: 'Плагин для просмотра онлайн сериалов и фильмов',
         component: 'online_prestige',
+        hooktv_watch_adapter: 'online_prestige',
         onContextMenu: (object)=>{
             return {
                 name: Lampa.Lang.translate('online_watch'),
@@ -29,7 +33,13 @@ function startPlugin() {
                 search_one: object.title,
                 search_two: object.original_title,
                 movie: object,
-                page: 1
+                page: 1,
+                hooktv_auto_watch: !!object.hooktv_auto_watch,
+                hooktv_auto_watch_quality: object.hooktv_auto_watch_quality,
+                hooktv_auto_watch_audio: object.hooktv_auto_watch_audio,
+                hooktv_auto_watch_on_start: object.hooktv_auto_watch_on_start,
+                hooktv_auto_watch_on_fail: object.hooktv_auto_watch_on_fail,
+                hooktv_auto_watch_attempted: []
             })
         }
     }
@@ -378,33 +388,7 @@ function startPlugin() {
     Lampa.Params.select('online_proxy_kinobase','','')
     Lampa.Params.select('online_proxy_collaps','','')
 
-    Lampa.Template.add('settings_proxy',`<div>
-        <div class="settings-param selector" data-type="input" data-name="online_proxy_all" placeholder="#{online_proxy_placeholder}">
-            <div class="settings-param__name">#{online_proxy_title}</div>
-            <div class="settings-param__value"></div>
-            <div class="settings-param__descr">#{online_proxy_descr}</div>
-        </div>
-
-        <div class="settings-param selector" data-type="input" data-name="online_proxy_videocdn" placeholder="#{online_proxy_placeholder}">
-            <div class="settings-param__name">Videocdn</div>
-            <div class="settings-param__value"></div>
-        </div>
-
-        <div class="settings-param selector" data-type="input" data-name="online_proxy_rezka" placeholder="#{online_proxy_placeholder}">
-            <div class="settings-param__name">Rezka</div>
-            <div class="settings-param__value"></div>
-        </div>
-
-        <div class="settings-param selector" data-type="input" data-name="online_proxy_kinobase" placeholder="#{online_proxy_placeholder}">
-            <div class="settings-param__name">Kinobase</div>
-            <div class="settings-param__value"></div>
-        </div>
-
-        <div class="settings-param selector" data-type="input" data-name="online_proxy_collaps" placeholder="#{online_proxy_placeholder}">
-            <div class="settings-param__name">Collaps</div>
-            <div class="settings-param__value"></div>
-        </div>
-    </div>`)
+    Lampa.Template.add('settings_proxy', settingsProxyTemplate)
 
     function addSettingsProxy(){
         if(Lampa.Settings.main && !Lampa.Settings.main().render().find('[data-component="proxy"]').length){
@@ -637,4 +621,4 @@ function startPlugin() {
     }
 }
 
-if(!window.online_prestige && Lampa.Manifest.app_digital >= 155) startPlugin()
+if(canStart(Lampa, window.hooktv_online_prestige)) startPlugin()

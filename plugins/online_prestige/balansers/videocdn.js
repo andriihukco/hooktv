@@ -1,9 +1,13 @@
+import {extractItems} from './videocdn_items'
+
 function videocdn(component, _object){
     let network  = new Lampa.Reguest()
     let extract  = {}
     let results  = []
     let object   = _object
     let get_links_wait = false
+    let auto_wait_timer
+    let destroyed = false
 
     let filter_items = {}
 
@@ -85,6 +89,9 @@ function videocdn(component, _object){
     }
 
     this.destroy = function(){
+        destroyed = true
+        clearTimeout(auto_wait_timer)
+
         network.clear()
 
         results = null
@@ -98,28 +105,6 @@ function videocdn(component, _object){
         filter()
 
         append(filtred())
-    }
-
-    function extractItems(str, max_quality){
-        try{
-            let items = str.split(',').map(item=>{
-                return {
-                    quality: parseInt(item.match(/\[(\d+)p\]/)[1]),
-                    file: 'http:' + item.replace(/\[\d+p\]/,'').split(' or ')[0]
-                }
-            }).filter(item=>{
-                return item.quality <= max_quality
-            })
-
-            items.sort((a,b)=>{
-                return b.quality - a.quality
-            })
-
-            return items
-        }
-        catch(e){}
-
-        return []
     }
 
     function extractData(results){
@@ -257,6 +242,14 @@ function videocdn(component, _object){
         }
     }
 
+    function waitForAutoLink(callback, deadline){
+        if(destroyed) return
+        if(!get_links_wait) return callback()
+        if(Date.now() >= deadline) return component.noLink()
+
+        auto_wait_timer = setTimeout(()=>waitForAutoLink(callback, deadline), 100)
+    }
+
     function filter(){
         filter_items  = {
             season: [],
@@ -377,6 +370,10 @@ function videocdn(component, _object){
                 if(get_links_wait) html.find('.online-prestige__body').append($('<div class="online-prestige__scan-file"><div class="broadcast__scan"><div></div></div></div>'))
             },
             onEnter: (item, html)=>{
+                if(object.hooktv_auto_watch && get_links_wait){
+                    return waitForAutoLink(()=>append(items), Date.now() + 18000)
+                }
+
                 let extra = getFile(item, item.quality)
 
                 if(extra.file){
@@ -400,7 +397,8 @@ function videocdn(component, _object){
 
                     item.mark()
                 }
-                else Lampa.Noty.show(Lampa.Lang.translate(get_links_wait ? 'online_waitlink' : 'online_nolink'))
+                else if(get_links_wait) component.noLink('online_waitlink')
+                else component.noLink()
             },
             onContextMenu: (item, html, data, call)=>{
                 call(getFile(item, item.quality))

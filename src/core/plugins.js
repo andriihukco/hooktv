@@ -26,7 +26,7 @@ const SYSTEM_PLUGIN_BUNDLES = {
     iptv: './plugins/iptv.js',
     logo_plugin: './plugins/logo_plugin.js',
     online: './plugins/online.js',
-    online_prestige: './plugins/online_prestige.js',
+    online_prestige: './plugins/online_prestige.js?v=1.1.0',
     radio: './plugins/radio.js',
     record: './plugins/record.js',
     snow: './plugins/snow.js',
@@ -50,7 +50,7 @@ function systemPluginUrls(){
     const flags = settings.hooktv_system_flags || {}
     const enabled = Array.isArray(settings.hooktv_system_plugins)
         ? settings.hooktv_system_plugins
-        : ['hooktv_core', 'hooktv_registry']
+        : ['hooktv_core', 'hooktv_registry', 'online_prestige']
 
     if(flags.plugins === false) return []
 

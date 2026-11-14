@@ -28,6 +28,8 @@ import Dub from '../utils/dub'
 import Watch from '../interaction/watch'
 import Archive from './archive'
 import sourcesStore from './online_sources_store'
+import VideoQuality from '../utils/video_quality'
+import {AUTH_KEYS, normalize, readAuth, writeAuth, getFilmixToken, setFilmixToken, getFilmixDeviceId, setFilmixDeviceId, ensureFilmixDeviceId} from './online_auth'
 
 /**
  * HOOK TV Inbuilt Online Balancers Service
@@ -44,11 +46,6 @@ var config = {
     }
 }
 
-var AUTH_KEYS = {
-    filmixToken: 'HOOK_FILMIX_TOKEN',
-    filmixDeviceId: 'HOOK_FILMIX_DEVICE_ID',
-    filmixMaxQuality: 'HOOK_FILMIX_MAX_QUALITY'
-}
 
 var DISABLED_SOURCE_CODES = {
     NOT_FOUND: true,
@@ -70,45 +67,6 @@ var DISABLED_SOURCE_CODES = {
     NO_ANIME_INFO: true,
     NO_ANIME_STRUCTURE: true,
     VOICE_NOT_FOUND: true
-}
-
-function normalize(value) {
-    return (value || '').toString().trim()
-}
-
-function readAuth(key, fallbackKey) {
-    var val = normalize(Storage.get(key, ''))
-    if (!val && fallbackKey) val = normalize(Storage.get(fallbackKey, ''))
-    return val
-}
-
-function writeAuth(key, value) {
-    Storage.set(key, normalize(value))
-}
-
-function getFilmixToken() {
-    return readAuth(AUTH_KEYS.filmixToken, 'BO_FILMIX_TOKEN')
-}
-
-function setFilmixToken(value) {
-    writeAuth(AUTH_KEYS.filmixToken, value)
-}
-
-function getFilmixDeviceId() {
-    return readAuth(AUTH_KEYS.filmixDeviceId, 'BO_FILMIX_DEVICE_ID')
-}
-
-function setFilmixDeviceId(value) {
-    writeAuth(AUTH_KEYS.filmixDeviceId, value)
-}
-
-function ensureFilmixDeviceId() {
-    var deviceId = getFilmixDeviceId()
-    if (!deviceId) {
-        deviceId = Utils.uid(16)
-        setFilmixDeviceId(deviceId)
-    }
-    return deviceId
 }
 
 function normalizeErrorCode(json) {
@@ -1228,7 +1186,17 @@ function autoSources(movie, call) {
             if (key === 'starlight' || key === 'midnight') return lang === 'uk'
             return true
         })
-        call(sourcesStore.applyUserFilters(keys))
+        var preferred = Storage.field('video_quality_default')
+        var ordered = sourcesStore.applyUserFilters(keys).map(function(key, index) {
+            return { key: key, index: index }
+        }).sort(function(a, b) {
+            var order = VideoQuality.rank(sourcesStore.getQuality(a.key), preferred) - VideoQuality.rank(sourcesStore.getQuality(b.key), preferred)
+            return order || a.index - b.index
+        }).map(function(entry) {
+            return entry.key
+        })
+
+        call(ordered)
     }
 
     if (sourcesStore.available_sources.length) return pick(sourcesStore.available_sources)

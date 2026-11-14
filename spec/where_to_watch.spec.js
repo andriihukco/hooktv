@@ -5,16 +5,6 @@ vi.mock('../src/core/controller', ()=>({default: {}}))
 vi.mock('../src/core/lang', ()=>({default: {translate: (k)=>k}}))
 vi.mock('../src/core/platform', ()=>({default: {is: ()=>false}}))
 vi.mock('../src/core/android', ()=>({default: {}}))
-vi.mock('../src/services/online_sources_store', ()=>({
-    default: {
-        ordered: ()=>[
-            {key: 'kodik', title: 'kodik', quality: 'FHD', active: true},
-            {key: 'vibix', title: 'vibix', quality: '', active: true},
-            {key: 'krasview', title: 'krasview', quality: 'FHD', active: false}
-        ]
-    }
-}))
-
 import WhereToWatch from '../src/interaction/where_to_watch'
 
 describe('WhereToWatch.available', () => {
@@ -50,24 +40,15 @@ describe('WhereToWatch.rows', () => {
         expect(named('HBO Max').url).toBe('https://play.hbomax.com/search?q=Inception')
     })
 
-    it('lists the HOOK TV sources after them, in the order from the store', () => {
-        let sources = rows.filter(r=>r.source)
-
-        expect(sources.map(r=>r.source)).toEqual(['kodik', 'vibix', 'krasview'])
-        expect(sources[0].title).toBe('kodik · FHD')
-        expect(sources[1].title).toBe('vibix')
-        expect(rows.indexOf(sources[0])).toBeGreaterThan(rows.indexOf(named('HBO Max')))
-    })
-
-    it('marks each source by its switch: on first, off after', () => {
-        expect(rows.find(r=>r.source == 'krasview').subtitle).toBe('hook_online_sources_disabled')
-        expect(rows.find(r=>r.source == 'kodik').subtitle).toBe('hook_online_sources_enabled')
+    it('does not mix online playback adapters into the streaming services panel', () => {
+        expect(rows.some(r=>r.source)).toBe(false)
+        expect(rows.some(r=>r.title == 'hook_online_settings_sources')).toBe(false)
     })
 
     it('has no search-everywhere block at the end', () => {
         expect(rows.some(r=>r.title == 'hooktv_where_search')).toBe(false)
         expect(rows.some(r=>r.title == 'Netflix')).toBe(false)
-        expect(rows[rows.length - 1].source).toBe('krasview')
+        expect(rows[rows.length - 1].title).toBe('Sweet.tv')
     })
 })
 

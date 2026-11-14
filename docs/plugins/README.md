@@ -57,6 +57,12 @@ Configuration and manifests are separate:
 
 All plugin code stays at or below 400 lines per repository conventions. User-supplied plugin URLs remain separately controlled by the existing `plugins_use` setting and are also disabled by the global `plugins` flag.
 
+## Watch routing
+
+The full-card Watch action uses `src/interaction/watch.js`: it first looks for a torrent matching the selected player resolution (when Android or TorrServer playback is available), then tries the HOOK TV online adapters, then automatically starts the bundled Online Prestige plugin. Prestige selects a result using the same player quality setting and rotates its five bundled balancers when a provider has no result or fails to start. If all five fail, Watch starts the best torrent result; the final `Джерела онлайн` panel lists streaming services such as Megogo and Sweet.tv.
+
+Third-party URLs in the plugin catalog are independent Lampa extensions. Enabling one loads its script through Lampa's extension manager; it does not register that extension as a HOOK TV Watch adapter. The extensions have no shared playback API, so each integration needs a reviewed, license-compliant HOOK TV adapter before the Watch action can probe it. The source keys in the online-source settings also depend on the `/api/v2` backend and do not implement providers on the client by themselves.
+
 ## Included HOOK TV plugins
 
 | Plugin | Version | Category | Purpose | Default |

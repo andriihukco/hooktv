@@ -24,7 +24,7 @@
             iptv: false,
             logo_plugin: false,
             online: false,
-            online_prestige: false,
+            online_prestige: true,
             radio: false,
             record: false,
             snow: false,

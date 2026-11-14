@@ -48,8 +48,8 @@ export default {
     onGroupButtons: function(){
         let play = this.html.find('.button--play')
 
-        // One tap: Українська / Оригінал, then the best source plays
-        // Hold: every service and source, the viewer picks one
+        // One tap tries the selected-quality torrent, then online balancers.
+        // Hold opens the streaming-services panel.
         // The release after a hold also fires hover:enter, so ignore it for a moment
         let held_at = 0
 
@@ -60,7 +60,7 @@ export default {
         }).on('hover:long',()=>{
             held_at = Date.now()
 
-            WhereToWatch.show(this.card, 'content', (key)=>Watch.pick(this.card, key))
+            WhereToWatch.show(this.card, 'content')
         }).on('hover:focus', ()=>{
             this.last = play[0]
         })

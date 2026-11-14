@@ -16,7 +16,7 @@ export {setTranslator, gameTitle, gameHint, categoryTitle, categoryOverview} fro
 import {gameTitle, gameHint} from './i18n'
 
 // Every playable game, in the order the home row shows them: the most inviting first.
-const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'duel', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot', 'beatrun', 'neonlanes', 'fruitcatch', 'flipgrid', 'dialescape', 'skyhop']
+const order = ['2048', 'snake', 'tetris', 'pacman', 'flappy', 'astray', 'racer', 'chess', 'candy', 'wordle', 'breakout', 'doodle', 'crossy', 'sudoku', 'minesweeper', 'solitaire', 'blackjack', 'tictactoe', 'checkers', 'reversi', 'pong', 'duel', 'bubbles', 'slicer', 'tower', 'memory', 'battleship', 'sliding', 'poker', 'hangman', 'quiz', 'rps', 'mole', 'typing', 'speedtype', 'wordrain', 'numtype', 'alias', 'charades', 'higher_lower', 'capitals', 'kahoot', 'beatrun', 'neonlanes', 'fruitcatch', 'flipgrid', 'dialescape', 'skyhop']
 
 const packs = {arcade: [...arcade, ...arcade2, ...arcade3], puzzle: [...puzzle, ...puzzle2], words: [...words, ...quiz, ...party], logic, board: boards, cards}
 const all = []

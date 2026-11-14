@@ -3,6 +3,8 @@ import rezka from './balansers/rezka'
 import kinobase from './balansers/kinobase'
 import collaps from './balansers/collaps'
 import filmix from './balansers/filmix'
+import AutoPlay from './autoplay'
+import showContextMenu from './context_menu'
 
 function component(object){
     let network  = new Lampa.Reguest()
@@ -26,6 +28,7 @@ function component(object){
     let initialized
     let balanser_timer
     let images = []
+    let auto_watch_dispose
 
     let filter_sources   = Lampa.Arrays.getKeys(sources)
     let filter_translate = {
@@ -33,7 +36,6 @@ function component(object){
         voice: Lampa.Lang.translate('torrent_parser_voice'),
         source: Lampa.Lang.translate('settings_rest_source')
     }
-
 
     this.initialize = function(){
         source = this.createSource()
@@ -169,6 +171,12 @@ function component(object){
     this.find = function(){
         let url   = this.proxy('videocdn') + 'https://videocdn.tv/api/short'
         let query = object.search
+
+        if(object.hooktv_auto_watch){
+            let attempted = object.hooktv_auto_watch_attempted || (object.hooktv_auto_watch_attempted = [])
+
+            if(attempted.indexOf(balanser) < 0) attempted.push(balanser)
+        }
 
         url = Lampa.Utils.addUrlComponent(url,'api_token=3i40G5TSECmLF77oAqnEgbx61ZWaOYaE')
         
@@ -309,6 +317,8 @@ function component(object){
      * @param {Object} json 
      */
      this.similars = function(json){
+        if(object.hooktv_auto_watch) return this.doesNotAnswer()
+
         json.forEach(elem=>{
             let info = []
             let year = ((elem.start_date || elem.year || '') + '').slice(0,4)
@@ -404,6 +414,12 @@ function component(object){
 
             this.activity.toggle()
         }
+    }
+
+    this.noLink = function(message){
+        if(object.hooktv_auto_watch) return this.doesNotAnswer()
+
+        Lampa.Noty.show(Lampa.Lang.translate(message || 'online_nolink'))
     }
 
     /**
@@ -553,6 +569,7 @@ function component(object){
      * Отрисовка файлов
      */
     this.draw = function(items, params = {}){
+        if(object.hooktv_auto_watch && params.similars) return this.doesNotAnswer()
         if(!items.length) return this.empty()
 
         scroll.append(Lampa.Template.get('online_prestige_watched', {}))
@@ -567,6 +584,7 @@ function component(object){
 
             let scroll_to_element = false
             let scroll_to_mark    = false
+            let auto_pick         = null
 
             items.forEach((element, index) => {
                 let episode      = serial && episodes.length && !params.similars ? episodes.find(e=>e.episode_number == element.episode) : false
@@ -747,6 +765,19 @@ function component(object){
                 })
         
                 scroll.append(html)
+
+                if(object.hooktv_auto_watch && params.onEnter){
+                    let quality = AutoPlay.rank(element, object.hooktv_auto_watch_quality)
+
+                    if(!auto_pick || quality < auto_pick.quality){
+                        auto_pick = {
+                            quality,
+                            play: ()=>{
+                                return params.onEnter(element, html, data)
+                            }
+                        }
+                    }
+                }
             })
 
             if(serial && episodes.length > items.length && !params.similars){
@@ -819,168 +850,43 @@ function component(object){
             }
 
             Lampa.Controller.enable('content')
+
+            if(auto_pick && !object.hooktv_auto_watch_started) this.startAutoWatch(auto_pick.play)
         })
+    }
+
+    this.startAutoWatch = function(play){
+        this.clearAutoWatch()
+
+        auto_watch_dispose = AutoPlay.watchPlayer(Lampa.Player, 20000, ()=>{
+                object.hooktv_auto_watch_started = true
+                if(typeof object.hooktv_auto_watch_on_start == 'function') object.hooktv_auto_watch_on_start()
+            },()=>{
+                if(Lampa.Player.opened()) Lampa.Player.close()
+                this.doesNotAnswer()
+            })
+
+        play()
+    }
+
+    this.clearAutoWatch = function(){
+        if(auto_watch_dispose) auto_watch_dispose()
+        auto_watch_dispose = null
     }
 
     /**
      * Меню
      */
     this.contextMenu = function(params){
-        params.html.on('hover:long',()=>{
-            function show(extra){
-                let enabled = Lampa.Controller.enabled().name
-
-                let menu = []
-
-                if(Lampa.Platform.is('webos')){
-                    menu.push({
-                        title: Lampa.Lang.translate('player_lauch') + ' - Webos',
-                        player: 'webos'
-                    })
-                }
-                
-                if(Lampa.Platform.is('android')){
-                    menu.push({
-                        title: Lampa.Lang.translate('player_lauch') + ' - Android',
-                        player: 'android'
-                    })
-                }
-
-                menu.push({
-                    title: Lampa.Lang.translate('player_lauch') + ' - Lampa',
-                    player: 'lampa'
-                })
-
-                menu.push({
-                    title: Lampa.Lang.translate('online_video'),
-                    separator: true
-                })
-
-                menu.push({
-                    title: Lampa.Lang.translate('torrent_parser_label_title'),
-                    mark: true
-                })
-                menu.push({
-                    title: Lampa.Lang.translate('torrent_parser_label_cancel_title'),
-                    unmark: true
-                })
-                menu.push({
-                    title: Lampa.Lang.translate('time_reset'),
-                    timeclear: true
-                })
-
-                if(extra){
-                    menu.push({
-                        title: Lampa.Lang.translate('copy_link'),
-                        copylink: true
-                    })
-                }
-
-                menu.push({
-                    title: Lampa.Lang.translate('more'),
-                    separator: true
-                })
-
-                if(Lampa.Account.logged() && params.element && typeof params.element.season !== 'undefined' && params.element.translate_voice){
-                    menu.push({
-                        title: Lampa.Lang.translate('online_voice_subscribe'),
-                        subscribe: true
-                    })
-                }
-
-                menu.push({
-                    title: Lampa.Lang.translate('online_clear_all_marks'),
-                    clearallmark: true
-                })
-
-                menu.push({
-                    title: Lampa.Lang.translate('online_clear_all_timecodes'),
-                    timeclearall: true
-                })
-
-                Lampa.Select.show({
-                    title: Lampa.Lang.translate('title_action'),
-                    items: menu,
-                    onBack: ()=>{
-                        Lampa.Controller.toggle(enabled)
-                    },
-                    onSelect: (a)=>{
-                        if(a.mark)      params.element.mark()
-                        if(a.unmark)    params.element.unmark()
-                        if(a.timeclear) params.element.timeclear()
-
-                        if(a.clearallmark) params.onClearAllMark()
-                        if(a.timeclearall) params.onClearAllTime()
-
-                        Lampa.Controller.toggle(enabled)
-
-                        if(a.player){
-                            Lampa.Player.runas(a.player)
-
-                            params.html.trigger('hover:enter')
-                        }
-
-                        if(a.copylink){
-                            if(extra.quality){
-                                let qual = []
-
-                                for(let i in extra.quality){
-                                    qual.push({
-                                        title: i,
-                                        file: extra.quality[i]
-                                    })
-                                }
-
-                                Lampa.Select.show({
-                                    title: Lampa.Lang.translate('settings_server_links'), 
-                                    items: qual,
-                                    onBack: ()=>{
-                                        Lampa.Controller.toggle(enabled)
-                                    },
-                                    onSelect: (b)=>{
-                                        Lampa.Utils.copyTextToClipboard(b.file,()=>{
-                                            Lampa.Noty.show(Lampa.Lang.translate('copy_secuses'))
-                                        },()=>{
-                                            Lampa.Noty.show(Lampa.Lang.translate('copy_error'))
-                                        })
-                                    }
-                                })
-                            }
-                            else{
-                                Lampa.Utils.copyTextToClipboard(extra.file,()=>{
-                                    Lampa.Noty.show(Lampa.Lang.translate('copy_secuses'))
-                                },()=>{
-                                    Lampa.Noty.show(Lampa.Lang.translate('copy_error'))
-                                })
-                            }
-                        }
-
-                        if(a.subscribe){
-                            Lampa.Account.subscribeToTranslation({
-                                card: object.movie,
-                                season: params.element.season,
-                                episode: params.element.translate_episode_end,
-                                voice: params.element.translate_voice
-                            },()=>{
-                                Lampa.Noty.show(Lampa.Lang.translate('online_voice_success'))
-                            },()=>{
-                                Lampa.Noty.show(Lampa.Lang.translate('online_voice_error'))
-                            })
-                        }
-                    }
-                })
-            }
-
-            params.onFile(show)
-        }).on('hover:focus',()=>{
-            if(Lampa.Helper) Lampa.Helper.show('online_file',Lampa.Lang.translate('helper_online_file'),params.html)
-        })
+        showContextMenu(params, object)
     }
 
     /**
      * Показать пустой результат
      */
     this.empty = function(msg){
+        if(object.hooktv_auto_watch) return this.doesNotAnswer()
+
         let html = Lampa.Template.get('online_does_not_answer',{})
 
         html.find('.online-empty__buttons').remove()
@@ -994,6 +900,18 @@ function component(object){
 
     this.doesNotAnswer = function(){
         this.reset()
+
+        if(object.hooktv_auto_watch){
+            let keys = Lampa.Arrays.getKeys(sources)
+            let attempted = object.hooktv_auto_watch_attempted || []
+            let next = AutoPlay.next(keys, attempted)
+
+            if(next) return this.changeBalanser(next)
+
+            this.loading(false)
+            if(typeof object.hooktv_auto_watch_on_fail == 'function') object.hooktv_auto_watch_on_fail()
+            return
+        }
 
         let html = Lampa.Template.get('online_does_not_answer',{balanser})
         let tic  = 10
@@ -1101,6 +1019,8 @@ function component(object){
     this.stop = function(){}
 
     this.destroy = function(){
+        this.clearAutoWatch()
+
         network.clear()
 
         this.clearImages()

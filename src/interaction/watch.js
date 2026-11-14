@@ -1,6 +1,8 @@
 import Controller from '../core/controller'
 import Storage from '../core/storage/storage'
+import Manifest from '../core/manifest'
 import Lang from '../core/lang'
+import Activity from './activity/activity'
 import LoadingProgress from './loading_progress'
 import WhereToWatch from './where_to_watch'
 import TorrentFallback from './torrent_fallback'
@@ -34,51 +36,64 @@ function start(movie, back = 'content'){
 function play(movie, want, back = 'content'){
     LoadingProgress.watch()
 
-    Online.autoPlay(movie, want, (ok, key)=>{
-        if(ok){
-            LoadingProgress.zoom()
+    let quality = Storage.field('video_quality_default')
 
-            return offerBalancers(movie, want, key)
-        }
+    TorrentFallback.search(movie, (items)=>{
+        let match = TorrentFallback.preferred(items, quality)
 
-        // No online source: the viewer's torrent indexers come next, the
-        // legal "where to watch" sheet only when they have nothing either
-        TorrentFallback.search(movie, (items)=>{
+        if(match){
             LoadingProgress.destroy()
-
-            if(items.length) TorrentFallback.show(items, movie, back)
-            else WhereToWatch.show(movie, back, (key)=>playSource(movie, want, key))
-        })
-    })
-}
-
-/**
- * Long press on Watch: the viewer picked a source from the sheet, play through it alone
- * @param {object} movie TMDB card
- * @param {string} key source key from the sheet
- */
-function pick(movie, key){
-    let want = Storage.get('hooktv_dub', Dub.defaultAudio(Storage.get('language', 'en')))
-
-    playSource(movie, want, key)
-}
-
-/**
- * The viewer picked a source from the sheet: play the title through it alone
- */
-function playSource(movie, want, key){
-    LoadingProgress.watch()
-
-    Online.autoPlay(movie, want, (ok, next)=>{
-        if(ok){
-            LoadingProgress.zoom()
-
-            return offerBalancers(movie, want, next)
+            TorrentFallback.play(match, movie, back)
+            return
         }
 
-        LoadingProgress.destroy()
-        Noty.show(Lang.translate('online_nolink'))
-    }, [key])
+        Online.autoPlay(movie, want, (ok, key)=>{
+            if(ok){
+                LoadingProgress.zoom()
+
+                return offerBalancers(movie, want, key)
+            }
+
+            if(openOnlinePlugin(movie, want, items, quality, back)) LoadingProgress.destroy()
+            else finishFallback(movie, items, quality, back)
+        })
+    }, quality)
+}
+
+function finishFallback(movie, items, quality, back){
+    LoadingProgress.destroy()
+
+    let fallback = TorrentFallback.best(items, quality)
+
+    if(fallback) TorrentFallback.play(fallback, movie, back)
+    else WhereToWatch.show(movie, back)
+}
+
+function openOnlinePlugin(movie, want, items, quality, back){
+    let plugin = Manifest.plugins.find(item=>item.hooktv_watch_adapter == 'online_prestige' && typeof item.onContextLauch == 'function')
+
+    if(!plugin) return false
+
+    let finished = false
+
+    plugin.onContextLauch(Object.assign({}, movie, {
+        hooktv_auto_watch: true,
+        hooktv_auto_watch_quality: quality,
+        hooktv_auto_watch_audio: want,
+        hooktv_auto_watch_on_start: ()=>{
+            finished = true
+            LoadingProgress.destroy()
+        },
+        hooktv_auto_watch_on_fail: ()=>{
+            if(finished) return
+
+            finished = true
+            Activity.backward()
+            finishFallback(movie, items, quality, back)
+        }
+    }))
+
+    return true
 }
 
 /**
@@ -99,6 +114,5 @@ function offerBalancers(movie, want, current){
 
 export default {
     start,
-    pick,
     register
 }

@@ -36,7 +36,7 @@ it('applies a valid server config before app startup without replacing existing 
 
     expect(result.window.hook_settings.language).toBe('uk')
     expect(result.window.hook_settings.hooktv_system_flags.movies).toBe(false)
-    expect(result.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry', 'collections'])
+    expect(result.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry', 'collections', 'online_prestige'])
     expect(result.window.hook_settings.hooktv_system_source_overrides.hdrezka).toBe(false)
     expect(result.values.has('hooktv_system_config_v1')).toBe(true)
 })
@@ -53,7 +53,7 @@ it('uses cached settings after an API failure and safe defaults on a first launc
 
     expect(cached.window.hook_settings.hooktv_system_flags.music).toBe(false)
     expect(firstLaunch.window.hook_settings.hooktv_system_flags.music).toBe(true)
-    expect(firstLaunch.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry'])
+    expect(firstLaunch.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry', 'online_prestige'])
 })
 
 it('ignores malformed API settings and retains a safe first-launch configuration', async ()=>{
@@ -65,5 +65,5 @@ it('ignores malformed API settings and retains a safe first-launch configuration
     }})
 
     expect(result.window.hook_settings.hooktv_system_flags.online_sources).toBe(true)
-    expect(result.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry'])
+    expect(result.window.hook_settings.hooktv_system_plugins).toEqual(['hooktv_core', 'hooktv_registry', 'online_prestige'])
 })

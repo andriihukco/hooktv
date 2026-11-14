@@ -432,7 +432,7 @@ function filmix(component, _object){
 
                     item.mark()
                 }
-                else Lampa.Noty.show(Lampa.Lang.translate('online_nolink'))
+                else component.noLink()
             },
             onContextMenu: (item, html, data, call)=>{
                 call(getFile(item, item.quality))

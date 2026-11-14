@@ -19,6 +19,7 @@ import Lang from '../core/lang'
 import Arrays from '../utils/arrays'
 import Background from './background'
 import ParentalControl from './parental_control'
+import {buildInfuseMultiUrl} from './player/infuse'
 
 // Реклама убрана: шаг воспроизведения выполняется сразу
 function afterAds(data, call){
@@ -128,6 +129,7 @@ function init(){
     /** Может ли плеер начать играть */
     Video.listener.follow('canplay',(e)=>{
         Panel.canplay()
+        listener.send('canplay', e)
     })
 
     /** Плей видео */
@@ -181,6 +183,8 @@ function init(){
 
     /** Ошибка при попытки возпроизвести */
     Video.listener.follow('error', (e)=>{
+        let can_retry = Boolean(e.fatal && work && (work.url_reserve || work.error))
+
         if(work){
             Info.set('error', e.error)
 
@@ -198,6 +202,8 @@ function init(){
                 Video.url(reserve_url, true)
             })
         }
+
+        if(e.fatal && !can_retry) listener.send('error', e)
     })
 
     Video.listener.follow('translate',(e)=>{
@@ -723,52 +729,6 @@ function externalPlayer(player_need, data, players, infuseCallbacks){
     }
 
     return players[player]
-}
-
-function buildInfuseMultiUrl(data, callbacks){
-    callbacks = callbacks || {}
-
-    let items = (Array.isArray(data.playlist) ? data.playlist : [])
-        .filter(p => typeof p.url == 'string')
-
-    if(items.length <= 1) return null
-
-    let currentUrl = data.url.replace('&preload','&play')
-    let currentIndex = -1
-
-    for(let i = 0; i < items.length; i++){
-        if(items[i].url.replace('&preload','&play') === currentUrl){
-            currentIndex = i
-            break
-        }
-    }
-
-    if(currentIndex < 0) currentIndex = 0
-
-    let urlParts = []
-
-    for(let i = currentIndex; i < items.length; i++){
-        let item = items[i]
-        let itemUrl = encodeURIComponent(item.url.replace('&preload','&play'))
-        urlParts.push('url=' + itemUrl)
-
-        if(item.title){
-            let filename = Utils.clearHtmlTags(item.title).trim()
-            if(filename){
-                urlParts.push('filename=' + encodeURIComponent(filename))
-            }
-        }
-    }
-
-    if(callbacks.x_success){
-        urlParts.push('x-success=' + encodeURIComponent(callbacks.x_success))
-    }
-
-    if(callbacks.x_error){
-        urlParts.push('x-error=' + encodeURIComponent(callbacks.x_error))
-    }
-
-    return 'infuse://x-callback-url/play?' + urlParts.join('&')
 }
 
 function needInnerPlayerDisclaimer(player_need){

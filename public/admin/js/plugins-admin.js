@@ -23,7 +23,9 @@
             statusChecking: 'Checking admin access…', statusLoading: 'Loading saved configuration…', statusSignIn: 'Sign in to continue.',
             statusLoaded: 'Configuration loaded. Changes are not active until saved.', statusSaving: 'Saving system configuration…',
             statusSaved: 'Saved. Devices will apply changes on their next launch.', statusLoadFailed: 'Could not load system configuration.',
-            statusSaveFailed: 'Could not save system configuration.', statusLocked: 'Too many attempts. Try again in 15 minutes.',
+            statusSaveFailed: 'Could not save system configuration.', statusServiceUnavailable: 'The admin service is unavailable.',
+            statusNetworkError: 'Could not connect to the admin service.', statusSessionExpired: 'Your admin session expired. Sign in again.',
+            statusConflict: 'Settings changed elsewhere. Reload before saving.', statusLocked: 'Too many attempts. Try again in 15 minutes.',
             statusLoginFailed: 'Incorrect username or password.', statusNoLocalMatch: 'No local plugin matches this filter.',
             statusNoSourceMatch: 'No online provider matches this filter.', statusNoExternalMatch: 'No community plugin matches this filter.',
             statusOnByDefault: 'on by default', statusOffByDefault: 'off by default', statusRequires: 'Requires',
@@ -55,7 +57,9 @@
             statusChecking: 'Перевірка доступу адміністратора…', statusLoading: 'Завантаження налаштувань…', statusSignIn: 'Увійдіть, щоб продовжити.',
             statusLoaded: 'Налаштування завантажено. Зміни діятимуть після збереження.', statusSaving: 'Збереження налаштувань системи…',
             statusSaved: 'Збережено. Пристрої застосують зміни під час наступного запуску.', statusLoadFailed: 'Не вдалося завантажити налаштування системи.',
-            statusSaveFailed: 'Не вдалося зберегти налаштування системи.', statusLocked: 'Забагато спроб. Спробуйте знову через 15 хвилин.',
+            statusSaveFailed: 'Не вдалося зберегти налаштування системи.', statusServiceUnavailable: 'Служба адміністратора недоступна.',
+            statusNetworkError: 'Не вдалося підключитися до служби адміністратора.', statusSessionExpired: 'Сеанс адміністратора завершився. Увійдіть знову.',
+            statusConflict: 'Налаштування змінилися в іншому сеансі. Оновіть панель перед збереженням.', statusLocked: 'Забагато спроб. Спробуйте знову через 15 хвилин.',
             statusLoginFailed: 'Неправильне ім’я або пароль.', statusNoLocalMatch: 'Немає вбудованих плагінів за цим запитом.',
             statusNoSourceMatch: 'Немає онлайн-сервісів за цим запитом.', statusNoExternalMatch: 'Немає плагінів спільноти за цим запитом.',
             statusOnByDefault: 'увімкнено за замовчуванням', statusOffByDefault: 'вимкнено за замовчуванням', statusRequires: 'Потрібно ввімкнути',
@@ -115,6 +119,13 @@
     function setStatus(message, kind){
         status.textContent = message
         status.dataset.state = kind || ''
+    }
+
+    function errorMessage(error, fallback){
+        if(error.status === 401) return t('statusSessionExpired')
+        if(error.status === 409) return t('statusConflict')
+        if(error.status >= 500) return t('statusServiceUnavailable')
+        return t(error.status ? fallback : 'statusNetworkError')
     }
 
     function switchButton(kind, key, value, disabled, label){
@@ -225,7 +236,7 @@
                 return
             }
             var data = await response.json()
-            if(!response.ok) throw new Error(data.error || 'HTTP ' + response.status)
+            if(!response.ok) throw Object.assign(new Error(data.error || 'HTTP ' + response.status), {status: response.status})
             state.original = data.config
             state.draft = JSON.parse(JSON.stringify(data.config))
             state.catalog = data.catalog
@@ -234,7 +245,7 @@
             setStatus(t('statusLoaded'), 'success')
             render()
         } catch(error){
-            setStatus(error.message || t('statusLoadFailed'), 'error')
+            setStatus(errorMessage(error, 'statusLoadFailed'), 'error')
         }
     }
 
@@ -251,12 +262,12 @@
                 body: JSON.stringify({expectedRevision: state.original.revision, config: cleanConfig(state.draft)})
             })
             var data = await response.json()
-            if(!response.ok) throw new Error(data.error || 'HTTP ' + response.status)
+            if(!response.ok) throw Object.assign(new Error(data.error || 'HTTP ' + response.status), {status: response.status})
             state.original = data.config
             state.draft = JSON.parse(JSON.stringify(data.config))
             setStatus(t('statusSaved'), 'success')
         } catch(error){
-            setStatus(error.message || t('statusSaveFailed'), 'error')
+            setStatus(errorMessage(error, 'statusSaveFailed'), 'error')
         } finally {
             setBusy(false)
             if(state.original) render()

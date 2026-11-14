@@ -3,12 +3,10 @@ import Controller from '../core/controller'
 import Lang from '../core/lang'
 import Platform from '../core/platform'
 import Android from '../core/android'
-import sourcesStore from '../services/online_sources_store'
 
 /**
- * HOOK TV: when no source can play a title, the sheet lists where it streams
- * legally (TMDB / JustWatch data for Ukraine), then the HOOK TV online sources.
- * Switched-on sources come first; a switched-off one is listed after them.
+ * HOOK TV: the panel lists streaming services (TMDB / JustWatch data for Ukraine).
+ * Online balancers are resolved automatically by the Watch action.
  */
 
 let region = 'UA'
@@ -99,7 +97,7 @@ function available(found){
 }
 
 /**
- * Rows of the sheet: where it streams, then the HOOK TV online sources
+ * Rows of the sheet: streaming services only
  * @param {object} movie TMDB card
  * @param {object|null} found TMDB watch/providers entry for the region
  * @param {string} title English title
@@ -127,27 +125,14 @@ function rows(movie, found, title){
         })
     })
 
-    let sources = sourcesStore.ordered()
-
-    if(sources.length) items.push({title: Lang.translate('hook_online_settings_sources'), separator: true})
-
-    sources.forEach(s=>{
-        items.push({
-            title: s.quality ? s.title + ' · ' + s.quality : s.title,
-            subtitle: Lang.translate(s.active ? 'hook_online_sources_enabled' : 'hook_online_sources_disabled'),
-            source: s.key
-        })
-    })
-
     return items
 }
 
 /**
  * @param {object} movie TMDB card
  * @param {string} [back] controller to return to
- * @param {function(string)} [onSource] called with a source key when the viewer picks one
  */
-function show(movie, back = 'content', onSource = ()=>{}){
+function show(movie, back = 'content'){
     providers(movie, (found)=>{
         english(movie, (title)=>{
             Select.show({
@@ -156,8 +141,7 @@ function show(movie, back = 'content', onSource = ()=>{}){
                 onSelect: (a)=>{
                     Controller.toggle(back)
 
-                    if(a.source) onSource(a.source)
-                    else if(a.url) open(a.url)
+                    if(a.url) open(a.url)
                 },
                 onBack: ()=>{
                     Controller.toggle(back)

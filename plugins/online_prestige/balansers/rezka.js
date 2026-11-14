@@ -458,7 +458,7 @@ function rezka(component, _object){
 
                     item.mark()
                 },()=>{
-                    Lampa.Noty.show(Lampa.Lang.translate('online_nolink'))
+                    component.noLink()
                 })
             },
             onContextMenu: (item, html, data, call)=>{
