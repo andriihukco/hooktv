@@ -342,9 +342,10 @@ function studioTiles(params, oncomplite, onerror){
                     style: {name: 'provider'},
                     module: CardModule.only('Card', 'Style', 'Callback')
                 },
+                // the studio's profile, the same page as a production company link
                 route: {
-                    name: 'category_full',
-                    params: {url: 'discover/movie?sort_by=popularity.desc', companies: id, title: json.name, source: 'tmdb'}
+                    name: 'company',
+                    params: {id: id, card: {source: 'tmdb'}}
                 }
             }
         }).filter(Boolean)
