@@ -1,5 +1,5 @@
-const {verify} = require('./session')
-const {adminCatalog, parseSystemConfig, publicConfig, readStoredConfig, saveStoredConfig} = require('../_system-config')
+const {verify} = require('../../lib/admin-session')
+const {adminCatalog, parseSystemConfig, publicConfig, readStoredConfig, saveStoredConfig} = require('../../lib/system-config')
 
 function rejectOrigin(req, res){
     const origin = req.headers.origin

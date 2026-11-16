@@ -1,4 +1,4 @@
-const {DEFAULT_CONFIG, parseSystemConfig, publicConfig, readStoredConfig} = require('./_system-config')
+const {DEFAULT_CONFIG, parseSystemConfig, publicConfig, readStoredConfig} = require('../lib/system-config')
 
 module.exports = async function handler(req, res){
     if(req.method !== 'GET'){

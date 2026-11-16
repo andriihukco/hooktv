@@ -2,7 +2,7 @@ import {describe, it, expect} from 'vitest'
 import {createRequire} from 'module'
 
 const require = createRequire(import.meta.url)
-const {issue, cookie, verify} = require('../api/admin/session.js')
+const {issue, cookie, verify} = require('../lib/admin-session.js')
 
 const requestWith = (value)=> ({headers: {cookie: value}})
 const SECRET = 'correct horse'

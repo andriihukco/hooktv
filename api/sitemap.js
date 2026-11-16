@@ -6,7 +6,7 @@
  * TMDB_API_KEY in the Vercel project settings overrides the app's public key.
  */
 
-const {cardPath} = require('./_slug.js')
+const {cardPath} = require('../lib/card-slug.js')
 
 const PUBLIC_TMDB_KEY = '4ef0d7355d9ffb5151e987764708ce96'
 const PAGES = 5 // 20 titles per list and page

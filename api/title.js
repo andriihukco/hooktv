@@ -11,7 +11,7 @@
  * TMDB_API_KEY in the Vercel project settings overrides the app's public key.
  */
 
-const {cardPath} = require('./_slug.js')
+const {cardPath} = require('../lib/card-slug.js')
 
 const APP_NAME = 'HOOK TV'
 // the same public key the web app ships with

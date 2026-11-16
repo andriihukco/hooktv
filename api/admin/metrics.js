@@ -7,7 +7,7 @@
  *   - limit: number (default: 10, max: 100)
  */
 
-const { checkAuth } = require('./auth')
+const { checkAuth } = require('../../lib/admin-auth')
 
 const METRICS = {
   games: 'get_games_played',

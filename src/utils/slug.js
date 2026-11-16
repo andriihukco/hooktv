@@ -2,7 +2,7 @@
  * Readable title URLs: /movie/1101412-the-movie-title and /tv/1399-game-of-thrones.
  * Only the number is read back; the words are for people and search engines.
  *
- * The server copy of this logic is api/_slug.js; spec/slug.spec.js keeps them equal.
+ * The server copy of this logic is lib/card-slug.js; spec/slug.spec.js keeps them equal.
  */
 
 const LETTERS = {

@@ -6,7 +6,7 @@
  * Old "/?card=123&media=tv" links are sent to "/tv/123" for everybody.
  */
 
-// the same address as parseCardPath() in api/_slug.js (the edge runtime has no require)
+// the same address as parseCardPath() in lib/card-slug.js (the edge runtime has no require)
 function parseCardPath(pathname){
     let m = /^\/(movie|tv)\/(\d{1,12})(?:-[^/]*)?\/?$/.exec(pathname)
 

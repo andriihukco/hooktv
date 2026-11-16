@@ -6,7 +6,7 @@
  *   - limit: number (default: 10)
  */
 
-const { checkAuth } = require('./auth')
+const { checkAuth } = require('../../lib/admin-auth')
 
 module.exports = async function handler(req, res) {
   if (!checkAuth(req, res)) return

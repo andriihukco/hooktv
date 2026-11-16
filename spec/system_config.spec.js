@@ -1,5 +1,5 @@
 import {afterEach, expect, it, vi} from 'vitest'
-import system from '../api/_system-config.js'
+import system from '../lib/system-config.js'
 
 afterEach(()=>vi.unstubAllGlobals())
 

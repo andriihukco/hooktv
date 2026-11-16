@@ -2,7 +2,7 @@
  * GET /api/admin/summary: Quick summary stats for the dashboard header
  */
 
-const { checkAuth } = require('./auth')
+const { checkAuth } = require('../../lib/admin-auth')
 
 module.exports = async function handler(req, res) {
   if (!checkAuth(req, res)) return

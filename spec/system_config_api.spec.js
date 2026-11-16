@@ -3,7 +3,7 @@ import {createRequire} from 'node:module'
 
 const require = createRequire(import.meta.url)
 const adminConfig = require('../api/admin/system-config.js')
-const {issue} = require('../api/admin/session.js')
+const {issue} = require('../lib/admin-session.js')
 const ENV_KEYS = ['ADMIN_PASSWORD', 'SUPABASE_URL', 'SUPABASE_SERVICE_KEY']
 let originalEnv
 

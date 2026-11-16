@@ -4,7 +4,7 @@
  * Needs a session cookie from /api/admin/login. It does not send WWW-Authenticate, so no browser dialog pops up.
  */
 
-const {verify} = require('./session.js')
+const {verify} = require('../../lib/admin-session.js')
 const {groupByTeam} = require('../../scripts/agent-admin/roster.js')
 
 const ROW = 'main'

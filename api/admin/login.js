@@ -6,7 +6,7 @@
  */
 
 const {samePassword} = require('./agents.js')
-const {issue, cookie} = require('./session.js')
+const {issue, cookie} = require('../../lib/admin-session.js')
 
 const ROW = 'admin_login'
 const MAX_FAILS = 5

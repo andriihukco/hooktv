@@ -2,7 +2,7 @@ import {expect, suite, test} from 'vitest'
 import {createRequire} from 'module'
 import Slug from '../src/utils/slug.js'
 
-const Server = createRequire(import.meta.url)('../api/_slug.js')
+const Server = createRequire(import.meta.url)('../lib/card-slug.js')
 
 suite('title addresses', ()=>{
     test('slugs transliterate Ukrainian and stay short', ()=>{
