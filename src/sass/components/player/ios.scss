@@ -1,0 +1,157 @@
+// HOOK TV player controls in iOS conventions: one 44px touch size for every
+// button, a 64px play button, consistent glass circles, a readable scrubber,
+// safe-area insets and no motion when the viewer asks for less. Loaded after
+// panel.scss, so it overrides the older sizes there.
+
+$ios-hit:   44px;                       // minimum touch target (Apple HIG, WCAG 2.2 2.5.8)
+$ios-play:  64px;
+$ios-glass: rgba(255, 255, 255, 0.14);
+$ios-ink:   #fff;
+$ios-muted: rgba(255, 255, 255, 0.72);  // on the dark panel this is well above 4.5:1
+
+.player-panel {
+    left:  calc(#{$offset} + env(safe-area-inset-left, 0px));
+    right: calc(#{$offset} + env(safe-area-inset-right, 0px));
+    bottom: calc(#{$offset} + env(safe-area-inset-bottom, 0px));
+    border-radius: 1.25em;
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+
+    @media screen and (max-width: $media_xm) {
+        left:  env(safe-area-inset-left, 0px);
+        right: env(safe-area-inset-right, 0px);
+        bottom: env(safe-area-inset-bottom, 0px);
+        border-radius: 1.25em 1.25em 0 0;
+    }
+
+    &__body {
+        padding: 16px 20px 14px;
+    }
+
+    // scrubber: a thin bar with a larger touch zone and time labels that do not jump
+    &__timeline {
+        height: 4px;
+        margin-bottom: 12px;
+    }
+
+    &__timenow,
+    &__timeend {
+        font-size: 13px;
+        font-weight: 500;
+        color: $ios-muted;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // every control: one circle, one size, one gap
+    .button {
+        width: $ios-hit !important;
+        height: $ios-hit !important;
+        min-width: $ios-hit;
+        padding: 11px !important;
+        border-radius: 50% !important;
+        background-color: $ios-glass;
+        color: $ios-ink;
+        transition: background-color 0.2s ease, transform 0.15s ease;
+
+        &:active {
+            transform: scale(0.94);
+        }
+
+        &.focus {
+            background-color: #fff;
+            color: #000;
+        }
+
+        svg {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+    }
+
+    &__left,
+    &__right {
+        align-items: center;
+        gap: 8px;
+
+        .button + .button {
+            margin-left: 0;
+        }
+    }
+
+    &__center {
+        gap: 14px;
+        width: auto;
+        margin: 0 auto 10px;
+
+        .button {
+            margin: 0 !important;
+        }
+    }
+
+    // play / pause is the one large control
+    // (selectors are doubled so they beat the older size rules in web.scss and _hooktv.scss)
+    .button.player-panel__playpause {
+        width: $ios-play !important;
+        height: $ios-play !important;
+        margin: 0 !important;
+        padding: 18px !important;
+    }
+
+    &__tstart,
+    &__tend,
+    &__rprev,
+    &__rnext,
+    &__prev,
+    &__next {
+        margin: 0 !important;
+    }
+
+    &__next-episode-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: $ios-ink;
+        max-width: 40vw;
+        padding-left: 12px;
+    }
+
+    // quality is a text chip: same height as the circles, not a square
+    .button.player-panel__quality {
+        width: auto !important;
+        min-width: $ios-hit;
+        padding: 0 14px !important;
+        border-radius: 22px !important;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+
+    // volume drop: lift it clear of the bar and keep the slider finger-sized
+    &__volume-drop {
+        padding: 12px 10px;
+        background-color: rgba(20, 20, 22, 0.9);
+    }
+
+    @media screen and (max-width: $media_sm) {
+        &__body {
+            padding: 14px 14px 12px;
+        }
+
+        // no room for picture-in-picture next to the rest on a phone
+        &__pip {
+            display: none !important;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none !important;
+
+        .button {
+            transition: none !important;
+
+            &:active {
+                transform: none;
+            }
+        }
+    }
+}
