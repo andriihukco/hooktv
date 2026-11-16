@@ -22,6 +22,7 @@ import WatchedHistory from '../interaction/watched_history'
 import Listener from './torrents/listener'
 
 import voices from './torrents/voices'
+import Audio from '../utils/audio_order'
 import filter_langs from './torrents/lang'
 
 /**
@@ -277,17 +278,11 @@ function component(object){
     }
 
     this.sortWithViewed = function(){
-        let popular = []
-        let other   = []
+        let popular = results.Results.filter(a=>a.viewed).sort((a,b)=>b.Seeders - a.Seeders)
+        let other   = results.Results.filter(a=>!a.viewed)
 
-        results.Results.forEach((a)=>{
-            if(a.viewed) popular.push(a)
-            else other.push(a)
-        })
-
-        popular.sort((a,b)=>b.Seeders - a.Seeders)
-
-        results.Results = popular.concat(other)
+        // English, then Ukrainian; Russian results are dropped (src/utils/audio_order.js)
+        results.Results = Audio.order(popular.concat(other))
     }
 
     this.cardID = function(){

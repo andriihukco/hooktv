@@ -2,7 +2,7 @@ import {expect, suite, test} from 'vitest'
 import Sources from '../src/core/sources.js'
 
 suite('sources', ()=>{
-    test('merges providers, skips failures, puts Ukrainian audio first', async ()=>{
+    test('merges providers, skips failures, puts English audio first, then Ukrainian', async ()=>{
         Sources.register({
             name: 'a',
             search: async ()=>[{id: 1, title: 'Film', year: '2024', rating: '7.5'}],
@@ -19,9 +19,10 @@ suite('sources', ()=>{
 
         let streams = await Sources.streams(items[0])
 
-        expect(streams.map(s=>s.url)).toEqual(['http://a/uk.m3u8', 'http://a/en.m3u8'])
-        expect(streams[0].uk).toBe(true)
-        expect(Sources.playData(streams[0], items[0])).toMatchObject({
+        expect(streams.map(s=>s.url)).toEqual(['http://a/en.m3u8', 'http://a/uk.m3u8'])
+        expect(streams[0].en).toBe(true)
+        expect(streams[1].uk).toBe(true)
+        expect(Sources.playData(streams[1], items[0])).toMatchObject({
             url: 'http://a/uk.m3u8',
             title: 'Film',
             subtitles: [{label: 'uk.srt', url: 'http://a/uk.srt'}],

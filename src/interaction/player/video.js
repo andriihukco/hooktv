@@ -567,8 +567,6 @@ function loaded(){
 
     console.log('Player','video full loaded')
 
-    if(hls) console.log('Player','hls test', hls.audioTracks.length)
-
     if(hls && hls.audioTracks && hls.audioTracks.length){
         tracks = hls.audioTracks
 
@@ -599,8 +597,6 @@ function loaded(){
     }
 	else if(video.audioTracks && video.audioTracks.length) tracks = video.audioTracks
 
-    console.log('Player','tracks', video.audioTracks)
-
     if(webos && webos.sourceInfo){
         tracks = []
 
@@ -609,14 +605,17 @@ function loaded(){
     } 
 
     if(tracks.length){
-        // Russian and unnamed audio never reach the menu, so they cannot be picked
-        tracks = Dub.playableTracks(convertToArray(tracks))
+        // Russian and unnamed audio never reach the menu, so they cannot be picked.
+        // The saved index counts the full track list, so map it before filtering.
+        let all   = convertToArray(tracks)
+        tracks    = Dub.playableTracks(all)
+        let saved = tracks.indexOf(all[params.track])
 
-        if(typeof params.track !== 'undefined' && tracks[params.track]){
+        if(typeof params.track !== 'undefined' && saved >= 0){
             tracks.forEach(e=>{e.selected = false})
 
-            tracks[params.track].enabled = true
-            tracks[params.track].selected = true
+            tracks[saved].enabled = true
+            tracks[saved].selected = true
 
             console.log('Player','enable track by default')
         }

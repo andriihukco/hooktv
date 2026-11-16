@@ -5,7 +5,7 @@
 
 const UK = /укр|україн|ukr|\bua\b|\buk\b/i
 const RU = /рус|росій|russian|\brus?\b/i
-const ORIGINAL = /оригін|original|\beng|англ|english|без перекладу/i
+const ORIGINAL = /оригін|original|\ben\b|\beng|англ|english|без перекладу/i
 
 // Sources that only carry Ukrainian voices
 const UK_SOURCES = ['uaflix', 'uatut', 'makhno', 'petlura', 'bambooua', 'starlight', 'midnight', 'ashdibase', 'uakino', 'uafilmme', 'moviestape', 'franko', 'sirko', 'animeon', 'mikai']
@@ -36,7 +36,7 @@ function score(name){
     return 0
 }
 
-const ENGLISH = /\beng|english|англ/i
+const ENGLISH = /\ben\b|\beng|english|англ/i
 
 /**
  * Only English and Ukrainian tracks may reach the player. Russian and every

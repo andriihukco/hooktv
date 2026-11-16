@@ -60,7 +60,8 @@ function normalizeStream(raw, provider){
         .map(a=>({
             label: a.label || a.name || '',
             language: a.language || '',
-            uk: Dub.classify([a.language, a.label, a.name].filter(Boolean).join(' ')) == 'uk'
+            uk: Dub.classify([a.language, a.label, a.name].filter(Boolean).join(' ')) == 'uk',
+            en: Dub.classify([a.language, a.label, a.name].filter(Boolean).join(' ')) == 'original'
         }))
 
     return {
@@ -69,6 +70,7 @@ function normalizeStream(raw, provider){
         quality: raw.quality || '',
         audio,
         uk: audio.some(a=>a.uk),
+        en: audio.some(a=>a.en),
         subtitles: (raw.subtitles || []).filter(s=>s && s.url).map(s=>({label: s.label || s.url.split('/').pop(), url: s.url}))
     }
 }
@@ -83,7 +85,7 @@ function search(query){
 }
 
 /**
- * Streams for an item from search(), Ukrainian audio first. A stream with no
+ * Streams for an item from search(), English audio first, then Ukrainian. A stream with no
  * English or Ukrainian track is dropped, so Russian audio never plays.
  * @returns {Promise<object[]>}
  */
@@ -94,7 +96,7 @@ function streams(item){
 
     return timed(provider.streams(item.id))
         .then(list=>(list || []).filter(s=>s && s.url).map(s=>normalizeStream(s, provider.name)))
-        .then(list=>list.filter(s=>s.audio.length).sort((a, b)=>b.uk - a.uk))
+        .then(list=>list.filter(s=>s.audio.length).sort((a, b)=>(b.en - a.en) || (b.uk - a.uk)))
         .catch(()=>[])
 }
 

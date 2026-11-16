@@ -116,3 +116,10 @@ describe('Dub.contentMatches', () => {
     })
 })
 
+
+describe('Dub English code', () => {
+    it('reads the en code as English', () => {
+        expect(Dub.classify('en')).toBe('original')
+        expect(Dub.allowedTrack('en')).toBe(true)
+    })
+})
