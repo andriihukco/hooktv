@@ -8,7 +8,6 @@ const COMPONENT = 'hooktv_admin'
 let templateReady = false
 let openListenerReady = false
 
-}
 
 function cleanConfig(config){
     return {

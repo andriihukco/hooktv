@@ -8,3 +8,4 @@ export const featureLabels = {
     videos: {en: 'Videos', uk: 'Відео'},
     online_sources: {en: 'Online sources', uk: 'Онлайн-джерела'},
     plugins: {en: 'Plugin loading', uk: 'Завантаження плагінів'}
+}
